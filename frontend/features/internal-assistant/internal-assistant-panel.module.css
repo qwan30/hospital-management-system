@@ -1,0 +1,444 @@
+.shell {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 24px;
+  border: 1px solid rgba(72, 85, 105, 0.16);
+  background:
+    radial-gradient(circle at top right, rgba(15, 118, 110, 0.16), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92));
+  box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.eyebrow {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #0f766e;
+}
+
+.title {
+  margin: 0.25rem 0 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.summary {
+  margin: 0.45rem 0 0;
+  max-width: 62ch;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: #475569;
+}
+
+.contextRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.contextBanner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.95rem 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(8, 145, 178, 0.14);
+  background: rgba(8, 145, 178, 0.06);
+}
+
+.contextBannerLabel {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #0f766e;
+}
+
+.contextBannerText {
+  margin-top: 0.28rem;
+  color: #0f172a;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.contextBannerMeta {
+  align-self: center;
+  color: #475569;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.contextBadge {
+  padding: 0.42rem 0.72rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.04);
+  color: #0f172a;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.contextBadgeMuted {
+  background: rgba(8, 47, 73, 0.06);
+  color: #0c4a6e;
+}
+
+.modeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.modeButton,
+.modeButtonActive,
+.modeButtonDisabled {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.54rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease,
+    color 140ms ease;
+}
+
+.modeButton {
+  background: rgba(15, 23, 42, 0.04);
+  color: #334155;
+}
+
+.modeButtonActive {
+  border-color: rgba(15, 118, 110, 0.34);
+  background: rgba(15, 118, 110, 0.12);
+  color: #115e59;
+}
+
+.modeButtonDisabled {
+  background: rgba(15, 23, 42, 0.03);
+  color: rgba(71, 85, 105, 0.6);
+  cursor: not-allowed;
+}
+
+.modeButton:not(:disabled):hover,
+.modeButtonActive:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.composer {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: 20px;
+  background: rgba(15, 23, 42, 0.03);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.textarea {
+  min-height: 108px;
+  resize: vertical;
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  border-radius: 18px;
+  padding: 0.95rem 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a;
+  font: inherit;
+  line-height: 1.55;
+}
+
+.textarea:focus {
+  outline: 2px solid rgba(15, 118, 110, 0.2);
+  outline-offset: 2px;
+}
+
+.composerFooter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.hint {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.submitButton {
+  border: none;
+  border-radius: 999px;
+  padding: 0.72rem 1rem;
+  background: linear-gradient(135deg, #0f766e, #115e59);
+  color: white;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.notice {
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  background: rgba(254, 243, 199, 0.65);
+  color: #92400e;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.error {
+  border-color: rgba(248, 113, 113, 0.28);
+  background: rgba(254, 226, 226, 0.72);
+  color: #b91c1c;
+}
+
+.conversation {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.conversationTitle {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.emptyState {
+  padding: 0.95rem 1rem;
+  border-radius: 18px;
+  border: 1px dashed rgba(148, 163, 184, 0.45);
+  background: rgba(255, 255, 255, 0.7);
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.message {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 18px;
+}
+
+.messageUser {
+  background: rgba(14, 165, 233, 0.08);
+  border: 1px solid rgba(14, 165, 233, 0.16);
+}
+
+.messageAssistant {
+  background: rgba(15, 118, 110, 0.08);
+  border: 1px solid rgba(15, 118, 110, 0.16);
+}
+
+.messageMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.messageBody {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  color: #0f172a;
+}
+
+.resultGrid {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.resultCard {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.resultHeader {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.sectionLabel {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.scopeBadge {
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.05);
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.answer {
+  line-height: 1.65;
+  color: #0f172a;
+}
+
+.citationList,
+.linkList,
+.suggestionList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.citationCard,
+.linkCard,
+.suggestionButton {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(248, 250, 252, 0.92);
+  color: #0f172a;
+}
+
+.citationCard,
+.linkCard {
+  padding: 0.55rem 0.8rem;
+}
+
+.citationTitle,
+.linkText {
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.citationExcerpt {
+  margin-top: 0.18rem;
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.linkCard {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  text-decoration: none;
+}
+
+.suggestionButton {
+  padding: 0.6rem 0.85rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.suggestionButton:hover {
+  border-color: rgba(15, 118, 110, 0.3);
+}
+
+.refusalNotice {
+  padding: 0.82rem 0.92rem;
+  border-radius: 16px;
+  background: rgba(254, 226, 226, 0.82);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  color: #991b1b;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.sessionStack {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.sessionBlock {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 0.92rem;
+  border-radius: 16px;
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.sessionLabel {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+.sessionValue {
+  color: #0f172a;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.sessionHint,
+.feedbackHint {
+  color: #64748b;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.feedbackActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.feedbackButton {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: #ffffff;
+  color: #0f172a;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.feedbackButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.citationLink {
+  display: inline-flex;
+  margin-top: 0.18rem;
+  font-size: 0.8rem;
+  color: #0f766e;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.citationLink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 760px) {
+  .contextBanner {
+    align-items: stretch;
+  }
+}

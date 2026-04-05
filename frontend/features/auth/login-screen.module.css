@@ -1,0 +1,191 @@
+.page {
+  min-height: 100vh;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(134, 242, 228, 0.16), transparent 28%),
+    radial-gradient(circle at 85% 10%, rgba(0, 80, 203, 0.12), transparent 22%),
+    linear-gradient(180deg, #f6f8fb 0%, #edf1f5 100%);
+}
+
+.shell {
+  width: min(1240px, 100%);
+  min-height: calc(100vh - 48px);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.78fr);
+  border-radius: 36px;
+  overflow: hidden;
+  box-shadow: 0 40px 72px rgba(15, 37, 72, 0.12);
+}
+
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 40px;
+  background: linear-gradient(165deg, #0f2548, #1a365d 72%, #0a5c78);
+  color: #ffffff;
+  overflow: hidden;
+}
+
+.heroBackdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(134, 242, 228, 0.18), transparent 26%),
+    radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.08), transparent 24%);
+  pointer-events: none;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.heroBody {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 38rem;
+}
+
+.heroTitle {
+  margin: 0;
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  font-size: clamp(2.6rem, 4vw, 4rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.heroSummary {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  line-height: 1.76;
+}
+
+.heroHighlights {
+  display: grid;
+  gap: 14px;
+}
+
+.highlightCard {
+  padding: 18px 18px 16px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.highlightIcon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  color: var(--atelier-secondary-soft);
+}
+
+.highlightLabel {
+  margin-top: 12px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.highlightSummary {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.94rem;
+  line-height: 1.64;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+  padding: 36px;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.panelTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.panelBadge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(0, 80, 203, 0.08);
+  color: var(--atelier-primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.panelHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.heading {
+  margin: 0;
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  font-size: 2.1rem;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: var(--atelier-ink-strong);
+}
+
+.bodyText {
+  margin: 0;
+  color: var(--atelier-text-soft);
+  line-height: 1.72;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 980px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .hero,
+  .panel {
+    padding: 28px;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 16px;
+  }
+
+  .shell {
+    min-height: calc(100vh - 32px);
+    border-radius: 28px;
+  }
+
+  .panelTop {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

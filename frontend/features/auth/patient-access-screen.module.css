@@ -1,0 +1,113 @@
+.page {
+  min-height: 100vh;
+  padding: 32px 20px;
+  background:
+    radial-gradient(circle at top left, rgba(8, 145, 178, 0.18), transparent 24%),
+    linear-gradient(180deg, #f7fbfc 0%, #ecf5f7 100%);
+}
+
+.shell {
+  width: min(980px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 20px;
+}
+
+.hero,
+.panel {
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 20px 36px rgba(15, 60, 92, 0.08);
+}
+
+.hero {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background:
+    radial-gradient(circle at top left, rgba(0, 80, 203, 0.14), transparent 20%),
+    linear-gradient(180deg, #0f365f 0%, #0c5b73 100%);
+  color: #ffffff;
+}
+
+.heroTitle,
+.heading {
+  margin: 0;
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+}
+
+.heroTitle {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+}
+
+.heroSummary,
+.bodyText {
+  margin: 0;
+  line-height: 1.7;
+}
+
+.heroSummary {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.bulletList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bullet {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.bulletTitle {
+  font-weight: 700;
+}
+
+.bulletText {
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.panel {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.panelTop,
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.panelBadge {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(8, 145, 178, 0.12);
+  color: #0b7285;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+@media (max-width: 900px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+}

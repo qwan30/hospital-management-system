@@ -1,0 +1,820 @@
+.page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(134, 242, 228, 0.2), transparent 24%),
+    radial-gradient(circle at 85% 10%, rgba(0, 80, 203, 0.12), transparent 22%),
+    linear-gradient(180deg, #f7f9fb 0%, var(--atelier-surface) 28%, #eef2f6 100%);
+}
+
+.frame {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px 32px;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding-top: 18px;
+}
+
+.headerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 20px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 18px 30px rgba(25, 28, 29, 0.06),
+    inset 0 0 0 1px rgba(194, 198, 216, 0.18);
+}
+
+.headerPrimary {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  min-width: 0;
+}
+
+.brandLink {
+  flex: 0 0 auto;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.navLink {
+  padding-bottom: 6px;
+  color: var(--atelier-muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.navLink:hover {
+  color: var(--atelier-ink-strong);
+}
+
+.navLinkActive {
+  color: var(--atelier-ink-strong);
+  border-bottom-color: var(--atelier-ink-strong);
+}
+
+.utilityCluster {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.searchShell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 280px;
+  min-height: 46px;
+  padding: 0 14px 0 42px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffffff, var(--atelier-surface-muted));
+  box-shadow: inset 0 0 0 1px rgba(194, 198, 216, 0.24);
+}
+
+.searchButton {
+  position: absolute;
+  left: 14px;
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  color: #7a8699;
+  cursor: pointer;
+}
+
+.searchInput {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--atelier-ink);
+}
+
+.searchInput::placeholder {
+  color: #7a8699;
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 96px;
+  padding-top: 28px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.88fr);
+  gap: 32px;
+  align-items: center;
+  padding: 72px 16px 0;
+}
+
+.heroCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 40rem;
+}
+
+.heroTitle {
+  margin: 0;
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  font-size: clamp(3.4rem, 6vw, 5.3rem);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+  color: var(--atelier-ink-strong);
+  white-space: pre-line;
+}
+
+.heroDescription {
+  margin: 0;
+  color: var(--atelier-text-soft);
+  font-size: 1.08rem;
+  line-height: 1.78;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.heroVisual {
+  position: relative;
+  min-height: 620px;
+  border-radius: 34px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #dbeafe, #eef4fb 70%, #dde7f1);
+  box-shadow: 0 32px 64px rgba(25, 28, 29, 0.12);
+}
+
+.heroImage {
+  position: absolute;
+  inset: 0;
+}
+
+.heroVisualOverlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(248, 249, 250, 0.98) 0%, rgba(248, 249, 250, 0.7) 34%, transparent 70%),
+    linear-gradient(180deg, transparent 20%, rgba(15, 37, 72, 0.12) 100%);
+}
+
+.heroGlassCard {
+  position: absolute;
+  left: 28px;
+  bottom: 28px;
+  max-width: 320px;
+  padding: 22px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  box-shadow:
+    0 20px 38px rgba(25, 28, 29, 0.12),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.36);
+}
+
+.heroGlassEyebrow,
+.articleCategory,
+.doctorBadge,
+.footerLegal {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.heroGlassEyebrow {
+  color: var(--atelier-primary);
+  font-weight: 800;
+}
+
+.heroGlassTitle {
+  margin-top: 10px;
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  font-size: 1.45rem;
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--atelier-ink-strong);
+}
+
+.heroGlassSummary {
+  margin-top: 12px;
+  color: var(--atelier-text-soft);
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
+.heroMetricRail {
+  position: absolute;
+  right: 28px;
+  bottom: 28px;
+  display: grid;
+  gap: 12px;
+  min-width: 210px;
+}
+
+.heroMetric {
+  padding: 18px 18px 16px;
+  border-radius: 22px;
+  background: rgba(15, 37, 72, 0.82);
+  color: #ffffff;
+  backdrop-filter: blur(14px);
+}
+
+.quickLinks {
+  margin-top: -36px;
+  padding: 0 16px;
+}
+
+.quickLinksGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.quickLinkCard {
+  display: flex;
+  flex-direction: column;
+  min-height: 258px;
+  padding: 28px;
+  border-radius: 26px;
+  text-decoration: none;
+  box-shadow: 0 24px 42px rgba(25, 28, 29, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quickLinkCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 30px 54px rgba(25, 28, 29, 0.12);
+}
+
+.quickLinkCritical {
+  background: linear-gradient(160deg, #e53f3f, var(--atelier-emergency));
+  color: #ffffff;
+}
+
+.quickLinkSurface {
+  background: linear-gradient(180deg, #ffffff, var(--atelier-surface-muted));
+  color: var(--atelier-ink-strong);
+}
+
+.quickLinkInverse {
+  background: linear-gradient(160deg, #0f2548, #102a43 72%, #184285);
+  color: #ffffff;
+}
+
+.quickLinkIconWrap {
+  display: inline-flex;
+  width: 52px;
+  height: 52px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.quickLinkSurface .quickLinkIconWrap {
+  background: rgba(0, 80, 203, 0.08);
+  color: var(--atelier-primary);
+}
+
+.quickLinkTitle {
+  margin: 22px 0 0;
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  font-size: 1.75rem;
+  line-height: 1.02;
+}
+
+.quickLinkDescription {
+  margin: 12px 0 0;
+  font-size: 0.96rem;
+  line-height: 1.7;
+  opacity: 0.9;
+}
+
+.quickLinkAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 26px;
+  font-weight: 700;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 0 16px;
+}
+
+.departmentGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.departmentCard {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.departmentMedia {
+  position: relative;
+  overflow: hidden;
+  border-radius: 26px;
+  aspect-ratio: 4 / 5;
+  background: var(--atelier-surface-muted);
+  box-shadow: 0 22px 40px rgba(25, 28, 29, 0.08);
+}
+
+.departmentImage {
+  transition: transform 0.5s ease;
+}
+
+.departmentCard:hover .departmentImage {
+  transform: scale(1.04);
+}
+
+.departmentOverlay {
+  position: absolute;
+  inset: auto 0 0;
+  min-height: 38%;
+  display: flex;
+  align-items: flex-end;
+  padding: 24px;
+}
+
+.departmentOverlayLight {
+  background: linear-gradient(180deg, transparent, rgba(15, 37, 72, 0.72));
+  color: #ffffff;
+}
+
+.departmentOverlayDark {
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.84));
+  color: var(--atelier-ink-strong);
+}
+
+.departmentName {
+  margin: 0;
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.departmentDescription {
+  margin: 0;
+  color: var(--atelier-text-soft);
+  font-size: 0.96rem;
+  line-height: 1.72;
+}
+
+.trustBand {
+  margin: 0 16px;
+  padding: 56px clamp(20px, 4vw, 42px);
+  border-radius: 34px;
+  background: linear-gradient(165deg, #0f2548, #1a365d 72%, #0a5c78);
+  color: #ffffff;
+  box-shadow: 0 32px 60px rgba(15, 37, 72, 0.24);
+}
+
+.trustGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.94fr);
+  gap: 40px;
+  align-items: center;
+}
+
+.trustTitle {
+  margin: 0;
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.trustDescription {
+  max-width: 34rem;
+  margin: 18px 0 0;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.trustMetricGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+
+.trustMetric {
+  padding: 18px 0;
+  color: #ffffff;
+}
+
+.testimonialCard {
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.quoteMark {
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  font-size: 4rem;
+  line-height: 1;
+  color: var(--atelier-secondary-soft);
+}
+
+.testimonialText {
+  margin: 10px 0 0;
+  font-size: 1.06rem;
+  line-height: 1.8;
+  font-style: italic;
+}
+
+.testimonialMeta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.testimonialAvatar {
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+.testimonialAvatarImage {
+  border-radius: 999px;
+}
+
+.testimonialName {
+  font-weight: 700;
+}
+
+.testimonialRole {
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.9rem;
+}
+
+.doctorGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.doctorCard {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, #ffffff, var(--atelier-surface-muted));
+  box-shadow:
+    0 24px 40px rgba(25, 28, 29, 0.08),
+    inset 0 0 0 1px rgba(194, 198, 216, 0.16);
+}
+
+.doctorMedia {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+}
+
+.doctorImage {
+  aspect-ratio: 1 / 1;
+}
+
+.doctorBadge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(0, 80, 203, 0.92);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.doctorName {
+  margin: 20px 0 0;
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  font-size: 1.32rem;
+  color: var(--atelier-ink-strong);
+}
+
+.doctorSpecialty {
+  margin-top: 6px;
+  color: var(--atelier-primary);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.doctorDescription {
+  margin: 16px 0 0;
+  color: var(--atelier-text-soft);
+  font-size: 0.94rem;
+  line-height: 1.72;
+}
+
+.doctorAction {
+  margin-top: auto;
+}
+
+.newsSection {
+  padding: 0 16px;
+}
+
+.newsGrid {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.86fr) minmax(0, 1.14fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.newsIntro {
+  padding: 30px;
+  border-radius: 30px;
+  background: linear-gradient(180deg, #ffffff, var(--atelier-surface-muted));
+  box-shadow:
+    0 24px 42px rgba(25, 28, 29, 0.08),
+    inset 0 0 0 1px rgba(194, 198, 216, 0.16);
+}
+
+.newsTitle {
+  margin: 18px 0 0;
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  font-size: clamp(2rem, 3vw, 2.9rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--atelier-ink-strong);
+  white-space: pre-line;
+}
+
+.newsDescription {
+  margin: 16px 0 0;
+  color: var(--atelier-text-soft);
+  font-size: 0.98rem;
+  line-height: 1.76;
+}
+
+.newsAccent {
+  width: 72px;
+  height: 6px;
+  margin: 24px 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--atelier-primary), var(--atelier-secondary));
+}
+
+.newsCards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.newsCard {
+  border-radius: 28px;
+  background: linear-gradient(180deg, #ffffff, var(--atelier-surface-muted));
+  box-shadow:
+    0 24px 40px rgba(25, 28, 29, 0.08),
+    inset 0 0 0 1px rgba(194, 198, 216, 0.16);
+}
+
+.newsCardLink {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px;
+  height: 100%;
+}
+
+.articleMedia {
+  overflow: hidden;
+  border-radius: 22px;
+}
+
+.articleImage {
+  aspect-ratio: 16 / 10;
+}
+
+.articleCategory {
+  color: var(--atelier-primary);
+  font-weight: 800;
+}
+
+.articleTitle {
+  margin: 0;
+  font-family: var(--font-display), "Segoe UI", sans-serif;
+  font-size: 1.22rem;
+  line-height: 1.25;
+  color: var(--atelier-ink-strong);
+  white-space: pre-line;
+}
+
+.articleSummary {
+  margin: 0;
+  color: var(--atelier-text-soft);
+  font-size: 0.94rem;
+  line-height: 1.72;
+}
+
+.footer {
+  padding: 48px 16px 0;
+}
+
+.footerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 30px;
+  border-radius: 30px;
+  background: linear-gradient(160deg, #0f2548, #102a43);
+  color: #ffffff;
+}
+
+.footerLegal {
+  color: rgba(255, 255, 255, 0.66);
+  font-weight: 700;
+}
+
+.footerLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footerLink {
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.footerLink:hover {
+  color: #ffffff;
+}
+
+.mediaImage,
+.mediaPlaceholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mediaPlaceholder {
+  background-size: cover;
+}
+
+.placeholderHero {
+  background:
+    linear-gradient(140deg, rgba(0, 80, 203, 0.16), transparent 52%),
+    linear-gradient(180deg, #d7e8f9, #f1f5f9);
+}
+
+.placeholderSlate {
+  background:
+    linear-gradient(180deg, transparent, rgba(15, 37, 72, 0.42)),
+    linear-gradient(135deg, #2d3748, #4a5568);
+}
+
+.placeholderPale {
+  background:
+    linear-gradient(180deg, transparent, rgba(15, 37, 72, 0.18)),
+    linear-gradient(135deg, #eff6ff, #dbeafe);
+}
+
+.placeholderNavy {
+  background:
+    linear-gradient(180deg, transparent, rgba(15, 37, 72, 0.55)),
+    linear-gradient(135deg, #0f172a, #1e3a8a);
+}
+
+.placeholderAsh {
+  background:
+    linear-gradient(180deg, transparent, rgba(15, 37, 72, 0.28)),
+    linear-gradient(135deg, #e2e8f0, #cbd5e1);
+}
+
+.placeholderPortrait {
+  background: linear-gradient(135deg, #d7e3f5, #f8fafc);
+}
+
+.placeholderArticle {
+  background: linear-gradient(135deg, #d7f3ee, #f1f5f9);
+}
+
+.placeholderAvatar {
+  background: linear-gradient(135deg, #d7e3f5, #f8fafc);
+}
+
+@media (max-width: 1180px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .heroVisual {
+    min-height: 520px;
+  }
+
+  .departmentGrid,
+  .doctorGrid,
+  .newsCards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .newsGrid,
+  .trustGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 920px) {
+  .frame {
+    padding: 0 16px 24px;
+  }
+
+  .headerInner,
+  .headerPrimary,
+  .utilityCluster {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .searchShell {
+    width: 100%;
+  }
+
+  .quickLinksGrid,
+  .departmentGrid,
+  .doctorGrid,
+  .newsCards {
+    grid-template-columns: 1fr;
+  }
+
+  .footerInner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-top: 36px;
+  }
+
+  .heroVisual {
+    min-height: 420px;
+  }
+
+  .heroGlassCard {
+    right: 20px;
+    left: 20px;
+    max-width: none;
+  }
+
+  .heroMetricRail {
+    top: 20px;
+    right: 20px;
+    bottom: auto;
+    min-width: 160px;
+  }
+
+  .trustBand,
+  .newsIntro,
+  .doctorCard,
+  .quickLinkCard {
+    border-radius: 24px;
+  }
+}

@@ -1,0 +1,73 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:hospital_db}
+    username: ${POSTGRES_USER:hospital_user}
+    password: ${POSTGRES_PASSWORD:hospital_password}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    default-property-inclusion: non_null
+
+server:
+  port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+
+security:
+  jwt:
+    secret: ${JWT_SECRET:replace-with-a-random-32-character-secret}
+    access-token-expiration-seconds: 900
+    refresh-token-expiration-seconds: 604800
+    refresh-cookie-name: hms_refresh_token
+  http:
+    allowed-origins:
+      - ${HMS_ALLOWED_ORIGIN_PRIMARY:http://localhost:3000}
+      - ${HMS_ALLOWED_ORIGIN_SECONDARY:http://localhost:4173}
+    allow-credentials: ${HMS_ALLOW_CREDENTIALS:true}
+    secure-cookies: ${HMS_SECURE_COOKIES:false}
+    refresh-cookie-same-site: ${HMS_REFRESH_COOKIE_SAME_SITE:Lax}
+    public-rate-limit-per-minute: ${HMS_PUBLIC_RATE_LIMIT_PER_MINUTE:30}
+    internal-assistant-rate-limit-per-minute: ${HMS_INTERNAL_ASSISTANT_RATE_LIMIT_PER_MINUTE:12}
+  patient-identifier:
+    secret: ${PATIENT_IDENTIFIER_SECRET:${JWT_SECRET:replace-with-a-random-32-character-secret}}
+
+integration:
+  gemini:
+    enabled: ${GEMINI_ENABLED:false}
+    api-key: ${GEMINI_API_KEY:}
+    model: ${GEMINI_MODEL:gemini-2.0-flash}
+    api-base-url: ${GEMINI_API_BASE_URL:https://generativelanguage.googleapis.com/v1beta}
+  gmail:
+    enabled: ${GMAIL_ENABLED:false}
+    client-id: ${GMAIL_CLIENT_ID:}
+    client-secret: ${GMAIL_CLIENT_SECRET:}
+    refresh-token: ${GMAIL_REFRESH_TOKEN:}
+    sender-email: ${GMAIL_SENDER_EMAIL:demo@hospital.vn}
+    token-url: ${GMAIL_TOKEN_URL:https://oauth2.googleapis.com/token}
+    api-base-url: ${GMAIL_API_BASE_URL:https://gmail.googleapis.com}
+
+hospital:
+  profile:
+    name: ${HOSPITAL_NAME:Hospital Management System}
+    address: ${HOSPITAL_ADDRESS:123 ABC Street, District 1, Ho Chi Minh City}
+    phone: ${HOSPITAL_PHONE:028 1234 5678}
+    maps-embed-url: ${HOSPITAL_MAPS_EMBED_URL:https://www.google.com/maps?q=10.7769,106.7009&z=15&output=embed}
+    privacy-policy-url: ${HOSPITAL_PRIVACY_POLICY_URL:/privacy}
+    facebook-url: ${HOSPITAL_FACEBOOK_URL:https://facebook.com}
+    youtube-url: ${HOSPITAL_YOUTUBE_URL:https://youtube.com}

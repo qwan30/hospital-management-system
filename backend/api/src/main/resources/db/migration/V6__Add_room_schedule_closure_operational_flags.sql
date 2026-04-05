@@ -1,0 +1,16 @@
+ALTER TABLE rooms
+  ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE;
+
+ALTER TABLE doctor_work_schedules
+  ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE;
+
+ALTER TABLE special_closures
+  ADD COLUMN IF NOT EXISTS title VARCHAR(200),
+  ADD COLUMN IF NOT EXISTS is_active BOOLEAN NOT NULL DEFAULT TRUE;
+
+UPDATE special_closures
+SET title = COALESCE(title, 'Operational closure')
+WHERE title IS NULL;
+
+ALTER TABLE special_closures
+  ALTER COLUMN title SET NOT NULL;

@@ -1,0 +1,31 @@
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# Node
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+
+# Java / Maven
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS / logs
+Thumbs.db
+*.log
+
+# Python
+__pycache__/
+*.pyc
+
+# Generated uploads
+uploads/

@@ -1,0 +1,74 @@
+package com.hospital.api.config;
+
+import com.hospital.core.common.ConflictException;
+import com.hospital.core.common.NotFoundException;
+import com.hospital.shared.api.ApiResponse;
+import jakarta.validation.ConstraintViolationException;
+import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+public class RestExceptionHandler {
+  @ExceptionHandler(NotFoundException.class)
+  ResponseEntity<ApiResponse<Void>> handleNotFound(NotFoundException exception) {
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(ApiResponse.fail("not_found", exception.getMessage()));
+  }
+
+  @ExceptionHandler(ConflictException.class)
+  ResponseEntity<ApiResponse<Void>> handleConflict(ConflictException exception) {
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(ApiResponse.fail("conflict", exception.getMessage()));
+  }
+
+  @ExceptionHandler(BadCredentialsException.class)
+  ResponseEntity<ApiResponse<Void>> handleUnauthorized(BadCredentialsException exception) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+        .body(ApiResponse.fail("unauthorized", exception.getMessage()));
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  ResponseEntity<ApiResponse<Void>> handleIllegalArgument(IllegalArgumentException exception) {
+    return ResponseEntity.badRequest()
+        .body(ApiResponse.fail("validation_error", exception.getMessage()));
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  ResponseEntity<ApiResponse<Void>> handleForbidden(AccessDeniedException exception) {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .body(ApiResponse.fail("forbidden", exception.getMessage()));
+  }
+
+  @ExceptionHandler(AuthorizationDeniedException.class)
+  ResponseEntity<ApiResponse<Void>> handleAuthorizationDenied(AuthorizationDeniedException exception) {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .body(ApiResponse.fail("forbidden", "Access is denied"));
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  ResponseEntity<ApiResponse<Void>> handleValidation(MethodArgumentNotValidException exception) {
+    var message = exception.getBindingResult().getFieldErrors().stream()
+        .map(error -> error.getField() + ": " + error.getDefaultMessage())
+        .collect(Collectors.joining(", "));
+
+    return ResponseEntity.badRequest().body(ApiResponse.fail("validation_error", message));
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  ResponseEntity<ApiResponse<Void>> handleConstraintViolation(ConstraintViolationException exception) {
+    return ResponseEntity.badRequest().body(ApiResponse.fail("validation_error", exception.getMessage()));
+  }
+
+  @ExceptionHandler(Exception.class)
+  ResponseEntity<ApiResponse<Void>> handleGeneric(Exception exception) {
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body(ApiResponse.fail("internal_error", "Internal server error"));
+  }
+}

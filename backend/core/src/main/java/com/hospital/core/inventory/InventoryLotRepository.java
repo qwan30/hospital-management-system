@@ -1,0 +1,11 @@
+package com.hospital.core.inventory;
+
+import java.util.List;
+import java.util.UUID;
+import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface InventoryLotRepository extends JpaRepository<InventoryLotEntity, UUID> {
+  @EntityGraph(attributePaths = {"item"})
+  List<InventoryLotEntity> findAllByOrderByExpiresOnAsc();
+}
