@@ -48,6 +48,12 @@ public class AdminService {
     return userRepository.findAllByOrderByFullNameAsc().stream().map(this::toAdminUserResponse).toList();
   }
 
+  @Transactional(readOnly = true)
+  public AdminUserResponse getUser(UUID userId) {
+    return toAdminUserResponse(
+        userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found")));
+  }
+
   @Transactional
   public AdminUserResponse createUser(AdminUserUpsertRequest request) {
     if (userRepository.existsByEmailIgnoreCase(request.email())) {
@@ -69,9 +75,43 @@ public class AdminService {
     return toAdminUserResponse(user);
   }
 
+  @Transactional
+  public void deleteUser(UUID userId) {
+    var user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    user.setActive(false);
+    // Soft-delete: deactivate so existing foreign keys remain intact
+  }
+
+  @Transactional
+  public AdminUserResponse activateUser(UUID userId) {
+    var user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    user.setActive(true);
+    return toAdminUserResponse(user);
+  }
+
+  @Transactional
+  public AdminUserResponse deactivateUser(UUID userId) {
+    var user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    user.setActive(false);
+    return toAdminUserResponse(user);
+  }
+
+  @Transactional
+  public AdminUserResponse changeUserRole(UUID userId, UserRole newRole) {
+    var user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+    user.setRole(newRole);
+    return toAdminUserResponse(user);
+  }
+
   @Transactional(readOnly = true)
   public List<AdminDepartmentResponse> listDepartments() {
     return departmentRepository.findAllByOrderByNameAsc().stream().map(this::toAdminDepartmentResponse).toList();
+  }
+
+  @Transactional(readOnly = true)
+  public AdminDepartmentResponse getDepartment(UUID departmentId) {
+    return toAdminDepartmentResponse(
+        departmentRepository.findById(departmentId).orElseThrow(() -> new NotFoundException("Department not found")));
   }
 
   @Transactional
@@ -90,6 +130,38 @@ public class AdminService {
         .orElseThrow(() -> new NotFoundException("Department not found"));
     applyDepartment(department, request);
     return toAdminDepartmentResponse(department);
+  }
+
+  @Transactional
+  public void deleteDepartment(UUID departmentId) {
+    var department = departmentRepository.findById(departmentId)
+        .orElseThrow(() -> new NotFoundException("Department not found"));
+    department.setActive(false);
+    // Soft-delete: preserves referential integrity with users and rooms
+  }
+
+  @Transactional
+  public AdminUserResponse assignDoctorToDepartment(UUID departmentId, UUID doctorId) {
+    var department = departmentRepository.findById(departmentId)
+        .orElseThrow(() -> new NotFoundException("Department not found"));
+    var doctor = userRepository.findByIdAndRoleAndActiveTrue(doctorId, UserRole.DOCTOR)
+        .orElseThrow(() -> new NotFoundException("Active doctor not found"));
+    doctor.setDepartment(department);
+    return toAdminUserResponse(doctor);
+  }
+
+  @Transactional
+  public AdminUserResponse removeDoctorFromDepartment(UUID departmentId, UUID doctorId) {
+    // Verify the department exists
+    departmentRepository.findById(departmentId)
+        .orElseThrow(() -> new NotFoundException("Department not found"));
+    var doctor = userRepository.findByIdAndRoleAndActiveTrue(doctorId, UserRole.DOCTOR)
+        .orElseThrow(() -> new NotFoundException("Active doctor not found"));
+    if (doctor.getDepartment() == null || !doctor.getDepartment().getId().equals(departmentId)) {
+      throw new ConflictException("Doctor is not assigned to this department");
+    }
+    doctor.setDepartment(null);
+    return toAdminUserResponse(doctor);
   }
 
   @Transactional(readOnly = true)

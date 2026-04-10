@@ -57,11 +57,31 @@ public class OperationsAdminService {
     return toRoomResponse(roomRepository.save(room));
   }
 
+  @Transactional(readOnly = true)
+  public AdminRoomResponse getRoom(UUID roomId) {
+    return toRoomResponse(
+        roomRepository.findById(roomId).orElseThrow(() -> new NotFoundException("Room not found")));
+  }
+
   @Transactional
   public AdminRoomResponse updateRoom(UUID roomId, AdminRoomUpsertRequest request) {
     var room = roomRepository.findById(roomId).orElseThrow(() -> new NotFoundException("Room not found"));
     applyRoom(room, request);
     return toRoomResponse(room);
+  }
+
+  @Transactional
+  public AdminRoomResponse updateRoomStatus(UUID roomId, RoomStatus status) {
+    var room = roomRepository.findById(roomId).orElseThrow(() -> new NotFoundException("Room not found"));
+    room.setStatus(status);
+    return toRoomResponse(room);
+  }
+
+  @Transactional
+  public void deleteRoom(UUID roomId) {
+    var room = roomRepository.findById(roomId).orElseThrow(() -> new NotFoundException("Room not found"));
+    room.setActive(false);
+    // Soft-delete: preserves historical appointment room references
   }
 
   @Transactional(readOnly = true)
