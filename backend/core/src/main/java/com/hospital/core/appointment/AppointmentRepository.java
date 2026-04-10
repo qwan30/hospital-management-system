@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
@@ -57,4 +59,25 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
   boolean existsByPatientIdAndAppointmentDateAndStatusIn(UUID patientId, LocalDate appointmentDate, Collection<AppointmentStatus> statuses);
 
   long countByAppointmentDate(LocalDate appointmentDate);
+
+  @EntityGraph(attributePaths = {"patient", "doctor", "firstSlot"})
+  @Query("""
+      select a from AppointmentEntity a
+      where (:status is null or a.status = :status)
+        and (:doctorId is null or a.doctor.id = :doctorId)
+        and (:date is null or a.appointmentDate = :date)
+      order by a.appointmentDate desc, a.firstSlot.startTime asc
+      """)
+  Page<AppointmentEntity> findAllFiltered(
+      @Param("status") AppointmentStatus status,
+      @Param("doctorId") UUID doctorId,
+      @Param("date") LocalDate date,
+      Pageable pageable);
+
+  long countByStatus(AppointmentStatus status);
+
+  long countByDoctorId(UUID doctorId);
+
+  @Query("select count(a) from AppointmentEntity a where a.appointmentDate between :from and :to")
+  long countByDateRange(@Param("from") LocalDate from, @Param("to") LocalDate to);
 }

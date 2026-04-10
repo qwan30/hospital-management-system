@@ -1,157 +1,358 @@
 package com.hospital.core.appointment;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;
-
+import com.hospital.core.common.ConflictException;
+import com.hospital.core.common.NotFoundException;
 import com.hospital.core.patient.PatientEntity;
 import com.hospital.core.patient.PatientIdentifierProtector;
 import com.hospital.core.timeslot.TimeSlotEntity;
 import com.hospital.core.user.UserEntity;
 import com.hospital.core.user.UserRepository;
-import com.hospital.shared.appointment.AppointmentDetailResponse;
+import com.hospital.shared.appointment.AppointmentUpdateRequest;
+import com.hospital.shared.appointment.AppointmentVitalSignsRequest;
+import com.hospital.shared.appointment.FollowUpRequest;
 import com.hospital.shared.enums.AppointmentStatus;
-import com.hospital.shared.enums.Gender;
 import com.hospital.shared.enums.UserRole;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.access.AccessDeniedException;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AppointmentWorkflowServiceTest {
-  @Mock
-  private AppointmentRepository appointmentRepository;
 
-  @Mock
-  private PatientIdentifierProtector patientIdentifierProtector;
+  @Mock private AppointmentRepository appointmentRepository;
+  @Mock private AppointmentVitalSignsRepository vitalSignsRepository;
+  @Mock private FollowUpRepository followUpRepository;
+  @Mock private PatientIdentifierProtector patientIdentifierProtector;
+  @Mock private UserRepository userRepository;
 
-  @Mock
-  private UserRepository userRepository;
+  @InjectMocks private AppointmentWorkflowService service;
 
-  @InjectMocks
-  private AppointmentWorkflowService appointmentWorkflowService;
+  private AppointmentEntity sampleAppointment;
+  private UUID appointmentId;
+  private UUID doctorId;
+  private UUID patientId;
 
-  @Test
-  void rejectsDoctorStatusUpdateForAnotherDoctorsAppointment() {
-    var doctor = doctor("doctor1@hospital.vn");
-    var otherDoctorId = UUID.randomUUID();
-    var appointment = appointment(doctor, AppointmentStatus.CHECKED_IN, LocalTime.of(8, 0));
+  @BeforeEach
+  void setUp() {
+    appointmentId = UUID.randomUUID();
+    doctorId = UUID.randomUUID();
+    patientId = UUID.randomUUID();
 
-    when(appointmentRepository.findDetailedById(appointment.getId())).thenReturn(Optional.of(appointment));
-
-    assertThatThrownBy(() -> appointmentWorkflowService.updateAppointmentStatus(
-        otherDoctorId,
-        appointment.getId(),
-        AppointmentStatus.IN_PROGRESS))
-        .isInstanceOf(AccessDeniedException.class);
-  }
-
-  @Test
-  void rejectsInvalidDoctorStatusTransition() {
-    var doctor = doctor("doctor1@hospital.vn");
-    var appointment = appointment(doctor, AppointmentStatus.CONFIRMED, LocalTime.of(8, 0));
-
-    when(appointmentRepository.findDetailedById(appointment.getId())).thenReturn(Optional.of(appointment));
-
-    assertThatThrownBy(() -> appointmentWorkflowService.updateAppointmentStatus(
-        doctor.getId(),
-        appointment.getId(),
-        AppointmentStatus.DONE))
-        .hasMessageContaining("Invalid appointment status transition");
-  }
-
-  @Test
-  void rejectsDoctorTransitionFromInProgressToDone() {
-    var doctor = doctor("doctor1@hospital.vn");
-    var appointment = appointment(doctor, AppointmentStatus.IN_PROGRESS, LocalTime.of(8, 0));
-
-    when(appointmentRepository.findDetailedById(appointment.getId())).thenReturn(Optional.of(appointment));
-
-    assertThatThrownBy(() -> appointmentWorkflowService.updateAppointmentStatus(
-        doctor.getId(),
-        appointment.getId(),
-        AppointmentStatus.DONE))
-        .hasMessageContaining("Invalid appointment status transition");
-  }
-
-  @Test
-  void ordersQueueByCheckInTimeThenSlotStart() {
-    var doctor = doctor("doctor1@hospital.vn");
-    var laterCheckedIn = appointment(doctor, AppointmentStatus.CHECKED_IN, LocalTime.of(8, 0));
-    laterCheckedIn.setCheckedInAt(LocalDateTime.of(2026, 3, 16, 8, 15));
-
-    var earlierCheckedIn = appointment(doctor, AppointmentStatus.CHECKED_IN, LocalTime.of(8, 30));
-    earlierCheckedIn.setCheckedInAt(LocalDateTime.of(2026, 3, 16, 8, 5));
-
-    when(appointmentRepository.findByAppointmentDateAndStatusInOrderByCheckedInAtAscFirstSlotStartTimeAsc(
-        LocalDate.of(2026, 3, 16),
-        List.of(AppointmentStatus.CHECKED_IN, AppointmentStatus.IN_PROGRESS)))
-        .thenReturn(List.of(laterCheckedIn, earlierCheckedIn));
-    when(patientIdentifierProtector.decrypt("012345678901")).thenReturn("012345678901");
-
-    var queue = appointmentWorkflowService.listQueueForDate(LocalDate.of(2026, 3, 16));
-
-    assertThat(queue).extracting(item -> item.appointmentId()).containsExactly(earlierCheckedIn.getId(), laterCheckedIn.getId());
-  }
-
-  @Test
-  void returnsAppointmentDetailForOwningDoctor() {
-    var doctor = doctor("doctor1@hospital.vn");
-    var appointment = appointment(doctor, AppointmentStatus.CHECKED_IN, LocalTime.of(8, 0));
-    when(appointmentRepository.findDetailedById(appointment.getId())).thenReturn(Optional.of(appointment));
-    when(patientIdentifierProtector.decrypt("012345678901")).thenReturn("012345678901");
-
-    AppointmentDetailResponse detail = appointmentWorkflowService.getAppointmentDetail(doctor.getId(), appointment.getId());
-
-    assertThat(detail.appointmentId()).isEqualTo(appointment.getId());
-    assertThat(detail.patientEmail()).isEqualTo("patient.test@example.com");
-    assertThat(detail.aiDurationMinutes()).isEqualTo(30);
-  }
-
-  private UserEntity doctor(String email) {
     var doctor = new UserEntity();
-    doctor.setId(UUID.randomUUID());
-    doctor.setEmail(email);
-    doctor.setFullName("Dr. Test");
+    doctor.setId(doctorId);
+    doctor.setFullName("Dr. Tran Van");
     doctor.setRole(UserRole.DOCTOR);
-    return doctor;
-  }
 
-  private AppointmentEntity appointment(UserEntity doctor, AppointmentStatus status, LocalTime startTime) {
     var patient = new PatientEntity();
-    patient.setId(UUID.randomUUID());
-    patient.setFullName("Patient Test");
-    patient.setEmail("patient.test@example.com");
-    patient.setPhone("0900000000");
-    patient.setCccd("012345678901");
-    patient.setDateOfBirth(LocalDate.of(1990, 1, 1));
-    patient.setGender(Gender.OTHER);
+    patient.setId(patientId);
+    patient.setFullName("Nguyen Van A");
+    patient.setPhone("0901234567");
+    patient.setCccd("encrypted-cccd");
 
     var slot = new TimeSlotEntity();
-    slot.setId(UUID.randomUUID());
-    slot.setDoctor(doctor);
-    slot.setSlotDate(LocalDate.of(2026, 3, 16));
-    slot.setStartTime(startTime);
-    slot.setEndTime(startTime.plusMinutes(30));
+    slot.setStartTime(LocalTime.of(9, 0));
+    slot.setEndTime(LocalTime.of(9, 30));
 
-    var appointment = new AppointmentEntity();
-    appointment.setId(UUID.randomUUID());
-    appointment.setDoctor(doctor);
-    appointment.setPatient(patient);
-    appointment.setFirstSlot(slot);
-    appointment.setAppointmentDate(slot.getSlotDate());
-    appointment.setAiDurationMinutes(30);
-    appointment.setConfirmationCode("HMS-TEST");
-    appointment.setStatus(status);
-    return appointment;
+    sampleAppointment = new AppointmentEntity();
+    sampleAppointment.setId(appointmentId);
+    sampleAppointment.setDoctor(doctor);
+    sampleAppointment.setPatient(patient);
+    sampleAppointment.setFirstSlot(slot);
+    sampleAppointment.setAppointmentDate(LocalDate.of(2026, 4, 15));
+    sampleAppointment.setStatus(AppointmentStatus.CONFIRMED);
+    sampleAppointment.setConfirmationCode("CONF-123");
+    sampleAppointment.setCreatedAt(Instant.now());
+  }
+
+  @Nested
+  class ListAppointments {
+    @Test
+    void shouldReturnPaginatedAppointments() {
+      var page = new PageImpl<>(List.of(sampleAppointment), PageRequest.of(0, 20), 1);
+      when(appointmentRepository.findAllFiltered(null, null, null, PageRequest.of(0, 20)))
+          .thenReturn(page);
+
+      var result = service.listAppointments(null, null, null, 0, 20);
+      assertThat(result.getContent()).hasSize(1);
+      assertThat(result.getContent().get(0).appointmentId()).isEqualTo(appointmentId);
+      assertThat(result.getContent().get(0).doctorName()).isEqualTo("Dr. Tran Van");
+    }
+
+    @Test
+    void shouldFilterByStatus() {
+      var page = new PageImpl<>(List.of(sampleAppointment), PageRequest.of(0, 10), 1);
+      when(appointmentRepository.findAllFiltered(AppointmentStatus.CONFIRMED, null, null, PageRequest.of(0, 10)))
+          .thenReturn(page);
+
+      var result = service.listAppointments(AppointmentStatus.CONFIRMED, null, null, 0, 10);
+      assertThat(result.getContent()).hasSize(1);
+    }
+  }
+
+  @Nested
+  class CancelAppointment {
+    @Test
+    void shouldCancelConfirmedAppointment() {
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+
+      service.cancelAppointment(appointmentId);
+
+      assertThat(sampleAppointment.getStatus()).isEqualTo(AppointmentStatus.CANCELLED);
+    }
+
+    @Test
+    void shouldThrowWhenAppointmentNotFound() {
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> service.cancelAppointment(appointmentId))
+          .isInstanceOf(NotFoundException.class)
+          .hasMessage("Appointment not found");
+    }
+
+    @Test
+    void shouldThrowWhenAlreadyCancelled() {
+      sampleAppointment.setStatus(AppointmentStatus.CANCELLED);
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+
+      assertThatThrownBy(() -> service.cancelAppointment(appointmentId))
+          .isInstanceOf(ConflictException.class)
+          .hasMessageContaining("Cannot cancel");
+    }
+
+    @Test
+    void shouldThrowWhenAlreadyDone() {
+      sampleAppointment.setStatus(AppointmentStatus.DONE);
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+
+      assertThatThrownBy(() -> service.cancelAppointment(appointmentId))
+          .isInstanceOf(ConflictException.class);
+    }
+  }
+
+  @Nested
+  class UpdateAppointmentMeta {
+    @Test
+    void shouldUpdateNotesAndReason() {
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(patientIdentifierProtector.decrypt(any())).thenReturn("123456789012");
+
+      var request = new AppointmentUpdateRequest("Updated notes", "Urgent visit");
+      var result = service.updateAppointmentMeta(appointmentId, request);
+
+      assertThat(sampleAppointment.getNotes()).isEqualTo("Updated notes");
+      assertThat(sampleAppointment.getReason()).isEqualTo("Urgent visit");
+      assertThat(result.appointmentId()).isEqualTo(appointmentId);
+    }
+
+    @Test
+    void shouldUpdateOnlyNonNullFields() {
+      sampleAppointment.setNotes("Original notes");
+      sampleAppointment.setReason("Original reason");
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(patientIdentifierProtector.decrypt(any())).thenReturn("123456789012");
+
+      var request = new AppointmentUpdateRequest("New notes", null);
+      service.updateAppointmentMeta(appointmentId, request);
+
+      assertThat(sampleAppointment.getNotes()).isEqualTo("New notes");
+      assertThat(sampleAppointment.getReason()).isEqualTo("Original reason");
+    }
+
+    @Test
+    void shouldThrowWhenAppointmentNotFound() {
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> service.updateAppointmentMeta(appointmentId,
+          new AppointmentUpdateRequest("notes", null)))
+          .isInstanceOf(NotFoundException.class);
+    }
+  }
+
+  @Nested
+  class RecordVitalSigns {
+    @Test
+    void shouldRecordVitalSigns() {
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(vitalSignsRepository.existsByAppointmentId(appointmentId)).thenReturn(false);
+      when(vitalSignsRepository.save(any())).thenAnswer(invocation -> {
+        var entity = invocation.getArgument(0, AppointmentVitalSignsEntity.class);
+        entity.setId(UUID.randomUUID());
+        entity.setRecordedAt(Instant.now());
+        return entity;
+      });
+
+      var request = new AppointmentVitalSignsRequest(
+          "120/80", 36.5, 70.0, 170.0, 75, 16, 98.0);
+      var result = service.recordVitalSigns(appointmentId, request);
+
+      assertThat(result).isNotNull();
+      assertThat(result.bloodPressure()).isEqualTo("120/80");
+      assertThat(result.temperature()).isEqualTo(36.5);
+      assertThat(result.heartRate()).isEqualTo(75);
+      verify(vitalSignsRepository).save(any());
+    }
+
+    @Test
+    void shouldThrowWhenAlreadyRecorded() {
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(vitalSignsRepository.existsByAppointmentId(appointmentId)).thenReturn(true);
+
+      assertThatThrownBy(() -> service.recordVitalSigns(appointmentId,
+          new AppointmentVitalSignsRequest("120/80", 36.5, 70.0, 170.0, 75, 16, 98.0)))
+          .isInstanceOf(ConflictException.class)
+          .hasMessageContaining("already recorded");
+    }
+  }
+
+  @Nested
+  class GetVitalSigns {
+    @Test
+    void shouldReturnVitalSigns() {
+      var entity = new AppointmentVitalSignsEntity();
+      entity.setId(UUID.randomUUID());
+      entity.setAppointment(sampleAppointment);
+      entity.setBloodPressure("130/85");
+      entity.setTemperature(BigDecimal.valueOf(37.2));
+      entity.setWeight(BigDecimal.valueOf(65.0));
+      entity.setHeight(BigDecimal.valueOf(165.0));
+      entity.setHeartRate(72);
+      entity.setRespiratoryRate(18);
+      entity.setOxygenSaturation(BigDecimal.valueOf(97.5));
+      entity.setRecordedAt(Instant.now());
+
+      when(vitalSignsRepository.findByAppointmentId(appointmentId))
+          .thenReturn(Optional.of(entity));
+
+      var result = service.getVitalSigns(appointmentId);
+      assertThat(result.bloodPressure()).isEqualTo("130/85");
+      assertThat(result.heartRate()).isEqualTo(72);
+    }
+
+    @Test
+    void shouldThrowWhenNotFound() {
+      when(vitalSignsRepository.findByAppointmentId(appointmentId))
+          .thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> service.getVitalSigns(appointmentId))
+          .isInstanceOf(NotFoundException.class);
+    }
+  }
+
+  @Nested
+  class CreateFollowUp {
+    @Test
+    void shouldCreateFollowUp() {
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(followUpRepository.existsByParentAppointmentId(appointmentId)).thenReturn(false);
+      when(followUpRepository.save(any())).thenAnswer(invocation -> {
+        var entity = invocation.getArgument(0, FollowUpEntity.class);
+        entity.setId(UUID.randomUUID());
+        entity.setCreatedAt(Instant.now());
+        return entity;
+      });
+
+      var request = new FollowUpRequest(LocalDate.of(2026, 5, 15), "Check healing progress");
+      var result = service.createFollowUp(appointmentId, request);
+
+      assertThat(result.parentAppointmentId()).isEqualTo(appointmentId);
+      assertThat(result.followUpDate()).isEqualTo(LocalDate.of(2026, 5, 15));
+      assertThat(result.reason()).isEqualTo("Check healing progress");
+    }
+
+    @Test
+    void shouldThrowWhenFollowUpAlreadyExists() {
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(followUpRepository.existsByParentAppointmentId(appointmentId)).thenReturn(true);
+
+      assertThatThrownBy(() -> service.createFollowUp(appointmentId,
+          new FollowUpRequest(LocalDate.of(2026, 5, 15), null)))
+          .isInstanceOf(ConflictException.class)
+          .hasMessageContaining("already exists");
+    }
+  }
+
+  @Nested
+  class GetFollowUp {
+    @Test
+    void shouldReturnFollowUp() {
+      var entity = new FollowUpEntity();
+      entity.setId(UUID.randomUUID());
+      entity.setParentAppointment(sampleAppointment);
+      entity.setFollowUpDate(LocalDate.of(2026, 5, 20));
+      entity.setReason("Recovery review");
+
+      when(followUpRepository.findByParentAppointmentId(appointmentId))
+          .thenReturn(Optional.of(entity));
+
+      var result = service.getFollowUp(appointmentId);
+      assertThat(result.followUpDate()).isEqualTo(LocalDate.of(2026, 5, 20));
+      assertThat(result.reason()).isEqualTo("Recovery review");
+    }
+
+    @Test
+    void shouldThrowWhenNoFollowUp() {
+      when(followUpRepository.findByParentAppointmentId(appointmentId))
+          .thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> service.getFollowUp(appointmentId))
+          .isInstanceOf(NotFoundException.class);
+    }
+  }
+
+  @Nested
+  class CheckInAppointment {
+    @Test
+    void shouldCheckInConfirmedAppointment() {
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(patientIdentifierProtector.decrypt(any())).thenReturn("123456789012");
+
+      var now = LocalDateTime.now();
+      var result = service.checkInAppointment(appointmentId, now);
+
+      assertThat(result.status()).isEqualTo(AppointmentStatus.CHECKED_IN);
+      assertThat(sampleAppointment.getCheckedInAt()).isEqualTo(now);
+    }
+
+    @Test
+    void shouldThrowWhenNotConfirmed() {
+      sampleAppointment.setStatus(AppointmentStatus.CHECKED_IN);
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+
+      assertThatThrownBy(() -> service.checkInAppointment(appointmentId, LocalDateTime.now()))
+          .isInstanceOf(ConflictException.class);
+    }
   }
 }

@@ -92,6 +92,12 @@ public class AppointmentEntity {
   @Column(name = "booking_contact_gender", length = 20)
   private Gender bookingContactGender;
 
+  @Column(columnDefinition = "text")
+  private String notes;
+
+  @Column(length = 500)
+  private String reason;
+
   @PrePersist
   void prePersist() {
     var now = Instant.now();
