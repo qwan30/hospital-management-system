@@ -1,0 +1,17 @@
+# Development profile — activate with: --spring.profiles.active=dev
+# All external integrations disabled for local development.
+
+logging:
+  level:
+    com.hospital: DEBUG
+    org.springframework.security: DEBUG
+
+integration:
+  gemini:
+    enabled: false
+  gmail:
+    enabled: false
+
+spring:
+  flyway:
+    clean-disabled: false
