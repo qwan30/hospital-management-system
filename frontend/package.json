@@ -1,31 +1,29 @@
 {
-  "name": "hospital-management-system-frontend",
-  "version": "0.1.0",
+  "name": "frontend",
   "private": true,
+  "version": "0.0.0",
   "type": "module",
-  "packageManager": "npm@10.9.4",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "test": "vitest run",
-    "test:e2e": "playwright test",
-    "test:e2e:headed": "playwright test --headed"
-  },
-  "dependencies": {
-    "next": "^16.2.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
-    "@playwright/test": "^1.51.1",
-    "@vitejs/plugin-react": "^6.0.1",
-    "@testing-library/react": "^16.3.2",
-    "@types/node": "^25.5.0",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "jsdom": "^29.0.0",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.0"
+    "@types/node": "^25.6.0",
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.9",
+    "tailwindcss": "^4.2.2",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.4"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@tanstack/react-query": "^5.97.0",
+    "axios": "^1.15.0",
+    "react-hook-form": "^7.72.1",
+    "react-router-dom": "^6.30.3",
+    "recharts": "^3.8.1",
+    "zod": "^4.3.6",
+    "zustand": "^5.0.12"
   }
 }
