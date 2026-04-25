@@ -1,7 +1,7 @@
 # Hospital Management System - API Contract
 
 **Version:** 1.0.0
-**Last Updated:** April 16, 2026
+**Last Updated:** April 25, 2026
 **Base URL:** `https://api.hospital.local/api/v1` (Production)
 **Environment:** All endpoints require HTTPS in production
 
@@ -3111,4 +3111,5 @@ For API support and integration questions:
 ---
 
 **Version History:**
+- v1.0.1 (2026-04-25): Documentation metadata refreshed after backend DDD module split; public API contract unchanged
 - v1.0.0 (2026-04-16): Initial release with 35 controllers and 100+ endpoints

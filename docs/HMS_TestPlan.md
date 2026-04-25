@@ -1,12 +1,18 @@
 # Hospital Management System Test Plan
 
-Status: aligned to the repository on 2026-04-16
+Status: aligned to the repository on 2026-04-25
 
 ## 1. Current Automated Test Coverage
 
 The repository currently has meaningful backend test coverage and no real frontend test suite.
 
-### 1.1 Backend unit tests in `backend/core`
+The backend tests now follow the DDD-oriented Maven split:
+
+- service/unit tests live under `backend/application`
+- Spring Boot integration and module-boundary tests live under `backend/start`
+- domain, infrastructure, and controller modules currently rely on downstream tests for coverage
+
+### 1.1 Backend unit tests in `backend/application`
 
 Current unit-tested service areas include:
 
@@ -21,13 +27,14 @@ Current unit-tested service areas include:
 - vital signs service
 - internal assistant service and query routing
 
-### 1.2 Backend integration tests in `backend/api`
+### 1.2 Backend integration tests in `backend/start`
 
 Current integration and hardening suites include:
 
 - `ClinicalWorkflowIntegrationTest`
 - `InternalAssistantIntegrationTest`
 - `SecurityHardeningIntegrationTest`
+- `ModuleBoundaryTest`
 
 ### 1.3 Frontend tests
 

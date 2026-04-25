@@ -1,6 +1,6 @@
 # Implementation Status Note
 
-Status: updated against the repository on 2026-04-16
+Status: updated against the repository on 2026-04-25
 
 This file replaces an older "150 APIs full-stack delivery" plan that no longer matches the current repository.
 Use the files below as the active source of truth:
@@ -9,12 +9,13 @@ Use the files below as the active source of truth:
 2. `docs/HMS_SRS.md`
 3. `docs/HMS_TDD.md`
 4. `docs/HMS_ProjectPlan.md`
-5. `docs/HMS_FrontendDesignBrief.md`
+5. `docs/design_brief.md`
 
 ## Current repository reality
 
 - The backend is the primary implemented product surface.
-- The codebase contains roughly 122 controller route handlers under `backend/api/src/main/java`.
+- The backend source is organized as DDD-oriented Maven modules: `domain`, `infrastructure`, `application`, `controller`, and `start`.
+- The codebase contains roughly 122 controller route handlers under `backend/controller/src/main/java`.
 - The frontend exists only as a starter Vite project and is not yet a hospital application UI.
 - Several roadmap streams from the old plan are now implemented:
   - inventory write APIs
@@ -40,4 +41,4 @@ Use the files below as the active source of truth:
 
 ## Design implication
 
-If you are designing the frontend, treat the backend APIs and shared DTOs as the implementation contract, and treat any older references to "0% frontend", "Claude API", "150 APIs", or "missing inventory/lab/vitals endpoints" as obsolete.
+If you are designing the frontend, treat the backend APIs and contract DTOs in `backend/domain` as the implementation contract, and treat any older references to "0% frontend", "Claude API", "150 APIs", `backend/shared`, `backend/core`, `backend/api`, or "missing inventory/lab/vitals endpoints" as obsolete.

@@ -19,9 +19,11 @@
   <description>Hospital management system backend multi-module parent.</description>
 
   <modules>
-    <module>shared</module>
-    <module>core</module>
-    <module>api</module>
+    <module>domain</module>
+    <module>infrastructure</module>
+    <module>application</module>
+    <module>controller</module>
+    <module>start</module>
   </modules>
 
   <properties>
@@ -73,6 +75,11 @@
           <configuration>
             <release>${maven.compiler.release}</release>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.5.0</version>
         </plugin>
       </plugins>
     </pluginManagement>

@@ -1,6 +1,6 @@
 # Hospital Management System User Manual
 
-Status: role workflow reference aligned to the repository on 2026-04-16
+Status: role workflow reference aligned to the repository on 2026-04-25
 
 ## 1. How To Use This Manual
 

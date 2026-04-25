@@ -1,6 +1,6 @@
 # Hospital Management System Deployment Guide
 
-Status: aligned to the repository on 2026-04-16
+Status: aligned to the repository on 2026-04-25
 
 ## 1. What This Guide Covers
 
@@ -31,9 +31,23 @@ Important note:
 - there is no active frontend service in Docker Compose
 - the old docs that described an `hms-frontend` container are obsolete
 
+### 3.1 Backend Build Modules
+
+The backend service is built from the `backend/start` Maven module. The active backend reactor is:
+
+| Module | Deployment role |
+| --- | --- |
+| `domain` | compiled into downstream modules as entities, enums, and request/response contracts |
+| `infrastructure` | provides repositories and external integration adapters |
+| `application` | provides use-case services and orchestration |
+| `controller` | provides REST endpoints, security filters, and web error handling |
+| `start` | packages the executable Spring Boot application and runtime resources |
+
+Use `mvn -pl start -am ...` for backend build, test, package, and run commands.
+
 ## 4. Environment Configuration
 
-The authoritative backend config currently lives in `backend/api/src/main/resources/application.yml`.
+The authoritative backend config currently lives in `backend/start/src/main/resources/application.yml`.
 
 ### 4.1 Database
 
@@ -96,7 +110,7 @@ docker compose up -d postgres
 
 ```bash
 cd backend
-mvn spring-boot:run -pl api
+mvn spring-boot:run -pl start
 ```
 
 Backend endpoints:

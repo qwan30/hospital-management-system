@@ -1,6 +1,6 @@
 # Hospital Management System TDD
 
-Status: aligned to the repository on 2026-04-16
+Status: aligned to the repository on 2026-04-25
 
 ## 1. Purpose
 
@@ -15,7 +15,7 @@ It replaces earlier technical notes that assumed a finished React application an
 | --- | --- |
 | Language | Java 17 |
 | Framework | Spring Boot 3.3.5 |
-| Modules | `shared`, `core`, `api` |
+| Modules | `domain`, `infrastructure`, `application`, `controller`, `start` |
 | API layer | Spring Web + SpringDoc |
 | Validation | Jakarta Validation |
 | Security | Spring Security + JJWT |
@@ -56,9 +56,11 @@ Current frontend code reality:
 
 ```text
 backend/
-  shared/   DTOs, enums, API contracts
-  core/     business logic, repositories, services
-  api/      controllers, security, app bootstrap, migrations, seed data
+  domain/          JPA entities, enums, request/response DTOs, domain exceptions
+  infrastructure/  Spring Data repositories and external integration adapters
+  application/     use-case services, auth services, orchestration, seed/backfill jobs
+  controller/      REST controllers, API envelope, security filters, web error handling
+  start/           Spring Boot entry point, runtime config, Flyway migrations, integration tests
 frontend/
   src/      starter Vite TypeScript files only
 docs/
@@ -68,7 +70,19 @@ docker-compose.yml
 
 ## 4. Backend Module Breakdown
 
-### 4.1 Public and booking
+The backend is organized as a DDD-oriented Maven reactor. Java package names still use the existing `com.hospital.core`, `com.hospital.api`, and `com.hospital.shared` namespaces, but the Maven module folders are the current source layout and dependency boundary.
+
+| Module | Responsibility | Direct project dependencies |
+| --- | --- | --- |
+| `domain` | persistent domain entities, enums, request/response DTOs, domain exceptions | none |
+| `infrastructure` | Spring Data repositories, Gemini/Gmail adapters, PDF and hospital-profile infrastructure | `domain` |
+| `application` | use-case services, auth/token services, orchestration, seed/backfill jobs | `domain`, `infrastructure` |
+| `controller` | REST controllers, API response envelope, security filters, web exception handling | `application` |
+| `start` | Spring Boot launcher, runtime config, Flyway migrations, knowledge seed resources, integration tests | `controller` |
+
+Runtime bootstrapping starts from `backend/start` and scans the `com.hospital` package tree so Spring can compose beans across the modules. Boundary checks live in the Maven enforcer rules and `ModuleBoundaryTest`.
+
+### 4.1 Public and booking capabilities
 
 - public content
 - news
@@ -78,7 +92,7 @@ docker-compose.yml
 - chatbot
 - symptom analysis
 
-### 4.2 Staff and clinical operations
+### 4.2 Staff and clinical operations capabilities
 
 - staff auth
 - appointment list and detail
@@ -89,7 +103,7 @@ docker-compose.yml
 - vital signs
 - follow-up
 
-### 4.3 Finance and operations
+### 4.3 Finance and operations capabilities
 
 - invoices
 - payments
@@ -97,7 +111,7 @@ docker-compose.yml
 - revenue reports
 - inventory items, lots, and movements
 
-### 4.4 Admin platform
+### 4.4 Admin platform capabilities
 
 - users
 - departments
@@ -112,7 +126,7 @@ docker-compose.yml
 - news admin
 - knowledge document admin
 
-### 4.5 Patient-facing secured experience
+### 4.5 Patient-facing secured capabilities
 
 - patient claim and login
 - portal overview
@@ -121,7 +135,7 @@ docker-compose.yml
 - messages
 - profile
 
-### 4.6 Internal clinical assistant
+### 4.6 Internal clinical assistant capabilities
 
 - current session lookup
 - reply generation
@@ -209,7 +223,7 @@ On startup, the backend seeds:
 - doctor time slots
 - inventory items, lots, and movements
 - one demo patient portal account with appointments, a medical record, a lab result, and message thread
-- starter internal assistant knowledge documents from `backend/api/src/main/resources/knowledge`
+- starter internal assistant knowledge documents from `backend/start/src/main/resources/knowledge`
 
 ## 10. Local Development
 
@@ -218,7 +232,7 @@ On startup, the backend seeds:
 ```bash
 docker compose up -d postgres
 cd backend
-mvn spring-boot:run -pl api
+mvn spring-boot:run -pl start
 ```
 
 ### 10.2 Frontend
@@ -239,7 +253,7 @@ A production frontend should introduce:
 - route groups for public, patient portal, and staff roles
 - Axios client with refresh handling for staff and patient auth
 - TanStack Query data access layer
-- form schemas based on `backend/shared` DTOs
+- form schemas based on contract DTOs in `backend/domain`
 - role-aware navigation and permission guards
 - PDF preview/download flows
 - assistant drawer with citations and suggestions

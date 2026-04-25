@@ -1,6 +1,6 @@
 # Hospital Management System – API Endpoints Documentation
 
-**Last Updated:** April 16, 2026
+**Last Updated:** April 25, 2026
 **API Version:** v1
 **Base URL:** `/api/v1`
 **Authentication:** JWT Bearer Token (stored in HttpOnly cookie for patient-auth, or Authorization header)

@@ -1,6 +1,6 @@
 # Hospital Management System Project Plan
 
-Status: updated to reflect the current repository on 2026-04-16
+Status: updated to reflect the current repository on 2026-04-25
 
 ## 1. Objective
 
@@ -11,7 +11,7 @@ The next major milestone is to turn that backend into a coherent frontend produc
 
 | Area | Status | Notes |
 | --- | --- | --- |
-| Backend architecture | Done | Spring Boot multi-module backend is in place |
+| Backend architecture | Done | Spring Boot DDD-oriented multi-module backend is in place: `domain`, `infrastructure`, `application`, `controller`, `start` |
 | Core clinical APIs | Done | appointments, medical records, follow-up, PDFs, queue, vital signs |
 | Finance APIs | Done | invoices, payments, pricing, revenue reports |
 | Inventory APIs | Done | items, lots, movements |

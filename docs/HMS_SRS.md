@@ -1,6 +1,6 @@
 # Hospital Management System SRS
 
-Status: aligned to the repository on 2026-04-16
+Status: aligned to the repository on 2026-04-25
 
 ## 1. Scope
 
@@ -11,9 +11,12 @@ It is written to help frontend and UI/UX work stay aligned with the implemented 
 
 When this document conflicts with older notes, prefer:
 
-1. controller routes in `backend/api/src/main/java`
-2. request and response DTOs in `backend/shared/src/main/java`
-3. database migrations in `backend/api/src/main/resources/db/migration`
+1. controller routes in `backend/controller/src/main/java`
+2. request and response DTOs in `backend/domain/src/main/java`
+3. API envelope and web error handling in `backend/controller/src/main/java/com/hospital/shared/api` and `backend/controller/src/main/java/com/hospital/api/config`
+4. use-case services in `backend/application/src/main/java`
+5. repositories and integration adapters in `backend/infrastructure/src/main/java`
+6. database migrations in `backend/start/src/main/resources/db/migration`
 
 ## 3. Actors
 

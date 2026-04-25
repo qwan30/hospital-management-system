@@ -1,6 +1,6 @@
 # Hospital Management System DB Migration Plan
 
-Status: aligned to the repository on 2026-04-16
+Status: aligned to the repository on 2026-04-25
 
 ## 1. Purpose
 
@@ -9,7 +9,7 @@ It replaces older notes that described only an early subset of the schema.
 
 ## 2. Current Flyway Setup
 
-- Flyway is enabled in `backend/api/src/main/resources/application.yml`
+- Flyway is enabled in `backend/start/src/main/resources/application.yml`
 - migration location is `classpath:db/migration`
 - schema validation is performed by JPA with `ddl-auto: validate`
 
@@ -101,6 +101,7 @@ Use these rollback rules instead:
 
 For frontend design and implementation:
 
-- treat shared DTOs as the first UI contract
+- treat contract DTOs in `backend/domain` as the first UI contract
+- treat API response envelope classes in `backend/controller` as the HTTP wrapper contract
 - treat Flyway migrations as the persistence contract
 - do not rely on older schema notes that predate inventory, patient portal, lab results, or the internal assistant

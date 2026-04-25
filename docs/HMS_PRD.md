@@ -1,6 +1,6 @@
 # Hospital Management System PRD
 
-Status: aligned to the repository on 2026-04-16
+Status: aligned to the repository on 2026-04-25
 
 ## 1. Purpose
 
@@ -25,7 +25,8 @@ The project is a backend-first hospital management platform with:
 
 ### 3.1 Implemented now
 
-- Spring Boot backend with roughly 122 controller route handlers in `backend/api/src/main/java`
+- Spring Boot backend with a DDD-oriented Maven layout: `domain`, `infrastructure`, `application`, `controller`, and `start`
+- roughly 122 controller route handlers in `backend/controller/src/main/java`
 - PostgreSQL schema managed by Flyway migrations `V1` through `V10`
 - seed data for departments, staff accounts, pricing, slots, inventory, and patient portal demo data
 - deterministic public chatbot based on live database content
@@ -45,7 +46,7 @@ The project is a backend-first hospital management platform with:
 
 The `frontend/` folder is only a starter Vite TypeScript scaffold.
 It does not contain hospital screens yet.
-Design work should therefore treat the backend APIs and shared DTOs as the contract for the future UI.
+Design work should therefore treat the backend APIs and contract DTOs in `backend/domain` as the contract for the future UI.
 
 ## 4. Users and Roles
 

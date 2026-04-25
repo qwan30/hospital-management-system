@@ -1,6 +1,6 @@
 # Hospital Management System Integration Guide
 
-Status: aligned to the repository on 2026-04-16
+Status: aligned to the repository on 2026-04-25
 
 ## 1. Integration Overview
 
