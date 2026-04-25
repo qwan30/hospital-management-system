@@ -11,7 +11,7 @@ export default function StaffLayout({
     <div className="bg-hms-surface text-hms-on-surface min-h-screen">
       <StaffTopNav />
       <StaffSideNav />
-      <main className="ml-64 mt-[48px] min-h-screen bg-hms-surface">
+      <main className="mt-[48px] min-h-screen bg-hms-surface md:ml-64">
         {children}
       </main>
       <HmsFooter />

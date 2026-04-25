@@ -7,27 +7,27 @@ export default function PublicHomePage() {
       <main>
 
 {/* Hero Section */}
-<section className="hero-gradient min-h-[600px] flex items-center px-8 md:px-24">
-<div className="max-w-4xl">
-<h1 className="text-[60px] leading-[1.1] font-light text-white tracking-tight mb-6">
+<section className="hero-gradient min-h-[600px] flex items-center px-6 md:px-24">
+<div className="max-w-4xl min-w-0">
+<h1 className="text-5xl sm:text-[60px] leading-[1.1] font-light text-white tracking-tight mb-6">
                     Engineering-grade healthcare <br/>
 <span className="font-normal">precision at scale.</span>
 </h1>
 <p className="text-[16px] text-gray-300 max-w-xl mb-10 leading-relaxed">
                     HOSPITAL CORE provides a deterministic clinical environment. We treat hospital management as a high-precision engineering problem, delivering zero-latency patient data and architectural integrity for modern medicine.
                 </p>
-<div className="flex space-x-4">
-<button className="bg-primary-container hover:bg-primary text-white px-8 py-4 text-sm font-semibold tracking-wide transition-all active:translate-y-[2px]">
+<div className="flex flex-col gap-4 sm:flex-row">
+<button className="bg-primary-container hover:bg-primary text-white px-6 sm:px-8 py-4 text-sm font-semibold tracking-wide transition-all active:translate-y-[2px]">
                         COMMENCE OPERATIONS
                     </button>
-<button className="bg-transparent border border-white/20 text-white px-8 py-4 text-sm font-semibold tracking-wide hover:bg-white/10 transition-all">
+<button className="bg-transparent border border-white/20 text-white px-6 sm:px-8 py-4 text-sm font-semibold tracking-wide hover:bg-white/10 transition-all">
                         TECHNICAL DOCUMENTATION
                     </button>
 </div>
 </div>
 </section>
 {/* Stats Block (Data Monolith) */}
-<section className="bg-surface py-20 px-8 md:px-24">
+<section className="bg-surface py-20 px-6 md:px-24">
 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
 <div className="bg-surface-container-highest p-8">
 <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-on-surface-variant mb-2">System Uptime</div>
@@ -48,7 +48,7 @@ export default function PublicHomePage() {
 </div>
 </section>
 {/* Features Section (Alternating background Gray 10) */}
-<section className="bg-surface-container-low py-24 px-8 md:px-24">
+<section className="bg-surface-container-low py-24 px-6 md:px-24">
 <div className="flex flex-col md:flex-row justify-between items-start mb-16">
 <div className="max-w-2xl">
 <h2 className="text-4xl font-light tracking-tight text-on-background mb-4">Core Clinical Departments</h2>
@@ -92,7 +92,7 @@ export default function PublicHomePage() {
 </div>
 </section>
 {/* Technical Integration Section (White Background) */}
-<section className="bg-surface py-24 px-8 md:px-24">
+<section className="bg-surface py-24 px-6 md:px-24">
 <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
 <div className="order-2 md:order-1">
 <img alt="Infrastructure" className="w-full aspect-square object-cover shadow-2xl" data-alt="abstract close up of high-end server hardware and network cables with cool blue technical lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEO13-EEZtuXxRfyAvoPToBA_DQ0ninAkJl04GsG8ItTS2JXS-q4PJMa2wg52GT8mq8TN7uc52TXlqBMQuGQZ_GHtQxEVLaVtQJQZ29-k55YIk0-_BKP4UnPwqR1OuroO9M4kMHvJ1kO3PeptmZBEgH7HRxZHwaTTaUPDNrbENbkEx4LhjXEtWuWU3860o81piV5CMtlQbwXdInXJ2JwsFn2akVEKKYTeoZwuZSs4ja8BrJhkHgGglV4OG2WMM85nzBGidwmmBRg"/>

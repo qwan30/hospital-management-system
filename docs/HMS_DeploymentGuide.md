@@ -2,6 +2,8 @@
 
 Status: aligned to the repository on 2026-04-25
 
+Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)
+
 ## 1. What This Guide Covers
 
 This guide reflects the deployment shape that currently exists in the repository:

@@ -52,7 +52,7 @@ export default function AdminLayout({
       </header>
 
       {/* SideNavBar */}
-      <aside className="fixed left-0 top-12 h-[calc(100vh-48px)] w-64 bg-neutral-50 dark:bg-neutral-950 flex flex-col z-40 border-r border-neutral-200 dark:border-neutral-800">
+      <aside className="fixed left-0 top-12 h-[calc(100vh-48px)] w-64 bg-neutral-50 dark:bg-neutral-950 hidden md:flex flex-col z-40 border-r border-neutral-200 dark:border-neutral-800">
         <div className="p-6 border-b border-neutral-200 dark:border-neutral-800">
           <h2 className="font-public-sans text-xs font-bold uppercase tracking-wider text-neutral-900 dark:text-white">
             Clinical Operations
@@ -131,7 +131,7 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Canvas */}
-      <main className="ml-64 pt-12 min-h-screen">
+      <main className="pt-12 min-h-screen md:ml-64">
         {children}
       </main>
     </div>

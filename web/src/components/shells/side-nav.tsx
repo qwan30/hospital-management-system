@@ -38,7 +38,7 @@ export function StaffSideNav({
   const navLinks = links || defaultLinks;
 
   return (
-    <aside className="fixed left-0 top-[48px] bottom-0 flex flex-col w-64 bg-[#f4f4f4] border-r-0">
+    <aside className="fixed left-0 top-[48px] bottom-0 hidden md:flex flex-col w-64 bg-[#f4f4f4] border-r-0">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 bg-hms-surface-container-high flex items-center justify-center">
@@ -124,7 +124,7 @@ export function PortalSideNav({
   ];
 
   return (
-    <aside className="fixed left-0 top-[48px] bottom-0 flex flex-col w-64 bg-[#f4f4f4] dark:bg-[#262626] border-r-0 rounded-none text-sm font-medium tracking-normal">
+    <aside className="fixed left-0 top-[48px] bottom-0 hidden md:flex flex-col w-64 bg-[#f4f4f4] dark:bg-[#262626] border-r-0 rounded-none text-sm font-medium tracking-normal">
       <div className="p-6 flex flex-col gap-1">
         <h2 className="text-hms-on-surface font-semibold text-base">{title}</h2>
         <p className="text-hms-on-surface-variant text-xs">{subtitle}</p>

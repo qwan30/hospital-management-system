@@ -2,6 +2,8 @@
 
 Status: updated to reflect the current repository on 2026-04-25
 
+Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)
+
 ## 1. Objective
 
 The project already contains a substantial backend platform.

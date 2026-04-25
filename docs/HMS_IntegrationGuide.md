@@ -2,6 +2,8 @@
 
 Status: aligned to the repository on 2026-04-25
 
+Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)
+
 ## 1. Integration Overview
 
 The current repository has two configurable external integrations and two important in-repo assistant behaviors:

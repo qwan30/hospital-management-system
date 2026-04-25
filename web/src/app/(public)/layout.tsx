@@ -12,11 +12,11 @@ export default function PublicLayout({
       <PublicTopNav />
       <main className="pt-[48px]">{children}</main>
       {/* Footer Shell - not fixed for public pages */}
-      <footer className="flex items-center justify-between px-8 w-full h-[48px] bg-[#161616] text-[11px] font-semibold uppercase tracking-widest text-gray-500 mt-auto">
+      <footer className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8 w-full min-h-[48px] bg-[#161616] text-[11px] font-semibold uppercase tracking-widest text-gray-500 mt-auto">
         <div className="text-white">
           © 2024 HOSPITAL MANAGEMENT SYSTEM | ARCHITECTURAL PRECISION
         </div>
-        <div className="flex space-x-8">
+        <div className="flex flex-wrap gap-x-8 gap-y-2">
           <a
             className="hover:text-white transition-colors"
             href="/privacy"

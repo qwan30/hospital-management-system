@@ -130,6 +130,8 @@
 }
 
 :root {
+  --font-public-sans: "Public Sans", Arial, Helvetica, sans-serif;
+  --font-ibm-plex-mono: "IBM Plex Mono", "Courier New", monospace;
   --background: #fcf9f8;
   --foreground: #1c1b1b;
   --card: #ffffff;

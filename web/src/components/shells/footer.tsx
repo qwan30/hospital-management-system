@@ -2,11 +2,11 @@ import Link from "next/link";
 
 export function HmsFooter() {
   return (
-    <footer className="fixed bottom-0 left-0 right-0 h-[48px] bg-[#161616] flex items-center justify-between px-8 z-50">
+    <footer className="md:ml-64 min-h-[48px] bg-[#161616] flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
       <div className="text-[11px] font-semibold uppercase tracking-widest text-white">
         © 2024 HOSPITAL MANAGEMENT SYSTEM | ARCHITECTURAL PRECISION
       </div>
-      <div className="flex gap-8">
+      <div className="flex flex-wrap gap-x-8 gap-y-2">
         <Link
           href="/privacy"
           className="text-[11px] font-semibold uppercase tracking-widest text-gray-500 hover:text-white transition-colors"

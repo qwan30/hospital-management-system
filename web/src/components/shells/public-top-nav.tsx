@@ -16,11 +16,11 @@ export function PublicTopNav() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex px-4 h-[48px] bg-[#161616] items-center font-sans antialiased tracking-tight">
-      <div className="flex items-center gap-8 w-full">
+    <header className="fixed top-0 left-0 right-0 z-50 flex px-3 sm:px-4 h-[48px] bg-[#161616] items-center font-sans antialiased tracking-tight">
+      <div className="flex items-center gap-3 md:gap-8 w-full min-w-0">
         <Link
           href="/"
-          className="text-lg font-semibold tracking-tighter text-white uppercase"
+          className="shrink-0 text-base sm:text-lg font-semibold tracking-tighter text-white uppercase"
         >
           HOSPITAL CORE
         </Link>
@@ -45,16 +45,16 @@ export function PublicTopNav() {
             );
           })}
         </nav>
-        <div className="ml-auto flex items-center gap-4">
+        <div className="ml-auto flex min-w-0 items-center gap-2 sm:gap-4">
           <Link
             href="/portal/login"
-            className="text-sm text-gray-400 hover:text-white transition-colors"
+            className="text-xs sm:text-sm text-gray-400 hover:text-white transition-colors"
           >
             Patient Portal
           </Link>
           <Link
             href="/staff/login"
-            className="bg-hms-primary-container text-white px-4 py-1.5 text-sm font-semibold hover:bg-hms-primary transition-colors"
+            className="shrink-0 bg-hms-primary-container text-white px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold hover:bg-hms-primary transition-colors"
           >
             Staff Login
           </Link>

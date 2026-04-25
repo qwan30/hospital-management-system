@@ -11,7 +11,7 @@ export default function PortalLayout({
     <div className="bg-hms-surface text-hms-on-surface min-h-screen">
       <PortalTopNav />
       <PortalSideNav />
-      <main className="ml-64 mt-[48px] min-h-[calc(100vh-96px)] p-8 bg-hms-surface">
+      <main className="mt-[48px] min-h-[calc(100vh-96px)] p-6 sm:p-8 bg-hms-surface md:ml-64">
         <div className="max-w-7xl mx-auto">{children}</div>
       </main>
       <HmsFooter />
