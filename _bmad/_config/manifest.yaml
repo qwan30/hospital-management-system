@@ -1,0 +1,16 @@
+installation:
+  version: 6.3.0
+  installDate: 2026-04-10T02:59:22.032Z
+  lastUpdated: 2026-04-10T02:59:22.032Z
+modules:
+  - name: core
+    version: 6.3.0
+    installDate: 2026-04-10T02:59:21.989Z
+    lastUpdated: 2026-04-10T02:59:22.032Z
+    source: built-in
+    npmPackage: null
+    repoUrl: null
+ides:
+  - antigravity
+  - github-copilot
+  - codex

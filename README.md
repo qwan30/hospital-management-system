@@ -1,49 +1,95 @@
 # Hospital Management System
 
-Clinical workflow MVP is shipped; this repository is now in the full-SRS release-ready execution wave, and the earlier `hms-greenfield` / clinical-hardening-only scope is superseded.
+A comprehensive hospital management platform with intelligent appointment scheduling, clinical workflow automation, and AI-powered diagnostics.
 
 ## Stack
 
-- Frontend: Next.js 16 App Router, React 19, TypeScript, Tailwind CSS
-- Backend: Java 17 / Spring Boot 3.3 multi-module layout
-- Database: PostgreSQL 15 with Flyway migrations
-- Deployment: Docker Compose demo stack
+- **Backend**: Java 17 / Spring Boot 3.3, multi-module Maven project (`shared`, `core`, `api`)
+- **Database**: PostgreSQL 15 with pgvector extension, managed by Flyway (10 migrations)
+- **AI Integration**: Gemini API for symptom analysis (graceful fallback when disabled)
+- **Email**: Gmail API for transactional emails (confirmation, prescriptions, reminders)
+- **API Docs**: SpringDoc OpenAPI — 67 endpoints documented via Swagger UI
+- **Frontend**: ⚠️ **Not yet implemented** — planned as React + TypeScript (Vite)
 
-## Source of Truth
+## Current Status
 
-Implementation follows the documentation priority below:
-
-1. `HMS_SRS.docx`
-2. `HMS_TDD.docx`
-3. `HMS_ProjectPlan.docx`
-4. `HMS_UIUXSpec.docx`
-5. `HMS_DBMigrationPlan.docx`
-6. `HMS_IntegrationGuide.docx`
-7. `HMS_DeploymentGuide.docx`
-8. `HMS_TestPlan.docx`
-9. `HMS_PostmanCollection.json`
-10. `HMS_UserManual.docx`
-
-## Current Structure
-
-- `docs/`: product, architecture, migration, integration, testing, and deployment documents
-- `history/`: planning artifacts for the active full-SRS release-ready wave
-- `frontend/`: Next.js frontend with `app/` routes and `features/` domain modules
-- `backend/`: Spring Boot multi-module application
-- `infra/`: container, reverse proxy, and deployment support files
+The backend API is fully functional with 67 REST endpoints covering:
+- Authentication (Staff JWT + Patient portal)
+- Smart Reservation System (booking, AI duration estimation)
+- Clinical Workflow (medical records, prescriptions, PDF generation)
+- Administration (users, departments, rooms, schedules, content)
+- Finance (invoices, payments, revenue reports)
+- Inventory Management (items, lots, movements)
+- AI Internal Assistant (knowledge base, RAG, feedback)
+- Patient Portal (profile, appointments, messages, lab results)
 
 ## Local Setup
 
-1. Copy `.env.example` to `.env`.
-2. Populate database, JWT, Gemini, Gmail, and hospital profile values. Gemini/Gmail degrade gracefully in local dev when secrets are absent, but they are part of the active production path.
-3. Start the stack with Docker Compose (`docker compose up --build`) and wait for backend health at `http://localhost:8080/actuator/health`.
-4. Use backend-backed login only. Seeded demo users (email/password): `doctor1@hospital.vn` / `Doctor@1234`, `nurse@hospital.vn` / `Nurse@1234`, `admin@hospital.vn` / `Admin@1234`, `accountant@hospital.vn` / `Acc@1234`.
-5. E2E prerequisites: frontend at `http://localhost:3000`, backend at `http://localhost:8080`, Playwright logs in via the backend only.
+### Prerequisites
+- Java 17+ (tested with Java 21)
+- Maven 3.9+
+- Docker Desktop (for PostgreSQL)
+
+### Quick Start
+
+```bash
+# 1. Start PostgreSQL
+docker compose up -d postgres
+
+# 2. Build all modules
+cd backend
+mvn install -DskipTests
+
+# 3. Run the backend (from the backend directory)
+mvn spring-boot:run -pl api -DskipTests
+
+# 4. Open Swagger UI
+# http://localhost:8080/swagger-ui/index.html
+
+# 5. Health check
+# http://localhost:8080/actuator/health
+```
+
+### Demo Users (seeded on first startup)
+
+| Email | Password | Role |
+|:------|:---------|:-----|
+| `doctor1@hospital.vn` | `Doctor@1234` | DOCTOR |
+| `nurse@hospital.vn` | `Nurse@1234` | NURSE |
+| `admin@hospital.vn` | `Admin@1234` | ADMIN |
+| `accountant@hospital.vn` | `Acc@1234` | ACCOUNTANT |
+
+### Environment Variables (optional)
+
+External integrations are disabled by default and degrade gracefully:
+
+| Variable | Default | Purpose |
+|:---------|:--------|:--------|
+| `GEMINI_ENABLED` | `false` | Enable AI symptom analysis |
+| `GEMINI_API_KEY` | — | Google Gemini API key |
+| `GMAIL_ENABLED` | `false` | Enable email notifications |
+| `JWT_SECRET` | dev default | JWT signing secret |
+
+## Project Structure
+
+```
+backend/
+├── shared/     # DTOs, enums, API contracts
+├── core/       # Business logic, services, repositories
+└── api/        # REST controllers, security, Spring Boot app
+docs/           # PRD, Project Plan, architecture documents
+docker-compose.yml  # PostgreSQL + backend services
+```
+
+## Source of Truth
+
+1. `docs/HMS_PRD.md` — Product Requirements Document
+2. `docs/HMS_ProjectPlan.md` — Phase-based development plan
 
 ## Quality Gates
 
-- 80%+ coverage across backend and frontend
-- Booking flow prevents double-booking, requires patient email, and uses the expanded patient/contact booking contract
-- Role-based access for doctor, nurse, accountant, and admin; protected endpoints reject missing/invalid/wrong-role tokens
-- Gemini symptom analysis and Gmail delivery are active integration paths for the release-ready wave
-- Docs and API contract stay synchronized (Postman + history updated per wave)
+- 80%+ test coverage target (backend integration tests with Testcontainers)
+- Double-booking prevention via transactional slot locking
+- RBAC enforcement on all protected endpoints
+- Rate limiting on public API routes
+- Audit logging for admin operations

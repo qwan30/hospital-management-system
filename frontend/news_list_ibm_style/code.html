@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#2a4387",
+                    "inverse-on-surface": "#f3f0ef",
+                    "outline-variant": "#c3c6d8",
+                    "on-primary-fixed-variant": "#003da9",
+                    "outline": "#737687",
+                    "on-primary-container": "#f3f3ff",
+                    "on-tertiary-container": "#fff1ed",
+                    "on-secondary-container": "#2b4388",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed": "#390c00",
+                    "surface-container-low": "#f6f3f2",
+                    "surface-tint": "#0052dd",
+                    "secondary": "#445ba1",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#c84000",
+                    "surface-bright": "#fcf9f8",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#f0edec",
+                    "tertiary": "#9e3100",
+                    "inverse-primary": "#b4c5ff",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "secondary-fixed-dim": "#b4c5ff",
+                    "surface-variant": "#e5e2e1",
+                    "primary-container": "#0f62fe",
+                    "secondary-fixed": "#dbe1ff",
+                    "surface": "#fcf9f8",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "primary": "#004ccd",
+                    "surface-container-high": "#eae7e7",
+                    "on-tertiary-fixed-variant": "#832700",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-primary-fixed": "#00174c",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface-variant": "#424656",
+                    "surface-dim": "#dcd9d9",
+                    "primary-fixed": "#dbe1ff",
+                    "on-surface": "#1c1b1b",
+                    "on-secondary-fixed": "#00174c",
+                    "secondary-container": "#9db3ff",
+                    "on-background": "#1c1b1b",
+                    "inverse-surface": "#313030",
+                    "surface-container-highest": "#e5e2e1",
+                    "background": "#fcf9f8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0px",
+                    "lg": "0px",
+                    "xl": "0px",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Public Sans"],
+                    "body": ["Public Sans"],
+                    "label": ["Public Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Public Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopNavBar -->
+<nav class="bg-[#fcf9f8] dark:bg-[#171717] rounded-none border-0 w-full flex justify-between items-center h-16 px-8 max-w-[1440px] mx-auto w-full">
+<div class="text-xl font-light tracking-widest text-[#1c1b1b] dark:text-[#ffffff] uppercase">
+            MEDICORE HMS
+        </div>
+<div class="hidden md:flex gap-8 items-center font-['Public_Sans'] text-base tracking-tight">
+<a class="text-[#1c1b1b] dark:text-[#e5e2e1] font-normal hover:bg-[#e5e2e1] dark:hover:bg-[#333333] transition-colors px-2 py-1 duration-200 ease-in-out" href="#">Departments</a>
+<a class="text-[#1c1b1b] dark:text-[#e5e2e1] font-normal hover:bg-[#e5e2e1] dark:hover:bg-[#333333] transition-colors px-2 py-1 duration-200 ease-in-out" href="#">Doctors</a>
+<a class="text-[#0f62fe] border-b-2 border-[#0f62fe] pb-1 font-semibold transition-colors duration-200 ease-in-out" href="#">News</a>
+<a class="text-[#1c1b1b] dark:text-[#e5e2e1] font-normal hover:bg-[#e5e2e1] dark:hover:bg-[#333333] transition-colors px-2 py-1 duration-200 ease-in-out" href="#">Appointments</a>
+<a class="text-[#1c1b1b] dark:text-[#e5e2e1] font-normal hover:bg-[#e5e2e1] dark:hover:bg-[#333333] transition-colors px-2 py-1 duration-200 ease-in-out" href="#">Contact</a>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 font-semibold text-sm hover:opacity-90 transition-opacity">
+            Patient Portal
+        </button>
+</nav>
+<main class="max-w-[1440px] mx-auto">
+<!-- Header Section -->
+<header class="px-8 py-16 bg-surface">
+<p class="font-label text-xs font-semibold uppercase tracking-widest text-primary mb-4">Journal &amp; Updates</p>
+<h1 class="font-headline text-5xl md:text-7xl font-light tracking-tighter text-on-surface max-w-4xl">
+                Advancing the frontier of <span class="font-semibold">clinical excellence</span>.
+            </h1>
+</header>
+<!-- Featured News Card -->
+<section class="px-8 mb-24">
+<div class="grid grid-cols-1 lg:grid-cols-12 bg-surface-container-lowest gap-0">
+<div class="lg:col-span-8 aspect-video lg:aspect-auto">
+<img class="w-full h-full object-cover" data-alt="Modern high-tech medical research laboratory with scientists in white coats working with advanced digital microscopy in a cold blue light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTB9qdGsTuPH1B-DmoNJdYl3BxfyAJW1x84Mk4q-PUqIw_tAo5NwffwHDxkWrVx83W-uY4jBuQVgCAYc1WARbmYH67HPoLfxTjBI4PJwXQ1sVXaCTxH-by5rgXC258yN8uXVwYXLxnHZyIMlkVfL6dTKxs8c4jUrNJQ1hgoKt_6V09-l0VUpb_HqmKuuZDrKhn1qUIC9e5aiPnzoKeg1sGjFj_GoqbxiNUbUiBrERNNtwKsSGiWWTNIB31oI7OeNn6j3Mt6mokaQ"/>
+</div>
+<div class="lg:col-span-4 p-12 flex flex-col justify-between border-l border-outline-variant/10">
+<div>
+<span class="text-xs font-semibold uppercase tracking-widest bg-primary text-on-primary px-3 py-1 mb-8 inline-block">Featured</span>
+<p class="text-sm font-medium text-outline mb-4">OCTOBER 24, 2024</p>
+<h2 class="text-3xl font-semibold mb-6 leading-tight">Breakthrough in Neural Reconstruction Systems</h2>
+<p class="text-on-surface-variant leading-relaxed mb-8">
+                            Medicore's research division announces a successful pilot for autonomous nerve regeneration using bio-compatible synthetic scaffolding.
+                        </p>
+</div>
+<a class="flex items-center gap-2 text-primary font-semibold hover:gap-4 transition-all duration-300" href="#">
+                        Read full article <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+<!-- News List (Alternating Bands) -->
+<section>
+<!-- Band 1: White -->
+<div class="bg-surface-container-lowest px-8 py-16">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+<div class="md:col-span-3">
+<img class="w-full aspect-[4/3] object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="Surgical team performing a complex procedure under bright overhead lights in a sterile modern operating theatre" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3cc49jb9K_7GanUAKDiiZNmcZPxkdF7OhyjwDVOMH_zn0cGUDSEc2LBlDBAnz-2HeCtTTl2b4k8KBERkwdUSwUNlThxNh34FMQgG2oSkSlWI9F1OTlwpV7gSWgRmfYXTt6T0E0ZANW92Eelg2q17VOmWZzsIIE7i88x9UAjpdvZGA8DKjBe_D5z7lE14RAXWnTqJ6H2IpFeN_3mhq1ViTgD1vLYWHg_Z-Khmn0OW6BtXAGoIuivwmWKQRVZ_4chYjpjQGnTQV6Q"/>
+</div>
+<div class="md:col-span-7">
+<p class="text-xs font-semibold text-outline mb-2">OCTOBER 20, 2024</p>
+<h3 class="text-2xl font-semibold mb-4 tracking-tight">Expansion of Robotic Surgery Wing</h3>
+<p class="text-on-surface-variant max-w-2xl">Integrating the next generation of haptic-feedback surgical units to increase precision in minimally invasive cardiac procedures.</p>
+</div>
+<div class="md:col-span-2 flex justify-end">
+<button class="text-primary font-semibold py-2 px-6 border-b-2 border-transparent hover:border-primary transition-all">Read</button>
+</div>
+</div>
+</div>
+<!-- Band 2: Gray 10 -->
+<div class="bg-surface-container-low px-8 py-16">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+<div class="md:col-span-3">
+<img class="w-full aspect-[4/3] object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="Interior of a luxury hospital lobby with marble floors, minimalist wooden furniture and large floor to ceiling windows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOc7sliAZnxV1AsuYPWukEzVu1lniP7aDPOsFa370N1kls-JohNqrrueM0xll5PmWyNWqNya_vPiaRg7B4oQZBMDCUByvpMlevt2IvEqT1auD3Su0imEZlCGtjqo0t7hTN3KoI0mB_HrA1MDosCQc5ztMSWxNXSevRNAtpuGrHF6I2ZG1ignFXRrzKrCOG7OveQxZ9-wgZJns_sT9j6PqyxIGpGx7lDoakAOoNgb4__P8Yu3u9GmkCEG3mDq3AdHanSCb_3KG-sw"/>
+</div>
+<div class="md:col-span-7">
+<p class="text-xs font-semibold text-outline mb-2">OCTOBER 15, 2024</p>
+<h3 class="text-2xl font-semibold mb-4 tracking-tight">Patient Experience Reimagined</h3>
+<p class="text-on-surface-variant max-w-2xl">New architectural standards implemented across our North Wing to optimize natural light and patient recovery cycles.</p>
+</div>
+<div class="md:col-span-2 flex justify-end">
+<button class="text-primary font-semibold py-2 px-6 border-b-2 border-transparent hover:border-primary transition-all">Read</button>
+</div>
+</div>
+</div>
+<!-- Band 3: White -->
+<div class="bg-surface-container-lowest px-8 py-16">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+<div class="md:col-span-3">
+<img class="w-full aspect-[4/3] object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="Close up of a doctor checking a digital tablet with medical scans in a dimly lit consultation room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLsVS9eowToMOGqL1MwN0UFT-s9bUN5aixZXpytg0atQzkDBTzP_vkmWvKgj_dNj8kCq87ggBCwhYRoKNgkIGAuITx-Yrkax1ss8H5KJ0CBZeI0HCyqvUf9xUxBFrDfo6zvcpNXeORNTjiGGF-jXX6UoCoVqwsP_eEJ86PmBPtG82YgkFXg7uXB4rtd7LfrsERYOJ0Imhn3VZtpNJhc1s64U8UsbcUiPwvh86yVR1nIICGRpHXwIUd8Hf4kznMUKvnFygkyOnTSg"/>
+</div>
+<div class="md:col-span-7">
+<p class="text-xs font-semibold text-outline mb-2">OCTOBER 12, 2024</p>
+<h3 class="text-2xl font-semibold mb-4 tracking-tight">AI Diagnostics Implementation</h3>
+<p class="text-on-surface-variant max-w-2xl">Implementing a proprietary machine learning layer to assist radiologists in early detection of micro-calcifications.</p>
+</div>
+<div class="md:col-span-2 flex justify-end">
+<button class="text-primary font-semibold py-2 px-6 border-b-2 border-transparent hover:border-primary transition-all">Read</button>
+</div>
+</div>
+</div>
+<!-- Band 4: Gray 10 -->
+<div class="bg-surface-container-low px-8 py-16">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+<div class="md:col-span-3">
+<img class="w-full aspect-[4/3] object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="Group of diverse medical professionals in scrubs walking through a high-tech hospital corridor discussing charts" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqiI2MaUzCDcjQ6plSej4lielHmRTW4x-3dMwqXe7nqEJUMP2nESwd2WPa1KH4kIpzVIZvDdFp7oRe_qChtXPgL2SfpDfDw9iPmfC1MYb9G0RFGtL8DYob2W0ZQAwNihrxT4ZUe-SO7NMGjOoK2MaSqLEAONU-XGyc_8ZX00fwtFETt89WPhppxMc-ZiSfHW_pge5oKdpQLeS2f-WLAbq0eF2HsqFdOo0bbBZKon8mueAJ-pRcz7DyHIfPhloT61JE5_kuW8yCaA"/>
+</div>
+<div class="md:col-span-7">
+<p class="text-xs font-semibold text-outline mb-2">OCTOBER 08, 2024</p>
+<h3 class="text-2xl font-semibold mb-4 tracking-tight">Annual HMS Global Symposium</h3>
+<p class="text-on-surface-variant max-w-2xl">Key findings from the 2024 Medicore Global Health Summit on sustainable healthcare delivery in urban environments.</p>
+</div>
+<div class="md:col-span-2 flex justify-end">
+<button class="text-primary font-semibold py-2 px-6 border-b-2 border-transparent hover:border-primary transition-all">Read</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Pagination / Load More -->
+<div class="flex justify-center py-24 bg-surface">
+<button class="bg-on-surface text-white px-12 py-4 font-semibold uppercase tracking-widest text-sm hover:bg-primary transition-colors">
+                Load Archive
+            </button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-[#1c1b1b] dark:bg-[#000000] w-full mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center py-12 px-8 max-w-[1440px] mx-auto w-full font-['Public_Sans'] text-xs uppercase tracking-widest">
+<div class="mb-8 md:mb-0">
+<div class="text-lg font-bold text-white mb-2">MEDICORE</div>
+<p class="text-[#e5e2e1] opacity-70">© 2024 MEDICORE HEALTH SYSTEMS. ARCHITECTURAL PRECISION IN CARE.</p>
+</div>
+<div class="flex flex-wrap justify-center gap-8">
+<a class="text-[#e5e2e1] opacity-70 hover:opacity-100 hover:text-[#0f62fe] transition-opacity duration-300" href="#">Privacy Policy</a>
+<a class="text-[#e5e2e1] opacity-70 hover:opacity-100 hover:text-[#0f62fe] transition-opacity duration-300" href="#">Terms of Service</a>
+<a class="text-[#e5e2e1] opacity-70 hover:opacity-100 hover:text-[#0f62fe] transition-opacity duration-300" href="#">Accessibility</a>
+<a class="text-[#e5e2e1] opacity-70 hover:opacity-100 hover:text-[#0f62fe] transition-opacity duration-300" href="#">Sitemap</a>
+</div>
+</div>
+</footer>
+</body></html>

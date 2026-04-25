@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HOSPITAL_OS - SLOT_GENERATION</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body { font-family: 'Public Sans', sans-serif; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e5e2e1",
+                        "surface-container-low": "#f6f3f2",
+                        "on-tertiary-fixed": "#390c00",
+                        "primary": "#004ccd",
+                        "surface-container-high": "#eae7e7",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#dcd9d9",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "on-primary-fixed-variant": "#003da9",
+                        "background": "#fcf9f8",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "primary-container": "#0f62fe",
+                        "on-surface-variant": "#424656",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-container": "#f0edec",
+                        "on-tertiary-fixed-variant": "#832700",
+                        "inverse-primary": "#b4c5ff",
+                        "tertiary": "#9e3100",
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#fff1ed",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#9db3ff",
+                        "on-background": "#1c1b1b",
+                        "secondary-fixed": "#dbe1ff",
+                        "on-secondary-fixed": "#00174c",
+                        "on-secondary-container": "#2b4388",
+                        "outline": "#737687",
+                        "surface": "#fcf9f8",
+                        "on-primary-fixed": "#00174c",
+                        "surface-container-highest": "#e5e2e1",
+                        "outline-variant": "#c3c6d8",
+                        "surface-tint": "#0052dd",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "surface-bright": "#fcf9f8",
+                        "tertiary-container": "#c84000",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-surface": "#1c1b1b",
+                        "inverse-surface": "#313030",
+                        "on-primary-container": "#f3f3ff",
+                        "secondary": "#445ba1",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-6 h-16 bg-white dark:bg-[#171717] docked full-width top-0 z-50 fixed">
+<div class="flex items-center gap-8">
+<h1 class="text-xl font-semibold tracking-tighter text-[#1c1b1b] dark:text-white">MED_CORE / ADMIN</h1>
+<nav class="hidden md:flex gap-6 h-16">
+<a class="flex items-center px-2 text-[#1c1b1b] dark:text-[#e5e2e1] hover:bg-[#f6f3f2] dark:hover:bg-[#262626] transition-colors duration-150 ease-in-out font-['Public_Sans'] text-sm tracking-tight" href="#">Dashboard</a>
+<a class="flex items-center px-2 text-[#0f62fe] font-semibold border-b-2 border-[#0f62fe] transition-colors duration-150 ease-in-out font-['Public_Sans'] text-sm tracking-tight" href="#">Operations</a>
+<a class="flex items-center px-2 text-[#1c1b1b] dark:text-[#e5e2e1] hover:bg-[#f6f3f2] dark:hover:bg-[#262626] transition-colors duration-150 ease-in-out font-['Public_Sans'] text-sm tracking-tight" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined p-2 text-[#0f62fe]">notifications</span>
+</div>
+<span class="material-symbols-outlined p-2 text-[#1c1b1b] dark:text-[#e5e2e1]">settings</span>
+<div class="flex items-center gap-2 pl-4">
+<div class="w-8 h-8 bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-sm">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="flex flex-col fixed left-0 top-0 h-full z-40 w-64 bg-[#f6f3f2] dark:bg-[#1c1b1b]">
+<div class="text-lg font-black text-[#1c1b1b] dark:text-white px-6 py-8">
+            HOSPITAL_OS
+            <div class="font-['Public_Sans'] font-bold text-[10px] uppercase tracking-widest opacity-50 mt-1">V2.4.0_STABLE</div>
+</div>
+<nav class="flex-1 flex flex-col pt-4">
+<a class="flex items-center px-6 py-4 gap-4 text-[#1c1b1b] dark:text-[#e5e2e1] opacity-70 hover:bg-[#e5e2e1] dark:hover:bg-[#262626] transition-all scale-100 active:bg-[#004ccd]" href="#">
+<span class="material-symbols-outlined" data-icon="meeting_room">meeting_room</span>
+<span class="font-['Public_Sans'] font-bold text-[10px] uppercase tracking-widest">ROOM_MANAGEMENT</span>
+</a>
+<a class="flex items-center px-6 py-4 gap-4 text-[#1c1b1b] dark:text-[#e5e2e1] opacity-70 hover:bg-[#e5e2e1] dark:hover:bg-[#262626] transition-all scale-100 active:bg-[#004ccd]" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_view_day">calendar_view_day</span>
+<span class="font-['Public_Sans'] font-bold text-[10px] uppercase tracking-widest">SCHEDULE_TEMPLATES</span>
+</a>
+<a class="flex items-center px-6 py-4 gap-4 text-[#1c1b1b] dark:text-[#e5e2e1] opacity-70 hover:bg-[#e5e2e1] dark:hover:bg-[#262626] transition-all scale-100 active:bg-[#004ccd]" href="#">
+<span class="material-symbols-outlined" data-icon="event_busy">event_busy</span>
+<span class="font-['Public_Sans'] font-bold text-[10px] uppercase tracking-widest">SPECIAL_CLOSURES</span>
+</a>
+<a class="flex items-center px-6 py-4 gap-4 bg-[#0f62fe] text-white font-bold transition-all scale-100 active:bg-[#004ccd]" href="#">
+<span class="material-symbols-outlined" data-icon="grid_on">grid_on</span>
+<span class="font-['Public_Sans'] font-bold text-[10px] uppercase tracking-widest">SLOT_GENERATION</span>
+</a>
+<a class="flex items-center px-6 py-4 gap-4 text-[#1c1b1b] dark:text-[#e5e2e1] opacity-70 hover:bg-[#e5e2e1] dark:hover:bg-[#262626] transition-all scale-100 active:bg-[#004ccd]" href="#">
+<span class="material-symbols-outlined" data-icon="biotech">biotech</span>
+<span class="font-['Public_Sans'] font-bold text-[10px] uppercase tracking-widest">LAB_RESULTS</span>
+</a>
+</nav>
+<div class="p-6">
+<button class="w-full bg-[#0f62fe] text-white py-3 font-['Public_Sans'] font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 active:translate-y-[2px] transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                NEW_APPOINTMENT
+            </button>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 pt-16 min-h-screen">
+<div class="p-8 max-w-[1400px] mx-auto">
+<!-- Breadcrumbs -->
+<div class="mb-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-outline">
+<span>Admin</span>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+<span>Operations</span>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+<span class="text-on-surface">SLOT_GENERATION</span>
+</div>
+<!-- Page Header -->
+<div class="mb-12">
+<h2 class="text-4xl font-light tracking-tight text-on-surface leading-tight">Generate Service Slots</h2>
+<p class="text-on-surface-variant max-w-2xl mt-2 font-body text-sm">Automated mass-generation of clinical appointment slots based on predefined room templates and staff availability matrix. Review the impact assessment before final execution.</p>
+</div>
+<div class="grid grid-cols-12 gap-0">
+<!-- Left: Configuration Form -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low p-8">
+<div class="mb-8">
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary border-l-4 border-primary pl-3">01. Parameters</span>
+</div>
+<form class="space-y-12">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Field: Service Provider -->
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant block">Primary Practitioner</label>
+<div class="relative group">
+<select class="w-full bg-surface-container-low border-b-2 border-outline px-4 py-3 appearance-none focus:outline-none focus:border-primary transition-colors font-body text-sm">
+<option>Select Practitioner...</option>
+<option>Dr. Elena Rodriguez (Cardiology)</option>
+<option>Dr. Marcus Thorne (Neurology)</option>
+<option>Dr. Sarah Jenkins (General Practice)</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-3 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+<!-- Field: Room Template -->
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant block">Configuration Template</label>
+<div class="relative group">
+<select class="w-full bg-surface-container-low border-b-2 border-outline px-4 py-3 appearance-none focus:outline-none focus:border-primary transition-colors font-body text-sm">
+<option>Select Template...</option>
+<option>STD_OP_30_MIN (Standard Outpatient)</option>
+<option>EXT_CONSULT_60 (Extended Consultation)</option>
+<option>PROC_SHORT_15 (Minor Procedure)</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-3 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+<!-- Field: Date Range -->
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant block">Start Date</label>
+<input class="w-full bg-surface-container-low border-b-2 border-outline px-4 py-3 focus:outline-none focus:border-primary transition-colors font-body text-sm" type="date"/>
+</div>
+<div class="space-y-2">
+<label class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant block">End Date</label>
+<input class="w-full bg-surface-container-low border-b-2 border-outline px-4 py-3 focus:outline-none focus:border-primary transition-colors font-body text-sm" type="date"/>
+</div>
+</div>
+<!-- Checkboxes / Toggles -->
+<div class="pt-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+<label class="flex items-center gap-4 cursor-pointer group">
+<div class="w-5 h-5 border-2 border-outline group-hover:border-primary flex items-center justify-center transition-colors">
+<div class="w-3 h-3 bg-primary opacity-0 group-hover:opacity-20"></div>
+</div>
+<span class="text-sm font-body">Override existing empty slots</span>
+</label>
+<label class="flex items-center gap-4 cursor-pointer group">
+<div class="w-5 h-5 border-2 border-primary flex items-center justify-center transition-colors">
+<div class="w-3 h-3 bg-primary"></div>
+</div>
+<span class="text-sm font-body">Exclude national bank holidays</span>
+</label>
+</div>
+</form>
+</div>
+<!-- Right: Impact & Summary -->
+<div class="col-span-12 lg:col-span-4 bg-on-surface text-white p-8">
+<div class="mb-8">
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary-fixed-dim border-l-4 border-primary-fixed-dim pl-3">02. Operational Impact</span>
+</div>
+<div class="space-y-12">
+<!-- Data Monolith -->
+<div class="bg-[#262626] p-8">
+<div class="text-6xl font-light tracking-tighter text-white">448</div>
+<div class="text-[10px] font-bold uppercase tracking-widest text-outline-variant mt-2">Estimated Slots to be Created</div>
+</div>
+<div class="space-y-6">
+<div class="flex justify-between items-end border-b border-[#313030] pb-2">
+<span class="text-[10px] font-bold uppercase tracking-widest text-outline-variant">Concurrency Load</span>
+<span class="text-xl font-light">12.5%</span>
+</div>
+<div class="flex justify-between items-end border-b border-[#313030] pb-2">
+<span class="text-[10px] font-bold uppercase tracking-widest text-outline-variant">Room Utilization</span>
+<span class="text-xl font-light">88.0%</span>
+</div>
+<div class="flex justify-between items-end border-b border-[#313030] pb-2">
+<span class="text-[10px] font-bold uppercase tracking-widest text-outline-variant">System Latency Est.</span>
+<span class="text-xl font-light">1.2s</span>
+</div>
+</div>
+<div class="pt-8">
+<button class="w-full bg-primary-container hover:bg-primary text-white py-4 font-bold text-sm tracking-widest transition-colors flex items-center justify-center gap-3">
+                                EXECUTE GENERATION
+                                <span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</button>
+<p class="text-[10px] text-outline-variant text-center mt-4 uppercase tracking-widest">Irreversible database action</p>
+</div>
+</div>
+</div>
+<!-- Bottom: Preview Table -->
+<div class="col-span-12 bg-surface-container-lowest mt-16">
+<div class="p-8 border-b border-surface-container">
+<div class="flex justify-between items-center">
+<div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary border-l-4 border-primary pl-3 block mb-2">03. Sampling Preview</span>
+<h3 class="text-xl font-semibold">First 5 Computed Results</h3>
+</div>
+<button class="px-6 py-2 border-2 border-on-surface text-on-surface font-bold text-[10px] uppercase tracking-widest hover:bg-on-surface hover:text-white transition-colors">
+                                RE-CALCULATE PREVIEW
+                            </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Sequence</th>
+<th class="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Timestamp</th>
+<th class="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Duration</th>
+<th class="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Room ID</th>
+<th class="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Integrity</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-8 py-6 font-mono text-xs">#SLT-2023-001</td>
+<td class="px-8 py-6 text-sm font-body">Oct 12, 2023 • 08:00 AM</td>
+<td class="px-8 py-6 text-sm font-body">30 MIN</td>
+<td class="px-8 py-6 text-sm font-body">CONSULT-RM-402</td>
+<td class="px-8 py-6">
+<span class="px-2 py-1 bg-green-100 text-green-800 text-[10px] font-bold tracking-widest">VALID</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-8 py-6 font-mono text-xs">#SLT-2023-002</td>
+<td class="px-8 py-6 text-sm font-body">Oct 12, 2023 • 08:30 AM</td>
+<td class="px-8 py-6 text-sm font-body">30 MIN</td>
+<td class="px-8 py-6 text-sm font-body">CONSULT-RM-402</td>
+<td class="px-8 py-6">
+<span class="px-2 py-1 bg-green-100 text-green-800 text-[10px] font-bold tracking-widest">VALID</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-8 py-6 font-mono text-xs">#SLT-2023-003</td>
+<td class="px-8 py-6 text-sm font-body">Oct 12, 2023 • 09:00 AM</td>
+<td class="px-8 py-6 text-sm font-body">30 MIN</td>
+<td class="px-8 py-6 text-sm font-body">CONSULT-RM-402</td>
+<td class="px-8 py-6">
+<span class="px-2 py-1 bg-green-100 text-green-800 text-[10px] font-bold tracking-widest">VALID</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-8 py-6 font-mono text-xs">#SLT-2023-004</td>
+<td class="px-8 py-6 text-sm font-body">Oct 12, 2023 • 09:30 AM</td>
+<td class="px-8 py-6 text-sm font-body">30 MIN</td>
+<td class="px-8 py-6 text-sm font-body">CONSULT-RM-402</td>
+<td class="px-8 py-6">
+<span class="px-2 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold tracking-widest">CONFLICT_WARN</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container transition-colors">
+<td class="px-8 py-6 font-mono text-xs">#SLT-2023-005</td>
+<td class="px-8 py-6 text-sm font-body">Oct 12, 2023 • 10:00 AM</td>
+<td class="px-8 py-6 text-sm font-body">30 MIN</td>
+<td class="px-8 py-6 text-sm font-body">CONSULT-RM-402</td>
+<td class="px-8 py-6">
+<span class="px-2 py-1 bg-green-100 text-green-800 text-[10px] font-bold tracking-widest">VALID</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Footer / Status -->
+<footer class="mt-16 flex justify-between items-center text-outline-variant font-['Public_Sans'] text-[10px] font-bold uppercase tracking-widest">
+<div class="flex gap-8">
+<span>SERVER_STATUS: OPTIMAL</span>
+<span>QUEUE_DEPTH: 0</span>
+</div>
+<div>LAST_RUN: 2023-10-11 14:22:01 UTC</div>
+</footer>
+</div>
+</main>
+<!-- Visual separation logic for header -->
+<div class="fixed top-16 left-0 h-px w-full bg-[#f6f3f2] dark:bg-[#262626] z-[51]"></div>
+</body></html>

@@ -1,0 +1,43 @@
+# Implementation Status Note
+
+Status: updated against the repository on 2026-04-16
+
+This file replaces an older "150 APIs full-stack delivery" plan that no longer matches the current repository.
+Use the files below as the active source of truth:
+
+1. `docs/HMS_PRD.md`
+2. `docs/HMS_SRS.md`
+3. `docs/HMS_TDD.md`
+4. `docs/HMS_ProjectPlan.md`
+5. `docs/HMS_FrontendDesignBrief.md`
+
+## Current repository reality
+
+- The backend is the primary implemented product surface.
+- The codebase contains roughly 122 controller route handlers under `backend/api/src/main/java`.
+- The frontend exists only as a starter Vite project and is not yet a hospital application UI.
+- Several roadmap streams from the old plan are now implemented:
+  - inventory write APIs
+  - lab result APIs
+  - vital signs APIs
+  - patient portal authentication and read experience
+  - internal assistant session, feedback, monitoring, and knowledge document admin
+- Several roadmap items from the old plan are still not implemented:
+  - full production frontend
+  - payment gateway integration
+  - patient self-service cancellation or rescheduling
+  - patient portal message compose and thread detail endpoints beyond the current aggregated list
+  - expanded queue actions such as call, skip, and room board operations
+  - export/report endpoints beyond current revenue summaries
+
+## How to read the docs folder now
+
+- `HMS_PRD.md` explains the product baseline and screen inventory for UI/UX design.
+- `HMS_SRS.md` maps functional requirements to the implemented API surface.
+- `HMS_TDD.md` describes the current architecture, stack, migrations, and integration behavior.
+- `HMS_ProjectPlan.md` describes the remaining work to turn the current backend into a complete frontend experience.
+- `HMS_UserManual.md` is now a role workflow reference for design, not proof that the frontend already exists.
+
+## Design implication
+
+If you are designing the frontend, treat the backend APIs and shared DTOs as the implementation contract, and treat any older references to "0% frontend", "Claude API", "150 APIs", or "missing inventory/lab/vitals endpoints" as obsolete.

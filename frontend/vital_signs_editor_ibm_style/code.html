@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MEDCORE OS - Vital Signs Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "on-primary-fixed-variant": "#003da9",
+                        "on-tertiary-fixed-variant": "#832700",
+                        "on-surface-variant": "#424656",
+                        "on-primary-container": "#f3f3ff",
+                        "surface-container-high": "#eae7e7",
+                        "primary-fixed": "#dbe1ff",
+                        "surface-variant": "#e5e2e1",
+                        "on-tertiary-fixed": "#390c00",
+                        "inverse-surface": "#313030",
+                        "outline": "#737687",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#fcf9f8",
+                        "on-surface": "#1c1b1b",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-bright": "#fcf9f8",
+                        "secondary-container": "#9db3ff",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#0052dd",
+                        "on-secondary-container": "#2b4388",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "on-background": "#1c1b1b",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#dbe1ff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#fff1ed",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#f3f0ef",
+                        "primary-container": "#0f62fe",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#004ccd",
+                        "background": "#fcf9f8",
+                        "surface-container-low": "#f6f3f2",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "secondary": "#445ba1",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-container": "#f0edec",
+                        "on-secondary-fixed": "#00174c",
+                        "tertiary": "#9e3100",
+                        "outline-variant": "#c3c6d8",
+                        "on-primary-fixed": "#00174c",
+                        "tertiary-container": "#c84000",
+                        "surface-dim": "#dcd9d9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Public Sans"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        /* Custom scrollbar for Carbon look */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #fcf9f8; }
+        ::-webkit-scrollbar-thumb { background: #e5e2e1; }
+        ::-webkit-scrollbar-thumb:hover { background: #737687; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex min-h-screen">
+<!-- SideNavBar (Authority: Shared Components JSON) -->
+<aside class="flex flex-col h-full fixed left-0 top-0 z-40 h-screen w-72 border-r-2 border-neutral-900 bg-neutral-50 dark:bg-neutral-950">
+<div class="p-8 flex flex-col gap-1">
+<h1 class="text-lg font-black text-neutral-900 dark:text-white">HOSPITAL ADMIN</h1>
+<p class="font-public-sans text-[10px] font-semibold uppercase tracking-wider text-neutral-500">V.2.4.0-STABLE</p>
+</div>
+<nav class="flex-1 mt-4">
+<a class="text-neutral-600 dark:text-neutral-400 flex items-center px-6 py-4 w-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all font-public-sans text-xs font-semibold uppercase tracking-wider active:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span> Dashboard
+            </a>
+<a class="bg-blue-600 text-white flex items-center px-6 py-4 w-full font-public-sans text-xs font-semibold uppercase tracking-wider active:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3">personal_injury</span> Patient Registry
+            </a>
+<a class="text-neutral-600 dark:text-neutral-400 flex items-center px-6 py-4 w-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all font-public-sans text-xs font-semibold uppercase tracking-wider active:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3">medical_services</span> Clinical Staff
+            </a>
+<a class="text-neutral-600 dark:text-neutral-400 flex items-center px-6 py-4 w-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all font-public-sans text-xs font-semibold uppercase tracking-wider active:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3">inventory_2</span> Inventory
+            </a>
+<a class="text-neutral-600 dark:text-neutral-400 flex items-center px-6 py-4 w-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all font-public-sans text-xs font-semibold uppercase tracking-wider active:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3">payments</span> Financials
+            </a>
+<a class="text-neutral-600 dark:text-neutral-400 flex items-center px-6 py-4 w-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all font-public-sans text-xs font-semibold uppercase tracking-wider active:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3">terminal</span> System Logs
+            </a>
+</nav>
+<div class="mt-auto border-t-2 border-neutral-900">
+<button class="w-full bg-error text-white font-bold py-6 uppercase tracking-widest text-xs hover:brightness-110 active:brightness-90 transition-all">
+                Emergency Alert
+            </button>
+<div class="flex flex-col">
+<a class="text-neutral-600 dark:text-neutral-400 flex items-center px-6 py-4 w-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all font-public-sans text-xs font-semibold uppercase tracking-wider active:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3">settings</span> Settings
+                </a>
+<a class="text-neutral-600 dark:text-neutral-400 flex items-center px-6 py-4 w-full hover:bg-neutral-200 dark:hover:bg-neutral-800 transition-all font-public-sans text-xs font-semibold uppercase tracking-wider active:translate-x-1" href="#">
+<span class="material-symbols-outlined mr-3">logout</span> Sign Out
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-72 flex-1 flex flex-col min-h-screen">
+<!-- TopAppBar (Authority: Shared Components JSON) -->
+<header class="flex justify-between items-center w-full px-8 h-16 sticky top-0 z-50 bg-white dark:bg-neutral-900 border-b-2 border-neutral-900 dark:border-neutral-800">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold tracking-widest text-neutral-900 dark:text-white uppercase">MEDCORE OS</span>
+</div>
+<div class="flex-1 max-w-md ml-12">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">search</span>
+<input class="w-full bg-neutral-100 border-none px-10 py-2 focus:ring-2 focus:ring-blue-600 outline-none text-sm" placeholder="Search patient or record..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-75 active:bg-neutral-200">
+<span class="material-symbols-outlined text-neutral-600">notifications</span>
+</button>
+<button class="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-75 active:bg-neutral-200">
+<span class="material-symbols-outlined text-neutral-600">help</span>
+</button>
+<div class="h-8 w-8 bg-blue-600 flex items-center justify-center ml-2">
+<span class="material-symbols-outlined text-white text-sm" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</div>
+</div>
+</header>
+<!-- Canvas Area -->
+<div class="p-12 max-w-6xl w-full mx-auto">
+<!-- Patient Header / Data Monolith -->
+<section class="mb-12 flex flex-col md:flex-row gap-0.5 bg-neutral-900">
+<div class="bg-surface-container-lowest p-8 flex-1">
+<div class="flex items-center gap-4 mb-4">
+<img alt="Patient Avatar" class="w-16 h-16 grayscale border border-neutral-200" data-alt="professional headshot of an elderly man with kind eyes and short grey hair, monochromatic studio lighting, clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_DN6oozxQXNYh74iq__-BrfwcMwbt3ibtXjNtH73O_cScjRfEU03XP22nZbRj68KjSDehAxb2PKdz4Fd3o8TQ3nisTK0oK_Mh7GMmyKGj0aoAXeZXU6dptbN2OhKuxDcfAXxrHqSijtZoMLx7y6c75ltdfy8QRPrAldAtbUouVndleAz2TxhPhJ4HS3Ri1LV9XM9OSHquxxIsWX9KUaORUlg2ZKPCEVs0uAx0qVZWsPr5mn99zWNFBXtjyyTJWEAlKIAJjODwwg"/>
+<div>
+<p class="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600 mb-1">Current Patient</p>
+<h2 class="text-3xl font-light tracking-tight text-on-surface">DRS. HARRISON WELLS</h2>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-8 pt-6 border-t border-neutral-100">
+<div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-neutral-400">DOB</p>
+<p class="text-sm font-semibold">12 SEP 1954 (69Y)</p>
+</div>
+<div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-neutral-400">ID</p>
+<p class="text-sm font-semibold">#MC-9021-X</p>
+</div>
+<div>
+<p class="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Status</p>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 bg-blue-600"></div>
+<p class="text-sm font-semibold">IN-PATIENT (WARD 4B)</p>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-highest p-8 w-full md:w-80 flex flex-col justify-center">
+<p class="text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-2">Last Updated</p>
+<p class="text-xl font-light tracking-tight">Today, 08:42 AM</p>
+<p class="text-xs text-neutral-500 mt-1">by Dr. Sarah Chen</p>
+</div>
+</section>
+<!-- Editor Title -->
+<div class="mb-8">
+<h3 class="text-xl font-semibold tracking-tight">Vital Signs Recording</h3>
+<p class="text-sm text-neutral-500 mt-1">Input mandatory clinical telemetry for nursing rounds.</p>
+</div>
+<!-- Editor Form Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+<!-- Left Column -->
+<div class="space-y-12">
+<!-- Blood Pressure -->
+<div class="group">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1 group-focus-within:text-blue-600 transition-colors">Blood Pressure (Systolic/Diastolic)</label>
+<div class="relative bg-surface-container-low p-4">
+<input class="w-full bg-transparent border-none border-b-2 border-outline p-0 text-2xl font-light focus:ring-0 focus:border-primary transition-all placeholder:text-neutral-300" placeholder="120/80" type="text"/>
+<span class="absolute right-4 bottom-4 text-xs font-bold text-neutral-400 uppercase">mmHg</span>
+</div>
+<p class="text-[10px] text-neutral-400 mt-2 italic">Standard range: 90/60 to 120/80 mmHg</p>
+</div>
+<!-- Heart Rate -->
+<div class="group">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1 group-focus-within:text-blue-600 transition-colors">Heart Rate</label>
+<div class="relative bg-surface-container-low p-4">
+<input class="w-full bg-transparent border-none border-b-2 border-outline p-0 text-2xl font-light focus:ring-0 focus:border-primary transition-all placeholder:text-neutral-300" placeholder="72" type="number"/>
+<span class="absolute right-4 bottom-4 text-xs font-bold text-neutral-400 uppercase">BPM</span>
+</div>
+<p class="text-[10px] text-neutral-400 mt-2 italic">Standard range: 60 to 100 BPM (At rest)</p>
+</div>
+<!-- SpO2 -->
+<div class="group">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1 group-focus-within:text-blue-600 transition-colors">Oxygen Saturation (SpO2)</label>
+<div class="relative bg-surface-container-low p-4">
+<input class="w-full bg-transparent border-none border-b-2 border-outline p-0 text-2xl font-light focus:ring-0 focus:border-primary transition-all placeholder:text-neutral-300" placeholder="98" type="number"/>
+<span class="absolute right-4 bottom-4 text-xs font-bold text-neutral-400 uppercase">%</span>
+</div>
+<p class="text-[10px] text-neutral-400 mt-2 italic">Notify staff if saturation drops below 94%</p>
+</div>
+</div>
+<!-- Right Column -->
+<div class="space-y-12">
+<!-- Temperature -->
+<div class="group">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1 group-focus-within:text-blue-600 transition-colors">Body Temperature</label>
+<div class="relative bg-surface-container-low p-4">
+<input class="w-full bg-transparent border-none border-b-2 border-outline p-0 text-2xl font-light focus:ring-0 focus:border-primary transition-all placeholder:text-neutral-300" placeholder="36.6" step="0.1" type="number"/>
+<span class="absolute right-4 bottom-4 text-xs font-bold text-neutral-400 uppercase">°C</span>
+</div>
+<p class="text-[10px] text-neutral-400 mt-2 italic">Standard oral range: 36.5°C to 37.2°C</p>
+</div>
+<!-- Respiratory Rate -->
+<div class="group">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1 group-focus-within:text-blue-600 transition-colors">Respiratory Rate</label>
+<div class="relative bg-surface-container-low p-4">
+<input class="w-full bg-transparent border-none border-b-2 border-outline p-0 text-2xl font-light focus:ring-0 focus:border-primary transition-all placeholder:text-neutral-300" placeholder="16" type="number"/>
+<span class="absolute right-4 bottom-4 text-xs font-bold text-neutral-400 uppercase">Breaths/min</span>
+</div>
+<p class="text-[10px] text-neutral-400 mt-2 italic">Adult standard: 12 to 16 breaths per minute</p>
+</div>
+<!-- Clinical Observation Note -->
+<div class="group">
+<label class="block text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1 group-focus-within:text-blue-600 transition-colors">Clinical Observations</label>
+<div class="bg-surface-container-low p-4">
+<textarea class="w-full bg-transparent border-none border-b-2 border-outline p-0 text-sm focus:ring-0 focus:border-primary transition-all placeholder:text-neutral-300 resize-none" placeholder="e.g. Patient reporting slight dizziness..." rows="2"></textarea>
+</div>
+<p class="text-[10px] text-neutral-400 mt-2 italic">Note any physical anomalies or patient feedback.</p>
+</div>
+</div>
+</div>
+<!-- Action Bar -->
+<footer class="mt-24 border-t-2 border-neutral-900 pt-8 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-neutral-500">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Entry Time: 14:22:05 EST</span>
+</div>
+<div class="flex items-center gap-2 text-neutral-500">
+<span class="material-symbols-outlined text-sm">lock</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Secure Ledger Protocol V2</span>
+</div>
+</div>
+<div class="flex gap-4">
+<button class="bg-surface-container-high px-8 py-3 text-xs font-bold uppercase tracking-widest text-on-surface hover:brightness-95 active:translate-y-0.5 transition-all">
+                        Discard Changes
+                    </button>
+<button class="bg-primary-container text-white px-12 py-3 text-xs font-bold uppercase tracking-widest flex items-center gap-3 hover:bg-primary active:translate-y-0.5 transition-all">
+                        Save Vitals <span class="material-symbols-outlined text-sm">send</span>
+</button>
+</div>
+</footer>
+</div>
+<!-- System Drawer / Telemetry Logs (Right Side) -->
+<div class="fixed right-0 top-16 h-[calc(100vh-64px)] w-96 bg-white border-l-2 border-neutral-900 z-30 flex flex-col">
+<div class="p-8 border-b border-neutral-100 bg-surface-container-low">
+<h4 class="text-xs font-black tracking-[0.2em] uppercase text-neutral-900">Historical Telemetry</h4>
+<p class="text-[10px] text-neutral-500 mt-1 uppercase tracking-wider">Comparison to last 24h average</p>
+</div>
+<div class="flex-1 overflow-y-auto p-8 space-y-8">
+<!-- Trend Card 1 -->
+<div class="group border-b border-neutral-100 pb-4">
+<div class="flex justify-between items-end mb-2">
+<span class="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Heart Rate Avg</span>
+<span class="text-2xl font-light">68 <span class="text-xs uppercase font-bold text-neutral-400">bpm</span></span>
+</div>
+<div class="w-full bg-neutral-100 h-1 mt-2">
+<div class="bg-blue-600 h-full w-[68%]"></div>
+</div>
+<p class="text-[10px] text-blue-600 mt-2 font-bold tracking-widest uppercase">Normal Variance (-4%)</p>
+</div>
+<!-- Trend Card 2 -->
+<div class="group border-b border-neutral-100 pb-4">
+<div class="flex justify-between items-end mb-2">
+<span class="text-[10px] font-bold uppercase tracking-widest text-neutral-400">BP Systolic Avg</span>
+<span class="text-2xl font-light">124 <span class="text-xs uppercase font-bold text-neutral-400">mmHg</span></span>
+</div>
+<div class="w-full bg-neutral-100 h-1 mt-2">
+<div class="bg-neutral-900 h-full w-[82%]"></div>
+</div>
+<p class="text-[10px] text-neutral-500 mt-2 font-bold tracking-widest uppercase">Stable Profile</p>
+</div>
+<!-- History List -->
+<div class="pt-4">
+<p class="text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-4">Recent Submissions</p>
+<div class="space-y-6">
+<div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:bg-blue-600">
+<p class="text-xs font-semibold">120/80, 72bpm, 36.6C</p>
+<p class="text-[10px] text-neutral-400 uppercase tracking-tighter">08:42 AM · Sarah Chen, RN</p>
+</div>
+<div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:bg-neutral-300">
+<p class="text-xs font-semibold">118/79, 70bpm, 36.5C</p>
+<p class="text-[10px] text-neutral-400 uppercase tracking-tighter">04:15 AM · Automated (MC-A4)</p>
+</div>
+<div class="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:bg-neutral-300">
+<p class="text-xs font-semibold">122/82, 75bpm, 36.8C</p>
+<p class="text-[10px] text-neutral-400 uppercase tracking-tighter">Yesterday, 10:30 PM · Mike Ross, RN</p>
+</div>
+</div>
+</div>
+</div>
+<div class="p-8 bg-neutral-950 text-white">
+<button class="w-full flex justify-between items-center group">
+<span class="text-[10px] font-black uppercase tracking-[0.2em]">View Full Patient History</span>
+<span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</main>
+</body></html>

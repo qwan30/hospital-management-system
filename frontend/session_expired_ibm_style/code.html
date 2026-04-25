@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HMS Precision - Session Expired</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#9db3ff",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-container": "#f0edec",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#fff1ed",
+                        "inverse-surface": "#313030",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#dcd9d9",
+                        "on-secondary-fixed": "#00174c",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "outline-variant": "#c3c6d8",
+                        "background": "#fcf9f8",
+                        "on-surface-variant": "#424656",
+                        "inverse-on-surface": "#f3f0ef",
+                        "primary": "#004ccd",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#fcf9f8",
+                        "tertiary-container": "#c84000",
+                        "secondary": "#445ba1",
+                        "on-primary-container": "#f3f3ff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-primary-fixed-variant": "#003da9",
+                        "surface-container-high": "#eae7e7",
+                        "primary-container": "#0f62fe",
+                        "surface-bright": "#fcf9f8",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "outline": "#737687",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#9e3100",
+                        "surface-tint": "#0052dd",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-fixed": "#dbe1ff",
+                        "on-secondary-container": "#2b4388",
+                        "on-primary-fixed": "#00174c",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-variant": "#e5e2e1",
+                        "surface-container-low": "#f6f3f2",
+                        "on-background": "#1c1b1b",
+                        "on-tertiary-fixed": "#390c00",
+                        "on-surface": "#1c1b1b",
+                        "on-tertiary-fixed-variant": "#832700"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Public Sans"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopNavBar (Suppressed for focused journey/auth state, but maintaining HMS Brand context if needed) -->
+<!-- According to Shell Visibility & Relevance: Suppress for transactional/focused states. -->
+<main class="flex-grow flex items-center justify-center p-8">
+<div class="w-full max-w-2xl bg-surface-container-lowest p-16 flex flex-col items-start gap-12 ring-1 ring-outline-variant/15">
+<!-- Branding Anchor -->
+<div class="flex items-center gap-2 mb-4">
+<span class="text-lg font-bold uppercase tracking-widest text-on-surface">HMS Precision</span>
+</div>
+<!-- Content Container -->
+<div class="space-y-8 w-full">
+<!-- Large Warning Icon (Yellow/Red technical tones) -->
+<div class="text-error">
+<span class="material-symbols-outlined !text-7xl" data-icon="report">report</span>
+</div>
+<!-- Headline & Subtext -->
+<div class="space-y-4">
+<h1 class="text-5xl font-light tracking-tight text-on-surface leading-tight">Session Expired</h1>
+<p class="text-xl text-on-surface-variant font-normal leading-relaxed max-w-lg">
+                        Your session has timed out for security reasons. Please log in again to continue.
+                    </p>
+</div>
+<!-- Navigation Action -->
+<div class="pt-4">
+<button class="bg-primary-container text-on-primary font-semibold px-12 py-5 rounded-none flex items-center gap-3 hover:bg-primary transition-all active:opacity-80">
+<span>Return to Login</span>
+<span class="material-symbols-outlined" data-icon="login">login</span>
+</button>
+</div>
+</div>
+<!-- Footer Meta -->
+<div class="w-full pt-16 flex justify-between items-center text-xs font-bold uppercase tracking-tighter text-outline opacity-60">
+<div class="flex gap-6">
+<span>Precision Care Unit</span>
+<span>Error Code: 401_SEC_TIMEOUT</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined !text-sm" data-icon="shield_lock">shield_lock</span>
+<span>Encrypted Session Management</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Support Image Section (Asymmetric Editorial Layout) -->
+<aside class="hidden lg:block fixed bottom-0 right-0 w-1/3 h-screen z-[-1] opacity-10">
+<div class="w-full h-full grayscale mix-blend-multiply">
+<img alt="Cybersecurity concept" class="w-full h-full object-cover" data-alt="Abstract close-up of blue circuit board with glowing data lines representing secure digital architecture and precision technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDeSIMj6nrBQan_24Ez-rvdw_BCT44zYM0DfX-yWFmZRJ0gn8vutMWIzJE09ysKOG5Tq8UdvGOU0fSNySkdCRuN7VwaLOSgXNMmRLqWVGfg8GUsubsl7fp6ov_282MjWGPT4RU2cKZNEAs-xndLlDwqPc3mws2njpZro4CGlBw01gGkN3BLkXxNNGseigNT7jdVDsb9IOnCEj5TqYcpfTLNk5Gnoc81HkR23pYiLr3962HmspqleRFbgwLvVDx-KJDg0Woex235NQ"/>
+</div>
+</aside>
+<!-- Background Layering -->
+<div class="fixed inset-0 z-[-2] bg-surface-container-low"></div>
+</body></html>

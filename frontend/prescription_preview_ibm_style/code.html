@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HMS Precision - Prescription Preview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-container": "#9db3ff",
+                        "surface-container-highest": "#e5e2e1",
+                        "surface-container": "#f0edec",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#fff1ed",
+                        "inverse-surface": "#313030",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-dim": "#dcd9d9",
+                        "on-secondary-fixed": "#00174c",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "outline-variant": "#c3c6d8",
+                        "background": "#fcf9f8",
+                        "on-surface-variant": "#424656",
+                        "inverse-on-surface": "#f3f0ef",
+                        "primary": "#004ccd",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#fcf9f8",
+                        "tertiary-container": "#c84000",
+                        "secondary": "#445ba1",
+                        "on-primary-container": "#f3f3ff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-primary-fixed-variant": "#003da9",
+                        "surface-container-high": "#eae7e7",
+                        "primary-container": "#0f62fe",
+                        "surface-bright": "#fcf9f8",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "outline": "#737687",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#9e3100",
+                        "surface-tint": "#0052dd",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-fixed": "#dbe1ff",
+                        "on-secondary-container": "#2b4388",
+                        "on-primary-fixed": "#00174c",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-variant": "#e5e2e1",
+                        "surface-container-low": "#f6f3f2",
+                        "on-background": "#1c1b1b",
+                        "on-tertiary-fixed": "#390c00",
+                        "on-surface": "#1c1b1b",
+                        "on-tertiary-fixed-variant": "#832700"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Public Sans"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pdf-canvas {
+            box-shadow: 0 0 0 1px #e5e2e1;
+        }
+    </style>
+</head>
+<body class="bg-surface-container text-on-surface antialiased overflow-hidden">
+<!-- Top Toolbar (Derived from TopNavBar Logic) -->
+<header class="bg-white dark:bg-neutral-950 flex justify-between items-center px-6 w-full max-w-none h-16 fixed top-0 z-50">
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center p-2 hover:bg-neutral-100 transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-neutral-900" data-icon="close">close</span>
+</button>
+<h1 class="font-public-sans text-sm font-semibold uppercase tracking-widest text-neutral-900 dark:text-white">Prescription Preview</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2 px-4 h-10 bg-neutral-100 hover:bg-neutral-200 transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-primary" data-icon="download">download</span>
+<span class="font-public-sans text-xs font-bold uppercase tracking-tighter text-neutral-600">Download</span>
+</button>
+<button class="flex items-center gap-2 px-4 h-10 bg-primary-container text-white hover:bg-primary transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined" data-icon="print">print</span>
+<span class="font-public-sans text-xs font-bold uppercase tracking-tighter">Print PDF</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area (Full Screen Overlay) -->
+<main class="pt-16 h-screen flex flex-col md:flex-row overflow-hidden">
+<!-- Document Sidebar (Info Panels) -->
+<aside class="hidden md:flex w-80 flex-col bg-surface-container-low p-8 gap-8 overflow-y-auto">
+<div>
+<span class="font-public-sans text-xs font-bold uppercase tracking-tighter text-outline mb-2 block">Patient Details</span>
+<div class="bg-white p-6 space-y-4">
+<div>
+<p class="text-[10px] text-outline font-bold uppercase">Name</p>
+<p class="text-sm font-semibold">Jonathan H. Miller</p>
+</div>
+<div>
+<p class="text-[10px] text-outline font-bold uppercase">ID Number</p>
+<p class="text-sm font-semibold">HMS-8829-01</p>
+</div>
+<div>
+<p class="text-[10px] text-outline font-bold uppercase">Date of Issue</p>
+<p class="text-sm font-semibold">October 24, 2023</p>
+</div>
+</div>
+</div>
+<div>
+<span class="font-public-sans text-xs font-bold uppercase tracking-tighter text-outline mb-2 block">Clinical Context</span>
+<div class="bg-white p-6">
+<p class="text-[10px] text-outline font-bold uppercase mb-1">Diagnosis</p>
+<p class="text-sm leading-relaxed">Chronic Hypertension Stage II with secondary implications of Type 2 Diabetes Mellitus.</p>
+</div>
+</div>
+<div class="mt-auto">
+<div class="bg-primary-fixed p-6 flex items-start gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="verified">verified</span>
+<div>
+<p class="text-[10px] text-on-primary-fixed-variant font-bold uppercase">Digital Signature</p>
+<p class="text-xs font-medium">Verified by Dr. Sarah Chen</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- PDF Viewer Canvas -->
+<section class="flex-1 bg-surface-dim p-4 md:p-12 overflow-y-auto flex justify-center">
+<div class="pdf-canvas bg-white w-full max-w-[816px] min-h-[1056px] p-16 flex flex-col relative">
+<!-- PDF Header -->
+<div class="flex justify-between items-start mb-16">
+<div>
+<h2 class="text-lg font-bold uppercase tracking-[0.2em] mb-1">HMS Precision</h2>
+<p class="text-[10px] text-outline tracking-wider font-semibold">UNIT 04 - CLINICAL CARE INFRASTRUCTURE</p>
+</div>
+<div class="text-right">
+<p class="text-xs font-bold uppercase">Prescription No.</p>
+<p class="text-sm font-medium">RX-2023-449102</p>
+</div>
+</div>
+<!-- Prescription Content -->
+<div class="space-y-12">
+<!-- Patient & Doctor -->
+<div class="grid grid-cols-2 gap-12">
+<div class="space-y-4">
+<h3 class="text-[10px] font-bold uppercase border-b-2 border-on-surface pb-1 w-fit">Practitioner</h3>
+<div>
+<p class="text-sm font-bold">Dr. Sarah Chen, MD</p>
+<p class="text-xs text-outline">License: #99201-B</p>
+<p class="text-xs text-outline">Internal Medicine</p>
+</div>
+</div>
+<div class="space-y-4">
+<h3 class="text-[10px] font-bold uppercase border-b-2 border-on-surface pb-1 w-fit">Recipient</h3>
+<div>
+<p class="text-sm font-bold">Jonathan H. Miller</p>
+<p class="text-xs text-outline">DOB: 12/04/1978</p>
+<p class="text-xs text-outline">Weight: 84kg</p>
+</div>
+</div>
+</div>
+<!-- Medication List -->
+<div class="space-y-6">
+<h3 class="text-[10px] font-bold uppercase border-b-2 border-on-surface pb-1 w-fit">Prescribed Medication</h3>
+<div class="space-y-8">
+<!-- Item 1 -->
+<div class="flex gap-6 items-start">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="medical_services">medical_services</span>
+<div class="flex-1">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-base font-bold">Lisinopril 20mg Tablet</p>
+<p class="text-xs font-bold uppercase">Qty: 90 Days</p>
+</div>
+<p class="text-sm text-on-surface-variant italic mb-2">Sig: Take 1 tablet by mouth daily for hypertension.</p>
+<div class="bg-surface-container-low p-3">
+<p class="text-[10px] font-bold uppercase text-outline">Pharmacist Note</p>
+<p class="text-xs">Do not discontinue abruptly. Monitor blood pressure weekly.</p>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex gap-6 items-start">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="medication">medication</span>
+<div class="flex-1">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-base font-bold">Metformin HCl 500mg ER</p>
+<p class="text-xs font-bold uppercase">Qty: 180 Tabs</p>
+</div>
+<p class="text-sm text-on-surface-variant italic mb-2">Sig: Take 2 tablets by mouth with dinner.</p>
+<div class="bg-surface-container-low p-3">
+<p class="text-[10px] font-bold uppercase text-outline">Pharmacist Note</p>
+<p class="text-xs">Extended release formula. Do not crush or chew tablets.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Additional Instructions -->
+<div class="bg-surface-container p-8">
+<h3 class="text-[10px] font-bold uppercase mb-4 tracking-widest">Follow-up Protocols</h3>
+<ul class="text-xs space-y-2 list-disc list-inside text-on-surface-variant">
+<li>Repeat blood panel required in 30 days.</li>
+<li>Monitor daily sodium intake below 2300mg.</li>
+<li>Schedule next consultation for physical assessment.</li>
+</ul>
+</div>
+</div>
+<!-- PDF Footer & Signature -->
+<div class="mt-auto pt-16 flex justify-between items-end">
+<div class="space-y-1">
+<p class="text-[10px] font-bold uppercase text-outline">Date of Authorization</p>
+<p class="text-xs font-medium">2023.10.24 — 14:32:00 GMT</p>
+<div class="w-48 h-[1px] bg-outline-variant mt-8"></div>
+<p class="text-[10px] font-bold uppercase text-outline mt-1">Hospital Stamp / Digital ID</p>
+</div>
+<div class="flex flex-col items-center">
+<img alt="Doctor Signature" class="w-24 h-12 mix-blend-multiply opacity-80" data-alt="Stylized digital handwritten signature of a doctor in blue ink on a white paper background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2_WJCiHfQ1tH5s5AvN3gEYvHuuOAYGJ7RwnYAIqnTBQeAgFAIqNW2ks9Kw8qn5zvYC2IjHQ79efobopfnS39OwHemQbgNrpymLYIUqC651Qgy3fwWwhJSfKmc60uU4Z2olOYvy2Xo6NxGzGYHQa8t_AWNQruYrwJC7n762e7g0nZw4vScxD5i09VzQ8M377wk5sgRkxteJ1DiRAKzl7By_U9Bs2lt0yIq08J6gEPHmr-7Fu7VWiW_4nZa_O3IfsmOR-xWf-wUhw"/>
+<div class="w-64 h-[1px] bg-on-surface mt-2"></div>
+<p class="text-[10px] font-bold uppercase mt-2">Authorized Signatory: Sarah Chen, MD</p>
+</div>
+</div>
+<!-- Monochromatic Edge Marking -->
+<div class="absolute right-0 top-0 h-full w-1 bg-primary"></div>
+</div>
+</section>
+<!-- Floating Action Tool (Contextual) -->
+<div class="fixed bottom-8 right-8 flex flex-col gap-2">
+<button class="w-12 h-12 bg-white flex items-center justify-center hover:bg-neutral-50 transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-neutral-600" data-icon="zoom_in">zoom_in</span>
+</button>
+<button class="w-12 h-12 bg-white flex items-center justify-center hover:bg-neutral-50 transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-neutral-600" data-icon="zoom_out">zoom_out</span>
+</button>
+<button class="w-12 h-12 bg-primary-container text-white flex items-center justify-center hover:bg-primary transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined" data-icon="share" style="font-variation-settings: 'FILL' 1;">share</span>
+</button>
+</div>
+</main>
+</body></html>

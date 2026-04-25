@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Doctors | MED-CARBON HMS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;600;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e5e2e1",
+                        "secondary": "#445ba1",
+                        "on-tertiary-container": "#fff1ed",
+                        "on-tertiary-fixed-variant": "#832700",
+                        "tertiary-container": "#c84000",
+                        "secondary-fixed": "#dbe1ff",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "on-secondary-fixed-variant": "#2a4387",
+                        "outline-variant": "#c3c6d8",
+                        "on-primary-fixed": "#00174c",
+                        "outline": "#737687",
+                        "tertiary": "#9e3100",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#fcf9f8",
+                        "error-container": "#ffdad6",
+                        "inverse-surface": "#313030",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#b4c5ff",
+                        "on-surface-variant": "#424656",
+                        "surface-container-low": "#f6f3f2",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-variant": "#e5e2e1",
+                        "on-secondary-container": "#2b4388",
+                        "tertiary-fixed": "#ffdbd0",
+                        "inverse-primary": "#b4c5ff",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#eae7e7",
+                        "primary": "#004ccd",
+                        "surface": "#fcf9f8",
+                        "inverse-on-surface": "#f3f0ef",
+                        "background": "#fcf9f8",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#f3f3ff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-tint": "#0052dd",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#00174c",
+                        "surface-dim": "#dcd9d9",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#f0edec",
+                        "on-primary-fixed-variant": "#003da9",
+                        "on-background": "#1c1b1b",
+                        "primary-container": "#0f62fe",
+                        "secondary-container": "#9db3ff",
+                        "on-surface": "#1c1b1b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "0px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Public Sans"],
+                        "body": ["Public Sans"],
+                        "label": ["Public Sans"]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- TopNavBar - Execution from JSON -->
+<header class="bg-white dark:bg-[#171717] font-['Public_Sans'] text-sm tracking-tight docked full-width top-0 h-12 flex justify-between items-center w-full px-4 z-50 fixed border-b border-[#f6f3f2] dark:border-[#262626]">
+<div class="flex items-center gap-8 h-full">
+<span class="text-lg font-semibold tracking-tighter text-[#1c1b1b] dark:text-white uppercase">MED-CARBON HMS</span>
+<nav class="hidden md:flex items-center gap-6 h-full">
+<a class="text-[#1c1b1b] dark:text-[#e5e2e1] h-full flex items-center hover:bg-[#e5e2e1] dark:hover:bg-[#393939] transition-colors px-2" href="#">Departments</a>
+<a class="text-[#0f62fe] border-b-2 border-[#0f62fe] h-full flex items-center hover:bg-[#e5e2e1] dark:hover:bg-[#393939] transition-colors px-2" href="#">Doctors</a>
+<a class="text-[#1c1b1b] dark:text-[#e5e2e1] h-full flex items-center hover:bg-[#e5e2e1] dark:hover:bg-[#393939] transition-colors px-2" href="#">Schedule</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center bg-surface-container-low px-3 py-1">
+<span class="material-symbols-outlined text-sm text-outline mr-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-xs w-48" placeholder="Global Search" type="text"/>
+</div>
+<button class="material-symbols-outlined text-[#1c1b1b] dark:text-white p-1 hover:bg-[#e5e2e1]" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-[#1c1b1b] dark:text-white p-1 hover:bg-[#e5e2e1]" data-icon="settings">settings</button>
+<div class="w-8 h-8 bg-surface-container-highest flex items-center justify-center">
+<img alt="Administrator Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional healthcare administrator in a bright modern office with natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfhn0BuyFThGBf-HoSKgz_cD2YbxIGgoxUVUjjTV4FOvvWJMau-Rb7AJdYQCSAIkKDM0RJQ3wFdGrZELcvZ-gzR6kUML-J7w_E1CdXudrfgdoJ2dfupbnOTsTfmhmMsOHong9p26FkspBKU4qzMLZnAJzOo1LQnEnhLcQOP_r7U7h4qTrtg463H6jDaAw2hcvaPbh5XYKCmTAwECrq7qkJToRT1i7_6NvuDIhP4wwhGFlujJiR6BuxGfoKb67t_osImLyCDybK_w"/>
+</div>
+</div>
+</header>
+<main class="pt-12 min-h-screen">
+<!-- Hero Header Intro -->
+<section class="bg-surface py-16 px-6 lg:px-12 border-b border-surface-container-low">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+<div class="max-w-2xl">
+<span class="text-xs font-bold text-primary tracking-[0.2em] uppercase mb-4 block">Medical Directory</span>
+<h1 class="text-5xl lg:text-7xl font-light tracking-tighter leading-none text-on-surface mb-6">Expert medical professionals at your service.</h1>
+<p class="text-on-surface-variant text-lg leading-relaxed font-normal max-w-lg">
+                            Access our network of world-class specialists. Filter by department or search directly to find the right care for your needs.
+                        </p>
+</div>
+<div class="flex flex-col items-end gap-2 text-right">
+<div class="text-3xl font-light">24/7</div>
+<div class="text-xs font-bold uppercase tracking-widest text-outline">Emergency Support</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Search and Filter Bar -->
+<section class="sticky top-12 z-40 bg-surface-container-low px-6 lg:px-12 py-8">
+<div class="max-w-7xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-px bg-outline-variant bg-opacity-20">
+<div class="md:col-span-5 bg-white p-4 flex items-center">
+<span class="material-symbols-outlined text-outline mr-3" data-icon="search">search</span>
+<input class="w-full border-none focus:ring-0 text-sm p-0 placeholder:text-outline-variant" placeholder="Search by name or keyword..." type="text"/>
+</div>
+<div class="md:col-span-4 bg-white p-4 flex items-center border-l border-surface-container-low">
+<span class="material-symbols-outlined text-outline mr-3" data-icon="filter_list">filter_list</span>
+<select class="w-full border-none focus:ring-0 text-sm p-0 appearance-none bg-transparent">
+<option>All Departments</option>
+<option>Cardiology</option>
+<option>Neurology</option>
+<option>Oncology</option>
+<option>Pediatrics</option>
+</select>
+</div>
+<div class="md:col-span-3 bg-primary-container p-4 flex items-center justify-center cursor-pointer active:bg-primary transition-colors">
+<span class="text-white text-xs font-bold uppercase tracking-widest">Apply Filters</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Doctors Grid -->
+<section class="bg-surface-container-low px-6 lg:px-12 pb-24">
+<div class="max-w-7xl mx-auto">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+<!-- Doctor Card 1 -->
+<div class="group bg-surface flex flex-col h-full transition-all duration-150 hover:translate-y-[-4px]">
+<div class="aspect-[4/5] bg-surface-container-highest overflow-hidden">
+<img alt="Doctor" class="w-full h-full object-cover" data-alt="professional portrait of a male doctor in a white coat with a stethoscope against a clean gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXPMQebdR-fxZtCLREoYqCQHol61kxiR99A3iSr6OGqC9KFRiRp7lS7VAgRAuSGwc10ZRNhxBVIE_c8TWJCzwqZg2scGpmQuOv9i1Uaz601kZU5b9drk6Kb9IPSpjeu2tZ9RuTXXa0kz4KomwK2LnS82hnRa4H98qb6T-VJVP5gZi9-WMqfVtIbrKiqKLcEH2o9B9EOHvE2D6FsQ5iHYfPj19uZY3sZjJgkVZOL1_iTdtmh8b5OtGA0A3veBk3S6LmXIPZDjbl9g"/>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<span class="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1">Cardiology</span>
+<h3 class="text-xl font-semibold text-on-surface mb-2">Dr. Alexander Vance</h3>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-2">Specializing in interventional cardiology and structural heart disease management.</p>
+<div class="mt-auto pt-6 border-t border-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold text-outline">Experience</span>
+<span class="text-xs font-semibold">12 Years</span>
+</div>
+<button class="bg-primary-container text-white px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-primary active:scale-95 transition-all">Check Slots</button>
+</div>
+</div>
+</div>
+<!-- Doctor Card 2 -->
+<div class="group bg-surface flex flex-col h-full transition-all duration-150 hover:translate-y-[-4px]">
+<div class="aspect-[4/5] bg-surface-container-highest overflow-hidden">
+<img alt="Doctor" class="w-full h-full object-cover" data-alt="confident female physician in professional medical attire looking into camera in a minimalist studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBVt1FA_9MmoUvBJjGF1vYDC-OMyvOBrZjuwShCnOaYff_xUoyhCCFxfHeTV7-EGW72W0d0jJVG9DfK-EBHy0l06ZKhhMF9gar8bWPKq98pjPY_3dMCDxIqgDE8_flzFgFnyRHxkfzRNEM4KUdNaQvBnn7oRT60XdSEUuUjiJb3v56IeH3dt5wxm-KHlCY5xjWsgV-m2BbKAg7_dr-5IzAGXGVhWM8eaJ9xBMuY8gvqIPzERfyJGXJdrLOFOl-2Ss_PqAUWdqkxQ"/>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<span class="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1">Neurology</span>
+<h3 class="text-xl font-semibold text-on-surface mb-2">Dr. Sarah Chen</h3>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-2">Leading researcher in neuro-regenerative therapy and advanced epilepsy care.</p>
+<div class="mt-auto pt-6 border-t border-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold text-outline">Experience</span>
+<span class="text-xs font-semibold">15 Years</span>
+</div>
+<button class="bg-primary-container text-white px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-primary active:scale-95 transition-all">Check Slots</button>
+</div>
+</div>
+</div>
+<!-- Doctor Card 3 -->
+<div class="group bg-surface flex flex-col h-full transition-all duration-150 hover:translate-y-[-4px]">
+<div class="aspect-[4/5] bg-surface-container-highest overflow-hidden">
+<img alt="Doctor" class="w-full h-full object-cover" data-alt="middle-aged male specialist with glasses and medical scrub standing in a high-tech hospital environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhivfa0YQwIp4KIqsfK-toBdQMTtZ0AXQ9YzxS7oj7sd5uJmNh4FE1KDqQR7Ts9oLGUO8XYvMQOj6nf4yeh69GBiRl6XNwdJD4_wVGI084VuqfFB6iZYZW-drmhr1x1mAC7urNB8NCArMJ6LAiJWq1gOJtRsT1J_S13i3_-iSxVOGXAwJ63aNwk5B_SLKgHlJ3SDxxKnosz6d7_BfnnHvm4Gewre0HEJbJ6KTVxkABdacoEBAXtLnmh0L42W_T1N7RVGcjTcL5Mg"/>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<span class="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1">Oncology</span>
+<h3 class="text-xl font-semibold text-on-surface mb-2">Dr. Michael Thorne</h3>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-2">Expert in precision oncology and targeted immunotherapy treatments.</p>
+<div class="mt-auto pt-6 border-t border-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold text-outline">Experience</span>
+<span class="text-xs font-semibold">20 Years</span>
+</div>
+<button class="bg-primary-container text-white px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-primary active:scale-95 transition-all">Check Slots</button>
+</div>
+</div>
+</div>
+<!-- Doctor Card 4 -->
+<div class="group bg-surface flex flex-col h-full transition-all duration-150 hover:translate-y-[-4px]">
+<div class="aspect-[4/5] bg-surface-container-highest overflow-hidden">
+<img alt="Doctor" class="w-full h-full object-cover" data-alt="professional female doctor in surgical scrubs looking focused in a clean bright clinical hallway" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4OUdUE3PIBAolR4-7MQKVn2th0Y4MV08CtaspcWaPen8Fv3ZPmeZx_t1I0EhpmTFNUHwdzDJ3AR_qiVUto7F66Uj7fomMV8QkuTdUPJhVmEszyimwsXBtIGVirqISJFWoHTeSDM-JB3H0VZbyZQ8J9rWN6z965rueNgqxaux8JQwtG9VltKkthWI_UBzbj42TWOsTJGFeiy6V6StxTBjlHOncv_KgFYo6ZUQs486xPS4MRLb8iiw__XNKOIDaXDPiQZOfiYIMtw"/>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<span class="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1">Pediatrics</span>
+<h3 class="text-xl font-semibold text-on-surface mb-2">Dr. Elena Rodriguez</h3>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-2">Focused on developmental pediatrics and neonatal intensive care medicine.</p>
+<div class="mt-auto pt-6 border-t border-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold text-outline">Experience</span>
+<span class="text-xs font-semibold">9 Years</span>
+</div>
+<button class="bg-primary-container text-white px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-primary active:scale-95 transition-all">Check Slots</button>
+</div>
+</div>
+</div>
+<!-- Doctor Card 5 -->
+<div class="group bg-surface flex flex-col h-full transition-all duration-150 hover:translate-y-[-4px]">
+<div class="aspect-[4/5] bg-surface-container-highest overflow-hidden">
+<img alt="Doctor" class="w-full h-full object-cover" data-alt="smiling medical professional in blue scrubs holding a digital tablet in a clean hospital lobby" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbiE_z0Fv_5j07BqDt9_l5UvvDkRNGDzKRjKcvRkES5nVlwjgoSreOAcLLi80Abf2_mPytmgb6FNd5CFX_FV-cHxiwDzs3RI_mTfHjRruQgpA-ligktAtkkTYRZujx6mOIJc9zGobQk4i6djoRHJnThmhZOkNXd2n3K676MaMQ9bQUMmHbPZH-ktcbSQlC4V1SJhOWwOfK14UF6wwxHhKvfkUBUuXdWMPg0I0mDsicJ_300bj30AcyzCzq_c7OhI-2FnUrBzHacA"/>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<span class="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1">Orthopedics</span>
+<h3 class="text-xl font-semibold text-on-surface mb-2">Dr. Julian West</h3>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-2">Specialist in sports medicine and minimally invasive orthopedic surgery.</p>
+<div class="mt-auto pt-6 border-t border-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold text-outline">Experience</span>
+<span class="text-xs font-semibold">14 Years</span>
+</div>
+<button class="bg-primary-container text-white px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-primary active:scale-95 transition-all">Check Slots</button>
+</div>
+</div>
+</div>
+<!-- Doctor Card 6 -->
+<div class="group bg-surface flex flex-col h-full transition-all duration-150 hover:translate-y-[-4px]">
+<div class="aspect-[4/5] bg-surface-container-highest overflow-hidden">
+<img alt="Doctor" class="w-full h-full object-cover" data-alt="female specialist in laboratory setting looking at results with a focused and professional expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2FZJ350dULlNXOpEhIjDTTtmebUNH6rP5xl9RiWUZnBKIZqzu8s1oeeYudCf0uwAvrweCcIBqU7A5igvcjpA2I1sz4vVokuwQRcR4zc5WVkSVtN9-7DtUR-nziMr8OltD8V1yvcoDRl5G1W79ZGArX8gHyJinvS_FCSh29qalzcbsMubwm6YR2ilc3sgP1rqLDcTzUBtpCP4Exicr_J-BbKZtXFI0MYH1Ky8QjcrqEgRJj9TqKRxPDHC_1UToXrgpYU_g3dboMg"/>
+</div>
+<div class="p-6 flex flex-col flex-grow">
+<span class="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1">Dermatology</span>
+<h3 class="text-xl font-semibold text-on-surface mb-2">Dr. Maya Patel</h3>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-2">Expert in cosmetic dermatology and clinical treatment of complex skin conditions.</p>
+<div class="mt-auto pt-6 border-t border-surface-container-low flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-[10px] uppercase font-bold text-outline">Experience</span>
+<span class="text-xs font-semibold">11 Years</span>
+</div>
+<button class="bg-primary-container text-white px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-primary active:scale-95 transition-all">Check Slots</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="mt-16 flex items-center justify-center gap-1">
+<button class="w-10 h-10 flex items-center justify-center bg-surface-container-highest text-on-surface hover:bg-primary-container hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center bg-primary-container text-white text-xs font-bold">1</button>
+<button class="w-10 h-10 flex items-center justify-center bg-white text-on-surface text-xs font-bold hover:bg-surface-container-highest transition-colors">2</button>
+<button class="w-10 h-10 flex items-center justify-center bg-white text-on-surface text-xs font-bold hover:bg-surface-container-highest transition-colors">3</button>
+<button class="w-10 h-10 flex items-center justify-center bg-surface-container-highest text-on-surface hover:bg-primary-container hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Newsletter / Footer CTA -->
+<section class="bg-on-surface py-24 px-6 lg:px-12">
+<div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-start justify-between gap-12">
+<div class="max-w-xl">
+<h2 class="text-white text-4xl font-light tracking-tighter mb-4">Stay informed about your health.</h2>
+<p class="text-surface-container-highest opacity-60 text-lg mb-8">Receive monthly health tips, clinic updates, and news from our specialists directly in your inbox.</p>
+<div class="flex flex-col sm:flex-row gap-px bg-outline-variant bg-opacity-20">
+<input class="bg-white border-none focus:ring-0 p-4 text-sm w-full sm:w-80" placeholder="Your email address" type="email"/>
+<button class="bg-primary-container text-white px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-primary transition-colors">Subscribe</button>
+</div>
+</div>
+<div class="flex flex-col items-start lg:items-end">
+<span class="text-white text-lg font-bold tracking-tighter uppercase mb-4">MED-CARBON HMS</span>
+<nav class="flex flex-col items-start lg:items-end gap-2">
+<a class="text-surface-container-highest opacity-60 hover:opacity-100 text-sm transition-opacity" href="#">Privacy Policy</a>
+<a class="text-surface-container-highest opacity-60 hover:opacity-100 text-sm transition-opacity" href="#">Terms of Service</a>
+<a class="text-surface-container-highest opacity-60 hover:opacity-100 text-sm transition-opacity" href="#">Contact Administration</a>
+</nav>
+</div>
+</div>
+</section>
+</main>
+<!-- Contextual FAB (Hidden on this transactional list page per suppression logic, but can be added if it fits a specific core action like 'Emergency Call') -->
+</body></html>

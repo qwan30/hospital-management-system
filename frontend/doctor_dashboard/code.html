@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clinical Curator - Staff Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#cee1ff",
+                    "primary-container": "#533afd",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#c5c0ff",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#d4e3ff",
+                    "tertiary-fixed-dim": "#b7c7e3",
+                    "on-error-container": "#93000a",
+                    "inverse-on-surface": "#ebf1ff",
+                    "secondary-fixed": "#d3e4ff",
+                    "tertiary-container": "#52627a",
+                    "on-secondary-fixed": "#071c32",
+                    "primary-fixed": "#e3dfff",
+                    "outline-variant": "#c8c4da",
+                    "on-secondary": "#ffffff",
+                    "on-secondary-fixed-variant": "#364860",
+                    "on-secondary-container": "#51647d",
+                    "surface-tint": "#5036fa",
+                    "on-tertiary-container": "#cddefa",
+                    "surface-container-low": "#eff3ff",
+                    "surface-container": "#e6eeff",
+                    "on-primary": "#ffffff",
+                    "outline": "#777588",
+                    "inverse-primary": "#c5c0ff",
+                    "surface-bright": "#f8f9ff",
+                    "background": "#f8f9ff",
+                    "surface-container-highest": "#d4e3ff",
+                    "on-surface": "#0b1c31",
+                    "on-primary-fixed-variant": "#3600e1",
+                    "surface-variant": "#d4e3ff",
+                    "surface-container-high": "#dde9ff",
+                    "on-tertiary-fixed": "#0b1c31",
+                    "on-surface-variant": "#474556",
+                    "secondary": "#64748D",
+                    "on-primary-fixed": "#130067",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed-dim": "#b5c8e5",
+                    "inverse-surface": "#213147",
+                    "surface": "#f8f9ff",
+                    "primary": "#3904e7",
+                    "tertiary": "#3a4a61",
+                    "on-tertiary-fixed-variant": "#38485f",
+                    "on-primary-container": "#ddd9ff",
+                    "on-error": "#ffffff",
+                    "on-background": "#0b1c31",
+                    "surface-dim": "#cadbf8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .editorial-header { font-weight: 300; letter-spacing: -1.4px; }
+        .data-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #eff3ff; }
+        ::-webkit-scrollbar-thumb { background: #c8c4da; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface flex overflow-hidden">
+<!-- SideNavBar Shell -->
+<aside class="bg-[#f8f9ff] flex flex-col h-screen p-4 space-y-2 docked left-0 h-full w-64 transition-all duration-300 ease-in-out">
+<div class="mb-8 px-2 flex items-center gap-3">
+<div class="w-8 h-8 bg-primary-container rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-sm" data-icon="clinical_notes">clinical_notes</span>
+</div>
+<h1 class="text-lg font-light tracking-[-1.4px] text-[#061B31]">Clinical Curator</h1>
+</div>
+<div class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 bg-white text-[#533AFD] rounded-lg shadow-sm font-semibold transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-sm tracking-normal">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#64748D] hover:bg-white/50 hover:text-[#533AFD] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="personal_injury">personal_injury</span>
+<span class="font-['Inter'] text-sm tracking-normal">Patient Records</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#64748D] hover:bg-white/50 hover:text-[#533AFD] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="event_upcoming">event_upcoming</span>
+<span class="font-['Inter'] text-sm tracking-normal">Surgical Schedule</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#64748D] hover:bg-white/50 hover:text-[#533AFD] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="microbiology">microbiology</span>
+<span class="font-['Inter'] text-sm tracking-normal">Diagnostics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#64748D] hover:bg-white/50 hover:text-[#533AFD] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="medication">medication</span>
+<span class="font-['Inter'] text-sm tracking-normal">Pharmacy</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#64748D] hover:bg-white/50 hover:text-[#533AFD] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+<span class="font-['Inter'] text-sm tracking-normal">Analytics</span>
+</a>
+</div>
+<div class="pt-4 border-t border-[#eff3ff] space-y-1">
+<button class="w-full mb-4 bg-primary-container text-white py-2.5 rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-base" data-icon="add">add</span>
+                New Entry
+            </button>
+<a class="flex items-center gap-3 px-3 py-2 text-[#64748D] hover:text-[#533AFD]" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-['Inter'] text-sm tracking-normal">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-[#64748D] hover:text-[#533AFD]" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Inter'] text-sm tracking-normal">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Workspace -->
+<main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-surface">
+<!-- Top Navigation -->
+<header class="bg-white/80 backdrop-blur-xl sticky top-0 z-50 flex justify-between items-center w-full px-8 py-4 shadow-[0_7px_14px_0_rgba(50,50,93,0.1)]">
+<div class="flex items-center gap-4">
+<h2 class="editorial-header text-2xl text-[#061B31]">Dashboard</h2>
+<span class="text-secondary text-sm font-light">Monday, Oct 24</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative flex items-center bg-surface-container-highest px-3 py-1.5 rounded-lg w-64 group transition-all focus-within:bg-white focus-within:ring-1 focus-within:ring-primary-container">
+<span class="material-symbols-outlined text-secondary text-lg" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-full text-on-surface placeholder:text-secondary" placeholder="Search clinical files..." type="text"/>
+</div>
+<div class="flex items-center gap-3">
+<button class="w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="flex items-center gap-2 border-l border-surface-container-high pl-4">
+<img alt="Staff Profile" class="w-8 h-8 rounded-full object-cover" data-alt="Close-up portrait of a professional male doctor with short dark hair in a clinical white coat" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4DYJwurnKMLFuOhXXr5EdB81H3YR8TzWphnf2rzJtySvllE_gIgO38oHJVo_dH1rTC4oiNVYlx7eYRtCpaoC0NOutdMlodk-Ek40ZN7xXfAcIpO1fPejAzW19tfpcyCN3bMRoaMOuwaAuIipgPYl-LdahjC4oJjVBzU_u9u1lgtnXilzvE4yWa1N8kYg5vKJ2D2pOkwtGhmBJD0w-64MFBL7zhBPHSSgXAmKTi9y1RjUXQJdGX9Ofe78_RUvO2Z-SStIye6x0jg"/>
+<div class="hidden lg:block">
+<p class="text-xs font-semibold text-[#061B31]">Dr. Aris Thorne</p>
+<p class="text-[10px] text-secondary uppercase tracking-wider">On-Duty: Surgery</p>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="flex-1 overflow-y-auto p-6 lg:p-8 space-y-6">
+<!-- KPI Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-primary-container">
+<div class="flex justify-between items-start mb-2">
+<span class="data-label text-secondary">Today's Total</span>
+<span class="material-symbols-outlined text-primary-container bg-primary-container/10 p-1 rounded" data-icon="calendar_today">calendar_today</span>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="editorial-header text-3xl text-on-surface">32</h3>
+<span class="text-[10px] text-green-600 font-medium">+4 from yesterday</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-error">
+<div class="flex justify-between items-start mb-2">
+<span class="data-label text-secondary">Waiting Room</span>
+<span class="material-symbols-outlined text-error bg-error/10 p-1 rounded" data-icon="hourglass_empty">hourglass_empty</span>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="editorial-header text-3xl text-on-surface">08</h3>
+<span class="text-[10px] text-secondary font-medium">Avg wait: 14m</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border-l-4 border-on-secondary-container">
+<div class="flex justify-between items-start mb-2">
+<span class="data-label text-secondary">In Progress</span>
+<span class="material-symbols-outlined text-on-secondary-container bg-secondary-container p-1 rounded" data-icon="vital_signs">vital_signs</span>
+</div>
+<div class="flex items-baseline gap-2">
+<h3 class="editorial-header text-3xl text-on-surface">04</h3>
+<span class="text-[10px] text-secondary font-medium">Active sessions</span>
+</div>
+</div>
+</div>
+<!-- Sticky Filter Bar & Actions -->
+<div class="sticky top-0 z-10 bg-surface/95 backdrop-blur-md py-2 flex flex-col sm:flex-row justify-between items-center gap-4">
+<div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1">
+<button class="px-4 py-1.5 rounded-full bg-primary-container text-white text-xs font-medium whitespace-nowrap">Today</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-high text-secondary text-xs hover:bg-surface-container-highest whitespace-nowrap transition-colors">Tomorrow</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-high text-secondary text-xs hover:bg-surface-container-highest whitespace-nowrap transition-colors">Weekly</button>
+<div class="h-4 w-px bg-surface-container-highest mx-2"></div>
+<select class="bg-surface-container-high border-none text-xs rounded-full py-1.5 pl-3 pr-8 text-secondary focus:ring-1 focus:ring-primary-container transition-all">
+<option>Status: All</option>
+<option>Confirmed</option>
+<option>In-Progress</option>
+<option>Completed</option>
+</select>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-2 text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-lg" data-icon="file_download">file_download</span>
+</button>
+</div>
+</div>
+<!-- Dense Data Table Container -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0_7px_14px_0_rgba(50,50,93,0.1)] overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-6 py-4 data-label text-secondary">Time</th>
+<th class="px-6 py-4 data-label text-secondary">Patient</th>
+<th class="px-6 py-4 data-label text-secondary">Department</th>
+<th class="px-6 py-4 data-label text-secondary">Reason</th>
+<th class="px-6 py-4 data-label text-secondary">Status</th>
+<th class="px-6 py-4 data-label text-secondary"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low">
+<!-- Table Row 1 -->
+<tr class="hover:bg-surface/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="text-sm font-semibold text-on-surface">09:00</div>
+<div class="text-[10px] text-secondary">AM</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-[10px] font-bold text-on-secondary-container">ES</div>
+<div>
+<div class="text-sm font-medium text-on-surface">Elias Sterling</div>
+<div class="text-[10px] text-secondary">#PAT-4421 • 42M</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs text-secondary bg-surface-container px-2 py-1 rounded">Cardiology</span>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs text-on-surface truncate max-w-[200px]">Post-Op Heart Valve Replacement Review</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
+<span class="text-[11px] font-medium text-on-surface">Confirmed</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 text-primary-container p-1 rounded hover:bg-primary-container/10 transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="chevron_right">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Table Row 2 -->
+<tr class="hover:bg-surface/50 transition-colors group bg-surface-container-low/20">
+<td class="px-6 py-4">
+<div class="text-sm font-semibold text-on-surface">09:30</div>
+<div class="text-[10px] text-secondary">AM</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-[10px] font-bold text-on-secondary-container">MR</div>
+<div>
+<div class="text-sm font-medium text-on-surface">Mina Rossi</div>
+<div class="text-[10px] text-secondary">#PAT-9833 • 29F</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs text-secondary bg-surface-container px-2 py-1 rounded">Oncology</span>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs text-on-surface truncate max-w-[200px]">Biopsy Lab Result Discussion</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div>
+<span class="text-[11px] font-medium text-on-surface">In-Progress</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 text-primary-container p-1 rounded hover:bg-primary-container/10 transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="chevron_right">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Table Row 3 -->
+<tr class="hover:bg-surface/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="text-sm font-semibold text-on-surface">10:15</div>
+<div class="text-[10px] text-secondary">AM</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-[10px] font-bold text-on-secondary-container">JW</div>
+<div>
+<div class="text-sm font-medium text-on-surface">Julian Weaver</div>
+<div class="text-[10px] text-secondary">#PAT-1120 • 65M</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs text-secondary bg-surface-container px-2 py-1 rounded">Orthopedics</span>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs text-on-surface truncate max-w-[200px]">Chronic Knee Pain Management</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-error"></div>
+<span class="text-[11px] font-medium text-on-surface">Waiting</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 text-primary-container p-1 rounded hover:bg-primary-container/10 transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="chevron_right">chevron_right</span>
+</button>
+</td>
+</tr>
+<!-- Table Row 4 -->
+<tr class="hover:bg-surface/50 transition-colors group">
+<td class="px-6 py-4">
+<div class="text-sm font-semibold text-on-surface">11:00</div>
+<div class="text-[10px] text-secondary">AM</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-surface-container-highest flex items-center justify-center text-[10px] font-bold text-on-secondary-container">AA</div>
+<div>
+<div class="text-sm font-medium text-on-surface">Amara Adebayo</div>
+<div class="text-[10px] text-secondary">#PAT-5602 • 12F</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs text-secondary bg-surface-container px-2 py-1 rounded">Pediatrics</span>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs text-on-surface truncate max-w-[200px]">Routine Vaccination &amp; Wellness</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-error"></div>
+<span class="text-[11px] font-medium text-on-surface">Waiting</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 text-primary-container p-1 rounded hover:bg-primary-container/10 transition-all">
+<span class="material-symbols-outlined text-xl" data-icon="chevron_right">chevron_right</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Dashboard Footer/Copyright -->
+<footer class="w-full py-8 border-t border-[#eff3ff] flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="font-['Inter'] text-[12px] uppercase tracking-[0.5px] text-[#64748D]">© 2024 Clinical Curator HMS. Editorial Excellence in Medicine.</p>
+<div class="flex gap-6">
+<a class="font-['Inter'] text-[12px] uppercase tracking-[0.5px] text-[#64748D] hover:text-[#061B31] transition-colors" href="#">Privacy Policy</a>
+<a class="font-['Inter'] text-[12px] uppercase tracking-[0.5px] text-[#64748D] hover:text-[#061B31] transition-colors" href="#">Accessibility</a>
+</div>
+</footer>
+</div>
+</main>
+<!-- Collapsed Right Panel (The Assistant) -->
+<aside class="w-16 h-screen bg-surface-container-low border-l border-surface-container-high flex flex-col items-center py-6 gap-6">
+<button class="w-10 h-10 rounded-full bg-primary-container text-white flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</button>
+<div class="flex flex-col gap-4 mt-8">
+<button class="text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="clinical_notes">clinical_notes</span>
+</button>
+<button class="text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="psychology">psychology</span>
+</button>
+</div>
+<div class="mt-auto mb-6">
+<button class="text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</aside>
+</body></html>

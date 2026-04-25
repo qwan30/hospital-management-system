@@ -1,403 +1,239 @@
 # Hospital Management System PRD
 
-**Document status:** Draft synthesized from existing project documentation  
-**Version:** 1.0  
-**Last updated:** 2026-03-18  
-**Product stage:** Release-ready demo / pilot scope  
+Status: aligned to the repository on 2026-04-16
 
 ## 1. Purpose
 
-This Product Requirements Document consolidates the project intent scattered across the current documentation set into a single product-facing source. It is meant to explain what the Hospital Management System should do, for whom, why it matters, and how success should be measured.
-
-This PRD is derived from the following documents in `docs/`:
-
-- `HMS_SRS.md`
-- `HMS_TDD.md`
-- `HMS_ProjectPlan.md`
-- `HMS_UIUXSpec.md`
-- `HMS_TestPlan.md`
-- `HMS_UserManual.md`
-- `HMS_DeploymentGuide.md`
-- `HMS_IntegrationGuide.md`
-- `HMS_DBMigrationPlan.md`
-
-Implementation-level details such as schema design, API contracts, migrations, and deployment steps remain owned by their original technical documents.
+This PRD is the current product baseline for the repository in `D:\projects\hospital-management-system`.
+It is intended to support UI/UX design and frontend planning from the code that actually exists today.
 
 ## 2. Product Summary
 
-Hospital Management System (HMS) is a hospital operations platform for Vietnamese healthcare providers. It combines:
+The project is a backend-first hospital management platform with:
 
-- A public website for hospital discovery and appointment booking
-- AI-assisted symptom analysis to estimate appointment duration
-- Automated patient communication through email
-- Internal dashboards for doctors, nurses, accountants, and admins
-- A read-only chatbot for hospital information and appointment guidance
+- public hospital discovery content
+- appointment booking with symptom-based duration suggestion
+- staff authentication and role-based workflows
+- doctor medical record and prescription PDF generation
+- nurse check-in, queue, and vital signs workflows
+- accountant invoice, payment, pricing, and revenue reporting workflows
+- admin operations for users, departments, rooms, schedules, content, and monitoring
+- patient portal authentication, overview, appointments, lab results, messages, and profile
+- an internal clinical assistant with document mode, patient mode, and hybrid mode
 
-The product is designed to reduce manual scheduling friction, improve staff coordination, prevent double-booking, and centralize daily operational workflows in one system.
+## 3. Current Implementation Baseline
 
-## 3. Problem Statement
+### 3.1 Implemented now
 
-Hospitals and clinics often manage patient acquisition, scheduling, clinical records, queue handling, billing, and staff operations across disconnected processes. That creates predictable failures:
+- Spring Boot backend with roughly 122 controller route handlers in `backend/api/src/main/java`
+- PostgreSQL schema managed by Flyway migrations `V1` through `V10`
+- seed data for departments, staff accounts, pricing, slots, inventory, and patient portal demo data
+- deterministic public chatbot based on live database content
+- Gemini-backed symptom analysis with heuristic fallback when Gemini is disabled or unavailable
+- Gmail integration hooks for transactional email, disabled by default unless configured
 
-- Patients cannot book quickly without phone calls or manual staff intervention
-- Appointment lengths are assigned uniformly even when case complexity varies
-- Double-booking happens when slots are allocated manually or concurrently
-- Doctors and nurses do not share a single operational view of the day
-- Post-visit communication, prescriptions, and follow-up reminders are inconsistent
-- Billing, reporting, staffing, and department configuration are fragmented
+### 3.2 Not implemented yet
 
-HMS addresses these gaps with a single system that spans patient-facing access, clinical operations, finance, and administration.
+- a production frontend application
+- a role-based React app connected to the backend APIs
+- patient self-service cancel/reschedule flows
+- patient portal message compose or reply APIs
+- external payment gateway integration
+- richer queue actions such as call, skip, or room board operations
 
-## 4. Vision
+### 3.3 Frontend status
 
-Deliver a single hospital operating system where a patient can discover a suitable doctor, book a visit without an account, receive timely automated communication, and move through an internal care workflow supported by clear staff dashboards, safe scheduling logic, and centralized administration.
+The `frontend/` folder is only a starter Vite TypeScript scaffold.
+It does not contain hospital screens yet.
+Design work should therefore treat the backend APIs and shared DTOs as the contract for the future UI.
 
-## 5. Goals
+## 4. Users and Roles
 
-### 5.1 Business Goals
-
-- Increase successful self-service appointment booking from public users
-- Reduce front-desk scheduling overhead and avoid slot collisions
-- Improve operational visibility for doctors, nurses, accountants, and admins
-- Standardize patient communication before and after visits
-- Support a release-ready demo or pilot that can be extended into production-grade deployment
-
-### 5.2 Product Goals
-
-- Let guests book appointments without authentication
-- Use AI to recommend visit duration and reserve the required number of time slots
-- Provide clear role-based dashboards for daily hospital workflows
-- Automatically send confirmation, prescription, and follow-up reminder emails
-- Expose real-time hospital and availability information through a safe chatbot
-
-### 5.3 User Experience Goals
-
-- Keep the booking flow understandable on mobile and desktop
-- Show clear validation and error messaging at every critical step
-- Preserve entered data when users hit recoverable errors such as slot conflicts
-- Keep staff workflows fast enough for live clinic operations
-
-## 6. Non-Goals
-
-The current documented scope does not include:
-
-- Patient accounts, patient login, or a patient portal
-- Online payment processing
-- Self-service appointment cancellation or rescheduling by patients
-- Medical diagnosis or treatment advice by the chatbot
-- Telemedicine or video consultation
-- Native mobile apps
-- Full production infra beyond the documented Docker Compose demo/pilot target
-
-## 7. Target Users
-
-| User | Access model | Primary needs |
+| Role | Current system access | Design implication |
 | --- | --- | --- |
-| Patient / family member | Guest, no login | Discover doctors, book appointments, receive confirmation and visit results |
-| Doctor | Authenticated staff | View schedule, review patient details, record diagnosis, prescribe medication, schedule follow-up |
-| Nurse | Authenticated staff | Check in patients, manage queue, enter vital signs, monitor room status |
-| Accountant | Authenticated staff | Collect payments, manage invoices, review revenue, configure pricing |
-| Admin | Authenticated staff | Manage staff, departments, doctor schedules, slots, system monitoring, homepage content |
-
-## 8. Core Product Principles
-
-- Guest-first booking: patients should not need an account to secure an appointment
-- Safe scheduling over speed: concurrency and slot integrity are more important than optimistic UX shortcuts
-- Role clarity: each staff role sees the tools needed for its workflow and no more
-- Automation where it matters: confirmations, prescription delivery, and reminders should not depend on manual follow-up
-- Read-only AI assistance: AI can support scheduling and information access, but must not make medical decisions or modify operational data autonomously
-
-## 9. Scope Overview
-
-### 9.1 Public Experience
-
-- Hospital home page
-- Department listing and department detail pages
-- Doctor directory and doctor profile pages
-- Four-step booking flow
-- Booking success confirmation page
-- News and announcement area
-- Floating chatbot on public pages
-
-### 9.2 Clinical Operations
-
-- Doctor dashboard and appointment calendar
-- Appointment detail and status management
-- Medical records entry
-- Prescription authoring and PDF generation
-- Follow-up appointment creation
-- Patient history search
-- Nurse check-in, queue, vital signs, and room status workflows
-
-### 9.3 Financial Operations
-
-- Invoice generation and management
-- Payment recording
-- Revenue dashboards and filtered reports
-- Service pricing configuration
-
-### 9.4 Administration
-
-- Staff management with role assignment and activation status
-- Department management
-- Doctor working schedule configuration
-- Automatic slot generation
-- System stats and audit log visibility
-- Homepage content management
-
-## 10. Key User Journeys
-
-### 10.1 Patient Booking Journey
-
-1. User lands on the public site and discovers a department or doctor.
-2. User opens the booking flow and selects a department and doctor.
-3. User enters symptoms and requests AI analysis.
-4. System returns estimated visit duration: 30, 45, 60, or 90 minutes.
-5. User selects a date and an eligible starting slot.
-6. User enters patient information, optionally adds family-member details, and reviews a confirmation summary.
-7. System creates the appointment, blocks the required slots transactionally, and sends a confirmation email.
-8. User lands on a success page with a confirmation code and email reminder prompt.
-
-### 10.2 Doctor Care Completion Journey
-
-1. Doctor logs in and opens the schedule dashboard.
-2. Doctor reviews today's appointments and appointment detail.
-3. Doctor starts the consultation and updates appointment status.
-4. Doctor enters diagnosis, notes, vital signs, and prescription items.
-5. Doctor previews the prescription PDF and confirms completion.
-6. System stores the medical record, generates the PDF, marks the appointment complete, and emails the patient.
-7. If needed, doctor schedules a follow-up slot and triggers reminder automation.
-
-### 10.3 Nurse Operations Journey
-
-1. Nurse opens the day's appointment list.
-2. Nurse searches for the patient and confirms arrival.
-3. System changes the status to checked in and places the patient into the live queue.
-4. Nurse records vital signs and updates room status as needed.
-5. Nurse calls the patient into the exam room when the doctor is ready.
-
-### 10.4 Accountant Billing Journey
-
-1. Accountant opens invoice management.
-2. Accountant filters invoices by date, department, and status.
-3. Accountant records payment method and payment completion.
-4. Accountant reviews revenue trends and exports detailed reports.
-
-### 10.5 Admin Configuration Journey
-
-1. Admin manages staff accounts and department assignments.
-2. Admin configures doctor working schedules and special closures.
-3. Admin generates appointment slots.
-4. Admin monitors system stats and audit logs.
-5. Admin updates homepage content blocks such as banners or announcements.
-
-### 10.6 Chatbot Assistance Journey
-
-1. Public user opens the floating chatbot.
-2. User asks about hospital hours, departments, doctors, or availability.
-3. System queries approved read-only data and combines it with a constrained AI prompt.
-4. Chatbot responds in Vietnamese and can guide the user into booking.
-5. Chatbot politely refuses medical diagnosis and appointment modification requests.
-
-## 11. Functional Requirements
-
-### 11.1 Public Website
-
-- The system must present hospital overview information including address, hotline, working hours, and map.
-- The system must display departments with images, short descriptions, and links to detail pages.
-- The system must display featured doctors and individual doctor profiles with specialty, qualifications, experience, and weekly schedule.
-- The system must expose clear calls to action that route users into booking with optional department or doctor preselection.
-- The public site should support hospital news and announcements.
-
-### 11.2 Appointment Booking
-
-- Booking must be available to unauthenticated users.
-- The booking flow must be structured into four steps: provider selection, symptom entry, slot selection, patient details and confirmation.
-- The system must require patient full name, CCCD, phone number, email, date of birth, gender, and address.
-- The system must support optional collection of occupation, blood type, medical history, allergies, and insurance number.
-- The system must support booking for a family member with relationship metadata.
-- The system must preserve entered information when the user encounters a recoverable error.
-
-### 11.3 AI-Assisted Slot Allocation
-
-- The system must send department and symptom text to an AI service for duration estimation.
-- The AI output must map to one of four durations: 30, 45, 60, or 90 minutes.
-- The system must block the corresponding number of consecutive 30-minute slots.
-- The booking transaction must prevent double-booking under concurrency.
-- If AI analysis fails or times out, the system must fall back to a default 30-minute duration and notify the user gracefully.
-
-### 11.4 Email Automation
-
-- The system must send booking confirmation emails immediately after successful appointment creation.
-- The system must send visit result emails with prescription PDF attachment after doctor completion.
-- The system must send follow-up reminder emails one day before the scheduled follow-up at 08:00.
-- Email content must include hospital, doctor, department, and appointment context relevant to the event.
-
-### 11.5 Doctor Workflow
-
-- Doctors must see schedule summary counts for today, waiting, in progress, and completed appointments.
-- Doctors must be able to view day and week schedule layouts.
-- Doctors must be able to open appointment detail including patient information, symptoms, AI estimate, and history.
-- Doctors must be able to transition appointment status through the documented workflow.
-- Doctors must be able to create medical records with diagnosis, clinical notes, vital signs, and multiple prescription items.
-- Doctors must be able to preview prescription output before confirming.
-- Doctors must be able to create follow-up appointments and access patient history by CCCD or name.
-
-### 11.6 Nurse Workflow
-
-- Nurses must be able to view all appointments for the day and search by patient name, CCCD, or confirmation code.
-- Nurses must be able to check in a patient and capture actual arrival time.
-- Nurses must be able to record vital signs before consultation.
-- Nurses must be able to monitor and manage a real-time queue.
-- Nurses must be able to update room status and call patients into consultation.
-
-### 11.7 Accountant Workflow
-
-- Accountants must be able to view invoices with filters and pagination.
-- The system must support invoice states for pending, paid, and cancelled.
-- Accountants must be able to record cash and bank-transfer payments.
-- Accountants must be able to review daily and monthly revenue reports.
-- Accountants must be able to export detailed financial reports to PDF or Excel.
-- Accountants must be able to manage service pricing with effective dates.
-
-### 11.8 Admin Workflow
-
-- Admins must be able to create, edit, disable, and soft-delete staff accounts.
-- Admins must be able to manage departments and assign doctors to departments.
-- Admins must be able to configure default hospital working hours and doctor-specific schedules.
-- Admins must be able to define holidays, leave periods, and slot generation rules.
-- Admins must be able to access system overview metrics and audit logs.
-- Admins must be able to manage selected homepage content elements.
-
-### 11.9 Chatbot
-
-- The chatbot must answer questions about hospital information, departments, doctor availability, and booking guidance.
-- The chatbot must use real-time system data for availability-related answers.
-- The chatbot must be read-only and must not mutate appointments, patient records, or schedules.
-- The chatbot must refuse diagnosis, treatment advice, or access to private patient data.
-
-## 12. Business Rules and Constraints
-
-- Staff access is restricted to four roles: doctor, nurse, accountant, and admin.
-- Staff authentication uses JWT with short-lived access tokens and longer-lived refresh tokens.
-- Patient email is mandatory because confirmation and prescription delivery depend on it.
-- CCCD is required for patient identity and history lookup and must be validated as a 12-digit field.
-- Base slot duration is 30 minutes; longer visits consume multiple contiguous slots.
-- Appointment status progression is controlled and role-dependent.
-- Follow-up reminders must be sent once only.
-- Service pricing changes must preserve pricing history through effective dates.
-- Sensitive patient and staff data must not be exposed through public pages or chatbot responses.
-
-## 13. UX Requirements
-
-- The booking flow must be mobile-friendly and usable without training.
-- Public navigation must clearly separate hospital information, doctors, departments, and booking.
-- The booking experience must provide a visible four-step progress indicator.
-- Validation errors must be specific and shown inline.
-- Loading, empty, error, and offline states must be handled explicitly.
-- Dashboard layouts must adapt across mobile, tablet, and desktop breakpoints.
-- Accessibility should align with WCAG 2.1 AA guidance, including contrast, focus states, ARIA labeling, and keyboard support.
-
-## 14. Non-Functional Requirements
-
-### 14.1 Security
-
-- Role-based authorization must block access to unauthorized staff endpoints.
-- Input validation must be enforced on all system boundaries.
-- Common web risks such as SQL injection and XSS must be mitigated.
-- Passwords must be hashed and transport must use HTTPS in production-like environments.
-- Sensitive personal data such as CCCD must be protected at rest and excluded from logs where possible.
-
-### 14.2 Performance
-
-- Public pages should reach first contentful paint in under 3 seconds.
-- Standard API responses should return in under 500 ms for common operations.
-- Slot booking must remain safe under concurrent requests.
-- Performance testing must verify race-condition resistance and acceptable p95 latency under load.
-
-### 14.3 Reliability
-
-- Email and AI integrations must fail gracefully.
-- AI analysis timeout should not block booking entirely.
-- Reminder jobs must avoid duplicate sends.
-- The system should support deterministic local setup through Docker Compose and seeded data.
-
-### 14.4 Maintainability
-
-- The system should remain modular enough to add future capabilities such as online payments, mobile apps, or telemedicine.
-- Database schema evolution must be versioned through Flyway migrations.
-- APIs should remain RESTful and documented.
-
-## 15. Success Metrics
-
-### 15.1 Product Metrics
-
-- Patients can complete a booking end to end without staff intervention.
-- Confirmation emails are sent successfully for completed bookings.
-- Prescription-result emails are sent successfully after completed consultations.
-- Follow-up reminders are sent on schedule without duplication.
-- Staff can complete day-of-visit workflows without leaving the system.
-
-### 15.2 Operational Metrics
-
-- Zero successful double-bookings under concurrent booking tests
-- Standard API p95 under 500 ms for common flows
-- Public page FCP under 3 seconds
-- Queue and schedule views refresh reliably during working hours
-
-### 15.3 Quality Gates
-
-- Core unit, integration, E2E, and performance scenarios pass
-- Role-based access checks reject missing, invalid, and wrong-role access
-- Critical flows work in the documented Docker Compose environment
-
-## 16. Release Scope by Phase
-
-| Phase | Focus | Outcome |
-| --- | --- | --- |
-| Phase 1 | Foundation | Auth, RBAC, schema, CRUD baseline, dashboard shell |
-| Phase 2 | Booking + AI | Public pages, booking flow, AI duration estimate, confirmation email |
-| Phase 3 | Staff Dashboards | Doctor schedule, nurse check-in, queue, room workflows |
-| Phase 4 | Medical Records + Email | Diagnosis capture, prescription PDF, result email, follow-up reminder job |
-| Phase 5 | Accounting + Admin | Invoices, revenue reporting, pricing, admin management and stats |
-| Phase 6 | Chatbot + Polish | Public chatbot, UX polish, E2E coverage, documentation completion |
-
-## 17. External Dependencies
-
-- AI provider for symptom-duration estimation and chatbot responses
-- Gmail API with OAuth2 for transactional email delivery
-- PostgreSQL as the system of record
-- PDF generation capability for prescriptions and billing/report exports
-- Containerized local runtime for demo and pilot environments
-
-## 18. Risks
-
-| Risk | Why it matters | Mitigation direction |
-| --- | --- | --- |
-| Concurrent booking conflicts | Double-booking breaks trust and clinic operations | Transactional slot locking and concurrency testing |
-| AI timeout or malformed output | Booking duration estimate can fail | Timeout, retry, and default 30-minute fallback |
-| Gmail token or auth failure | Critical patient communication may fail | OAuth2 validation, alerting, mock mode for non-prod |
-| PDF font/rendering issues for Vietnamese text | Prescription output becomes unreadable | Font embedding and preview verification |
-| Sensitive data exposure | High legal and trust impact | Encryption, RBAC, audit logging, no PII in logs |
-| Scope creep | Delivery slips across a six-phase plan | Keep release scope explicit and defer backlog items |
-
-## 19. Future Opportunities
-
-- Patient self-service portal
-- Appointment cancellation and rescheduling workflows
-- Online payments
-- Mobile app support
-- Telemedicine
-- Deeper analytics and operational forecasting
-- Broader integrations with LIS, RIS, or insurance systems
-
-## 20. Acceptance Summary
-
-The product is considered ready for the documented release scope when:
-
-- Public users can book appointments successfully with AI-assisted duration handling
-- Doctors, nurses, accountants, and admins can complete their core workflows in role-specific dashboards
-- Email confirmations, visit-result emails, and follow-up reminders work end to end
-- Chatbot answers supported hospital and scheduling questions without exposing private data or giving medical advice
-- Concurrency, access control, and core E2E flows pass validation in the target environment
-
+| Guest | Public content, doctor directory, department info, booking, chatbot | Needs a polished public website and booking flow |
+| Patient | Portal claim, portal login, overview, appointments, lab results, messages, profile | Needs a lightweight portal focused on visibility and trust |
+| Doctor | Staff auth, appointment list/detail, status updates, medical records, follow-up, PDFs, internal assistant | Needs an information-dense clinical workspace |
+| Nurse | Staff auth, daily appointments, queue, check-in, vital signs, internal assistant with queue-bound patient context | Needs fast list/detail interactions and low-friction intake |
+| Accountant | Invoices, payments, pricing, revenue reports | Needs finance tables, filters, and status visibility |
+| Admin | Users, departments, rooms, templates, closures, slots, content, news, stats, monitoring, audit logs, knowledge docs, docs-only internal assistant | Needs a broad operations console with strong navigation |
+
+## 5. Product Scope For Frontend Design
+
+### 5.1 Public experience
+
+- Home page driven by `/api/v1/content/home`
+- Department list and department detail
+- Doctor list, doctor detail, and doctor slot availability by date
+- News and announcement listing
+- Booking entry points
+- Public chatbot entry point
+
+### 5.2 Booking experience
+
+- Symptom analysis step via `/api/v1/ai/analyze-symptoms`
+- doctor and slot selection
+- patient identity and contact capture
+- booking confirmation with generated confirmation code
+
+### 5.3 Staff experience
+
+- Staff login and token refresh flow
+- doctor dashboard and appointment list
+- doctor appointment detail page
+- medical record editor with diagnosis, notes, follow-up, prescription items, and PDF preview/download
+- nurse intake board with today list, queue list, check-in, and vital signs capture
+- accountant workspace for invoices, payments, pricing, and revenue reports
+- admin workspace for data setup, content management, and system monitoring
+
+### 5.4 Patient portal
+
+- Portal claim flow
+- Portal login and refresh flow
+- Overview dashboard
+- Appointment history and next appointment visibility
+- Lab result list with summary, doctor comment, and attachment link
+- Message thread list with nested messages returned by the API
+- Profile editing
+
+### 5.5 Internal assistant
+
+- Session-aware assistant panel for doctor and nurse workflows
+- Docs mode, Patient mode, and Hybrid mode
+- citation list and deep links in every non-refused answer
+- feedback action on assistant answers
+- admin knowledge document management screens
+
+## 6. Screen Inventory
+
+The future frontend should at minimum include the screens below.
+
+### 6.1 Public screens
+
+- Home
+- Departments
+- Department detail
+- Doctors
+- Doctor detail with slot picker
+- Booking wizard
+- Booking success state
+- News list
+- Chatbot drawer or widget
+
+### 6.2 Staff screens
+
+- Staff login
+- Doctor dashboard
+- Doctor appointment detail
+- Medical record editor
+- Prescription PDF preview state
+- Nurse daily intake board
+- Queue board
+- Vital signs editor
+- Invoice list and detail
+- Pricing management
+- Revenue dashboard
+- Admin users
+- Admin departments
+- Admin rooms
+- Admin schedule templates
+- Admin special closures
+- Admin slot generation
+- Admin content and news
+- Admin stats and monitoring
+- Audit log viewer
+- Knowledge document manager
+
+### 6.3 Patient portal screens
+
+- Claim access
+- Login
+- Overview
+- Appointments
+- Lab results
+- Messages
+- Profile
+
+### 6.4 Shared overlay patterns
+
+- authentication expired modal or silent refresh flow
+- permission denied states
+- empty states
+- optimistic loading and skeleton states
+- form validation states
+- file upload states for knowledge docs
+
+## 7. Key Journeys
+
+### 7.1 Public booking journey
+
+1. Guest lands on Home or Departments.
+2. Guest explores doctors and slot availability.
+3. Guest enters symptoms and receives duration guidance.
+4. Guest selects doctor and first slot.
+5. Guest completes patient details and booking contact details.
+6. System returns confirmation code and booking summary.
+
+### 7.2 Doctor care completion journey
+
+1. Doctor logs in.
+2. Doctor reviews own appointment list or opens a direct appointment detail page.
+3. Doctor updates appointment status.
+4. Doctor creates a medical record with diagnosis, notes, optional vital signs, optional follow-up date, and prescription items.
+5. Doctor previews or downloads prescription PDF.
+6. Doctor optionally opens the internal assistant with patient context.
+
+### 7.3 Nurse intake journey
+
+1. Nurse logs in.
+2. Nurse opens today appointments or queue.
+3. Nurse checks in the patient.
+4. Nurse records vital signs.
+5. Nurse optionally uses the internal assistant with the currently queued patient context.
+
+### 7.4 Accountant billing journey
+
+1. Accountant logs in.
+2. Accountant reviews invoices by status.
+3. Accountant creates an invoice from an appointment.
+4. Accountant records payment or voids an invoice.
+5. Accountant reviews daily or monthly revenue and department breakdown.
+6. Accountant maintains pricing rules.
+
+### 7.5 Admin governance journey
+
+1. Admin logs in.
+2. Admin manages staff, departments, rooms, and scheduling structures.
+3. Admin manages public content and news.
+4. Admin reviews monitoring, stats, and audit logs.
+5. Admin uploads, activates, revokes, or reindexes internal assistant knowledge documents.
+
+## 8. UX Requirements
+
+- Public and patient experiences must work well on mobile and desktop.
+- Staff experiences are desktop-first but should remain tablet-friendly.
+- UI must reflect role boundaries exactly; unavailable actions should not be shown.
+- Assistant responses must always surface citations, suggested follow-up actions, and refusal states clearly.
+- Booking and medical forms must show validation inline and preserve entered data where safe.
+- Sensitive data views must feel clinical, reliable, and low-noise rather than marketing-driven.
+- Accessibility target for the future frontend is WCAG 2.1 AA.
+
+## 9. Product Constraints From Current Code
+
+- The chatbot is rule-based and grounded in departments, doctors, and slots. It is not a general LLM chat experience.
+- Symptom analysis is the only user-facing AI feature that calls an external model today.
+- Internal assistant responses are deterministic and citation-first; the UI should not imply free-form generative behavior.
+- Patient portal messaging is currently read-only from the patient side.
+- Room management exists for admin APIs only; a nurse room workflow is not implemented yet.
+- Refresh tokens are returned via HTTP-only cookies for both staff and patient authentication.
+
+## 10. Design Acceptance Criteria
+
+Frontend design artifacts produced from this PRD should:
+
+- cover all implemented roles and modules listed above
+- distinguish implemented backend capability from future enhancements
+- include clear responsive behavior for public and portal views
+- include dense desktop layouts for doctor, nurse, accountant, and admin workspaces
+- show where citations, PDFs, monitoring data, and status chips appear
+- avoid designing flows that need APIs the current repository does not provide

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MedCore Portal - Patient Appointments</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "secondary-fixed": "#dbe1ff",
+                "on-tertiary-fixed": "#390c00",
+                "on-tertiary": "#ffffff",
+                "inverse-primary": "#b4c5ff",
+                "surface": "#fcf9f8",
+                "error-container": "#ffdad6",
+                "surface-dim": "#dcd9d9",
+                "primary-fixed": "#dbe1ff",
+                "error": "#ba1a1a",
+                "on-surface-variant": "#424656",
+                "on-background": "#1c1b1b",
+                "secondary": "#445ba1",
+                "primary-container": "#0f62fe",
+                "on-secondary-fixed-variant": "#2a4387",
+                "tertiary-container": "#c84000",
+                "on-error-container": "#93000a",
+                "surface-container-low": "#f6f3f2",
+                "on-primary-fixed-variant": "#003da9",
+                "inverse-surface": "#313030",
+                "surface-container-highest": "#e5e2e1",
+                "on-secondary-fixed": "#00174c",
+                "on-secondary-container": "#2b4388",
+                "on-primary-fixed": "#00174c",
+                "surface-variant": "#e5e2e1",
+                "surface-bright": "#fcf9f8",
+                "on-tertiary-fixed-variant": "#832700",
+                "on-surface": "#1c1b1b",
+                "outline": "#737687",
+                "on-secondary": "#ffffff",
+                "surface-container": "#f0edec",
+                "secondary-fixed-dim": "#b4c5ff",
+                "inverse-on-surface": "#f3f0ef",
+                "surface-container-high": "#eae7e7",
+                "surface-tint": "#0052dd",
+                "on-primary-container": "#f3f3ff",
+                "tertiary-fixed": "#ffdbd0",
+                "surface-container-lowest": "#ffffff",
+                "outline-variant": "#c3c6d8",
+                "background": "#fcf9f8",
+                "primary": "#004ccd",
+                "secondary-container": "#9db3ff",
+                "primary-fixed-dim": "#b4c5ff",
+                "on-error": "#ffffff",
+                "tertiary": "#9e3100",
+                "on-primary": "#ffffff",
+                "tertiary-fixed-dim": "#ffb59d",
+                "on-tertiary-container": "#fff1ed"
+            },
+            "borderRadius": {
+                "DEFAULT": "0px",
+                "lg": "0px",
+                "xl": "0px",
+                "full": "9999px"
+            },
+            "fontFamily": {
+                "headline": ["Public Sans"],
+                "body": ["Public Sans"],
+                "label": ["Public Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom Scrollbar for IBM Carbon feel */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #f6f3f2; }
+        ::-webkit-scrollbar-thumb { background: #737687; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="flex items-center justify-between px-4 w-full z-50 bg-white dark:bg-neutral-900 fixed top-0 h-12 border-b-0 font-public-sans text-sm tracking-tight">
+<div class="flex items-center gap-8">
+<span class="text-lg font-semibold uppercase tracking-widest text-neutral-900 dark:text-white">MedCore Portal</span>
+<nav class="hidden md:flex gap-6 h-12 items-center">
+<a class="text-neutral-600 hover:text-neutral-900 transition-colors h-full flex items-center px-2" href="#">Overview</a>
+<a class="text-blue-600 border-b-2 border-blue-600 h-full flex items-center px-2" href="#">Appointments</a>
+<a class="text-neutral-600 hover:text-neutral-900 transition-colors h-full flex items-center px-2" href="#">Medical Records</a>
+<a class="text-neutral-600 hover:text-neutral-900 transition-colors h-full flex items-center px-2" href="#">Billing</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative flex items-center bg-neutral-100 dark:bg-neutral-800 px-2 h-8">
+<span class="material-symbols-outlined text-neutral-500 scale-75">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-xs w-48" placeholder="Search records..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+<span class="material-symbols-outlined text-xl">notifications</span>
+</button>
+<button class="p-1 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+<span class="material-symbols-outlined text-xl">settings</span>
+</button>
+<div class="h-8 w-8 bg-primary-container flex items-center justify-center text-white text-[10px] font-bold">JD</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-12 h-[calc(100vh-48px)] flex flex-col z-40 bg-neutral-50 dark:bg-neutral-950 w-64 border-r-0 font-public-sans text-xs font-medium uppercase tracking-wider">
+<div class="p-6">
+<h2 class="text-neutral-400 text-[10px] tracking-widest mb-1">Clinical Operations</h2>
+<p class="text-neutral-500 text-[9px] lowercase opacity-60">Staff Portal v1.0</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-6 py-4 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all" href="#">
+<span class="material-symbols-outlined">group</span>
+<span>Patients</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 bg-white dark:bg-neutral-900 text-blue-600 border-l-4 border-blue-600 font-bold" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span>Appointments</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Inventory</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all" href="#">
+<span class="material-symbols-outlined">badge</span>
+<span>Staff</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span>Billing</span>
+</a>
+</nav>
+<div class="p-4 bg-neutral-100 dark:bg-neutral-900/50">
+<button class="w-full bg-primary-container text-white py-3 font-bold flex items-center justify-center gap-2 transition-all active:opacity-80">
+<span class="material-symbols-outlined scale-75">add</span>
+                New Entry
+            </button>
+</div>
+<div class="mt-auto border-t border-neutral-200 dark:border-neutral-800">
+<a class="flex items-center gap-3 px-6 py-4 text-neutral-500 hover:bg-neutral-100 transition-all" href="#">
+<span class="material-symbols-outlined">contact_support</span>
+<span>Support</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-4 text-neutral-500 hover:bg-neutral-100 transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 mt-12 p-8 min-h-screen">
+<div class="max-w-6xl mx-auto">
+<!-- Editorial Header -->
+<header class="mb-12">
+<span class="text-[10px] font-bold tracking-[0.2em] text-primary uppercase block mb-2">Health Management</span>
+<h1 class="text-5xl font-light tracking-tighter text-on-surface mb-6">Patient Appointments</h1>
+<!-- Segmented Control -->
+<div class="flex items-center gap-0 bg-surface-container-low w-fit p-1">
+<button class="px-8 py-2 text-xs font-bold bg-white text-primary shadow-sm">UPCOMING</button>
+<button class="px-8 py-2 text-xs font-bold text-neutral-500 hover:bg-surface-container-high transition-colors">PAST</button>
+</div>
+</header>
+<!-- Appointments Content - Asymmetric Layout -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Left Column: Primary List -->
+<div class="col-span-12 lg:col-span-8 space-y-4">
+<!-- Appointment Card 1 -->
+<div class="group bg-surface-container-lowest p-6 flex flex-col md:flex-row md:items-center justify-between hover:bg-white transition-all cursor-pointer relative overflow-hidden">
+<div class="flex gap-6 items-start">
+<div class="flex flex-col items-center bg-surface-container-high p-3 min-w-[80px]">
+<span class="text-[10px] font-bold tracking-widest text-neutral-500 uppercase">OCT</span>
+<span class="text-2xl font-bold text-on-surface leading-none">24</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="bg-primary text-white text-[9px] font-bold px-2 py-0.5 tracking-wider uppercase">CONFIRMED</span>
+<span class="text-neutral-400 text-xs tracking-tighter">09:30 AM — 45 mins</span>
+</div>
+<h3 class="text-xl font-semibold text-on-surface">Dr. Sarah Jenkins</h3>
+<p class="text-sm text-neutral-500 font-medium uppercase tracking-tight">Cardiology • Diagnostic Consultation</p>
+</div>
+</div>
+<div class="mt-4 md:mt-0 flex items-center gap-4">
+<button class="text-xs font-bold text-primary hover:underline uppercase tracking-widest">Reschedule</button>
+<span class="material-symbols-outlined text-neutral-300 group-hover:text-primary transition-colors">arrow_forward_ios</span>
+</div>
+</div>
+<!-- Appointment Card 2 -->
+<div class="group bg-surface-container-lowest p-6 flex flex-col md:flex-row md:items-center justify-between hover:bg-white transition-all cursor-pointer relative overflow-hidden">
+<div class="flex gap-6 items-start">
+<div class="flex flex-col items-center bg-surface-container-high p-3 min-w-[80px]">
+<span class="text-[10px] font-bold tracking-widest text-neutral-500 uppercase">NOV</span>
+<span class="text-2xl font-bold text-on-surface leading-none">02</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="bg-secondary-container text-on-secondary-container text-[9px] font-bold px-2 py-0.5 tracking-wider uppercase">PENDING</span>
+<span class="text-neutral-400 text-xs tracking-tighter">02:15 PM — 30 mins</span>
+</div>
+<h3 class="text-xl font-semibold text-on-surface">Dr. Michael Chen</h3>
+<p class="text-sm text-neutral-500 font-medium uppercase tracking-tight">Dermatology • Routine Skin Check</p>
+</div>
+</div>
+<div class="mt-4 md:mt-0 flex items-center gap-4">
+<button class="text-xs font-bold text-primary hover:underline uppercase tracking-widest">Review Info</button>
+<span class="material-symbols-outlined text-neutral-300 group-hover:text-primary transition-colors">arrow_forward_ios</span>
+</div>
+</div>
+<!-- Appointment Card 3 -->
+<div class="group bg-surface-container-lowest p-6 flex flex-col md:flex-row md:items-center justify-between hover:bg-white transition-all cursor-pointer relative overflow-hidden">
+<div class="flex gap-6 items-start">
+<div class="flex flex-col items-center bg-surface-container-high p-3 min-w-[80px]">
+<span class="text-[10px] font-bold tracking-widest text-neutral-500 uppercase">NOV</span>
+<span class="text-2xl font-bold text-on-surface leading-none">15</span>
+</div>
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="bg-primary text-white text-[9px] font-bold px-2 py-0.5 tracking-wider uppercase">CONFIRMED</span>
+<span class="text-neutral-400 text-xs tracking-tighter">11:00 AM — 60 mins</span>
+</div>
+<h3 class="text-xl font-semibold text-on-surface">Dr. Elena Rodriguez</h3>
+<p class="text-sm text-neutral-500 font-medium uppercase tracking-tight">Physical Therapy • Initial Assessment</p>
+</div>
+</div>
+<div class="mt-4 md:mt-0 flex items-center gap-4">
+<button class="text-xs font-bold text-primary hover:underline uppercase tracking-widest">Reschedule</button>
+<span class="material-symbols-outlined text-neutral-300 group-hover:text-primary transition-colors">arrow_forward_ios</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Contextual Data -->
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<!-- Data Monolith: Health Summary -->
+<div class="bg-surface-container-highest p-8">
+<h4 class="text-[10px] font-bold tracking-[0.2em] text-neutral-500 uppercase mb-8">Summary Metrics</h4>
+<div class="space-y-8">
+<div>
+<span class="text-5xl font-light tracking-tighter text-primary">03</span>
+<span class="text-[10px] font-bold block uppercase tracking-widest mt-2 text-neutral-600">Upcoming Visits</span>
+</div>
+<div>
+<span class="text-5xl font-light tracking-tighter text-on-surface">12</span>
+<span class="text-[10px] font-bold block uppercase tracking-widest mt-2 text-neutral-600">Total YTD Appointments</span>
+</div>
+<div>
+<span class="text-5xl font-light tracking-tighter text-on-surface">98%</span>
+<span class="text-[10px] font-bold block uppercase tracking-widest mt-2 text-neutral-600">Attendance Rate</span>
+</div>
+</div>
+</div>
+<!-- Quick Action Card -->
+<div class="bg-primary-container p-8 text-white">
+<h4 class="text-[10px] font-bold tracking-[0.2em] uppercase mb-4 opacity-80">Telehealth Ready</h4>
+<p class="text-xl font-medium mb-6 leading-tight">You have a virtual visit available in your clinical history.</p>
+<button class="w-full bg-white text-primary py-4 font-bold text-xs uppercase tracking-widest hover:bg-surface-container-low transition-colors">
+                            Check Connection
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Detail Drawer (Overlay Simulation) -->
+<div class="fixed inset-0 bg-neutral-900/40 backdrop-blur-sm z-[100] flex justify-end invisible pointer-events-none">
+<!-- In a real app, this would be toggled with JS. Visual representation only. -->
+<div class="w-full max-w-md bg-white h-screen shadow-2xl flex flex-col animate-slide-in">
+<div class="p-6 flex items-center justify-between border-b border-neutral-100">
+<h2 class="text-sm font-bold uppercase tracking-widest">Appointment Details</h2>
+<button class="material-symbols-outlined p-2 hover:bg-neutral-100">close</button>
+</div>
+<div class="p-8 flex-1 overflow-y-auto">
+<div class="mb-10">
+<img class="w-24 h-24 bg-neutral-200 grayscale mb-6" data-alt="professional headshot of a female doctor in a white coat with a stethoscope around her neck, clean medical office background, soft daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2UbgtMTVSG6qtKr74l9Aas2CR1Ot837tF7I-SCO3WsQrYiGqUrcKbfWkE1BFfDAyDS0ICww51d6bVGpHS4zpkVZk1NcfQnI4uvG_o1mPhL_jrNEuDnzke8-d_q5o3jAfz59ne3rd4ew8Gl_SxAr-pBpHCB-1_uftz7qJYt0Rxu6AqG06B80sbIdkRx6ON4OgWF-K4LkUs3Py84jcELWP6p5HC57xcjll0wF7OYBMyoxAsxkrL57xXXlQ3HJW2UQn28fgeLFMedw"/>
+<h3 class="text-3xl font-light tracking-tight mb-2">Dr. Sarah Jenkins</h3>
+<p class="text-xs font-bold text-primary tracking-widest uppercase">Senior Cardiologist • MD, FACC</p>
+</div>
+<div class="space-y-8">
+<div>
+<h4 class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Date &amp; Time</h4>
+<p class="text-on-surface font-medium">Thursday, Oct 24, 2024</p>
+<p class="text-neutral-500 text-sm">09:30 AM — 10:15 AM (EST)</p>
+</div>
+<div>
+<h4 class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Location</h4>
+<p class="text-on-surface font-medium">Main Medical Plaza • Tower A</p>
+<p class="text-neutral-500 text-sm">Suite 405, 1200 Healthcare Blvd</p>
+<div class="mt-4 h-32 bg-neutral-100">
+<div class="w-full h-full bg-neutral-200 flex items-center justify-center text-[10px] text-neutral-400 font-bold uppercase tracking-widest" data-location="Rochester, MN" style="">
+                                Map View [Static]
+                            </div>
+</div>
+</div>
+<div>
+<h4 class="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">Preparation Notes</h4>
+<ul class="text-sm text-on-surface-variant space-y-2 list-disc pl-4">
+<li>Fast for 12 hours prior to arrival.</li>
+<li>Bring all current medications.</li>
+<li>Arrive 15 minutes early for paperwork.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="p-6 bg-neutral-50 grid grid-cols-2 gap-4">
+<button class="bg-white border-2 border-primary text-primary py-4 font-bold text-xs uppercase tracking-widest hover:bg-primary hover:text-white transition-all">Cancel Visit</button>
+<button class="bg-primary text-white py-4 font-bold text-xs uppercase tracking-widest hover:bg-primary-container transition-all">Reschedule</button>
+</div>
+</div>
+</div>
+</body></html>
