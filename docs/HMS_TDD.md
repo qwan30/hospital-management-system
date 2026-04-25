@@ -77,10 +77,10 @@ The backend is organized as a DDD-oriented Maven reactor. Java package names sti
 | `domain` | persistent domain entities, enums, request/response DTOs, domain exceptions | none |
 | `infrastructure` | Spring Data repositories, Gemini/Gmail adapters, PDF and hospital-profile infrastructure | `domain` |
 | `application` | use-case services, auth/token services, orchestration, seed/backfill jobs | `domain`, `infrastructure` |
-| `controller` | REST controllers, API response envelope, security filters, web exception handling | `application` |
-| `start` | Spring Boot launcher, runtime config, Flyway migrations, knowledge seed resources, integration tests | `controller` |
+| `controller` | REST controllers, API response envelope, security filters, web exception handling | `domain`, `application` |
+| `start` | Spring Boot launcher, runtime config, Flyway migrations, knowledge seed resources, integration tests | `domain`, `infrastructure`, `application`, `controller` |
 
-Runtime bootstrapping starts from `backend/start` and scans the `com.hospital` package tree so Spring can compose beans across the modules. Boundary checks live in the Maven enforcer rules and `ModuleBoundaryTest`.
+Runtime bootstrapping starts from `backend/start` and scans the `com.hospital` package tree so Spring can compose beans across the modules. `start` is the composition root and intentionally declares every backend module it boots. Boundary checks live in the Maven enforcer rules and `ModuleBoundaryTest`, including a source-import guard that prevents lower layers from importing higher layers.
 
 ### 4.1 Public and booking capabilities
 

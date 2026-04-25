@@ -36,6 +36,8 @@ Current integration and hardening suites include:
 - `SecurityHardeningIntegrationTest`
 - `ModuleBoundaryTest`
 
+`ModuleBoundaryTest` verifies both declared Maven module dependencies and source-level imports so controller/start code cannot accidentally rely on hidden transitive module dependencies.
+
 ### 1.3 Frontend tests
 
 - no frontend unit tests

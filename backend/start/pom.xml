@@ -15,6 +15,21 @@
   <dependencies>
     <dependency>
       <groupId>com.hospital</groupId>
+      <artifactId>domain</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hospital</groupId>
+      <artifactId>infrastructure</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hospital</groupId>
+      <artifactId>application</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hospital</groupId>
       <artifactId>controller</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -62,30 +77,6 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-module-boundaries</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <bannedDependencies>
-                  <searchTransitive>false</searchTransitive>
-                  <excludes>
-                    <exclude>com.hospital:domain</exclude>
-                    <exclude>com.hospital:infrastructure</exclude>
-                    <exclude>com.hospital:application</exclude>
-                  </excludes>
-                </bannedDependencies>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>

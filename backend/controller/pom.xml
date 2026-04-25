@@ -15,6 +15,11 @@
   <dependencies>
     <dependency>
       <groupId>com.hospital</groupId>
+      <artifactId>domain</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.hospital</groupId>
       <artifactId>application</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -62,7 +67,6 @@
                 <bannedDependencies>
                   <searchTransitive>false</searchTransitive>
                   <excludes>
-                    <exclude>com.hospital:domain</exclude>
                     <exclude>com.hospital:infrastructure</exclude>
                     <exclude>com.hospital:start</exclude>
                   </excludes>

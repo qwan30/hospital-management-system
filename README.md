@@ -88,10 +88,12 @@ docker-compose.yml  # PostgreSQL + backend services
 The backend is now a DDD-oriented Maven reactor:
 
 ```text
-domain <- infrastructure <- application <- controller <- start
+domain <- infrastructure <- application
+domain + application <- controller
+domain + infrastructure + application + controller <- start
 ```
 
-`application` also depends directly on `domain` for contract and entity types. Java package names still use the existing `com.hospital.core`, `com.hospital.api`, and `com.hospital.shared` namespaces; the Maven module folders above are the current architectural boundaries.
+`controller` depends directly on `domain` for request/response contracts and domain exceptions. `start` is the composition root, so it declares the backend modules it boots and scans instead of relying on transitive Maven dependencies. Java package names still use the existing `com.hospital.core`, `com.hospital.api`, and `com.hospital.shared` namespaces; the Maven module folders above are the current architectural boundaries.
 
 ## Source of Truth
 

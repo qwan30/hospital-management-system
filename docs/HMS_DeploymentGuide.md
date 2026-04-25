@@ -40,8 +40,8 @@ The backend service is built from the `backend/start` Maven module. The active b
 | `domain` | compiled into downstream modules as entities, enums, and request/response contracts |
 | `infrastructure` | provides repositories and external integration adapters |
 | `application` | provides use-case services and orchestration |
-| `controller` | provides REST endpoints, security filters, and web error handling |
-| `start` | packages the executable Spring Boot application and runtime resources |
+| `controller` | provides REST endpoints, API DTO usage, security filters, and web error handling |
+| `start` | packages the executable Spring Boot application, declares the composition root, and provides runtime resources |
 
 Use `mvn -pl start -am ...` for backend build, test, package, and run commands.
 
