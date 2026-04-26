@@ -13,3 +13,8 @@ integration:
 spring:
   flyway:
     clean-disabled: false
+
+hms:
+  seed:
+    non-billing-demo:
+      enabled: ${HMS_NON_BILLING_DEMO_SEED_ENABLED:true}

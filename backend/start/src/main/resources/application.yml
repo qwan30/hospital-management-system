@@ -65,3 +65,14 @@ hospital:
     privacy-policy-url: ${HOSPITAL_PRIVACY_POLICY_URL:/privacy}
     facebook-url: ${HOSPITAL_FACEBOOK_URL:https://facebook.com}
     youtube-url: ${HOSPITAL_YOUTUBE_URL:https://youtube.com}
+
+hms:
+  seed:
+    non-billing-demo:
+      enabled: ${HMS_NON_BILLING_DEMO_SEED_ENABLED:false}
+      target-departments: ${HMS_NON_BILLING_DEMO_TARGET_DEPARTMENTS:20}
+      target-doctors: ${HMS_NON_BILLING_DEMO_TARGET_DOCTORS:50}
+      target-patients: ${HMS_NON_BILLING_DEMO_TARGET_PATIENTS:500}
+      target-appointments: ${HMS_NON_BILLING_DEMO_TARGET_APPOINTMENTS:1000}
+      target-inventory-items: ${HMS_NON_BILLING_DEMO_TARGET_INVENTORY_ITEMS:200}
+      target-audit-logs: ${HMS_NON_BILLING_DEMO_TARGET_AUDIT_LOGS:1000}

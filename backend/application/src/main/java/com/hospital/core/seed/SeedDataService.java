@@ -2,6 +2,8 @@ package com.hospital.core.seed;
 
 import com.hospital.core.appointment.AppointmentEntity;
 import com.hospital.core.appointment.AppointmentRepository;
+import com.hospital.core.audit.AuditLogEntity;
+import com.hospital.core.audit.AuditLogRepository;
 import com.hospital.core.department.DepartmentEntity;
 import com.hospital.core.department.DepartmentRepository;
 import com.hospital.core.inventory.InventoryItemEntity;
@@ -37,6 +39,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,7 +48,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SeedDataService {
+  private static final List<String> DEMO_DEPARTMENT_NAMES = List.of(
+      "Emergency Medicine",
+      "Radiology",
+      "Laboratory",
+      "Pharmacy",
+      "Orthopedics",
+      "Dermatology",
+      "Ophthalmology",
+      "ENT",
+      "Neurology",
+      "Oncology",
+      "Endocrinology",
+      "Gastroenterology",
+      "Pulmonology",
+      "Rehabilitation",
+      "Obstetrics",
+      "Urology",
+      "General Surgery");
+
   private final AppointmentRepository appointmentRepository;
+  private final AuditLogRepository auditLogRepository;
   private final DepartmentRepository departmentRepository;
   private final InventoryItemRepository inventoryItemRepository;
   private final InventoryLotRepository inventoryLotRepository;
@@ -60,9 +84,11 @@ public class SeedDataService {
   private final UserRepository userRepository;
   private final TimeSlotRepository timeSlotRepository;
   private final PasswordEncoder passwordEncoder;
+  private final NonBillingDemoSeedProperties nonBillingDemoSeedProperties;
 
   public SeedDataService(
       AppointmentRepository appointmentRepository,
+      AuditLogRepository auditLogRepository,
       DepartmentRepository departmentRepository,
       InventoryItemRepository inventoryItemRepository,
       InventoryLotRepository inventoryLotRepository,
@@ -77,8 +103,10 @@ public class SeedDataService {
       ServicePricingRepository servicePricingRepository,
       UserRepository userRepository,
       TimeSlotRepository timeSlotRepository,
-      PasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder,
+      NonBillingDemoSeedProperties nonBillingDemoSeedProperties) {
     this.appointmentRepository = appointmentRepository;
+    this.auditLogRepository = auditLogRepository;
     this.departmentRepository = departmentRepository;
     this.inventoryItemRepository = inventoryItemRepository;
     this.inventoryLotRepository = inventoryLotRepository;
@@ -94,6 +122,7 @@ public class SeedDataService {
     this.userRepository = userRepository;
     this.timeSlotRepository = timeSlotRepository;
     this.passwordEncoder = passwordEncoder;
+    this.nonBillingDemoSeedProperties = nonBillingDemoSeedProperties;
   }
 
   @Transactional
@@ -114,11 +143,11 @@ public class SeedDataService {
     var doctorOne = createUser("doctor1@hospital.vn", "Doctor@1234", "Dr. Nguyen Van An", UserRole.DOCTOR, internalMedicine, "Internal Medicine");
     var doctorTwo = createUser("doctor2@hospital.vn", "Doctor@1234", "Dr. Tran Thi Binh", UserRole.DOCTOR, cardiology, "Cardiology");
     var nurse = createUser("nurse@hospital.vn", "Nurse@1234", "Le Thi Cuc", UserRole.NURSE, internalMedicine, null);
-    createUser("receptionist@hospital.vn", "Reception@1234", "Vo Thi Reception", UserRole.RECEPTIONIST, null, null);
-    createUser("pharmacist@hospital.vn", "Pharma@1234", "Hoang Van Pharmacist", UserRole.PHARMACIST, null, null);
+    var receptionist = createUser("receptionist@hospital.vn", "Reception@1234", "Vo Thi Reception", UserRole.RECEPTIONIST, null, null);
+    var pharmacist = createUser("pharmacist@hospital.vn", "Pharma@1234", "Hoang Van Pharmacist", UserRole.PHARMACIST, null, null);
     var accountant = createUser("accountant@hospital.vn", "Acc@1234", "Pham Van Dung", UserRole.ACCOUNTANT, null, null);
     var admin = createUser("admin@hospital.vn", "Admin@1234", "System Admin", UserRole.ADMIN, null, null);
-    userRepository.saveAll(List.of(doctorOne, doctorTwo, nurse, accountant, admin));
+    userRepository.saveAll(List.of(doctorOne, doctorTwo, nurse, receptionist, pharmacist, accountant, admin));
 
     if (timeSlotRepository.count() == 0) {
       generateSlots(doctorOne);
@@ -132,6 +161,8 @@ public class SeedDataService {
     if (patientAccountRepository.count() == 0) {
       seedPatientPortal(doctorOne);
     }
+
+    seedNonBillingDemoDataIfEnabled();
   }
 
   private DepartmentEntity createDepartment(String name, String description, String phone) {
@@ -378,5 +409,173 @@ public class SeedDataService {
     patientMessage.setSenderRole("PATIENT");
     patientMessage.setBody("Confirmed. I will bring the medication list and my recent symptom log.");
     patientMessageRepository.save(patientMessage);
+  }
+
+  private void seedNonBillingDemoDataIfEnabled() {
+    if (!nonBillingDemoSeedProperties.isEnabled()) {
+      return;
+    }
+
+    var departments = new ArrayList<>(departmentRepository.findAllByOrderByNameAsc());
+    departments.addAll(seedAdditionalDepartments(
+        nonBillingDemoSeedProperties.additionalDepartments(departments.size())));
+
+    var doctors = new ArrayList<>(userRepository.findByRoleAndActiveTrueOrderByFullNameAsc(UserRole.DOCTOR));
+    doctors.addAll(seedAdditionalDoctors(
+        departments,
+        nonBillingDemoSeedProperties.additionalDoctors(doctors.size())));
+
+    var patients = new ArrayList<>(patientRepository.findAll());
+    patients.addAll(seedAdditionalPatients(
+        nonBillingDemoSeedProperties.additionalPatients(patients.size())));
+
+    seedAdditionalAppointments(
+        doctors,
+        patients,
+        nonBillingDemoSeedProperties.additionalAppointments(appointmentRepository.count()));
+    seedAdditionalInventory(
+        departments,
+        nonBillingDemoSeedProperties.additionalInventoryItems(inventoryItemRepository.count()));
+    seedAdditionalAuditLogs(
+        userRepository.findAllByOrderByFullNameAsc(),
+        nonBillingDemoSeedProperties.additionalAuditLogs(auditLogRepository.count()));
+  }
+
+  private List<DepartmentEntity> seedAdditionalDepartments(int count) {
+    var departments = new ArrayList<DepartmentEntity>();
+    for (int index = 0; index < count; index++) {
+      var name = DEMO_DEPARTMENT_NAMES.get(index % DEMO_DEPARTMENT_NAMES.size());
+      departments.add(createDepartment(
+          name,
+          "Demo specialty department for non-billing performance validation",
+          "028 2000 %04d".formatted(index + 1)));
+    }
+    return departmentRepository.saveAll(departments);
+  }
+
+  private List<UserEntity> seedAdditionalDoctors(List<DepartmentEntity> departments, int count) {
+    var doctors = new ArrayList<UserEntity>();
+    for (int index = 0; index < count; index++) {
+      var department = departments.get(index % departments.size());
+      doctors.add(createUser(
+          "doctor.demo%03d@hospital.vn".formatted(index + 1),
+          "Doctor@1234",
+          "Dr. Demo Clinician %03d".formatted(index + 1),
+          UserRole.DOCTOR,
+          department,
+          department.getName()));
+    }
+    return userRepository.saveAll(doctors);
+  }
+
+  private List<PatientEntity> seedAdditionalPatients(int count) {
+    var patients = new ArrayList<PatientEntity>();
+    for (int index = 0; index < count; index++) {
+      var identifier = "880%09d".formatted(index + 1);
+      var patient = new PatientEntity();
+      patient.setFullName("Demo Patient %03d".formatted(index + 1));
+      patient.setPhone("09%08d".formatted(30000000 + index));
+      patient.setEmail("patient.demo%03d@example.com".formatted(index + 1));
+      patient.setDateOfBirth(LocalDate.of(1980 + (index % 30), (index % 12) + 1, (index % 27) + 1));
+      patient.setGender(index % 2 == 0 ? Gender.FEMALE : Gender.MALE);
+      patient.setOccupation("Demo cohort member");
+      patient.setBloodType(List.of("A+", "B+", "O+", "AB+").get(index % 4));
+      patient.setMedicalHistory("Generated non-billing performance validation patient.");
+      patient.setDrugAllergies(index % 5 == 0 ? "Penicillin" : "None recorded");
+      patient.setInsuranceNumber("DEMO-INS-%05d".formatted(index + 1));
+      patient.setCccd(patientIdentifierProtector.encrypt(identifier));
+      patient.setCccdHash(patientIdentifierProtector.hash(identifier));
+      patients.add(patient);
+    }
+    return patientRepository.saveAll(patients);
+  }
+
+  private void seedAdditionalAppointments(List<UserEntity> doctors, List<PatientEntity> patients, int count) {
+    if (doctors.isEmpty() || patients.isEmpty()) {
+      return;
+    }
+
+    var appointments = new ArrayList<AppointmentEntity>();
+    for (int index = 0; index < count; index++) {
+      var doctor = doctors.get(index % doctors.size());
+      var patient = patients.get(index % patients.size());
+      var date = LocalDate.now().plusDays(index % 21);
+      var start = LocalTime.of(8, 0).plusMinutes((long) (index % 16) * 30L);
+      var slot = new TimeSlotEntity();
+      slot.setDoctor(doctor);
+      slot.setSlotDate(date);
+      slot.setStartTime(start);
+      slot.setEndTime(start.plusMinutes(30));
+      slot.setStatus(SlotStatus.BOOKED);
+      slot = timeSlotRepository.save(slot);
+
+      var appointment = new AppointmentEntity();
+      appointment.setPatient(patient);
+      appointment.setDoctor(doctor);
+      appointment.setFirstSlot(slot);
+      appointment.setAppointmentDate(date);
+      appointment.setAiDurationMinutes(30);
+      appointment.setSymptoms("Generated non-billing queue and appointment search validation.");
+      appointment.setConfirmationCode("HMS-DEMO-%04d".formatted(index + 1));
+      appointment.setStatus(demoAppointmentStatus(index));
+      if (appointment.getStatus() == AppointmentStatus.CHECKED_IN || appointment.getStatus() == AppointmentStatus.IN_PROGRESS) {
+        appointment.setCheckedInAt(LocalDateTime.now().minusMinutes(index % 90));
+      }
+      appointments.add(appointment);
+    }
+    appointmentRepository.saveAll(appointments);
+  }
+
+  private void seedAdditionalInventory(List<DepartmentEntity> departments, int count) {
+    if (departments.isEmpty()) {
+      return;
+    }
+
+    var items = new ArrayList<InventoryItemEntity>();
+    for (int index = 0; index < count; index++) {
+      var reorderLevel = 20 + (index % 30);
+      var quantity = index % 6 == 0 ? reorderLevel - 2 : reorderLevel + 40 + (index % 50);
+      items.add(createInventoryItem(
+          departments.get(index % departments.size()),
+          "DEMO-INV-%04d".formatted(index + 1),
+          "Demo Supply Item %03d".formatted(index + 1),
+          List.of("Medication", "Consumable", "Equipment", "Laboratory").get(index % 4),
+          List.of("box", "unit", "pack", "bottle").get(index % 4),
+          reorderLevel,
+          quantity,
+          quantity <= reorderLevel ? "LOW_STOCK" : "IN_STOCK"));
+    }
+    inventoryItemRepository.saveAll(items);
+  }
+
+  private void seedAdditionalAuditLogs(List<UserEntity> actors, int count) {
+    var actions = List.of(
+        "QUEUE_FILTER_VALIDATED",
+        "APPOINTMENT_SEARCH_VALIDATED",
+        "DOCTOR_SLOT_LOOKUP_VALIDATED",
+        "INVENTORY_LIST_VALIDATED",
+        "AUDIT_LOG_LIST_VALIDATED");
+    var logs = new ArrayList<AuditLogEntity>();
+    for (int index = 0; index < count; index++) {
+      var log = new AuditLogEntity();
+      if (!actors.isEmpty()) {
+        log.setActor(actors.get(index % actors.size()));
+      }
+      log.setAction(actions.get(index % actions.size()));
+      log.setEntityType("PERFORMANCE_VALIDATION");
+      log.setMetadata("{\"source\":\"non-billing-demo-seed\",\"sequence\":%d}".formatted(index + 1));
+      logs.add(log);
+    }
+    auditLogRepository.saveAll(logs);
+  }
+
+  private AppointmentStatus demoAppointmentStatus(int index) {
+    return switch (index % 5) {
+      case 0 -> AppointmentStatus.CONFIRMED;
+      case 1 -> AppointmentStatus.CHECKED_IN;
+      case 2 -> AppointmentStatus.IN_PROGRESS;
+      case 3 -> AppointmentStatus.DONE;
+      default -> AppointmentStatus.PENDING;
+    };
   }
 }
