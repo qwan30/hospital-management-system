@@ -84,7 +84,7 @@ test.describe("@ui live operations API screens", () => {
     await page.goto("/staff/inventory");
 
     await expect(page.getByTestId("inventory-workspace")).toBeVisible();
-    await expect(page.getByText("Normal Saline 500ml")).toBeVisible();
+    await expect(page.getByRole("table").getByText("Normal Saline 500ml")).toBeVisible();
     await expect(page.getByText("LOT-SAL-2401")).toBeVisible();
     await expect(page.getByText("Ward usage")).toBeVisible();
     await expect(page.getByText("1 low-stock item")).toBeVisible();
