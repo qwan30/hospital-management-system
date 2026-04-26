@@ -42,14 +42,14 @@ Current file count: 65 `page.tsx` files and 71 total route/layout files under `w
 | `/staff/dashboard` | `staff/(app)/dashboard/page.tsx` | Implemented | staff landing |
 | `/staff/closures` | `staff/(app)/closures/page.tsx` | Implemented | admin scheduling support |
 | `/staff/patients` | `staff/(app)/patients/page.tsx` | Implemented | patient list/workspace |
-| `/staff/queue` | `staff/(app)/queue/page.tsx` | Partially implemented | backend-integrated queue and check-in |
+| `/staff/queue` | `staff/(app)/queue/page.tsx` | Implemented | backend-integrated queue, check-in, call, room assignment, consultation, and completion actions |
 | `/staff/schedule` | `staff/(app)/schedule/page.tsx` | Implemented route file | doctor schedule |
 | `/staff/booking` | `staff/(app)/booking/page.tsx` | Implemented route file | staff booking shell |
 | `/staff/booking/symptoms` | `staff/(app)/booking/symptoms/page.tsx` | Implemented route file | intake step |
 | `/staff/booking/slots` | `staff/(app)/booking/slots/page.tsx` | Implemented route file | slot step |
 | `/staff/booking/review` | `staff/(app)/booking/review/page.tsx` | Implemented route file | review step |
 | `/staff/booking/success` | `staff/(app)/booking/success/page.tsx` | Implemented route file | success state |
-| `/staff/inventory` | `staff/(app)/inventory/page.tsx` | Implemented route file | pharmacist/admin inventory workspace |
+| `/staff/inventory` | `staff/(app)/inventory/page.tsx` | Implemented | pharmacist/admin inventory workspace with item, lot, movement, and alert APIs |
 | `/staff/invoices` | `staff/(app)/invoices/page.tsx` | Implemented route file | finance workspace |
 | `/staff/lab-results` | `staff/(app)/lab-results/page.tsx` | Implemented route file | lab result list |
 | `/staff/lab-results/[id]` | `staff/(app)/lab-results/[id]/page.tsx` | Implemented route file | lab result detail |
@@ -70,9 +70,9 @@ Current file count: 65 `page.tsx` files and 71 total route/layout files under `w
 | --- | --- | --- | --- |
 | `/admin/dashboard` | `admin/(app)/dashboard/page.tsx` | Implemented route file | admin landing |
 | `/admin/appointments` | `admin/(app)/appointments/page.tsx` | Implemented route file | appointment operations |
-| `/admin/audit-logs` | `admin/(app)/audit-logs/page.tsx` | Implemented route file | audit log viewer |
+| `/admin/audit-logs` | `admin/(app)/audit-logs/page.tsx` | Implemented | audit log viewer for authorization, queue, inventory, and admin events |
 | `/admin/departments` | `admin/(app)/departments/page.tsx` | Implemented route file | department admin |
-| `/admin/monitoring` | `admin/(app)/monitoring/page.tsx` | Implemented route file | monitoring snapshot |
+| `/admin/monitoring` | `admin/(app)/monitoring/page.tsx` | Implemented | monitoring snapshot with active, schedule, and inventory alert counts |
 | `/admin/news` | `admin/(app)/news/page.tsx` | Implemented route file | news admin |
 | `/admin/public-content` | `admin/(app)/public-content/page.tsx` | Implemented route file | public content admin |
 | `/admin/rooms` | `admin/(app)/rooms/page.tsx` | Implemented route file | room admin |

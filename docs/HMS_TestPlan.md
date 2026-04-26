@@ -1,6 +1,6 @@
 # Hospital Management System Test Plan
 
-Status: aligned with the repository on 2026-04-26 after staff queue backend integration and RBAC hardening.
+Status: aligned with the repository on 2026-04-26 after queue actions, inventory alerts, and operational monitoring updates.
 
 Documentation map: [README.md](README.md)  
 Route inventory: [reference/frontend-route-inventory.md](reference/frontend-route-inventory.md)
@@ -25,6 +25,8 @@ Current unit-tested service areas include:
 - prescription PDF service
 - reminder service
 - inventory write service
+- inventory alert service
+- operations monitoring snapshot service
 - lab result service
 - RBAC authorization service
 - vital signs service
@@ -42,13 +44,14 @@ Current integration and hardening suites include:
 ### 1.3 Frontend tests
 
 - API-client behavior coverage verifies optional staff bearer-token attachment without changing public calls.
-- Mocked UI coverage verifies `/staff/queue` unauthorized handling, live queue rendering, and check-in row updates.
+- Mocked UI coverage verifies `/staff/queue` unauthorized handling, live queue rendering, check-in row updates, and queue call/room/start/complete actions.
 - Backend-integrated Playwright coverage verifies staff auth, patient auth/claim, logout, public booking, nurse queue access, nurse check-in when a waiting appointment exists, and forbidden non-nurse queue access.
 
 Current Playwright spec files under `web/e2e/specs`:
 
 - `api-client.spec.ts`
 - `auth-integrated.spec.ts`
+- `operations-api.spec.ts`
 - `rbac.spec.ts`
 - `responsive.spec.ts`
 - `route-audit.spec.ts`
@@ -88,6 +91,8 @@ Verify:
 - pricing create and update
 - revenue report queries
 - inventory item, lot, and movement write operations
+- inventory low-stock and expiry alert generation
+- inventory write audit events
 
 ### 2.4 Patient portal
 
@@ -138,8 +143,11 @@ Covered route families:
 Current E2E flows:
 
 - staff login calls `/api/v1/auth/login`, stores the access token in session storage, and opens `/staff/dashboard`
-- nurse queue opens `/staff/queue`, calls `/api/v1/queue/today`, merges today appointment data for waiting check-in actions, and posts `/api/v1/appointments/{appointmentId}/checkin`
+- nurse queue opens `/staff/queue`, calls `/api/v1/queue/today`, merges today appointment data for waiting check-in actions, posts `/api/v1/appointments/{appointmentId}/checkin`, and exercises queue call, room assignment, consultation start, and completion endpoints
 - non-nurse staff queue access handles `403` with an unauthorized state
+- inventory workspace calls item, lot, movement, and alert APIs and renders low-stock and expiry counts
+- admin monitoring renders active, inventory, and schedule alert counts from `/api/v1/admin/monitoring`
+- admin audit logs render queue and inventory audit actions from `/api/v1/admin/audit-logs`
 - invalid staff login stays on `/staff/login` and shows an alert
 - patient login calls `/api/v1/patient-auth/login`
 - patient claim calls `/api/v1/patient-auth/claim`

@@ -17,12 +17,12 @@ The next major milestone is to turn that backend into a coherent frontend produc
 | Backend architecture | Done | Spring Boot DDD-oriented multi-module backend is in place: `domain`, `infrastructure`, `application`, `controller`, `start` |
 | Core clinical APIs | Done | appointments, medical records, follow-up, PDFs, queue, vital signs |
 | Finance APIs | Done | invoices, payments, pricing, revenue reports |
-| Inventory APIs | Done | items, lots, movements |
+| Inventory APIs | Done | items, lots, movements, alerts |
 | Patient portal APIs | Partially done | auth, overview, appointments, lab results, messages list, profile |
 | Public chatbot | Done | deterministic helper for departments, doctors, and slots |
-| Frontend application | In progress | canonical Next.js app exists in `web/`; selected auth, RBAC, API-client, and `/staff/queue` flows are backend-integrated |
-| Frontend tests | In progress | Playwright covers route smoke, auth/API flows, RBAC, responsive, visual, and staff queue behavior |
-| Dockerized frontend | Planned | Docker Compose has no active frontend service |
+| Frontend application | In progress | canonical Next.js app exists in `web/`; selected auth, RBAC, API-client, queue, inventory, monitoring, audit, and portal flows are backend-integrated |
+| Frontend tests | In progress | Playwright covers route smoke, auth/API flows, RBAC, responsive, visual, operations API screens, and staff queue behavior |
+| Dockerized frontend | Done | `web/Dockerfile` and the active Compose `frontend` service build the canonical Next.js app |
 
 ## 2.1 Current-Vs-Planned Status Legend
 
@@ -173,7 +173,7 @@ API dependencies:
 | --- | --- | --- |
 | Designing beyond current APIs | Rework during implementation | Keep design anchored to DTOs and controllers |
 | Treating patient messages as two-way chat | Missing backend capability | Mark compose/reply as future scope only |
-| Assuming nurse room board exists | Workflow mismatch | Keep nurse workflow centered on queue and check-in |
+| Assuming a separate nurse room board exists | Workflow mismatch | Keep nurse workflow centered on queue, check-in, and audited queue room assignment |
 | Reintroducing removed AI/assistant concepts in UI copy | Confusing UX | Keep chatbot framed as a scoped hospital helper only |
 | Treating static frontend screens as production-ready | Planning errors | Explicitly plan backend data integration before production use |
 

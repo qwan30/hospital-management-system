@@ -37,7 +37,7 @@ PDF endpoints return `application/pdf` instead of the JSON envelope.
 | Public booking/helper | `/appointments`, `/chatbot/messages` | public create/chatbot only |
 | Clinical operations | `/appointments`, `/queue`, `/medical-records`, `/patient-records`, `/patients`, `/vital-signs`, `/lab-results`, `/me/schedule` | staff roles |
 | Finance | `/invoices`, `/pricing`, `/reports/revenue/*` | accountant/admin |
-| Inventory | `/inventory/items`, `/inventory/lots`, `/inventory/movements` | pharmacist/admin |
+| Inventory | `/inventory/items`, `/inventory/lots`, `/inventory/movements`, `/inventory/alerts` | pharmacist/admin |
 | Patient portal | `/patient-portal/overview`, `/patient-portal/appointments`, `/patient-portal/lab-results`, `/patient-portal/messages`, `/patient-portal/profile` | patient |
 | Admin | `/admin/users`, `/admin/departments`, `/admin/rooms`, `/admin/schedule-templates`, `/admin/special-closures`, `/admin/slots`, `/admin/stats`, `/admin/monitoring`, `/admin/audit-logs`, `/admin/content/sections`, `/admin/public-content`, `/admin/news` | admin, except audit logs also allow accountant |
 
@@ -81,6 +81,11 @@ PDF endpoints return `application/pdf` instead of the JSON envelope.
 | `POST` | `/api/v1/appointments/{appointmentId}/follow-up` | follow-up scheduling |
 | `GET` | `/api/v1/appointments/{appointmentId}/follow-up` | follow-up read |
 | `GET` | `/api/v1/queue/today` | queue board |
+| `POST` | `/api/v1/queue/{appointmentId}/call` | queue call patient action |
+| `POST` | `/api/v1/queue/{appointmentId}/skip` | move ready patient to back of queue |
+| `POST` | `/api/v1/queue/{appointmentId}/assign-room` | assign queue patient to consultation room note |
+| `POST` | `/api/v1/queue/{appointmentId}/start-consultation` | mark queue patient in consultation |
+| `POST` | `/api/v1/queue/{appointmentId}/complete` | complete queue visit |
 | `GET` | `/api/v1/me/schedule` | signed-in staff schedule |
 | `POST` | `/api/v1/medical-records` | create medical record |
 | `POST` | `/api/v1/medical-records/preview.pdf` | prescription PDF preview |
@@ -119,6 +124,7 @@ PDF endpoints return `application/pdf` instead of the JSON envelope.
 | `PUT` | `/api/v1/inventory/lots/{lotId}` | inventory lot update |
 | `GET` | `/api/v1/inventory/movements` | inventory movement list |
 | `POST` | `/api/v1/inventory/movements` | inventory movement create |
+| `GET` | `/api/v1/inventory/alerts` | low-stock and expiry alert list |
 
 ### 3.4 Patient Portal
 

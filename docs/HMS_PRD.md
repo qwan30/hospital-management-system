@@ -42,7 +42,7 @@ The project is a backend-first hospital management platform with:
 - patient self-service cancel/reschedule flows
 - patient portal message compose or reply APIs
 - external payment gateway integration
-- richer queue actions such as call, skip, or room board operations
+- separate real-time room-board operations beyond the audited queue assign-room action
 
 ### 3.3 Frontend status
 
@@ -73,10 +73,10 @@ See [role-screen/API matrix](reference/role-screen-api-matrix.md) for the implem
 | Public discovery and booking APIs | Implemented | Public content, departments, doctors, slots, appointments, and scoped chatbot are active |
 | Staff auth and RBAC | Implemented | Staff access tokens, refresh cookies, backend RBAC, and frontend route guards exist |
 | Clinical workflows | Implemented | Appointments, queue, vital signs, lab results, medical records, follow-up, and prescription PDF routes exist |
-| Finance and inventory APIs | Implemented | Invoice, payment, pricing, revenue, inventory item, lot, and movement routes exist |
+| Finance and inventory APIs | Implemented | Invoice, payment, pricing, revenue, inventory item, lot, movement, and alert routes exist |
 | Patient portal read experience | Partially implemented | Auth, overview, appointments, lab results, messages, and profile exist; message send/reply, self-cancel, and reschedule are not implemented |
 | Frontend route tree | Partially implemented | `web/src/app` contains public, staff, admin, and portal routes; only selected workflows are backend-integrated |
-| Dockerized frontend | Planned | Docker Compose has no active frontend service |
+| Dockerized frontend | Implemented | `web/Dockerfile` and the active Docker Compose `frontend` service build the canonical Next.js app |
 | External payment gateway | Planned | No payment-provider integration is present |
 | AI/internal assistant workflows | Removed | Historical assistant API and database surfaces are removed from the active product |
 

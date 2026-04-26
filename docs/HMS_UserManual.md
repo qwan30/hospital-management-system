@@ -76,12 +76,13 @@ The nurse workflow should allow a nurse to:
 - open today appointments
 - open the queue view
 - check in a patient
+- call, skip, assign a consultation room, start consultation, and complete queue visits
 - record or update vital signs
 
 Important limitation:
 
-- the current repo does not provide a nurse-specific room management API
-- nurse UX should not depend on live room operations beyond queue and check-in
+- the current repo does not provide a separate nurse-specific room management API
+- nurse UX should not depend on live room operations beyond the audited queue room-assignment action
 
 ## 6. Accountant User
 

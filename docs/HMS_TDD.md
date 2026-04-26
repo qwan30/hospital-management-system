@@ -102,7 +102,7 @@ Runtime bootstrapping starts from `backend/start` and scans the `com.hospital` p
 - patient record summaries
 - medical record creation
 - prescription PDF preview and download
-- queue and check-in
+- queue, check-in, and audited queue actions
 - vital signs
 - follow-up
 
@@ -112,7 +112,7 @@ Runtime bootstrapping starts from `backend/start` and scans the `com.hospital` p
 - payments
 - pricing
 - revenue reports
-- inventory items, lots, and movements
+- inventory items, lots, movements, and alerts
 
 ### 4.4 Admin platform capabilities
 

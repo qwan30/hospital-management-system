@@ -10,9 +10,9 @@
 | Guest | `/`, `/departments`, `/departments/[id]`, `/doctors`, `/news`, `/booking`, legal/security pages | public content, departments, doctors, public appointment create, chatbot | No authentication |
 | Patient | `/portal/login`, `/portal/claim`, `/portal/overview`, `/portal/appointments`, `/portal/lab-results`, `/portal/messages`, `/portal/profile`, related portal pages | `/patient-auth`, `/patient-portal` | Portal messages are read-only from the patient side |
 | Doctor | `/staff/dashboard`, `/staff/doctor/dashboard`, `/staff/doctor/[id]`, `/staff/schedule`, `/staff/patients`, `/staff/medical-records/[id]/edit`, `/staff/prescriptions/preview`, clinical read pages | `/appointments`, `/me/schedule`, `/patient-records`, `/patients`, `/medical-records`, `/lab-results`, `/vital-signs` | Own clinical workflow emphasis |
-| Nurse | `/staff/dashboard`, `/staff/queue`, `/staff/nurse-intake`, `/staff/vital-signs`, `/staff/lab-results`, selected booking/support pages | `/queue`, `/appointments/today`, `/appointments/{id}/checkin`, `/vital-signs`, lab-result read | No nurse-specific room-board API |
-| Receptionist | `/staff/dashboard`, `/staff/booking`, `/staff/queue`, `/staff/support` | appointment read/write/cancel, queue read/check-in | RBAC role exists; no receptionist demo account is currently persisted by seed data |
-| Pharmacist | `/staff/dashboard`, `/staff/inventory`, `/staff/prescriptions/preview`, `/staff/support` | inventory read/manage, prescription PDF read | RBAC role exists; no pharmacist demo account is currently persisted by seed data |
+| Nurse | `/staff/dashboard`, `/staff/queue`, `/staff/nurse-intake`, `/staff/vital-signs`, `/staff/lab-results`, selected booking/support pages | `/queue`, `/appointments/today`, `/appointments/{id}/checkin`, queue manage actions, `/vital-signs`, lab-result read | Queue assign-room is implemented; no separate live room-board API |
+| Receptionist | `/staff/dashboard`, `/staff/booking`, `/staff/queue`, `/staff/support` | appointment read/write/cancel, queue read/check-in/manage | RBAC role exists; no receptionist demo account is currently persisted by seed data |
+| Pharmacist | `/staff/dashboard`, `/staff/inventory`, `/staff/prescriptions/preview`, `/staff/support` | inventory read/manage including alerts, prescription PDF read | RBAC role exists; no pharmacist demo account is currently persisted by seed data |
 | Accountant | `/staff/dashboard`, `/staff/invoices`, `/staff/pricing`, `/staff/revenue`, `/admin/audit-logs`, support pages | `/invoices`, `/pricing`, `/reports/revenue`, `/admin/audit-logs` | Seeded demo account exists |
 | Admin | `/admin/*`, `/staff/*` where policy permits, `/forbidden` for denial states | all admin families, audit, finance, inventory, protected clinical support | Seeded demo account exists |
 
@@ -22,7 +22,7 @@
 | --- | --- |
 | Admin user, department, room, schedule, content, monitoring, and stats management | `ADMIN` |
 | Audit log read | `ADMIN`, `ACCOUNTANT` |
-| Queue read/check-in | `ADMIN`, `NURSE`, `RECEPTIONIST` |
+| Queue read/check-in/manage | `ADMIN`, `NURSE`, `RECEPTIONIST` |
 | Appointment read/write/cancel | `ADMIN`, `DOCTOR`, `NURSE`, `RECEPTIONIST` depending on action |
 | Appointment status write and follow-up write | `DOCTOR` |
 | Schedule read | `DOCTOR` |
@@ -57,6 +57,6 @@
 
 - Patient portal message send/reply is not implemented.
 - Patient self-cancel and reschedule APIs are not implemented.
-- Nurse room board operations are not implemented.
+- A separate live nurse room-board system is not implemented; queue assign-room exists as an audited queue workflow action.
 - Receptionist and pharmacist roles exist in RBAC, but seeded demo accounts for those roles are not currently persisted.
 - Frontend route files exist for many surfaces, but only selected workflows are backend-integrated today.

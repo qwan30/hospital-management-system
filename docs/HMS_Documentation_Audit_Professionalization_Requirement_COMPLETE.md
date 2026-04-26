@@ -992,13 +992,13 @@ Out of scope for this backlog item:
 
 Use this checklist for the next implementation phase. Tick items only after implementation and verification are complete.
 
-- [ ] Implement frontend API integration, excluding billing/finance workflows.
-- [ ] Implement frontend RBAC hardening, excluding billing-specific actions and tests.
-- [ ] Add Dockerized frontend support for `web/`.
-- [ ] Add CI/CD pipeline checks for backend, frontend, Docker, and non-billing E2E coverage.
-- [ ] Add larger seed data and performance validation, excluding invoice/revenue/payment data and benchmarks.
-- [ ] Implement queue workflow enhancements.
-- [ ] Implement inventory and audit improvements, excluding billing dashboard and finance enhancements.
+- [x] Implement frontend API integration, excluding billing/finance workflows.
+- [x] Implement frontend RBAC hardening, excluding billing-specific actions and tests.
+- [x] Add Dockerized frontend support for `web/`.
+- [x] Add CI/CD pipeline checks for backend, frontend, Docker, and non-billing E2E coverage.
+- [x] Add larger seed data and performance validation, excluding invoice/revenue/payment data and benchmarks.
+- [x] Implement queue workflow enhancements.
+- [x] Implement inventory and audit improvements, excluding billing dashboard and finance enhancements.
 
 ### 14.9 Acceptance Criteria For Promoted Backlog
 

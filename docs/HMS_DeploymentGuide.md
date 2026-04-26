@@ -1,6 +1,6 @@
 # Hospital Management System Deployment Guide
 
-Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
+Status: aligned with the repository on 2026-04-26 after Dockerized `web/` frontend support.
 
 Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)  
 Documentation map: [README.md](README.md)
@@ -11,9 +11,7 @@ This guide reflects the deployment shape that currently exists in the repository
 
 - PostgreSQL in Docker
 - Spring Boot backend
-- optional Next.js frontend dev server
-
-It does not assume a production frontend container because the repo does not include one yet.
+- Next.js frontend dev server or Dockerized production frontend service
 
 ## 2. Prerequisites
 
@@ -28,12 +26,7 @@ It does not assume a production frontend container because the repo does not inc
 
 - `postgres`
 - `backend`
-
-Important note:
-
-- there is no active frontend service in Docker Compose
-- the commented frontend block still points at the reference-only `frontend/` folder and is not the active `web/` app
-- the old docs that described an `hms-frontend` container are obsolete
+- `frontend`
 
 ### 3.1 Backend Build Modules
 
@@ -104,6 +97,7 @@ The authoritative backend config currently lives in `backend/start/src/main/reso
 | --- | --- |
 | `NEXT_PUBLIC_API_BASE_URL` | `http://localhost:8080/api/v1` |
 | `API_BASE_URL_SERVER` | `http://localhost:8080/api/v1` |
+| Compose `NEXT_PUBLIC_API_BASE_URL` | `/api/v1` |
 
 ## 5. Quick Start
 
@@ -126,7 +120,7 @@ Backend endpoints:
 - Swagger UI: `http://localhost:8080/swagger-ui`
 - Health: `http://localhost:8080/actuator/health`
 
-### 5.3 Optional: start the frontend app
+### 5.3 Start the frontend app in development
 
 ```bash
 cd web
@@ -134,10 +128,7 @@ npm install
 npm run dev
 ```
 
-Important note:
-
-- this starts the Next.js frontend app
-- selected flows have backend integration; many screens remain static or locally composed until broader data-access work is completed
+This starts the canonical Next.js frontend app from `web/`.
 
 ## 6. Docker Compose Notes
 
@@ -145,13 +136,9 @@ The active compose file currently:
 
 - exposes PostgreSQL on `5432`
 - exposes the backend on `8080`
-- injects backend database and JWT settings
-
-The commented frontend section in `docker-compose.yml` is not deployable as-is because:
-
-- there is no frontend Dockerfile
-- the commented block points at `./frontend`, which is reference-only prototype material
-- the canonical frontend source in `web/` does not include a production container configuration yet
+- builds the canonical frontend from `web/Dockerfile`
+- exposes the frontend on `3000`
+- injects backend database, JWT, and frontend API URL settings
 
 ## 7. Seed Data
 

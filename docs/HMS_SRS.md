@@ -125,6 +125,7 @@ Nurse-facing UI must support:
 - today appointment list from `GET /api/v1/appointments/today`
 - queue list from `GET /api/v1/queue/today`
 - check-in from `POST /api/v1/appointments/{appointmentId}/checkin`
+- queue actions from `/api/v1/queue/{appointmentId}/call`, `/skip`, `/assign-room`, `/start-consultation`, and `/complete`
 - create appointment-linked vital signs from `POST /api/v1/appointments/{appointmentId}/vital-signs`
 - read appointment-linked vital signs from `GET /api/v1/appointments/{appointmentId}/vital-signs`
 - create independent vital signs from `POST /api/v1/vital-signs`
@@ -132,7 +133,8 @@ Nurse-facing UI must support:
 
 Important current limitation:
 
-- there is no nurse-specific room management endpoint in the current repo
+- there is no separate nurse-specific room management endpoint in the current repo
+- queue room assignment records the room on the appointment workflow and audit trail
 - room CRUD exists under admin APIs only
 
 ### 4.6 Accountant workflow
@@ -188,13 +190,14 @@ The current repo supports inventory operations through:
 - `GET/POST/PUT/DELETE /api/v1/inventory/items`
 - `GET/POST/PUT /api/v1/inventory/lots`
 - `GET/POST /api/v1/inventory/movements`
+- `GET /api/v1/inventory/alerts`
 
 The design should include:
 
 - stock list
 - lot detail and edit
 - movement history
-- low-stock highlighting
+- low-stock and expiry warning visibility
 
 ### 4.10 Lab results
 
@@ -273,6 +276,6 @@ Optional but supported:
 ## 7. Design Constraints
 
 - Do not design features that require patient-side message send or cancel APIs unless they are marked as future scope.
-- Do not assume a rich real-time room board exists for nurses.
+- Do not assume a rich real-time room board exists for nurses; current room assignment is a queue action, not a live room-board system.
 - Do not imply the chatbot is a general AI assistant; it is a scoped helper for departments, doctors, and booking.
 - Do not design internal assistant, knowledge document, or AI symptom-analysis workflows unless a future API reintroduces them.
