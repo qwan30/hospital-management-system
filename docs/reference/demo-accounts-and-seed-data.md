@@ -1,6 +1,6 @@
 # Demo Accounts And Seed Data
 
-**Status:** current seed-data reference for the April 26, 2026 repository baseline.  
+**Status:** current seed-data reference for the April 26, 2026 repository baseline.
 **Verification source:** `backend/application/src/main/java/com/hospital/core/seed/SeedDataService.java`
 
 On first startup with an empty database, the backend seeds demo data if both department and user data are empty.

@@ -1,7 +1,7 @@
 # Documentation Review And Improvement Plan
 
-**Status:** completed for the April 26, 2026 documentation professionalization pass.  
-**Requirement source:** `../HMS_Documentation_Audit_Professionalization_Requirement_COMPLETE.md`  
+**Status:** completed for the April 26, 2026 documentation professionalization pass.
+**Requirement source:** `../HMS_Documentation_Audit_Professionalization_Requirement_COMPLETE.md`
 **Scope:** documentation-only.
 
 ## 1. Completed Phases

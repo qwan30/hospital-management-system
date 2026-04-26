@@ -2,7 +2,7 @@
 
 Status: updated to reflect the current repository on 2026-04-26 after AI and internal assistant removal.
 
-Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)  
+Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)
 Documentation map: [README.md](README.md)
 
 ## 1. Objective

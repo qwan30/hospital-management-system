@@ -2,7 +2,7 @@
 
 Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
-Documentation map: [README.md](README.md)  
+Documentation map: [README.md](README.md)
 Role matrix: [reference/role-screen-api-matrix.md](reference/role-screen-api-matrix.md)
 
 ## 1. Scope

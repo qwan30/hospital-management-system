@@ -63,6 +63,8 @@ class SecurityHardeningIntegrationTest {
     registry.add("POSTGRES_DB", postgres::getDatabaseName);
     registry.add("POSTGRES_USER", postgres::getUsername);
     registry.add("POSTGRES_PASSWORD", postgres::getPassword);
+    registry.add("security.jwt.secret", () -> "test-jwt-secret-with-at-least-32-characters");
+    registry.add("security.patient-identifier.secret", () -> "test-patient-identifier-secret");
   }
 
   @Test

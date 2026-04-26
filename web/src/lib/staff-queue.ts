@@ -45,7 +45,7 @@ export function getQueueFilter(
     return "in_progress";
   }
 
-  if (appointment.checkedInAt || appointment.status === "CHECKED_IN") {
+  if (appointment.status === "CHECKED_IN") {
     return "ready";
   }
 

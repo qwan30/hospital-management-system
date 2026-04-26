@@ -35,6 +35,14 @@ const checkedInAppointment = {
   patientCccd: "098765432109",
 };
 
+const completedAppointment = {
+  ...checkedInAppointment,
+  appointmentId: "77777777-7777-7777-7777-777777777777",
+  confirmationCode: "Q-1003",
+  status: "DONE",
+  patientFullName: "Completed Patient",
+};
+
 test.describe("@ui staff queue board", () => {
   test("shows an unauthorized state without rendering static patient rows", async ({
     page,
@@ -264,5 +272,42 @@ test.describe("@ui staff queue board", () => {
     expect(startRequests).toBe(1);
     expect(completeRequests).toBe(1);
     await expect(page.getByText("Bao Le", { exact: true })).toHaveCount(0);
+  });
+
+  test("hides terminal appointments even when they have check-in timestamps", async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      window.sessionStorage.setItem("hms_staff_access_token", "staff-token");
+      window.sessionStorage.setItem("hms_staff_role", "NURSE");
+    });
+
+    await page.route("**/api/v1/queue/today", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          success: true,
+          data: [],
+        }),
+      });
+    });
+
+    await page.route("**/api/v1/appointments/today", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          success: true,
+          data: [completedAppointment],
+        }),
+      });
+    });
+
+    await page.goto("/staff/queue");
+
+    await page.getByRole("button", { name: "Ready" }).click();
+    await expect(page.getByText("Completed Patient", { exact: true })).toHaveCount(0);
+    await expect(page.getByTestId("queue-empty")).toBeVisible();
   });
 });

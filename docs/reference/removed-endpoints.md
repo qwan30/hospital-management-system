@@ -1,6 +1,6 @@
 # Removed Endpoints Reference
 
-**Status:** canonical removed-endpoint reference for the April 26, 2026 repository baseline.  
+**Status:** canonical removed-endpoint reference for the April 26, 2026 repository baseline.
 **Verification sources:** controller mappings under `backend/controller/src/main/java` and Flyway migration `V11__Remove_ai_assistant_features.sql`.
 
 The following endpoint families are intentionally removed from the active Hospital Management System API. They may appear in documentation only as removed, historical, deprecated, or cleanup references.

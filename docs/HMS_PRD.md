@@ -2,7 +2,7 @@
 
 Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
-Documentation map: [README.md](README.md)  
+Documentation map: [README.md](README.md)
 Route inventory: [reference/frontend-route-inventory.md](reference/frontend-route-inventory.md)
 
 ## 1. Purpose

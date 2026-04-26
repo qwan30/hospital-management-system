@@ -1,9 +1,9 @@
 # Hospital Management System API Endpoint Reference
 
-**Last updated:** April 26, 2026  
-**API version:** v1  
-**Base URL:** `/api/v1`  
-**Primary contract:** [`../API_CONTRACT.md`](../API_CONTRACT.md)  
+**Last updated:** April 26, 2026
+**API version:** v1
+**Base URL:** `/api/v1`
+**Primary contract:** [`../API_CONTRACT.md`](../API_CONTRACT.md)
 **Verification source:** controller mappings under `backend/controller/src/main/java`
 
 The current repository contains roughly 110 mapped controller methods, excluding SpringDoc and Actuator support endpoints.

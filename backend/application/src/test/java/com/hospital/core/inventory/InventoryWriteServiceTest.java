@@ -235,6 +235,40 @@ class InventoryWriteServiceTest {
   }
 
   @Test
+  void updateLot_negativeQuantityRemaining_throwsConflict() {
+    var lotId = UUID.randomUUID();
+    var item = buildItemEntity(UUID.randomUUID(), "MED-001", "Paracetamol");
+    var lot = new InventoryLotEntity();
+    lot.setId(lotId);
+    lot.setItem(item);
+    lot.setLotCode("LOT-A");
+    lot.setQuantityReceived(100);
+    lot.setQuantityRemaining(80);
+    when(lotRepository.findById(lotId)).thenReturn(Optional.of(lot));
+
+    assertThatThrownBy(() -> service.updateLot(lotId, new InventoryLotUpdateRequest(null, -1)))
+        .isInstanceOf(com.hospital.core.common.ConflictException.class)
+        .hasMessageContaining("Quantity remaining cannot be negative");
+  }
+
+  @Test
+  void updateLot_quantityRemainingAboveReceived_throwsConflict() {
+    var lotId = UUID.randomUUID();
+    var item = buildItemEntity(UUID.randomUUID(), "MED-001", "Paracetamol");
+    var lot = new InventoryLotEntity();
+    lot.setId(lotId);
+    lot.setItem(item);
+    lot.setLotCode("LOT-A");
+    lot.setQuantityReceived(100);
+    lot.setQuantityRemaining(80);
+    when(lotRepository.findById(lotId)).thenReturn(Optional.of(lot));
+
+    assertThatThrownBy(() -> service.updateLot(lotId, new InventoryLotUpdateRequest(null, 101)))
+        .isInstanceOf(com.hospital.core.common.ConflictException.class)
+        .hasMessageContaining("Quantity remaining cannot exceed quantity received");
+  }
+
+  @Test
   void updateLot_notFound_throwsNotFound() {
     var lotId = UUID.randomUUID();
     when(lotRepository.findById(lotId)).thenReturn(Optional.empty());
@@ -287,6 +321,18 @@ class InventoryWriteServiceTest {
     assertThat(item.getQuantityOnHand()).isEqualTo(8);
     assertThat(item.getStatus()).isEqualTo("LOW_STOCK");
     verify(auditLogService).record(eq("INVENTORY_MOVEMENT_RECORDED"), eq("INVENTORY_ITEM"), eq(itemId), anyMap());
+  }
+
+  @Test
+  void recordMovement_whenQuantityWouldBecomeNegative_throwsConflict() {
+    var itemId = UUID.randomUUID();
+    var item = buildItemEntity(itemId, "MED-001", "Paracetamol");
+    item.setQuantityOnHand(3);
+    when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+
+    assertThatThrownBy(() -> service.recordMovement(new InventoryMovementCreateRequest(itemId, "ISSUE", -4, "Dispensed")))
+        .isInstanceOf(com.hospital.core.common.ConflictException.class)
+        .hasMessageContaining("Inventory movement cannot make quantity on hand negative");
   }
 
   @Test

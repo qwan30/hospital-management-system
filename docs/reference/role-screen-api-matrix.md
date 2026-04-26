@@ -1,6 +1,6 @@
 # Role To Screen And API Matrix
 
-**Status:** current role map for the April 26, 2026 repository baseline.  
+**Status:** current role map for the April 26, 2026 repository baseline.
 **Verification sources:** `backend/domain/src/main/java/com/hospital/shared/enums/UserRole.java`, `backend/application/src/main/java/com/hospital/core/security/RbacAuthorizationService.java`, `backend/controller/src/main/java`, and `web/src/lib/rbac.ts`.
 
 ## 1. Role Summary

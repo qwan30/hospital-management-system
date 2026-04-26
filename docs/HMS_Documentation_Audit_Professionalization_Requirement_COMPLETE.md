@@ -1,12 +1,12 @@
 # Hospital Management System Documentation Audit and Professionalization Requirement
 
-**Document type:** Requirement Specification  
-**Project:** Hospital Management System (HMS)  
-**Baseline date:** April 26, 2026  
-**Scope type:** Documentation-only  
-**Primary audience:** BA, SA, PM/PO, Tech Lead, Developer, QA, Reviewer  
-**Status:** Completed  
-**Completion date:** April 26, 2026  
+**Document type:** Requirement Specification
+**Project:** Hospital Management System (HMS)
+**Baseline date:** April 26, 2026
+**Scope type:** Documentation-only
+**Primary audience:** BA, SA, PM/PO, Tech Lead, Developer, QA, Reviewer
+**Status:** Completed
+**Completion date:** April 26, 2026
 
 ---
 

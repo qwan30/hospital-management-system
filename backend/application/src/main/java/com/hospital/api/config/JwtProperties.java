@@ -1,11 +1,15 @@
 package com.hospital.api.config;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
+@Validated
 @ConfigurationProperties(prefix = "security.jwt")
 public record JwtProperties(
-    String secret,
-    long accessTokenExpirationSeconds,
-    long refreshTokenExpirationSeconds,
-    String refreshCookieName
+    @NotBlank String secret,
+    @Min(1) long accessTokenExpirationSeconds,
+    @Min(1) long refreshTokenExpirationSeconds,
+    @NotBlank String refreshCookieName
 ) {}

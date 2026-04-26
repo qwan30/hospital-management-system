@@ -2,7 +2,7 @@
 
 Status: aligned with the repository on 2026-04-26 after Dockerized `web/` frontend support.
 
-Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)  
+Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)
 Documentation map: [README.md](README.md)
 
 ## 1. What This Guide Covers

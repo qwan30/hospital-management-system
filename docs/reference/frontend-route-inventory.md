@@ -1,7 +1,7 @@
 # Frontend Route Inventory
 
-**Status:** current route inventory for `web/src/app` on April 26, 2026.  
-**Canonical frontend:** `web/`  
+**Status:** current route inventory for `web/src/app` on April 26, 2026.
+**Canonical frontend:** `web/`
 **Reference-only frontend prototypes:** `frontend/`
 
 This inventory is based on the current Next.js App Router files under `web/src/app` and the route audit helper in `web/e2e/helpers/routes.ts`.

@@ -1,6 +1,7 @@
 package com.hospital.core.inventory;
 
 import com.hospital.core.audit.AuditLogService;
+import com.hospital.core.common.ConflictException;
 import com.hospital.core.common.NotFoundException;
 import com.hospital.core.department.DepartmentRepository;
 import com.hospital.shared.inventory.InventoryItemCreateRequest;
@@ -137,6 +138,7 @@ public class InventoryWriteService {
       entity.setSupplierName(request.supplierName());
     }
     if (request.quantityRemaining() != null) {
+      validateLotQuantityRemaining(request.quantityRemaining(), entity.getQuantityReceived());
       entity.setQuantityRemaining(request.quantityRemaining());
     }
 
@@ -152,6 +154,10 @@ public class InventoryWriteService {
   public InventoryMovementResponse recordMovement(InventoryMovementCreateRequest request) {
     var item = itemRepository.findById(request.itemId())
         .orElseThrow(() -> new NotFoundException("Inventory item not found"));
+    var nextQuantityOnHand = item.getQuantityOnHand() + request.quantityDelta();
+    if (nextQuantityOnHand < 0) {
+      throw new ConflictException("Inventory movement cannot make quantity on hand negative");
+    }
 
     var entity = new InventoryMovementEntity();
     entity.setItem(item);
@@ -161,7 +167,7 @@ public class InventoryWriteService {
     movementRepository.save(entity);
 
     // Update item quantity on hand
-    item.setQuantityOnHand(item.getQuantityOnHand() + request.quantityDelta());
+    item.setQuantityOnHand(nextQuantityOnHand);
     item.setLastRestockedAt(request.quantityDelta() > 0 ? Instant.now() : item.getLastRestockedAt());
     item.setStatus(toStockStatus(item.getQuantityOnHand(), item.getReorderLevel()));
     itemRepository.save(item);
@@ -185,6 +191,16 @@ public class InventoryWriteService {
     }
 
     return "IN_STOCK";
+  }
+
+  private void validateLotQuantityRemaining(int quantityRemaining, int quantityReceived) {
+    if (quantityRemaining < 0) {
+      throw new ConflictException("Quantity remaining cannot be negative");
+    }
+
+    if (quantityRemaining > quantityReceived) {
+      throw new ConflictException("Quantity remaining cannot exceed quantity received");
+    }
   }
 
   private void recordInventoryAudit(

@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:hospital_db}
     username: ${POSTGRES_USER:hospital_user}
-    password: ${POSTGRES_PASSWORD:hospital_password}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -31,7 +31,7 @@ springdoc:
 
 security:
   jwt:
-    secret: ${JWT_SECRET:replace-with-a-random-32-character-secret}
+    secret: ${JWT_SECRET}
     access-token-expiration-seconds: 900
     refresh-token-expiration-seconds: 604800
     refresh-cookie-name: hms_refresh_token
@@ -44,7 +44,7 @@ security:
     refresh-cookie-same-site: ${HMS_REFRESH_COOKIE_SAME_SITE:Lax}
     public-rate-limit-per-minute: ${HMS_PUBLIC_RATE_LIMIT_PER_MINUTE:30}
   patient-identifier:
-    secret: ${PATIENT_IDENTIFIER_SECRET:${JWT_SECRET:replace-with-a-random-32-character-secret}}
+    secret: ${PATIENT_IDENTIFIER_SECRET}
 
 integration:
   gmail:

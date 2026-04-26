@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-hospital_db}
       POSTGRES_USER: ${POSTGRES_USER:-hospital_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hospital_password}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     healthcheck:
@@ -23,8 +23,9 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_DB: ${POSTGRES_DB:-hospital_db}
       POSTGRES_USER: ${POSTGRES_USER:-hospital_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hospital_password}
-      JWT_SECRET: ${JWT_SECRET:-replace-with-a-random-32-character-secret}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      PATIENT_IDENTIFIER_SECRET: ${PATIENT_IDENTIFIER_SECRET}
       SERVER_PORT: 8080
     depends_on:
       postgres:

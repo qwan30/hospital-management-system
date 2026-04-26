@@ -1,6 +1,6 @@
 # Hospital Management System Documentation Map
 
-**Status:** current documentation map for the April 26, 2026 repository baseline.  
+**Status:** current documentation map for the April 26, 2026 repository baseline.
 **Scope:** documentation navigation, ownership, source-of-truth rules, and maintenance checks.
 
 ## 1. How To Read This Documentation Set
