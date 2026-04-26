@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         var role = claims.get("role", String.class);
         if (role == null || role.isBlank()) {
           SecurityContextHolder.clearContext();
-          securityErrorResponseWriter.write(response, 401, "unauthorized", "Bearer token is malformed");
+          securityErrorResponseWriter.write(request, response, 401, "unauthorized", "Bearer token is malformed");
           return;
         }
 
@@ -53,11 +53,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
       } catch (ExpiredJwtException exception) {
         SecurityContextHolder.clearContext();
-        securityErrorResponseWriter.write(response, 401, "unauthorized", "Access token has expired");
+        securityErrorResponseWriter.write(request, response, 401, "unauthorized", "Access token has expired");
         return;
       } catch (JwtException | IllegalArgumentException exception) {
         SecurityContextHolder.clearContext();
-        securityErrorResponseWriter.write(response, 401, "unauthorized", "Bearer token is malformed");
+        securityErrorResponseWriter.write(request, response, 401, "unauthorized", "Bearer token is malformed");
         return;
       }
     }

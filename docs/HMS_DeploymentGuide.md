@@ -2,7 +2,8 @@
 
 Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
-Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)
+Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)  
+Documentation map: [README.md](README.md)
 
 ## 1. What This Guide Covers
 
@@ -31,6 +32,7 @@ It does not assume a production frontend container because the repo does not inc
 Important note:
 
 - there is no active frontend service in Docker Compose
+- the commented frontend block still points at the reference-only `frontend/` folder and is not the active `web/` app
 - the old docs that described an `hms-frontend` container are obsolete
 
 ### 3.1 Backend Build Modules
@@ -96,6 +98,13 @@ The authoritative backend config currently lives in `backend/start/src/main/reso
 | `HOSPITAL_FACEBOOK_URL` | `https://facebook.com` |
 | `HOSPITAL_YOUTUBE_URL` | `https://youtube.com` |
 
+### 4.5 Frontend API URLs
+
+| Variable | Default / local value |
+| --- | --- |
+| `NEXT_PUBLIC_API_BASE_URL` | `http://localhost:8080/api/v1` |
+| `API_BASE_URL_SERVER` | `http://localhost:8080/api/v1` |
+
 ## 5. Quick Start
 
 ### 5.1 Start PostgreSQL
@@ -128,7 +137,7 @@ npm run dev
 Important note:
 
 - this starts the Next.js frontend app
-- most screens are currently static or locally composed until backend data-access integration is added
+- selected flows have backend integration; many screens remain static or locally composed until broader data-access work is completed
 
 ## 6. Docker Compose Notes
 
@@ -141,11 +150,14 @@ The active compose file currently:
 The commented frontend section in `docker-compose.yml` is not deployable as-is because:
 
 - there is no frontend Dockerfile
-- the frontend source does not include a production container configuration yet
+- the commented block points at `./frontend`, which is reference-only prototype material
+- the canonical frontend source in `web/` does not include a production container configuration yet
 
 ## 7. Seed Data
 
 On first backend startup with an empty database, the app seeds demo data automatically.
+
+Canonical seed-data reference: [reference/demo-accounts-and-seed-data.md](reference/demo-accounts-and-seed-data.md).
 
 ### 7.1 Staff accounts
 
@@ -162,6 +174,8 @@ On first backend startup with an empty database, the app seeds demo data automat
 | Email | Password |
 | --- | --- |
 | `patient@example.com` | `Patient@1234` |
+
+Receptionist and pharmacist are active RBAC roles, but the current seed routine does not persist demo accounts for those roles.
 
 ## 8. Operational Warnings
 

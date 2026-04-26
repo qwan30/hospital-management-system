@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/admin/monitoring")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("@rbac.hasPermission(authentication, 'ADMIN_MONITORING_READ')")
 public class AdminMonitoringController {
   private final OperationsAdminService operationsAdminService;
 

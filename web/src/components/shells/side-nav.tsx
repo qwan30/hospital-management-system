@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { filterNavigationLinks } from "@/lib/rbac";
+import { useStoredRole } from "@/lib/use-stored-role";
 import { cn } from "@/lib/utils";
 
 interface SideNavLink {
@@ -37,7 +39,8 @@ export function StaffSideNav({
   ctaHref = "/staff/booking",
 }: StaffSideNavProps) {
   const pathname = usePathname();
-  const navLinks = links || defaultLinks;
+  const role = useStoredRole("staff");
+  const navLinks = filterNavigationLinks(links || defaultLinks, role);
 
   return (
     <aside className="fixed left-0 top-[48px] bottom-0 hidden md:flex flex-col w-64 bg-[#f4f4f4] border-r-0">
@@ -116,7 +119,8 @@ export function PortalSideNav({
   ctaHref = "/booking",
 }: StaffSideNavProps) {
   const pathname = usePathname();
-  const navLinks = links || [
+  const role = useStoredRole("patient");
+  const navLinks = filterNavigationLinks(links || [
     { label: "Overview", href: "/portal/overview", icon: "dashboard" },
     { label: "Electronic Records", href: "/portal/records", icon: "assignment" },
     { label: "Appointments", href: "/portal/appointments", icon: "calendar_today" },
@@ -125,7 +129,7 @@ export function PortalSideNav({
     { label: "Billing", href: "/portal/billing", icon: "payments" },
     { label: "Messages", href: "/portal/messages", icon: "mail" },
     { label: "Profile", href: "/portal/profile", icon: "account_circle" },
-  ];
+  ], role);
 
   return (
     <aside className="fixed left-0 top-[48px] bottom-0 hidden md:flex flex-col w-64 bg-[#f4f4f4] dark:bg-[#262626] border-r-0 rounded-none text-sm font-medium tracking-normal">

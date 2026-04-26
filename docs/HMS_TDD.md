@@ -48,7 +48,9 @@ Installed dependencies in `web/package.json` indicate the current frontend stack
 Current frontend code reality:
 
 - `web/src/app` contains route groups for public, staff, admin, and patient portal screens
-- there is no detected backend data-access layer yet
+- `web/src/lib/api-client.ts` provides the shared fetch envelope client
+- `web/src/lib/clinical-api.ts` and `web/src/lib/staff-queue.ts` cover selected clinical queue integration
+- `web/src/lib/rbac.ts` and `web/src/components/auth/route-guard.tsx` provide frontend route-guard helpers
 - there is no frontend Dockerfile
 
 ## 3. Repository Topology
@@ -137,7 +139,7 @@ Runtime bootstrapping starts from `backend/start` and scans the `com.hospital` p
 ## 5. API Surface Summary
 
 The API is organized around `/api/v1`.
-The current controller source contains roughly 122 mapped route handlers.
+The current controller source contains roughly 110 mapped controller methods, excluding SpringDoc and Actuator support endpoints.
 
 Important route groups:
 
@@ -182,6 +184,7 @@ Swagger UI is exposed at `/swagger-ui`.
 | `V13` | appointment vital-sign capture table |
 | `V14` | appointment notes and reason metadata columns |
 | `V15` | lab result columns used by clinical and portal lab-result entities |
+| `V16` | expands the persisted user role constraint for current RBAC roles |
 
 ## 8. Integration Design
 
@@ -230,12 +233,12 @@ Note: the frontend dev server starts the Next.js app. Most screens are currently
 ## 11. Frontend Design Handoff
 
 The current repository has a Next.js frontend route tree, but it still needs production data integration.
-Production frontend work should introduce:
+Production frontend work should continue expanding:
 
-- Axios client with refresh handling for staff and patient auth
+- the existing fetch-based API client with refresh handling for staff and patient auth
 - TanStack Query data access layer
 - form schemas based on contract DTOs in `backend/domain`
-- role-aware navigation and permission guards
+- the existing role-aware navigation and permission guards
 - PDF preview/download flows
 
 Until that integration work exists, backend DTOs and controllers remain the technical contract.

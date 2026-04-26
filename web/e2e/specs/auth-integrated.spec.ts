@@ -66,20 +66,17 @@ test.describe("@integrated auth and API flows", () => {
     );
   });
 
-  test("non-nurse staff sees forbidden queue state", async ({ page }) => {
+  test("non-queue staff is redirected away from the queue", async ({ page }) => {
     const login = new StaffLoginPage(page);
 
     await login.goto();
     await login.login(staffPersonas.doctor.email, staffPersonas.doctor.password);
     await expect(page).toHaveURL(/\/staff\/dashboard$/);
 
-    const queueResponse = page.waitForResponse((response) =>
-      response.url().includes("/api/v1/queue/today"),
-    );
     await page.goto("/staff/queue");
 
-    expect((await queueResponse).status()).toBe(403);
-    await expect(page.getByTestId("queue-unauthorized")).toBeVisible();
+    await expect(page).toHaveURL(/\/forbidden$/);
+    await expect(page.getByRole("heading", { name: /Access denied/i })).toBeVisible();
   });
 
   test("staff invalid login stays on login and shows an error", async ({ page }) => {

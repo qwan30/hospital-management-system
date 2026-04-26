@@ -22,6 +22,7 @@ export interface StaffLoginResponse {
 }
 
 export type PatientLoginResponse = StaffLoginResponse;
+type AuthScope = "staff" | "patient";
 
 export class ApiClientError extends Error {
   constructor(
@@ -35,7 +36,6 @@ export class ApiClientError extends Error {
 }
 
 const DEFAULT_API_BASE_URL = "http://localhost:8080/api/v1";
-type AuthScope = "staff" | "patient";
 
 export interface ApiRequestOptions {
   authScope?: AuthScope;
@@ -105,7 +105,19 @@ function getStoredAccessToken(authScope: AuthScope | undefined) {
   }
 }
 
-export function persistSession(scope: "staff" | "patient", token?: TokenPair) {
+export function getStoredRole(scope: AuthScope) {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  try {
+    return window.sessionStorage.getItem(`hms_${scope}_role`);
+  } catch {
+    return null;
+  }
+}
+
+export function persistSession(scope: AuthScope, token?: TokenPair, role?: string) {
   if (!token?.accessToken || typeof window === "undefined") {
     return;
   }
@@ -115,6 +127,9 @@ export function persistSession(scope: "staff" | "patient", token?: TokenPair) {
     `hms_${scope}_access_token_expires_in`,
     String(token.expiresInSeconds),
   );
+  if (role) {
+    sessionStorage.setItem(`hms_${scope}_role`, role);
+  }
 }
 
 export function clearSessions() {
@@ -124,8 +139,10 @@ export function clearSessions() {
 
   sessionStorage.removeItem("hms_staff_access_token");
   sessionStorage.removeItem("hms_staff_access_token_expires_in");
+  sessionStorage.removeItem("hms_staff_role");
   sessionStorage.removeItem("hms_patient_access_token");
   sessionStorage.removeItem("hms_patient_access_token_expires_in");
+  sessionStorage.removeItem("hms_patient_role");
 }
 
 async function readJson<T>(response: Response): Promise<T> {

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/admin/special-closures")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("@rbac.hasPermission(authentication, 'ADMIN_SCHEDULE_MANAGE')")
 public class AdminSpecialClosureController {
   private final OperationsAdminService operationsAdminService;
 

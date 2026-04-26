@@ -1,12 +1,33 @@
+"use client";
+
+import { RouteGuard } from "@/components/auth/route-guard";
+import { filterNavigationLinks } from "@/lib/rbac";
+import { useStoredRole } from "@/lib/use-stored-role";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+const adminLinks = [
+  { href: "/admin/dashboard", label: "Dashboard", icon: "dashboard" },
+  { href: "/admin/departments", label: "Departments", icon: "apartment" },
+  { href: "/admin/appointments", label: "Appointments", icon: "calendar_today" },
+  { href: "/admin/rooms", label: "Rooms", icon: "meeting_room" },
+  { href: "/admin/users", label: "Staff", icon: "badge" },
+  { href: "/admin/audit-logs", label: "Audit Logs", icon: "history" },
+];
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const role = useStoredRole("staff");
+  const visibleAdminLinks = filterNavigationLinks(adminLinks, role);
+
   return (
+    <RouteGuard scope="staff">
     <div className="bg-hms-surface text-hms-on-background min-h-screen overflow-x-hidden">
       {/* TopAppBar */}
       <header className="fixed top-0 w-full h-12 bg-white dark:bg-neutral-900 flex items-center justify-between px-4 z-50 border-b border-neutral-100 dark:border-neutral-800">
@@ -62,48 +83,24 @@ export default function AdminLayout({
           </p>
         </div>
         <nav className="flex-1 py-4">
-          <Link
-            href="/admin/dashboard"
-            className="flex items-center gap-3 px-6 py-3 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-public-sans text-xs font-medium uppercase tracking-wider transition-all"
-          >
-            <span className="material-symbols-outlined">dashboard</span>
-            Dashboard
-          </Link>
-          <Link
-            href="/admin/departments"
-            className="flex items-center gap-3 px-6 py-3 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-public-sans text-xs font-medium uppercase tracking-wider transition-all"
-          >
-            <span className="material-symbols-outlined">apartment</span>
-            Departments
-          </Link>
-          <Link
-            href="/admin/appointments"
-            className="flex items-center gap-3 px-6 py-3 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-public-sans text-xs font-medium uppercase tracking-wider transition-all"
-          >
-            <span className="material-symbols-outlined">calendar_today</span>
-            Appointments
-          </Link>
-          <Link
-            href="/admin/rooms"
-            className="flex items-center gap-3 px-6 py-3 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-public-sans text-xs font-medium uppercase tracking-wider transition-all"
-          >
-            <span className="material-symbols-outlined">meeting_room</span>
-            Rooms
-          </Link>
-          <Link
-            href="/admin/users"
-            className="flex items-center gap-3 px-6 py-3 bg-white dark:bg-neutral-900 text-blue-600 border-l-4 border-blue-600 font-bold font-public-sans text-xs uppercase tracking-wider transition-all"
-          >
-            <span className="material-symbols-outlined">badge</span>
-            Staff
-          </Link>
-          <Link
-            href="/admin/audit-logs"
-            className="flex items-center gap-3 px-6 py-3 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-public-sans text-xs font-medium uppercase tracking-wider transition-all"
-          >
-            <span className="material-symbols-outlined">history</span>
-            Audit Logs
-          </Link>
+          {visibleAdminLinks.map((link) => {
+            const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "flex items-center gap-3 px-6 py-3 font-public-sans text-xs uppercase tracking-wider transition-all",
+                  isActive
+                    ? "bg-white dark:bg-neutral-900 text-blue-600 border-l-4 border-blue-600 font-bold"
+                    : "text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-medium"
+                )}
+              >
+                <span className="material-symbols-outlined">{link.icon}</span>
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
         <div className="p-4 bg-neutral-100 dark:bg-neutral-900 m-4">
           <button className="w-full bg-hms-primary-container text-white py-2 font-public-sans text-xs font-bold uppercase tracking-wider transition-all active:opacity-80">
@@ -135,5 +132,6 @@ export default function AdminLayout({
         {children}
       </main>
     </div>
+    </RouteGuard>
   );
 }

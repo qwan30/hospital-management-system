@@ -2,6 +2,9 @@
 
 Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
+Documentation map: [README.md](README.md)  
+Role matrix: [reference/role-screen-api-matrix.md](reference/role-screen-api-matrix.md)
+
 ## 1. Scope
 
 This SRS defines the functional and non-functional requirements that match the current repository.
@@ -26,6 +29,8 @@ When this document conflicts with older notes, prefer:
 | Patient | patient auth endpoints | Portal-only access |
 | Doctor | staff auth endpoints | Own appointments and doctor workflows |
 | Nurse | staff auth endpoints | Queue, check-in, and vital signs workflows |
+| Receptionist | staff auth endpoints | Queue and appointment support role exists in RBAC; no seeded demo account is currently persisted |
+| Pharmacist | staff auth endpoints | Prescription read and inventory role exists in RBAC; no seeded demo account is currently persisted |
 | Accountant | staff auth endpoints | Finance workflows |
 | Admin | staff auth endpoints | Configuration, monitoring, content, audit, and operational management |
 

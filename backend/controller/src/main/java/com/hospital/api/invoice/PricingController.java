@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/pricing")
-@PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+@PreAuthorize("@rbac.hasPermission(authentication, 'PRICING_MANAGE')")
 public class PricingController {
   private final InvoiceService invoiceService;
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/admin/audit-logs")
-@PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+@PreAuthorize("@rbac.hasPermission(authentication, 'AUDIT_LOG_READ')")
 public class AdminAuditLogController {
   private final AuditLogService auditLogService;
 

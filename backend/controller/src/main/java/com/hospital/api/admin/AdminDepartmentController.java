@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/admin/departments")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("@rbac.hasPermission(authentication, 'ADMIN_DEPARTMENTS_MANAGE')")
 @Tag(name = "Admin – Departments", description = "Department management")
 public class AdminDepartmentController {
   private final AdminService adminService;

@@ -28,7 +28,7 @@ export default function StaffLoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      persistSession("staff", response.data?.tokens);
+      persistSession("staff", response.data?.tokens, response.data?.role);
       router.push("/staff/dashboard");
     } catch (loginError) {
       setError(loginError instanceof Error ? loginError.message : "Unable to log in");

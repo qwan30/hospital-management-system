@@ -14,6 +14,7 @@ export const publicRoutes: RouteCase[] = [
   { path: "/terms", label: "terms" },
   { path: "/security", label: "security" },
   { path: "/session-expired", label: "session expired" },
+  { path: "/forbidden", label: "forbidden" },
 ];
 
 export const staffRoutes: RouteCase[] = [

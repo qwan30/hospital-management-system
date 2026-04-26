@@ -2,6 +2,7 @@ package com.hospital.api.medicalrecord;
 
 import com.hospital.core.medicalrecord.MedicalRecordService;
 import com.hospital.shared.api.ApiResponse;
+import com.hospital.shared.enums.UserRole;
 import com.hospital.shared.medicalrecord.MedicalRecordCreateRequest;
 import com.hospital.shared.medicalrecord.MedicalRecordResponse;
 import jakarta.validation.Valid;
@@ -29,23 +30,25 @@ public class MedicalRecordController {
   }
 
   @PostMapping
-  @PreAuthorize("hasRole('DOCTOR')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'MEDICAL_RECORD_WRITE')")
   public ResponseEntity<ApiResponse<MedicalRecordResponse>> createMedicalRecord(
       @Valid @RequestBody MedicalRecordCreateRequest request,
       Authentication authentication) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.ok(medicalRecordService.createMedicalRecord(
             UUID.fromString(authentication.getName()),
+            role(authentication),
             request)));
   }
 
   @PostMapping(value = "/preview.pdf", produces = MediaType.APPLICATION_PDF_VALUE)
-  @PreAuthorize("hasRole('DOCTOR')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'MEDICAL_RECORD_WRITE')")
   public ResponseEntity<byte[]> previewPrescriptionPdf(
       @Valid @RequestBody MedicalRecordCreateRequest request,
       Authentication authentication) {
     var document = medicalRecordService.previewPrescriptionPdf(
         UUID.fromString(authentication.getName()),
+        role(authentication),
         request);
 
     return ResponseEntity.ok()
@@ -55,17 +58,26 @@ public class MedicalRecordController {
   }
 
   @GetMapping(value = "/{recordId}/prescription.pdf", produces = MediaType.APPLICATION_PDF_VALUE)
-  @PreAuthorize("hasRole('DOCTOR')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'PRESCRIPTION_READ')")
   public ResponseEntity<byte[]> downloadPrescriptionPdf(
       @PathVariable UUID recordId,
       Authentication authentication) {
     var document = medicalRecordService.generatePrescriptionPdf(
         UUID.fromString(authentication.getName()),
+        role(authentication),
         recordId);
 
     return ResponseEntity.ok()
         .contentType(MediaType.APPLICATION_PDF)
         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.fileName() + "\"")
         .body(document.content());
+  }
+
+  private UserRole role(Authentication authentication) {
+    return authentication.getAuthorities().stream()
+        .map(authority -> authority.getAuthority().replaceFirst("^ROLE_", ""))
+        .map(UserRole::valueOf)
+        .findFirst()
+        .orElseThrow();
   }
 }

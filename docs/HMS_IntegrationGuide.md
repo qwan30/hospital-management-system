@@ -2,7 +2,8 @@
 
 Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
-Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)
+Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)  
+Removed endpoints reference: [reference/removed-endpoints.md](reference/removed-endpoints.md)
 
 ## 1. Integration Overview
 

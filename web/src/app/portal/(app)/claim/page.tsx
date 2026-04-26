@@ -33,7 +33,7 @@ export default function PatientClaimAccessPage() {
         }),
       });
 
-      persistSession("patient", response.data?.tokens);
+      persistSession("patient", response.data?.tokens, response.data?.role);
       setMessageTone("success");
       setMessage("Portal access activated. You can sign in with these credentials.");
     } catch (claimError) {

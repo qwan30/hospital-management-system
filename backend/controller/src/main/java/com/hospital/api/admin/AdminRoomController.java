@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/admin/rooms")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("@rbac.hasPermission(authentication, 'ADMIN_ROOMS_MANAGE')")
 @Tag(name = "Admin – Rooms", description = "Room management")
 public class AdminRoomController {
   private final OperationsAdminService operationsAdminService;

@@ -11,6 +11,18 @@ export const staffPersonas = {
     email: "nurse@hospital.vn",
     password: "Nurse@1234",
   },
+  receptionist: {
+    email: "receptionist@hospital.vn",
+    password: "Reception@1234",
+  },
+  pharmacist: {
+    email: "pharmacist@hospital.vn",
+    password: "Pharma@1234",
+  },
+  accountant: {
+    email: "accountant@hospital.vn",
+    password: "Acc@1234",
+  },
 };
 
 export const patientPersona = {

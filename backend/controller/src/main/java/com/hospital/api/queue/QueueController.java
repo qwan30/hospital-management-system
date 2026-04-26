@@ -22,7 +22,7 @@ public class QueueController {
   }
 
   @GetMapping("/today")
-  @PreAuthorize("hasRole('NURSE')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'QUEUE_READ')")
   public ApiResponse<List<ClinicalAppointmentResponse>> getTodayQueue(
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
     return ApiResponse.ok(appointmentWorkflowService.listQueueForDate(date == null ? LocalDate.now() : date));

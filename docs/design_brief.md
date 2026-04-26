@@ -2,6 +2,8 @@
 
 Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
+Route inventory: [reference/frontend-route-inventory.md](reference/frontend-route-inventory.md)
+
 ## Product Direction
 
 The active product is a hospital operations platform for public discovery, appointment booking, staff clinical workflows, finance, inventory, admin operations, and patient portal access.
@@ -67,15 +69,21 @@ Patient portal:
 
 - `/portal/login`
 - `/portal/claim`
+- `/portal/admit`
 - `/portal/overview`
 - `/portal/records`
 - `/portal/appointments`
+- `/portal/appointments/2`
+- `/portal/diagnostics`
+- `/portal/inventory`
 - `/portal/lab-results`
 - `/portal/messages`
+- `/portal/patients`
+- `/portal/pharmacy`
 - `/portal/profile`
 - `/portal/billing`
-- `/portal/pharmacy`
 - `/portal/scheduling`
+- `/portal/staff`
 - `/portal/support`
 
 Admin:
@@ -89,6 +97,13 @@ Admin:
 - `/admin/public-content`
 - `/admin/rooms`
 - `/admin/users`
+- `/admin/users/[id]`
+
+System/auth:
+
+- `/auth/logout`
+- `/forbidden`
+- `/session-expired`
 
 ## Key Workflows
 

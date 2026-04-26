@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/inventory")
-@PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
 public class InventoryController {
   private final InventoryService inventoryService;
   private final InventoryWriteService inventoryWriteService;
@@ -39,47 +38,56 @@ public class InventoryController {
   }
 
   @GetMapping("/items")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVENTORY_READ')")
   public ApiResponse<List<InventoryItemResponse>> listItems() {
     return ApiResponse.ok(inventoryService.listItems());
   }
 
   @PostMapping("/items")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVENTORY_MANAGE')")
   public ResponseEntity<ApiResponse<InventoryItemResponse>> createItem(@Valid @RequestBody InventoryItemCreateRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(inventoryWriteService.createItem(request)));
   }
 
   @PutMapping("/items/{itemId}")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVENTORY_MANAGE')")
   public ApiResponse<InventoryItemResponse> updateItem(@PathVariable UUID itemId, @Valid @RequestBody InventoryItemUpdateRequest request) {
     return ApiResponse.ok(inventoryWriteService.updateItem(itemId, request));
   }
 
   @DeleteMapping("/items/{itemId}")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVENTORY_MANAGE')")
   public ResponseEntity<Void> deleteItem(@PathVariable UUID itemId) {
     inventoryWriteService.deleteItem(itemId);
     return ResponseEntity.noContent().build();
   }
 
   @GetMapping("/lots")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVENTORY_READ')")
   public ApiResponse<List<InventoryLotResponse>> listLots() {
     return ApiResponse.ok(inventoryService.listLots());
   }
 
   @PostMapping("/lots")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVENTORY_MANAGE')")
   public ResponseEntity<ApiResponse<InventoryLotResponse>> createLot(@Valid @RequestBody InventoryLotCreateRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(inventoryWriteService.createLot(request)));
   }
 
   @PutMapping("/lots/{lotId}")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVENTORY_MANAGE')")
   public ApiResponse<InventoryLotResponse> updateLot(@PathVariable UUID lotId, @Valid @RequestBody InventoryLotUpdateRequest request) {
     return ApiResponse.ok(inventoryWriteService.updateLot(lotId, request));
   }
 
   @GetMapping("/movements")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVENTORY_READ')")
   public ApiResponse<List<InventoryMovementResponse>> listMovements() {
     return ApiResponse.ok(inventoryService.listMovements());
   }
 
   @PostMapping("/movements")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVENTORY_MANAGE')")
   public ResponseEntity<ApiResponse<InventoryMovementResponse>> recordMovement(@Valid @RequestBody InventoryMovementCreateRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(inventoryWriteService.recordMovement(request)));
   }

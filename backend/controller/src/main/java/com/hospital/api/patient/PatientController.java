@@ -19,7 +19,7 @@ public class PatientController {
   }
 
   @GetMapping("/{cccd}/history")
-  @PreAuthorize("hasRole('DOCTOR')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'PATIENT_HISTORY_READ')")
   public ApiResponse<PatientHistoryResponse> getPatientHistory(@PathVariable String cccd) {
     return ApiResponse.ok(medicalRecordService.getPatientHistory(cccd));
   }

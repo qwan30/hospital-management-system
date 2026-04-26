@@ -5,6 +5,8 @@ actor Guest
 actor Patient
 actor Doctor
 actor Nurse
+actor Receptionist
+actor Pharmacist
 actor Accountant
 actor Admin
 actor "Gmail API" as Gmail <<external>>
@@ -52,6 +54,12 @@ Doctor --> UC_Labs
 Nurse --> UC_Queue
 Nurse --> UC_Vitals
 Nurse --> UC_Labs
+
+Receptionist --> UC_Appointments
+Receptionist --> UC_Queue
+
+Pharmacist --> UC_Pdf
+Pharmacist --> UC_Inventory
 
 Accountant --> UC_Finance
 Accountant --> UC_Revenue

@@ -7,6 +7,7 @@ import com.hospital.core.patientauth.PatientAccountEntity;
 import com.hospital.core.patientauth.PatientAccountRepository;
 import com.hospital.shared.auth.LoginRequest;
 import com.hospital.shared.auth.TokenPair;
+import com.hospital.shared.enums.UserRole;
 import com.hospital.shared.patientauth.PatientAuthLoginResponse;
 import com.hospital.shared.patientauth.PatientClaimRequest;
 import java.time.LocalDate;
@@ -108,7 +109,7 @@ public class PatientAuthService {
     return new PatientAuthLoginResponse(
         account.getPatientId(),
         account.getPatient().getFullName(),
-        "PATIENT",
+        UserRole.PATIENT,
         new TokenPair(accessToken, refreshToken, jwtTokenService.accessTokenExpirationSeconds()));
   }
 }

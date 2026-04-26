@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { filterNavigationLinks } from "@/lib/rbac";
+import { useStoredRole } from "@/lib/use-stored-role";
 import { cn } from "@/lib/utils";
 
 interface TopNavLink {
@@ -34,7 +36,8 @@ const defaultPortalLinks: TopNavLink[] = [
 
 export function StaffTopNav({ links, profileImageSrc }: StaffTopNavProps) {
   const pathname = usePathname();
-  const navLinks = links || defaultStaffLinks;
+  const role = useStoredRole("staff");
+  const navLinks = filterNavigationLinks(links || defaultStaffLinks, role);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex px-4 h-[48px] bg-[#161616] items-center">
@@ -108,7 +111,8 @@ export function StaffTopNav({ links, profileImageSrc }: StaffTopNavProps) {
 
 export function PortalTopNav({ links, profileImageSrc }: StaffTopNavProps) {
   const pathname = usePathname();
-  const navLinks = links || defaultPortalLinks;
+  const role = useStoredRole("patient");
+  const navLinks = filterNavigationLinks(links || defaultPortalLinks, role);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex px-4 h-[48px] bg-[#161616] items-center border-b-0 font-sans antialiased tracking-tight">

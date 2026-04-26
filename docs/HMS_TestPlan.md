@@ -1,6 +1,9 @@
 # Hospital Management System Test Plan
 
-Status: aligned with the repository on 2026-04-26 after staff queue backend integration.
+Status: aligned with the repository on 2026-04-26 after staff queue backend integration and RBAC hardening.
+
+Documentation map: [README.md](README.md)  
+Route inventory: [reference/frontend-route-inventory.md](reference/frontend-route-inventory.md)
 
 ## 1. Current Automated Test Coverage
 
@@ -23,6 +26,7 @@ Current unit-tested service areas include:
 - reminder service
 - inventory write service
 - lab result service
+- RBAC authorization service
 - vital signs service
 
 ### 1.2 Backend integration tests in `backend/start`
@@ -40,6 +44,20 @@ Current integration and hardening suites include:
 - API-client behavior coverage verifies optional staff bearer-token attachment without changing public calls.
 - Mocked UI coverage verifies `/staff/queue` unauthorized handling, live queue rendering, and check-in row updates.
 - Backend-integrated Playwright coverage verifies staff auth, patient auth/claim, logout, public booking, nurse queue access, nurse check-in when a waiting appointment exists, and forbidden non-nurse queue access.
+
+Current Playwright spec files under `web/e2e/specs`:
+
+- `api-client.spec.ts`
+- `auth-integrated.spec.ts`
+- `rbac.spec.ts`
+- `responsive.spec.ts`
+- `route-audit.spec.ts`
+- `staff-queue.spec.ts`
+- `ui-smoke.spec.ts`
+- `visual.spec.ts`
+- `workflows.spec.ts`
+
+Coverage note: 80%+ remains a quality target. Do not treat it as measured current coverage unless a fresh coverage report is generated.
 
 ## 2. Current Backend Verification Goals
 
@@ -126,6 +144,7 @@ Current E2E flows:
 - patient login calls `/api/v1/patient-auth/login`
 - patient claim calls `/api/v1/patient-auth/claim`
 - staff logout calls `/api/v1/auth/logout`
+- frontend route guards allow and deny routes according to `web/src/lib/rbac.ts`
 - public booking validates required intake fields and emits an appointment request once the backend is available
 - portal/staff/admin smoke checks validate the main user-facing destinations and headings
 

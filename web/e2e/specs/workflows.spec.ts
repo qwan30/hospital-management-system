@@ -13,6 +13,11 @@ test.describe("@ui critical workflow smoke", () => {
   });
 
   test("patient portal overview exposes core portal destinations", async ({ page }) => {
+    await page.addInitScript(() => {
+      window.sessionStorage.setItem("hms_patient_access_token", "patient-token");
+      window.sessionStorage.setItem("hms_patient_role", "PATIENT");
+    });
+
     await page.goto("/portal/overview");
 
     for (const name of [
@@ -29,6 +34,11 @@ test.describe("@ui critical workflow smoke", () => {
   });
 
   test("staff clinical pages expose expected clinical headings", async ({ page }) => {
+    await page.addInitScript(() => {
+      window.sessionStorage.setItem("hms_staff_access_token", "staff-token");
+      window.sessionStorage.setItem("hms_staff_role", "ADMIN");
+    });
+
     const routes = [
       { path: "/staff/queue", heading: /Queue/i },
       { path: "/staff/nurse-intake", heading: /Intake/i },
@@ -47,6 +57,11 @@ test.describe("@ui critical workflow smoke", () => {
   });
 
   test("admin pages expose expected operations headings", async ({ page }) => {
+    await page.addInitScript(() => {
+      window.sessionStorage.setItem("hms_staff_access_token", "staff-token");
+      window.sessionStorage.setItem("hms_staff_role", "ADMIN");
+    });
+
     const routes = [
       { path: "/admin/dashboard", heading: /Admin Statistics|Dashboard|Performance/i },
       { path: "/admin/users", heading: /Users|Personnel|Staff/i },

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/admin/public-content")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("@rbac.hasPermission(authentication, 'ADMIN_CONTENT_MANAGE')")
 public class AdminPublicContentController {
   private final OperationsAdminService operationsAdminService;
 

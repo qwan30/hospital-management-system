@@ -11,6 +11,7 @@ import com.hospital.core.prescription.PrescriptionPdfService;
 import com.hospital.core.prescription.PrescriptionItemEntity;
 import com.hospital.core.scheduler.ReminderService;
 import com.hospital.shared.enums.AppointmentStatus;
+import com.hospital.shared.enums.UserRole;
 import com.hospital.shared.medicalrecord.MedicalRecordCreateRequest;
 import com.hospital.shared.medicalrecord.MedicalRecordResponse;
 import com.hospital.shared.medicalrecord.PatientHistoryAppointmentResponse;
@@ -56,10 +57,15 @@ public class MedicalRecordService {
 
   @Transactional
   public MedicalRecordResponse createMedicalRecord(UUID doctorId, MedicalRecordCreateRequest request) {
+    return createMedicalRecord(doctorId, UserRole.DOCTOR, request);
+  }
+
+  @Transactional
+  public MedicalRecordResponse createMedicalRecord(UUID actorId, UserRole actorRole, MedicalRecordCreateRequest request) {
     var appointment = appointmentRepository.findDetailedById(request.appointmentId())
         .orElseThrow(() -> new NotFoundException("Appointment not found"));
 
-    if (!appointment.getDoctor().getId().equals(doctorId)) {
+    if (actorRole == UserRole.DOCTOR && !appointment.getDoctor().getId().equals(actorId)) {
       throw new AccessDeniedException("Doctor cannot create records for another doctor's appointment");
     }
 
@@ -112,10 +118,15 @@ public class MedicalRecordService {
 
   @Transactional(readOnly = true)
   public PrescriptionPdfDocument previewPrescriptionPdf(UUID doctorId, MedicalRecordCreateRequest request) {
+    return previewPrescriptionPdf(doctorId, UserRole.DOCTOR, request);
+  }
+
+  @Transactional(readOnly = true)
+  public PrescriptionPdfDocument previewPrescriptionPdf(UUID actorId, UserRole actorRole, MedicalRecordCreateRequest request) {
     var appointment = appointmentRepository.findDetailedById(request.appointmentId())
         .orElseThrow(() -> new NotFoundException("Appointment not found"));
 
-    if (!appointment.getDoctor().getId().equals(doctorId)) {
+    if (actorRole == UserRole.DOCTOR && !appointment.getDoctor().getId().equals(actorId)) {
       throw new AccessDeniedException("Doctor cannot preview another doctor's prescription");
     }
 
@@ -145,10 +156,15 @@ public class MedicalRecordService {
 
   @Transactional(readOnly = true)
   public PrescriptionPdfDocument generatePrescriptionPdf(UUID doctorId, UUID recordId) {
+    return generatePrescriptionPdf(doctorId, UserRole.DOCTOR, recordId);
+  }
+
+  @Transactional(readOnly = true)
+  public PrescriptionPdfDocument generatePrescriptionPdf(UUID actorId, UserRole actorRole, UUID recordId) {
     var record = medicalRecordRepository.findDetailedById(recordId)
         .orElseThrow(() -> new NotFoundException("Medical record not found"));
 
-    if (!record.getAppointment().getDoctor().getId().equals(doctorId)) {
+    if (actorRole == UserRole.DOCTOR && !record.getAppointment().getDoctor().getId().equals(actorId)) {
       throw new AccessDeniedException("Doctor cannot access another doctor's prescription");
     }
 

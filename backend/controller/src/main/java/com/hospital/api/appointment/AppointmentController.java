@@ -17,6 +17,7 @@ import com.hospital.shared.appointment.FollowUpResponse;
 import com.hospital.shared.booking.AppointmentCreateRequest;
 import com.hospital.shared.booking.AppointmentResponse;
 import com.hospital.shared.enums.AppointmentStatus;
+import com.hospital.shared.enums.UserRole;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
@@ -57,7 +58,7 @@ public class AppointmentController {
   }
 
   @GetMapping
-  @PreAuthorize("hasAnyRole('DOCTOR','NURSE','ADMIN')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'APPOINTMENT_READ')")
   public ApiResponse<List<AppointmentListResponse>> listAppointments(
       @RequestParam(required = false) AppointmentStatus status,
       @RequestParam(required = false) UUID doctorId,
@@ -77,31 +78,32 @@ public class AppointmentController {
   }
 
   @GetMapping("/today")
-  @PreAuthorize("hasRole('NURSE')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'QUEUE_READ')")
   public ApiResponse<List<ClinicalAppointmentResponse>> listTodayAppointments(
       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
     return ApiResponse.ok(appointmentWorkflowService.listAppointmentsForDate(date == null ? LocalDate.now() : date));
   }
 
   @GetMapping("/{appointmentId}")
-  @PreAuthorize("hasRole('DOCTOR')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'APPOINTMENT_READ')")
   public ApiResponse<AppointmentDetailResponse> getAppointmentDetail(
       @PathVariable UUID appointmentId,
       Authentication authentication) {
     return ApiResponse.ok(appointmentWorkflowService.getAppointmentDetail(
         UUID.fromString(authentication.getName()),
+        role(authentication),
         appointmentId));
   }
 
   @DeleteMapping("/{appointmentId}")
-  @PreAuthorize("hasAnyRole('ADMIN','NURSE')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'APPOINTMENT_CANCEL')")
   public ResponseEntity<ApiResponse<Void>> cancelAppointment(@PathVariable UUID appointmentId) {
     appointmentWorkflowService.cancelAppointment(appointmentId);
     return ResponseEntity.ok(ApiResponse.ok(null, "Appointment cancelled"));
   }
 
   @PutMapping("/{appointmentId}")
-  @PreAuthorize("hasAnyRole('DOCTOR','NURSE','ADMIN')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'APPOINTMENT_WRITE')")
   public ApiResponse<ClinicalAppointmentResponse> updateAppointment(
       @PathVariable UUID appointmentId,
       @Valid @RequestBody AppointmentUpdateRequest request) {
@@ -109,7 +111,7 @@ public class AppointmentController {
   }
 
   @PostMapping("/{appointmentId}/checkin")
-  @PreAuthorize("hasRole('NURSE')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'QUEUE_CHECK_IN')")
   public ApiResponse<ClinicalAppointmentResponse> checkInAppointment(
       @PathVariable UUID appointmentId,
       @Valid @RequestBody AppointmentCheckInRequest request) {
@@ -117,7 +119,7 @@ public class AppointmentController {
   }
 
   @PutMapping("/{appointmentId}/status")
-  @PreAuthorize("hasRole('DOCTOR')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'APPOINTMENT_STATUS_WRITE')")
   public ApiResponse<ClinicalAppointmentResponse> updateAppointmentStatus(
       @PathVariable UUID appointmentId,
       @Valid @RequestBody AppointmentStatusUpdateRequest request,
@@ -129,7 +131,7 @@ public class AppointmentController {
   }
 
   @PostMapping("/{appointmentId}/vital-signs")
-  @PreAuthorize("hasRole('NURSE')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'VITAL_SIGNS_WRITE')")
   public ResponseEntity<ApiResponse<AppointmentVitalSignsResponse>> recordVitalSigns(
       @PathVariable UUID appointmentId,
       @Valid @RequestBody AppointmentVitalSignsRequest request) {
@@ -138,13 +140,13 @@ public class AppointmentController {
   }
 
   @GetMapping("/{appointmentId}/vital-signs")
-  @PreAuthorize("hasAnyRole('DOCTOR','NURSE')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'VITAL_SIGNS_READ')")
   public ApiResponse<AppointmentVitalSignsResponse> getVitalSigns(@PathVariable UUID appointmentId) {
     return ApiResponse.ok(appointmentWorkflowService.getVitalSigns(appointmentId));
   }
 
   @PostMapping("/{appointmentId}/follow-up")
-  @PreAuthorize("hasRole('DOCTOR')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'FOLLOW_UP_WRITE')")
   public ResponseEntity<ApiResponse<FollowUpResponse>> createFollowUp(
       @PathVariable UUID appointmentId,
       @Valid @RequestBody FollowUpRequest request) {
@@ -153,8 +155,16 @@ public class AppointmentController {
   }
 
   @GetMapping("/{appointmentId}/follow-up")
-  @PreAuthorize("hasAnyRole('DOCTOR','NURSE','ADMIN')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'FOLLOW_UP_READ')")
   public ApiResponse<FollowUpResponse> getFollowUp(@PathVariable UUID appointmentId) {
     return ApiResponse.ok(appointmentWorkflowService.getFollowUp(appointmentId));
+  }
+
+  private UserRole role(Authentication authentication) {
+    return authentication.getAuthorities().stream()
+        .map(authority -> authority.getAuthority().replaceFirst("^ROLE_", ""))
+        .map(UserRole::valueOf)
+        .findFirst()
+        .orElseThrow();
   }
 }

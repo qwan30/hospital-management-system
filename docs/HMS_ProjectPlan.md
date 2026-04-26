@@ -2,7 +2,8 @@
 
 Status: updated to reflect the current repository on 2026-04-26 after AI and internal assistant removal.
 
-Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)
+Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)  
+Documentation map: [README.md](README.md)
 
 ## 1. Objective
 
@@ -19,8 +20,18 @@ The next major milestone is to turn that backend into a coherent frontend produc
 | Inventory APIs | Done | items, lots, movements |
 | Patient portal APIs | Partially done | auth, overview, appointments, lab results, messages list, profile |
 | Public chatbot | Done | deterministic helper for departments, doctors, and slots |
-| Frontend application | In progress | canonical Next.js app exists in `web/`; `/staff/queue` is backend-integrated for nurse queue and check-in |
-| Frontend tests | In progress | Playwright covers route smoke, auth/API flows, and staff queue behavior |
+| Frontend application | In progress | canonical Next.js app exists in `web/`; selected auth, RBAC, API-client, and `/staff/queue` flows are backend-integrated |
+| Frontend tests | In progress | Playwright covers route smoke, auth/API flows, RBAC, responsive, visual, and staff queue behavior |
+| Dockerized frontend | Planned | Docker Compose has no active frontend service |
+
+## 2.1 Current-Vs-Planned Status Legend
+
+| Status | Meaning |
+| --- | --- |
+| Done | Implemented in the current repository |
+| In progress | Partially implemented or implemented for selected flows only |
+| Planned | Future work, not part of the current documentation-only pass |
+| Removed | Historical behavior that must not be treated as active |
 
 ## 3. Recommended Frontend Delivery Phases
 

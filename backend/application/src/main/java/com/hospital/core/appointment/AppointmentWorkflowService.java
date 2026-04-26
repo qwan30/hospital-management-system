@@ -192,10 +192,15 @@ public class AppointmentWorkflowService {
 
   @Transactional(readOnly = true)
   public AppointmentDetailResponse getAppointmentDetail(UUID doctorId, UUID appointmentId) {
+    return getAppointmentDetail(doctorId, UserRole.DOCTOR, appointmentId);
+  }
+
+  @Transactional(readOnly = true)
+  public AppointmentDetailResponse getAppointmentDetail(UUID actorId, UserRole actorRole, UUID appointmentId) {
     var appointment = appointmentRepository.findDetailedById(appointmentId)
         .orElseThrow(() -> new NotFoundException("Appointment not found"));
 
-    if (!appointment.getDoctor().getId().equals(doctorId)) {
+    if (actorRole == UserRole.DOCTOR && !appointment.getDoctor().getId().equals(actorId)) {
       throw new AccessDeniedException("Doctor cannot access another doctor's appointment");
     }
 

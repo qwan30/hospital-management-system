@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/admin/schedule-templates")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("@rbac.hasPermission(authentication, 'ADMIN_SCHEDULE_MANAGE')")
 public class AdminScheduleTemplateController {
   private final OperationsAdminService operationsAdminService;
 

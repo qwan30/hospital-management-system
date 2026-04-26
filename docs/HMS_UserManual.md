@@ -2,11 +2,12 @@
 
 Status: role workflow reference aligned to the repository on 2026-04-26 after AI and internal assistant removal.
 
+Role matrix: [reference/role-screen-api-matrix.md](reference/role-screen-api-matrix.md)
+
 ## 1. How To Use This Manual
 
-The repository does not yet contain a production frontend.
-This manual therefore describes the workflows the future UI must support, based on the current backend APIs.
-Use it as a UX behavior guide, not as proof that every screen already exists.
+The repository contains the canonical Next.js route tree under `web/`, but not every screen is production-ready or fully backend-integrated.
+Use this manual as a role workflow guide, not as proof that every route is complete for production operation.
 
 ## 2. Guest And Public User
 
@@ -100,6 +101,16 @@ The accountant UI should emphasize:
 - status chips
 - sortable/filterable tables
 - action confirmation for money-related changes
+
+## 6.1 Receptionist And Pharmacist Roles
+
+Receptionist and pharmacist are current RBAC roles.
+
+Current limitations:
+
+- no receptionist or pharmacist demo account is currently persisted by seed data
+- receptionist workflows are limited to appointment, queue, and scheduling support
+- pharmacist workflows are limited to prescription read and inventory operations
 
 ## 7. Admin User
 

@@ -25,16 +25,19 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final RateLimitFilter rateLimitFilter;
+  private final AuthorizationDenialAuditFilter authorizationDenialAuditFilter;
   private final SecurityErrorResponseWriter securityErrorResponseWriter;
   private final SecurityHttpProperties securityHttpProperties;
 
   public SecurityConfig(
       JwtAuthenticationFilter jwtAuthenticationFilter,
       RateLimitFilter rateLimitFilter,
+      AuthorizationDenialAuditFilter authorizationDenialAuditFilter,
       SecurityErrorResponseWriter securityErrorResponseWriter,
       SecurityHttpProperties securityHttpProperties) {
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     this.rateLimitFilter = rateLimitFilter;
+    this.authorizationDenialAuditFilter = authorizationDenialAuditFilter;
     this.securityErrorResponseWriter = securityErrorResponseWriter;
     this.securityHttpProperties = securityHttpProperties;
   }
@@ -53,9 +56,9 @@ public class SecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .exceptionHandling(handling -> handling
             .authenticationEntryPoint((request, response, authException) ->
-                securityErrorResponseWriter.write(response, 401, "unauthorized", "Authentication is required"))
+                securityErrorResponseWriter.write(request, response, 401, "unauthorized", "Authentication is required"))
             .accessDeniedHandler((request, response, accessDeniedException) ->
-                securityErrorResponseWriter.write(response, 403, "forbidden", "Access is denied")))
+                securityErrorResponseWriter.write(request, response, 403, "forbidden", "Access is denied")))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/actuator/health", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
             .requestMatchers("/api/v1/auth/**").permitAll()
@@ -63,6 +66,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.GET, "/api/v1/departments/**", "/api/v1/doctors/**", "/api/v1/content/**", "/api/v1/news").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/v1/appointments", "/api/v1/chatbot/messages").permitAll()
             .anyRequest().authenticated())
+        .addFilterBefore(authorizationDenialAuditFilter, RateLimitFilter.class)
         .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(jwtAuthenticationFilter, RateLimitFilter.class);
 

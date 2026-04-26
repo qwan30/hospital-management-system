@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1")
-@PreAuthorize("hasAnyRole('DOCTOR','NURSE','ADMIN')")
 public class LabResultController {
   private final LabResultService labResultService;
 
@@ -29,21 +28,25 @@ public class LabResultController {
   }
 
   @PostMapping("/lab-results")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'LAB_RESULT_WRITE')")
   public ResponseEntity<ApiResponse<LabResultResponse>> createLabResult(@Valid @RequestBody LabResultCreateRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(labResultService.createLabResult(request)));
   }
 
   @GetMapping("/lab-results/{resultId}")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'LAB_RESULT_READ')")
   public ApiResponse<LabResultResponse> getLabResult(@PathVariable UUID resultId) {
     return ApiResponse.ok(labResultService.getLabResult(resultId));
   }
 
   @GetMapping("/appointments/{appointmentId}/lab-results")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'LAB_RESULT_READ')")
   public ApiResponse<List<LabResultResponse>> getLabResultsByAppointment(@PathVariable UUID appointmentId) {
     return ApiResponse.ok(labResultService.getLabResultsByAppointment(appointmentId));
   }
 
   @DeleteMapping("/lab-results/{resultId}")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'LAB_RESULT_WRITE')")
   public ResponseEntity<Void> deleteLabResult(@PathVariable UUID resultId) {
     labResultService.deleteLabResult(resultId);
     return ResponseEntity.noContent().build();

@@ -114,6 +114,8 @@ public class SeedDataService {
     var doctorOne = createUser("doctor1@hospital.vn", "Doctor@1234", "Dr. Nguyen Van An", UserRole.DOCTOR, internalMedicine, "Internal Medicine");
     var doctorTwo = createUser("doctor2@hospital.vn", "Doctor@1234", "Dr. Tran Thi Binh", UserRole.DOCTOR, cardiology, "Cardiology");
     var nurse = createUser("nurse@hospital.vn", "Nurse@1234", "Le Thi Cuc", UserRole.NURSE, internalMedicine, null);
+    createUser("receptionist@hospital.vn", "Reception@1234", "Vo Thi Reception", UserRole.RECEPTIONIST, null, null);
+    createUser("pharmacist@hospital.vn", "Pharma@1234", "Hoang Van Pharmacist", UserRole.PHARMACIST, null, null);
     var accountant = createUser("accountant@hospital.vn", "Acc@1234", "Pham Van Dung", UserRole.ACCOUNTANT, null, null);
     var admin = createUser("admin@hospital.vn", "Admin@1234", "System Admin", UserRole.ADMIN, null, null);
     userRepository.saveAll(List.of(doctorOne, doctorTwo, nurse, accountant, admin));

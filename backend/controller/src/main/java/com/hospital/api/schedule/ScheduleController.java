@@ -28,7 +28,7 @@ public class ScheduleController {
   }
 
   @GetMapping("/schedule")
-  @PreAuthorize("hasRole('DOCTOR')")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'SCHEDULE_READ')")
   public ApiResponse<List<ClinicalAppointmentResponse>> getSchedule(
       Authentication authentication,
       @RequestParam(required = false) String date,

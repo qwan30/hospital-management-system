@@ -30,7 +30,7 @@ export default function PortalLoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      persistSession("patient", response.data?.tokens);
+      persistSession("patient", response.data?.tokens, response.data?.role);
       router.push("/portal/overview");
     } catch (loginError) {
       setError(loginError instanceof Error ? loginError.message : "Unable to log in");

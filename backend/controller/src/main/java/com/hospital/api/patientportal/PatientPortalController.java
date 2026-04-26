@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/patient-portal")
-@PreAuthorize("hasRole('PATIENT')")
 public class PatientPortalController {
   private final PatientPortalService patientPortalService;
 
@@ -30,31 +29,37 @@ public class PatientPortalController {
   }
 
   @GetMapping("/overview")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'PATIENT_PORTAL_READ')")
   public ApiResponse<PatientPortalOverviewResponse> getOverview(Authentication authentication) {
     return ApiResponse.ok(patientPortalService.getOverview(patientId(authentication)));
   }
 
   @GetMapping("/appointments")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'PATIENT_PORTAL_READ')")
   public ApiResponse<List<PatientPortalAppointmentResponse>> listAppointments(Authentication authentication) {
     return ApiResponse.ok(patientPortalService.listAppointments(patientId(authentication)));
   }
 
   @GetMapping("/lab-results")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'PATIENT_PORTAL_READ')")
   public ApiResponse<List<PatientPortalLabResultResponse>> listLabResults(Authentication authentication) {
     return ApiResponse.ok(patientPortalService.listLabResults(patientId(authentication)));
   }
 
   @GetMapping("/messages")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'PATIENT_PORTAL_READ')")
   public ApiResponse<List<PatientPortalMessageThreadResponse>> listMessages(Authentication authentication) {
     return ApiResponse.ok(patientPortalService.listMessages(patientId(authentication)));
   }
 
   @GetMapping("/profile")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'PATIENT_PORTAL_READ')")
   public ApiResponse<PatientPortalProfileResponse> getProfile(Authentication authentication) {
     return ApiResponse.ok(patientPortalService.getProfile(patientId(authentication)));
   }
 
   @PutMapping("/profile")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'PATIENT_PORTAL_WRITE')")
   public ApiResponse<PatientPortalProfileResponse> updateProfile(
       Authentication authentication,
       @Valid @RequestBody PatientPortalProfileUpdateRequest request) {

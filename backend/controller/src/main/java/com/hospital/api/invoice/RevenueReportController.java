@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/reports/revenue")
-@PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
+@PreAuthorize("@rbac.hasPermission(authentication, 'REVENUE_READ')")
 public class RevenueReportController {
   private final InvoiceService invoiceService;
 

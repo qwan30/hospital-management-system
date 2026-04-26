@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/admin/slots")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("@rbac.hasPermission(authentication, 'ADMIN_SCHEDULE_MANAGE')")
 @Tag(name = "Admin – Slots", description = "Time slot generation and management")
 public class AdminTimeSlotController {
 

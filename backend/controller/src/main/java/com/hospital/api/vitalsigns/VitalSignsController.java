@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/vital-signs")
-@PreAuthorize("hasAnyRole('DOCTOR','NURSE','ADMIN')")
 public class VitalSignsController {
   private final VitalSignsService vitalSignsService;
 
@@ -30,21 +29,25 @@ public class VitalSignsController {
   }
 
   @PostMapping
+  @PreAuthorize("@rbac.hasPermission(authentication, 'VITAL_SIGNS_WRITE')")
   public ResponseEntity<ApiResponse<VitalSignsResponse>> createVitalSigns(@Valid @RequestBody VitalSignsCreateRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(vitalSignsService.createVitalSigns(request)));
   }
 
   @GetMapping("/{appointmentId}")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'VITAL_SIGNS_READ')")
   public ApiResponse<VitalSignsResponse> getByAppointment(@PathVariable UUID appointmentId) {
     return ApiResponse.ok(vitalSignsService.getByAppointment(appointmentId));
   }
 
   @PutMapping("/{vitalSignId}")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'VITAL_SIGNS_WRITE')")
   public ApiResponse<VitalSignsResponse> updateVitalSigns(@PathVariable UUID vitalSignId, @Valid @RequestBody VitalSignsUpdateRequest request) {
     return ApiResponse.ok(vitalSignsService.updateVitalSigns(vitalSignId, request));
   }
 
   @DeleteMapping("/{vitalSignId}")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'VITAL_SIGNS_WRITE')")
   public ResponseEntity<Void> deleteVitalSigns(@PathVariable UUID vitalSignId) {
     vitalSignsService.deleteVitalSigns(vitalSignId);
     return ResponseEntity.noContent().build();

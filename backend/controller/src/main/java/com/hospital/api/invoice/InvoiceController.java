@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/invoices")
-@PreAuthorize("hasAnyRole('ACCOUNTANT','ADMIN')")
 public class InvoiceController {
   private final InvoiceService invoiceService;
 
@@ -31,17 +30,20 @@ public class InvoiceController {
   }
 
   @GetMapping
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVOICE_READ')")
   public ApiResponse<List<InvoiceResponse>> listInvoices(@RequestParam(required = false) InvoiceStatus status) {
     return ApiResponse.ok(invoiceService.listInvoices(status));
   }
 
   @PostMapping
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVOICE_WRITE')")
   public ResponseEntity<ApiResponse<InvoiceResponse>> createInvoice(@Valid @RequestBody InvoiceCreateRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.ok(invoiceService.createInvoice(request.appointmentId()), "Invoice created"));
   }
 
   @PostMapping("/{invoiceId}/payments")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVOICE_WRITE')")
   public ApiResponse<InvoiceResponse> recordPayment(
       @PathVariable UUID invoiceId,
       @Valid @RequestBody InvoicePaymentRequest request) {
@@ -49,6 +51,7 @@ public class InvoiceController {
   }
 
   @PostMapping("/{invoiceId}/void")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVOICE_WRITE')")
   public ApiResponse<InvoiceResponse> voidInvoice(@PathVariable UUID invoiceId) {
     return ApiResponse.ok(invoiceService.voidInvoice(invoiceId), "Invoice voided");
   }

@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.hospital.api.config.JwtProperties;
+import com.hospital.core.audit.AuditLogRepository;
 import com.hospital.core.user.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -50,6 +51,9 @@ class SecurityHardeningIntegrationTest {
   private UserRepository userRepository;
 
   @Autowired
+  private AuditLogRepository auditLogRepository;
+
+  @Autowired
   private JwtProperties jwtProperties;
 
   @DynamicPropertySource
@@ -68,6 +72,8 @@ class SecurityHardeningIntegrationTest {
         .andExpect(jsonPath("$.success").value(false))
         .andExpect(jsonPath("$.error.code").value("unauthorized"))
         .andExpect(jsonPath("$.error.message").value("Authentication is required"));
+
+    assertLatestSecurityDenial(401, "GET", "/api/v1/me/schedule");
   }
 
   @Test
@@ -105,6 +111,8 @@ class SecurityHardeningIntegrationTest {
         .andExpect(jsonPath("$.success").value(false))
         .andExpect(jsonPath("$.error.code").value("forbidden"))
         .andExpect(jsonPath("$.error.message").value("Access is denied"));
+
+    assertLatestSecurityDenial(403, "GET", "/api/v1/me/schedule");
   }
 
   @Test
@@ -182,6 +190,23 @@ class SecurityHardeningIntegrationTest {
     var valueStart = tokenStart + tokenMarker.length();
     var valueEnd = response.indexOf('"', valueStart);
     return response.substring(valueStart, valueEnd);
+  }
+
+  private void assertLatestSecurityDenial(int status, String method, String path) {
+    var latest = auditLogRepository.findAllByOrderByCreatedAtDesc().stream()
+        .filter(entry -> "SECURITY_ACCESS_DENIED".equals(entry.getAction()))
+        .findFirst()
+        .orElseThrow();
+
+    assert latest.getMetadata() != null;
+    org.assertj.core.api.Assertions.assertThat(latest.getMetadata())
+        .contains("\"status\":" + status)
+        .contains("\"method\":\"" + method + "\"")
+        .contains("\"path\":\"" + path + "\"")
+        .doesNotContain("Bearer")
+        .doesNotContain("password")
+        .doesNotContain("accessToken")
+        .doesNotContain("refreshToken");
   }
 
   private String expiredDoctorToken() {

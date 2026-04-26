@@ -2,6 +2,8 @@
 
 Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
+Documentation map: [README.md](README.md)
+
 ## 1. Purpose
 
 This document describes the Flyway migration strategy that actually exists in the repository today.
@@ -32,6 +34,7 @@ It replaces older notes that described only an early subset of the schema.
 | `V13` | `Add_appointment_vital_signs_table` | creates appointment-scoped vital-sign capture table required by current JPA entities |
 | `V14` | `Add_appointment_metadata_columns` | adds appointment notes and reason metadata columns required by current appointment entities |
 | `V15` | `Add_appointment_lab_result_columns` | aligns lab result columns shared by patient portal and clinical lab result entities |
+| `V16` | `Expand_user_role_constraint_for_rbac` | expands the user role constraint for current RBAC roles, including receptionist and pharmacist |
 
 ## 4. Current Schema Domains
 

@@ -39,6 +39,11 @@ test.describe("@ui staff queue board", () => {
   test("shows an unauthorized state without rendering static patient rows", async ({
     page,
   }) => {
+    await page.addInitScript(() => {
+      window.sessionStorage.setItem("hms_staff_access_token", "staff-token");
+      window.sessionStorage.setItem("hms_staff_role", "NURSE");
+    });
+
     await page.route("**/api/v1/queue/today", async (route) => {
       await route.fulfill({
         status: 401,
@@ -74,6 +79,7 @@ test.describe("@ui staff queue board", () => {
   }) => {
     await page.addInitScript(() => {
       window.sessionStorage.setItem("hms_staff_access_token", "staff-token");
+      window.sessionStorage.setItem("hms_staff_role", "NURSE");
     });
 
     await page.route("**/api/v1/queue/today", async (route) => {

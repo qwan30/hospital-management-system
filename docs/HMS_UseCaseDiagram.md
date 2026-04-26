@@ -10,6 +10,8 @@ The source PlantUML diagram is in [HMS_UseCaseDiagram.puml](HMS_UseCaseDiagram.p
 - Patient
 - Doctor
 - Nurse
+- Receptionist
+- Pharmacist
 - Accountant
 - Admin
 - Gmail API
@@ -20,6 +22,8 @@ The source PlantUML diagram is in [HMS_UseCaseDiagram.puml](HMS_UseCaseDiagram.p
 - Patient portal claim, login, overview, appointments, lab results, messages, and profile
 - Doctor appointment, medical record, lab result, follow-up, and prescription PDF workflows
 - Nurse queue, check-in, and vital-sign workflows
+- Receptionist appointment and queue support workflows
+- Pharmacist prescription read and inventory workflows
 - Accountant invoice, payment, pricing, and revenue workflows
 - Admin users, departments, rooms, schedules, content, news, monitoring, audit logs, and inventory workflows
 

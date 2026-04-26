@@ -1,5 +1,7 @@
 # Design System Inspired by IBM
 
+**Role:** visual design system reference. Product route and workflow scope lives in [design_brief.md](design_brief.md), while implemented route inventory lives in [reference/frontend-route-inventory.md](reference/frontend-route-inventory.md).
+
 ## 1. Visual Theme & Atmosphere
 
 IBM's website is the digital embodiment of enterprise authority built on the Carbon Design System — a design language so methodically structured it reads like an engineering specification rendered as a webpage. The page operates on a stark duality: a bright white (`#ffffff`) canvas with near-black (`#161616`) text, punctuated by a single, unwavering accent — IBM Blue 60 (`#0f62fe`). This isn't playful tech-startup minimalism; it's corporate precision distilled into pixels. Every element exists within Carbon's rigid 2x grid, every color maps to a semantic token, every spacing value snaps to the 8px base unit.

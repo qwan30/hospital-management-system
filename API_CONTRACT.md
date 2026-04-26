@@ -12,7 +12,7 @@ Base URL: `/api/v1`
 | Patient auth | `/patient-auth/claim`, `/patient-auth/login`, `/patient-auth/refresh`, `/patient-auth/logout` |
 | Public content | `/content/home`, `/news`, `/departments`, `/doctors` |
 | Public booking and helper | `/appointments`, `/chatbot/messages` |
-| Clinical workflows | `/appointments`, `/queue`, `/medical-records`, `/patient-records`, `/vital-signs`, `/lab-results` |
+| Clinical workflows | `/appointments`, `/queue`, `/medical-records`, `/patient-records`, `/patients`, `/vital-signs`, `/lab-results`, `/me/schedule` |
 | Finance | `/invoices`, `/pricing`, `/reports/revenue/daily`, `/reports/revenue/monthly` |
 | Inventory | `/inventory/items`, `/inventory/lots`, `/inventory/movements` |
 | Patient portal | `/patient-portal/overview`, `/patient-portal/appointments`, `/patient-portal/lab-results`, `/patient-portal/messages`, `/patient-portal/profile` |
@@ -22,10 +22,10 @@ Base URL: `/api/v1`
 
 The following endpoint families are intentionally removed and should not be used by frontend or integrations:
 
-- `/ai/analyze-symptoms`
-- `/internal-assistant/**`
-- `/admin/knowledge-documents/**`
-- `/admin/monitoring/internal-assistant`
+- `/api/v1/ai/analyze-symptoms`
+- `/api/v1/internal-assistant/**`
+- `/api/v1/admin/knowledge-documents/**`
+- `/api/v1/admin/monitoring/internal-assistant`
 
 ## Response Envelope
 
@@ -33,11 +33,16 @@ The following endpoint families are intentionally removed and should not be used
 {
   "success": true,
   "data": {},
-  "message": "string"
+  "message": "string",
+  "error": null,
+  "pagination": null,
+  "timestamp": "2026-04-26T00:00:00Z"
 }
 ```
 
-Errors use the shared API error envelope from `backend/controller/src/main/java/com/hospital/shared/api`.
+Errors use the shared API error envelope from `backend/controller/src/main/java/com/hospital/shared/api` with `success: false`, a null data payload, and an `error` object containing `code`, `message`, and `timestamp`.
+
+For the expanded endpoint inventory, see `docs/API_ENDPOINTS_COMPREHENSIVE.md`.
 
 ## Compatibility Note
 
