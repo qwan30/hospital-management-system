@@ -10,6 +10,7 @@
     "test:e2e:ui": "playwright test --grep @ui",
     "test:e2e:integrated": "playwright test --grep @integrated",
     "test:e2e:visual": "playwright test --grep @visual",
+    "test:e2e:ci": "playwright test e2e/specs/api-client.spec.ts e2e/specs/rbac.spec.ts e2e/specs/operations-api.spec.ts e2e/specs/staff-queue.spec.ts --project=chromium",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report"
   },

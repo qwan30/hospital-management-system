@@ -1,0 +1,74 @@
+name: HMS CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Backend Maven tests
+        working-directory: backend
+        run: mvn -B test
+
+      - name: Install frontend dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Frontend lint
+        working-directory: web
+        run: npm run lint
+
+      - name: Frontend production build
+        working-directory: web
+        env:
+          NEXT_PUBLIC_API_BASE_URL: http://localhost:8080/api/v1
+        run: npm run build
+
+      - name: Install Playwright browser
+        working-directory: web
+        run: npx playwright install --with-deps chromium
+
+      - name: Non-billing Playwright regression
+        working-directory: web
+        env:
+          NEXT_PUBLIC_API_BASE_URL: http://localhost:8080/api/v1
+        run: npm run test:e2e:ci
+
+      - name: Docker build verification
+        env:
+          NEXT_PUBLIC_API_BASE_URL: http://localhost:8080/api/v1
+        run: docker compose build backend frontend
+
+      - name: Upload Playwright reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            web/playwright-report
+            web/test-results
+          if-no-files-found: ignore
