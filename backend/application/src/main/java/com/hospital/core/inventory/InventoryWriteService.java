@@ -54,6 +54,7 @@ public class InventoryWriteService {
           .orElseThrow(() -> new NotFoundException("Department not found"));
       entity.setDepartment(dept);
     }
+    entity.setStatus(toStockStatus(entity.getQuantityOnHand(), entity.getReorderLevel()));
 
     var saved = itemRepository.save(entity);
     recordInventoryAudit("INVENTORY_ITEM_CREATED", saved, Map.of(
@@ -86,6 +87,7 @@ public class InventoryWriteService {
           .orElseThrow(() -> new NotFoundException("Department not found"));
       entity.setDepartment(dept);
     }
+    entity.setStatus(toStockStatus(entity.getQuantityOnHand(), entity.getReorderLevel()));
 
     var saved = itemRepository.save(entity);
     recordInventoryAudit("INVENTORY_ITEM_UPDATED", saved, Map.of(

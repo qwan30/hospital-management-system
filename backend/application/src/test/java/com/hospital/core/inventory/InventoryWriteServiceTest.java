@@ -135,6 +135,22 @@ class InventoryWriteServiceTest {
   }
 
   @Test
+  void updateItem_whenReorderLevelCrossesQuantityMarksLowStockAndAudits() {
+    var itemId = UUID.randomUUID();
+    var existing = buildItemEntity(itemId, "MED-LOW", "Tracked medicine");
+    existing.setQuantityOnHand(100);
+    existing.setReorderLevel(10);
+    existing.setStatus("IN_STOCK");
+    when(itemRepository.findById(itemId)).thenReturn(Optional.of(existing));
+    when(itemRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+    var response = service.updateItem(itemId, new InventoryItemUpdateRequest(null, null, null, 120, null));
+
+    assertThat(response.status()).isEqualTo("LOW_STOCK");
+    verify(auditLogService).record(eq("INVENTORY_ITEM_UPDATED"), eq("INVENTORY_ITEM"), eq(itemId), anyMap());
+  }
+
+  @Test
   void updateItem_notFound_throwsNotFound() {
     var itemId = UUID.randomUUID();
     when(itemRepository.findById(itemId)).thenReturn(Optional.empty());
