@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function BookingDetailsReviewPage() {
   return (
@@ -102,7 +101,7 @@ export default function BookingDetailsReviewPage() {
 </div>
 <div className="flex items-center gap-4 p-4 bg-surface-container-low">
 <div className="h-10 w-10 flex-shrink-0">
-<img alt="Dr. Aris Thorne" className="h-full w-full object-cover" data-alt="close-up portrait of a surgeon in professional attire with soft clinical background lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD081xid81nHg8Ye8g9JIjC6fmI6Y5csBXIj7rECP4BDU2A2jQ7f_OBvf81x4pnnIpeELPoxJ64FKi5r8WEaYCspghW4fX1J8bpUB_bYstab-jxyoJ-767izPPuKcMNLHl1v9ZnsVOyJ6xLpYZgJ7wLQqwgVK8EXvhY_o2iRTvwcjO-r_89i3zlyduiUsD49tt9xFDY1cKaIGJC4Ha0X2uAZnjQ42ccoe58yAsRJi30qDlbxmjWm0rXcNrWjgnpqnxG_TciLRJHYw"/>
+<Image alt="Dr. Aris Thorne" className="h-full w-full object-cover" data-alt="close-up portrait of a surgeon in professional attire with soft clinical background lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD081xid81nHg8Ye8g9JIjC6fmI6Y5csBXIj7rECP4BDU2A2jQ7f_OBvf81x4pnnIpeELPoxJ64FKi5r8WEaYCspghW4fX1J8bpUB_bYstab-jxyoJ-767izPPuKcMNLHl1v9ZnsVOyJ6xLpYZgJ7wLQqwgVK8EXvhY_o2iRTvwcjO-r_89i3zlyduiUsD49tt9xFDY1cKaIGJC4Ha0X2uAZnjQ42ccoe58yAsRJi30qDlbxmjWm0rXcNrWjgnpqnxG_TciLRJHYw" width={1200} height={800}/>
 </div>
 <div>
 <div className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Primary Surgeon</div>

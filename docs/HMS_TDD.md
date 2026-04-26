@@ -1,13 +1,13 @@
 # Hospital Management System TDD
 
-Status: aligned to the repository on 2026-04-25
+Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
 Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)
 
 ## 1. Purpose
 
 This document is the technical design baseline for the current codebase.
-It replaces earlier technical notes that assumed a finished React application and older AI provider choices.
+It replaces earlier technical notes that assumed a finished React application or active AI provider integration.
 
 ## 2. Current Stack
 
@@ -24,34 +24,31 @@ It replaces earlier technical notes that assumed a finished React application an
 | Persistence | Spring Data JPA |
 | Database migration | Flyway |
 | Database | PostgreSQL 15 |
-| Extra DB image | `pgvector/pgvector:pg15` in Docker Compose |
+| Extra DB image | `pgvector/pgvector:pg15` remains compatible with historical migrations; `V11` drops assistant/vector usage |
 | PDF generation | Apache PDFBox 3.0.4 |
 | Tests | JUnit 5, Mockito, Spring Boot Test, Testcontainers |
 
 ### 2.2 Frontend
 
-The `frontend/` folder contains dependencies for a React application, but the implemented source is still a starter scaffold.
+The `web/` folder contains the canonical Next.js frontend app for public, staff, admin, and patient portal screens.
+The `frontend/` directory is retained as migrated design-reference HTML/PNG prototypes, not as the runnable frontend.
 
-Installed dependencies indicate the intended frontend stack:
+Installed dependencies in `web/package.json` indicate the current frontend stack:
 
 | Area | Installed package |
 | --- | --- |
 | Runtime | React 19 |
-| Build tool | Vite 8 |
-| Type system | TypeScript 6 |
-| Routing | React Router 6 |
-| Server state | TanStack Query 5 |
-| Forms | React Hook Form 7 |
-| Validation | Zod 4 |
-| Client state | Zustand 5 |
-| Charts | Recharts 3 |
-| Styling | Tailwind CSS 4.2 |
-| HTTP client | Axios 1.15 |
+| App framework | Next.js 16 |
+| Type system | TypeScript |
+| Styling | Tailwind CSS 4 |
+| UI primitives | Base UI |
+| Icons | Lucide React |
+| Class helpers | class-variance-authority, clsx, tailwind-merge |
 
 Current frontend code reality:
 
-- `src/main.ts` is still starter content
-- there is no route tree, auth store, API layer, or hospital UI
+- `web/src/app` contains route groups for public, staff, admin, and patient portal screens
+- there is no detected backend data-access layer yet
 - there is no frontend Dockerfile
 
 ## 3. Repository Topology
@@ -63,8 +60,10 @@ backend/
   application/     use-case services, auth services, orchestration, seed/backfill jobs
   controller/      REST controllers, API envelope, security filters, web error handling
   start/           Spring Boot entry point, runtime config, Flyway migrations, integration tests
+web/
+  src/app/  canonical Next.js route tree
 frontend/
-  src/      starter Vite TypeScript files only
+  */        migrated design-reference HTML/PNG prototypes
 docs/
   product, system, deployment, and design reference documents
 docker-compose.yml
@@ -77,10 +76,10 @@ The backend is organized as a DDD-oriented Maven reactor. Java package names sti
 | Module | Responsibility | Direct project dependencies |
 | --- | --- | --- |
 | `domain` | persistent domain entities, enums, request/response DTOs, domain exceptions | none |
-| `infrastructure` | Spring Data repositories, Gemini/Gmail adapters, PDF and hospital-profile infrastructure | `domain` |
+| `infrastructure` | Spring Data repositories, Gmail adapters, PDF and hospital-profile infrastructure | `domain` |
 | `application` | use-case services, auth/token services, orchestration, seed/backfill jobs | `domain`, `infrastructure` |
 | `controller` | REST controllers, API response envelope, security filters, web exception handling | `domain`, `application` |
-| `start` | Spring Boot launcher, runtime config, Flyway migrations, knowledge seed resources, integration tests | `domain`, `infrastructure`, `application`, `controller` |
+| `start` | Spring Boot launcher, runtime config, Flyway migrations, and integration tests | `domain`, `infrastructure`, `application`, `controller` |
 
 Runtime bootstrapping starts from `backend/start` and scans the `com.hospital` package tree so Spring can compose beans across the modules. `start` is the composition root and intentionally declares every backend module it boots. Boundary checks live in the Maven enforcer rules and `ModuleBoundaryTest`, including a source-import guard that prevents lower layers from importing higher layers.
 
@@ -92,7 +91,7 @@ Runtime bootstrapping starts from `backend/start` and scans the `com.hospital` p
 - doctors and slots
 - booking
 - chatbot
-- symptom analysis
+- symptom intake
 
 ### 4.2 Staff and clinical operations capabilities
 
@@ -126,8 +125,6 @@ Runtime bootstrapping starts from `backend/start` and scans the `com.hospital` p
 - audit logs
 - public content admin
 - news admin
-- knowledge document admin
-
 ### 4.5 Patient-facing secured capabilities
 
 - patient claim and login
@@ -136,14 +133,6 @@ Runtime bootstrapping starts from `backend/start` and scans the `com.hospital` p
 - lab results
 - messages
 - profile
-
-### 4.6 Internal clinical assistant capabilities
-
-- current session lookup
-- reply generation
-- feedback capture
-- monitoring snapshot
-- knowledge document upload, activation, revocation, and reindex
 
 ## 5. API Surface Summary
 
@@ -160,7 +149,6 @@ Important route groups:
 - `/api/v1/invoices`
 - `/api/v1/pricing`
 - `/api/v1/inventory`
-- `/api/v1/internal-assistant`
 - `/api/v1/admin/*`
 
 Swagger UI is exposed at `/swagger-ui`.
@@ -172,7 +160,7 @@ Swagger UI is exposed at `/swagger-ui`.
 - Both flows store the refresh token in an HTTP-only cookie.
 - Cookie options are controlled by `security.http.*` properties.
 - Role checks are applied with `@PreAuthorize`.
-- Public routes and internal assistant messages are rate-limited.
+- Public routes are rate-limited.
 - Patient identifiers are protected through dedicated patient identifier services and configuration.
 
 ## 7. Database Migration Inventory
@@ -187,33 +175,26 @@ Swagger UI is exposed at `/swagger-ui`.
 | `V6` | room, schedule, and closure operational flags |
 | `V7` | inventory tables |
 | `V8` | patient portal and lab result tables |
-| `V9` | internal assistant knowledge tables |
-| `V10` | internal assistant safe rollout tables for sessions, messages, feedback, and ingestions |
+| `V9` | historical internal assistant knowledge tables |
+| `V10` | historical internal assistant session, message, feedback, and ingestion tables |
+| `V11` | removes AI/assistant tables and vector extension |
+| `V12` | appointment follow-up scheduling table |
+| `V13` | appointment vital-sign capture table |
+| `V14` | appointment notes and reason metadata columns |
+| `V15` | lab result columns used by clinical and portal lab-result entities |
 
 ## 8. Integration Design
 
-### 8.1 Symptom analysis
-
-- Provider: Gemini
-- Entry point: `POST /api/v1/ai/analyze-symptoms`
-- Fallback: heuristic scoring if the Gemini client throws an error or is disabled
-
-### 8.2 Email delivery
+### 8.1 Email delivery
 
 - Provider style: Gmail API OAuth2 configuration
 - Configuration namespace: `integration.gmail.*`
 - Default behavior: disabled unless configured
 
-### 8.3 Public chatbot
+### 8.2 Public chatbot
 
 - No external AI provider is used
 - Responses are rule-based and built from departments, doctors, and slot availability
-
-### 8.4 Internal clinical assistant
-
-- No external model call is present in the current implementation
-- Answers are built from patient context plus active internal knowledge documents
-- Every supported answer is citation-first
 
 ## 9. Seed Data And Demo Environment
 
@@ -225,7 +206,6 @@ On startup, the backend seeds:
 - doctor time slots
 - inventory items, lots, and movements
 - one demo patient portal account with appointments, a medical record, a lab result, and message thread
-- starter internal assistant knowledge documents from `backend/start/src/main/resources/knowledge`
 
 ## 10. Local Development
 
@@ -240,24 +220,22 @@ mvn spring-boot:run -pl start
 ### 10.2 Frontend
 
 ```bash
-cd frontend
+cd web
 npm install
 npm run dev
 ```
 
-Note: the frontend dev server will start, but it does not yet provide hospital screens.
+Note: the frontend dev server starts the Next.js app. Most screens are currently static or locally composed until backend data-access integration is added.
 
 ## 11. Frontend Design Handoff
 
-The current repository is ready for frontend design and implementation, but not for frontend usage.
-A production frontend should introduce:
+The current repository has a Next.js frontend route tree, but it still needs production data integration.
+Production frontend work should introduce:
 
-- route groups for public, patient portal, and staff roles
 - Axios client with refresh handling for staff and patient auth
 - TanStack Query data access layer
 - form schemas based on contract DTOs in `backend/domain`
 - role-aware navigation and permission guards
 - PDF preview/download flows
-- assistant drawer with citations and suggestions
 
-Until that work exists, backend DTOs and controllers are the technical contract.
+Until that integration work exists, backend DTOs and controllers remain the technical contract.

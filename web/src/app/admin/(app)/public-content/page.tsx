@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function AdminPublicContentPage() {
   return (
@@ -55,20 +54,20 @@ export default function AdminPublicContentPage() {
 {/* Input Field Group */}
 <div className="group">
 <label className="block text-[10px] font-bold text-outline uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Headline Component</label>
-<input className="w-full bg-surface-container-low border-0 border-b-2 border-outline px-4 py-3 text-lg font-semibold focus:ring-0 focus:border-primary-container transition-all" placeholder="Enter headline text" type="text" value="Precision Healthcare for Every Life."/>
+<input className="w-full bg-surface-container-low border-0 border-b-2 border-outline px-4 py-3 text-lg font-semibold focus:ring-0 focus:border-primary-container transition-all" placeholder="Enter headline text" type="text" defaultValue="Precision Healthcare for Every Life."/>
 </div>
 <div className="group">
 <label className="block text-[10px] font-bold text-outline uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Subtitle Content</label>
-<textarea className="w-full bg-surface-container-low border-0 border-b-2 border-outline px-4 py-3 text-sm focus:ring-0 focus:border-primary-container transition-all" placeholder="Enter descriptive subtitle" rows={3}>Experience the future of medical care with MEDCORE OS. Intelligent systems designed for surgical precision and patient empathy.</textarea>
+<textarea className="w-full bg-surface-container-low border-0 border-b-2 border-outline px-4 py-3 text-sm focus:ring-0 focus:border-primary-container transition-all" placeholder="Enter descriptive subtitle" rows={3} defaultValue="Experience the future of medical care with MEDCORE OS. Intelligent systems designed for surgical precision and patient empathy." />
 </div>
 <div className="grid grid-cols-2 gap-8">
 <div className="group">
 <label className="block text-[10px] font-bold text-outline uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Primary CTA Label</label>
-<input className="w-full bg-surface-container-low border-0 border-b-2 border-outline px-4 py-3 text-sm font-semibold focus:ring-0 focus:border-primary-container transition-all" type="text" value="Explore Services"/>
+<input className="w-full bg-surface-container-low border-0 border-b-2 border-outline px-4 py-3 text-sm font-semibold focus:ring-0 focus:border-primary-container transition-all" type="text" defaultValue="Explore Services"/>
 </div>
 <div className="group">
 <label className="block text-[10px] font-bold text-outline uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Image Resource URL</label>
-<input className="w-full bg-surface-container-low border-0 border-b-2 border-outline px-4 py-3 text-sm font-mono focus:ring-0 focus:border-primary-container transition-all" type="text" value="https://medcore.os/assets/hero_v1.jpg"/>
+<input className="w-full bg-surface-container-low border-0 border-b-2 border-outline px-4 py-3 text-sm font-mono focus:ring-0 focus:border-primary-container transition-all" type="text" defaultValue="https://medcore.os/assets/hero_v1.jpg"/>
 </div>
 </div>
 <div className="pt-8 flex items-center space-x-4">
@@ -96,7 +95,7 @@ export default function AdminPublicContentPage() {
 {/* The "Preview Card" */}
 <div className="bg-surface-container-lowest shadow-none overflow-hidden group">
 <div className="relative aspect-video bg-zinc-200">
-<img alt="Hero Preview" className="w-full h-full object-cover grayscale contrast-125" data-alt="A clean, minimalist high-tech hospital corridor with soft volumetric lighting and modern architectural lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAp2RckDjeEnJIp_GU7S2ldLQfYtdbQpvCj9cVIKqhdXi1j1UK6BtZ2evKquuJLOytooRDo8OswkWQQNtMZ3AJGPg7v7cwLXFNNluZHH1ESLKOGCvKH0dvQ5l-tFaGOe0CNq79opV8qgxm8RFH1E6JrpIxoGFx3LSksvK--xF_0bLpDNGpUKlwNUyv4KNfS0Gfz1ceONjZ7fSX-mGNzM04nXp-ZCt7ESPzGTI5RqA3WQZlTFS85cogIhglpEWlPUjQzte07Vb59DQ"/>
+<Image alt="Hero Preview" className="w-full h-full object-cover grayscale contrast-125" data-alt="A clean, minimalist high-tech hospital corridor with soft volumetric lighting and modern architectural lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAp2RckDjeEnJIp_GU7S2ldLQfYtdbQpvCj9cVIKqhdXi1j1UK6BtZ2evKquuJLOytooRDo8OswkWQQNtMZ3AJGPg7v7cwLXFNNluZHH1ESLKOGCvKH0dvQ5l-tFaGOe0CNq79opV8qgxm8RFH1E6JrpIxoGFx3LSksvK--xF_0bLpDNGpUKlwNUyv4KNfS0Gfz1ceONjZ7fSX-mGNzM04nXp-ZCt7ESPzGTI5RqA3WQZlTFS85cogIhglpEWlPUjQzte07Vb59DQ" width={1200} height={800}/>
 <div className="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
 </div>
 <div className="p-8">

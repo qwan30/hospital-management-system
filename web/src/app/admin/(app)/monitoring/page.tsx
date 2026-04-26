@@ -1,5 +1,3 @@
-import Image from "next/image";
-import Link from "next/link";
 
 export default function AdminMonitoringPage() {
   return (
@@ -15,7 +13,7 @@ export default function AdminMonitoringPage() {
 {/* Top Tabs */}
 <div className="flex space-x-12 border-b border-surface-container-highest mb-12">
 <button className="pb-4 text-sm font-semibold border-b-2 border-primary text-on-background">System Health</button>
-<button className="pb-4 text-sm font-semibold border-b-2 border-transparent text-outline hover:text-on-background transition-colors">AI Assistant</button>
+<button className="pb-4 text-sm font-semibold border-b-2 border-transparent text-outline hover:text-on-background transition-colors">Operational Load</button>
 </div>
 {/* Dashboard Grid */}
 <div className="grid grid-cols-12 gap-8">
@@ -70,11 +68,11 @@ export default function AdminMonitoringPage() {
 </div>
 </div>
 </div>
-{/* AI Assistant Monitoring - Asymmetric Layout */}
+{/* Operational Monitoring - Asymmetric Layout */}
 <div className="col-span-12 mt-12">
 <h2 className="text-lg font-semibold mb-8 flex items-center">
-<span className="material-symbols-outlined mr-2 text-primary" data-icon="psychology">psychology</span>
-                        GenAI Orchestration Metrics
+<span className="material-symbols-outlined mr-2 text-primary" data-icon="monitoring">monitoring</span>
+                        Service Throughput Metrics
                     </h2>
 <div className="grid grid-cols-12 gap-8">
 {/* Request Volume (The Data Monolith) */}
@@ -131,20 +129,20 @@ export default function AdminMonitoringPage() {
 {/* Secondary Intelligence Stats */}
 <div className="col-span-12 grid grid-cols-1 md:grid-cols-4 gap-8 mt-12">
 <div className="border-t-2 border-primary pt-6">
-<div className="text-[10px] font-bold uppercase tracking-widest text-outline mb-2">Token Usage</div>
-<div className="text-xl font-semibold">1.2M / day</div>
+<div className="text-[10px] font-bold uppercase tracking-widest text-outline mb-2">Queued Jobs</div>
+<div className="text-xl font-semibold">42 / day</div>
 </div>
 <div className="border-t-2 border-surface-container-highest pt-6">
-<div className="text-[10px] font-bold uppercase tracking-widest text-outline mb-2">Active Models</div>
-<div className="text-xl font-semibold">Med-Llama 3.1</div>
+<div className="text-[10px] font-bold uppercase tracking-widest text-outline mb-2">Active Services</div>
+<div className="text-xl font-semibold">Core HMS</div>
 </div>
 <div className="border-t-2 border-surface-container-highest pt-6">
-<div className="text-[10px] font-bold uppercase tracking-widest text-outline mb-2">Cost / KReq</div>
-<div className="text-xl font-semibold">$0.042</div>
+<div className="text-[10px] font-bold uppercase tracking-widest text-outline mb-2">Error Budget</div>
+<div className="text-xl font-semibold">99.8%</div>
 </div>
 <div className="border-t-2 border-surface-container-highest pt-6">
-<div className="text-[10px] font-bold uppercase tracking-widest text-outline mb-2">Node Count</div>
-<div className="text-xl font-semibold">12 Clusters</div>
+<div className="text-[10px] font-bold uppercase tracking-widest text-outline mb-2">Open Alerts</div>
+<div className="text-xl font-semibold">3 Active</div>
 </div>
 </div>
 </div>

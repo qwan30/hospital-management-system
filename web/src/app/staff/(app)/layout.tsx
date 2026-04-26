@@ -8,10 +8,10 @@ export default function StaffLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-hms-surface text-hms-on-surface min-h-screen">
+    <div className="bg-hms-surface text-hms-on-surface min-h-screen overflow-x-hidden">
       <StaffTopNav />
       <StaffSideNav />
-      <main className="mt-[48px] min-h-screen bg-hms-surface md:ml-64">
+      <main className="mt-[48px] min-h-screen bg-hms-surface md:ml-64 overflow-x-hidden">
         {children}
       </main>
       <HmsFooter />

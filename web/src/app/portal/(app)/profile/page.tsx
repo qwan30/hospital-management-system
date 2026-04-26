@@ -1,5 +1,3 @@
-import Image from "next/image";
-import Link from "next/link";
 
 export default function PatientPortalProfilePage() {
   return (
@@ -21,47 +19,47 @@ export default function PatientPortalProfilePage() {
 <div className="col-span-2 md:col-span-1">
 <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Full Name</label>
 <div className="bg-surface-container-low border-b-2 border-outline focus-within:border-primary transition-colors">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="text" value="Alexander Vance"/>
+<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="text" defaultValue="Alexander Vance"/>
 </div>
 </div>
 <div className="col-span-2 md:col-span-1">
 <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Date of Birth</label>
 <div className="bg-surface-container-low border-b-2 border-outline focus-within:border-primary transition-colors">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="text" value="May 14, 1982"/>
+<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="text" defaultValue="May 14, 1982"/>
 </div>
 </div>
 <div className="col-span-2 md:col-span-1">
 <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Email Address</label>
 <div className="bg-surface-container-low border-b-2 border-outline focus-within:border-primary transition-colors">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="email" value="a.vance@example.com"/>
+<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="email" defaultValue="a.vance@example.com"/>
 </div>
 </div>
 <div className="col-span-2 md:col-span-1">
 <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Phone Number</label>
 <div className="bg-surface-container-low border-b-2 border-outline focus-within:border-primary transition-colors">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="tel" value="+1 (555) 902-1422"/>
+<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="tel" defaultValue="+1 (555) 902-1422"/>
 </div>
 </div>
 <div className="col-span-2">
 <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Residential Address</label>
 <div className="bg-surface-container-low border-b-2 border-outline focus-within:border-primary transition-colors">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="text" value="1288 Oakwood Heights, Suite 400"/>
+<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="text" defaultValue="1288 Oakwood Heights, Suite 400"/>
 </div>
 <div className="grid grid-cols-3 gap-4 mt-4">
 <div className="bg-surface-container-low border-b-2 border-outline">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 text-sm" type="text" value="Boston"/>
+<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 text-sm" type="text" defaultValue="Boston"/>
 </div>
 <div className="bg-surface-container-low border-b-2 border-outline">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 text-sm" type="text" value="MA"/>
+<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 text-sm" type="text" defaultValue="MA"/>
 </div>
 <div className="bg-surface-container-low border-b-2 border-outline">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 text-sm" type="text" value="02108"/>
+<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 text-sm" type="text" defaultValue="02108"/>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section>
+<section id="security-settings">
 <h2 className="text-xs font-bold uppercase tracking-widest text-primary mb-6">Security Settings</h2>
 <div className="bg-surface-container-highest p-8 space-y-6">
 <div className="flex items-center justify-between">

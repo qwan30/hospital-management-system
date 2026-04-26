@@ -20,7 +20,7 @@ import com.hospital.core.patient.PatientRepository;
 import com.hospital.core.patientauth.PatientAccountEntity;
 import com.hospital.core.patientauth.PatientAccountRepository;
 import com.hospital.core.patientportal.LabResultEntity;
-import com.hospital.core.patientportal.LabResultRepository;
+import com.hospital.core.patientportal.PatientPortalLabResultRepository;
 import com.hospital.core.patientportal.PatientMessageEntity;
 import com.hospital.core.patientportal.PatientMessageRepository;
 import com.hospital.core.patientportal.PatientMessageThreadEntity;
@@ -49,7 +49,7 @@ public class SeedDataService {
   private final InventoryItemRepository inventoryItemRepository;
   private final InventoryLotRepository inventoryLotRepository;
   private final InventoryMovementRepository inventoryMovementRepository;
-  private final LabResultRepository labResultRepository;
+  private final PatientPortalLabResultRepository labResultRepository;
   private final MedicalRecordRepository medicalRecordRepository;
   private final PatientAccountRepository patientAccountRepository;
   private final PatientIdentifierProtector patientIdentifierProtector;
@@ -67,7 +67,7 @@ public class SeedDataService {
       InventoryItemRepository inventoryItemRepository,
       InventoryLotRepository inventoryLotRepository,
       InventoryMovementRepository inventoryMovementRepository,
-      LabResultRepository labResultRepository,
+      PatientPortalLabResultRepository labResultRepository,
       MedicalRecordRepository medicalRecordRepository,
       PatientAccountRepository patientAccountRepository,
       PatientIdentifierProtector patientIdentifierProtector,
@@ -297,7 +297,6 @@ public class SeedDataService {
 
     var account = new PatientAccountEntity();
     account.setPatient(patient);
-    account.setPatientId(patient.getId());
     account.setEmail("patient@example.com");
     account.setPasswordHash(passwordEncoder.encode("Patient@1234"));
     account.setActive(true);

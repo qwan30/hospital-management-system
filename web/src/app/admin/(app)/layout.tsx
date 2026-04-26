@@ -1,5 +1,5 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function AdminLayout({
   children,
@@ -7,7 +7,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-hms-surface text-hms-on-background min-h-screen">
+    <div className="bg-hms-surface text-hms-on-background min-h-screen overflow-x-hidden">
       {/* TopAppBar */}
       <header className="fixed top-0 w-full h-12 bg-white dark:bg-neutral-900 flex items-center justify-between px-4 z-50 border-b border-neutral-100 dark:border-neutral-800">
         <div className="flex items-center gap-8">
@@ -26,27 +26,27 @@ export default function AdminLayout({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors scale-100 active:bg-neutral-200">
+          <button className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors scale-100 active:bg-neutral-200" aria-label="Open admin notifications">
             <span className="material-symbols-outlined text-neutral-600 dark:text-neutral-400">
               notifications
             </span>
           </button>
-          <button className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors scale-100 active:bg-neutral-200">
+          <button className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors scale-100 active:bg-neutral-200" aria-label="Open admin settings">
             <span className="material-symbols-outlined text-neutral-600 dark:text-neutral-400">
               settings
             </span>
           </button>
-          <button className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors scale-100 active:bg-neutral-200">
+          <button className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors scale-100 active:bg-neutral-200" aria-label="Open admin help">
             <span className="material-symbols-outlined text-neutral-600 dark:text-neutral-400">
               help
             </span>
           </button>
           <div className="ml-2 w-8 h-8 bg-hms-primary-container flex items-center justify-center">
-            <img
+            <Image
               alt="User profile"
               className="w-full h-full object-cover"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjAYIbY4I5-EUie4nTj2n6PiaseM-o8ovE368eXIz5AhFkeP3qcTdNELB1TdpJeVoJuriAFTE8K-JiXn2Jgde9pRlUObn2vl9O-AllRxPysYm9IFnL4CGmkeesz1ey4n7EA2XodaOciwaYBAIcqnw8Tj7F0iBYkNU0ISjUKSUZppzQdvro_N-P5QB3NAIiT1rPj0gGlxiddtTILT1hEKzm7OkrSNZJJJ-23bOrQJii9SubRup8l017ROUNa8g2RyCoUtmKVtphxA"
-            />
+             width={1200} height={800}/>
           </div>
         </div>
       </header>
@@ -70,11 +70,11 @@ export default function AdminLayout({
             Dashboard
           </Link>
           <Link
-            href="/admin/patients"
+            href="/admin/departments"
             className="flex items-center gap-3 px-6 py-3 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-public-sans text-xs font-medium uppercase tracking-wider transition-all"
           >
-            <span className="material-symbols-outlined">group</span>
-            Patients
+            <span className="material-symbols-outlined">apartment</span>
+            Departments
           </Link>
           <Link
             href="/admin/appointments"
@@ -84,11 +84,11 @@ export default function AdminLayout({
             Appointments
           </Link>
           <Link
-            href="/admin/inventory"
+            href="/admin/rooms"
             className="flex items-center gap-3 px-6 py-3 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-public-sans text-xs font-medium uppercase tracking-wider transition-all"
           >
-            <span className="material-symbols-outlined">inventory_2</span>
-            Inventory
+            <span className="material-symbols-outlined">meeting_room</span>
+            Rooms
           </Link>
           <Link
             href="/admin/users"
@@ -98,11 +98,11 @@ export default function AdminLayout({
             Staff
           </Link>
           <Link
-            href="/admin/billing"
+            href="/admin/audit-logs"
             className="flex items-center gap-3 px-6 py-3 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-public-sans text-xs font-medium uppercase tracking-wider transition-all"
           >
-            <span className="material-symbols-outlined">payments</span>
-            Billing
+            <span className="material-symbols-outlined">history</span>
+            Audit Logs
           </Link>
         </nav>
         <div className="p-4 bg-neutral-100 dark:bg-neutral-900 m-4">
@@ -112,16 +112,16 @@ export default function AdminLayout({
         </div>
         <div className="mt-auto border-t border-neutral-200 dark:border-neutral-800 py-4">
           <Link
-            href="/admin/support"
+            href="/admin/monitoring"
             className="flex items-center gap-3 px-6 py-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-public-sans text-[10px] font-bold uppercase tracking-widest"
           >
             <span className="material-symbols-outlined text-sm">
               contact_support
             </span>
-            Support
+            Monitoring
           </Link>
           <Link
-            href="/logout"
+            href="/auth/logout"
             className="flex items-center gap-3 px-6 py-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 font-public-sans text-[10px] font-bold uppercase tracking-widest"
           >
             <span className="material-symbols-outlined text-sm">logout</span>
@@ -131,7 +131,7 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Canvas */}
-      <main className="pt-12 min-h-screen md:ml-64">
+      <main className="pt-12 min-h-screen md:ml-64 overflow-x-hidden">
         {children}
       </main>
     </div>

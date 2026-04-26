@@ -44,7 +44,7 @@ public class ChatbotService {
 
     if (mentionsBooking(normalized)) {
       return new ChatbotMessageResponse(
-          "You can book in four steps: choose a department and doctor, describe symptoms for AI triage, pick an available slot, then confirm patient details.",
+          "You can book in four steps: choose a department and doctor, describe symptoms for clinical triage, pick an available slot, then confirm patient details.",
           List.of("Show available departments", "Who is available this week?", "Open the booking page"),
           "/booking");
     }

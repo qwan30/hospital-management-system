@@ -20,14 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PatientPortalService {
   private final AppointmentRepository appointmentRepository;
-  private final LabResultRepository labResultRepository;
+  private final PatientPortalLabResultRepository labResultRepository;
   private final PatientMessageRepository patientMessageRepository;
   private final PatientMessageThreadRepository patientMessageThreadRepository;
   private final PatientRepository patientRepository;
 
   public PatientPortalService(
       AppointmentRepository appointmentRepository,
-      LabResultRepository labResultRepository,
+      PatientPortalLabResultRepository labResultRepository,
       PatientMessageRepository patientMessageRepository,
       PatientMessageThreadRepository patientMessageThreadRepository,
       PatientRepository patientRepository) {

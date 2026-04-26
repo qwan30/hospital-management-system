@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function RevenueDashboardPage() {
   return (
@@ -26,7 +25,7 @@ export default function RevenueDashboardPage() {
 <span className="material-symbols-outlined text-on-surface/60 hover:text-primary transition-colors cursor-pointer" data-icon="account_circle">account_circle</span>
 </div>
 <div className="flex items-center gap-3 border-l border-outline-variant/20 pl-6">
-<img alt="User clinical profile" className="w-8 h-8 grayscale" data-alt="professional medical administrator portrait close-up with clean white background and sharp lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD83rNtUidIOU1a_YI7mECcR4GqxSmfnN0LHzAEDgMs1Wmigkm5F-Qx1_il7WSZIqwEaTC0ok6HHejOwh-frWeLf2XiqEBEWLuNpdsqg-tKIWgolBurO92xWj8VegrDwiZjTDh8dg5zroFNvUl1cKZJ3MkI-gVrMcsMjrgmUnpv9Ol1mHzsiCbpjIG6pLU0qlvN7VmVyvy624DfEBUU8xOJFaheL-YlNTugv2qER1nFLnHDSnMg3x6lzF2h6DyjLFyzmNc7wGdEvA"/>
+<Image alt="User clinical profile" className="w-8 h-8 grayscale" data-alt="professional medical administrator portrait close-up with clean white background and sharp lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD83rNtUidIOU1a_YI7mECcR4GqxSmfnN0LHzAEDgMs1Wmigkm5F-Qx1_il7WSZIqwEaTC0ok6HHejOwh-frWeLf2XiqEBEWLuNpdsqg-tKIWgolBurO92xWj8VegrDwiZjTDh8dg5zroFNvUl1cKZJ3MkI-gVrMcsMjrgmUnpv9Ol1mHzsiCbpjIG6pLU0qlvN7VmVyvy624DfEBUU8xOJFaheL-YlNTugv2qER1nFLnHDSnMg3x6lzF2h6DyjLFyzmNc7wGdEvA" width={1200} height={800}/>
 <div className="text-[9px] leading-tight">
 <p className="font-bold uppercase tracking-tight">DR. A. VANCE</p>
 <p className="opacity-50 font-semibold uppercase">FINANCIAL ADMIN</p>

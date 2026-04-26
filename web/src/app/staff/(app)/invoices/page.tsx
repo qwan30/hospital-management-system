@@ -1,5 +1,3 @@
-import Image from "next/image";
-import Link from "next/link";
 
 export default function InvoicesPage() {
   return (
@@ -85,7 +83,7 @@ export default function InvoicesPage() {
 </div>
 {/* Date Range */}
 <div className="relative group">
-<input className="bg-transparent border-b-2 border-outline-variant pr-8 py-1 font-semibold uppercase text-[10px] tracking-widest focus:border-primary focus:ring-0 cursor-pointer" type="text" value="OCT 01, 2023 - OCT 31, 2023"/>
+<input className="bg-transparent border-b-2 border-outline-variant pr-8 py-1 font-semibold uppercase text-[10px] tracking-widest focus:border-primary focus:ring-0 cursor-pointer" type="text" defaultValue="OCT 01, 2023 - OCT 31, 2023"/>
 <span className="material-symbols-outlined absolute right-0 top-1 text-sm pointer-events-none" data-icon="calendar_today">calendar_today</span>
 </div>
 <div className="ml-auto flex items-center gap-4">

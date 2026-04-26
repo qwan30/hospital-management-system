@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -17,15 +18,18 @@ interface StaffTopNavProps {
 const defaultStaffLinks: TopNavLink[] = [
   { label: "Dashboard", href: "/staff/dashboard" },
   { label: "Patients", href: "/staff/patients" },
+  { label: "Queue", href: "/staff/queue" },
+  { label: "Schedule", href: "/staff/schedule" },
   { label: "Inventory", href: "/staff/inventory" },
-  { label: "Staff", href: "/staff/users" },
+  { label: "Finance", href: "/staff/invoices" },
 ];
 
 const defaultPortalLinks: TopNavLink[] = [
   { label: "Dashboard", href: "/portal/overview" },
-  { label: "Patients", href: "/portal/patients" },
-  { label: "Inventory", href: "/portal/inventory" },
-  { label: "Staff", href: "/portal/staff" },
+  { label: "Appointments", href: "/portal/appointments" },
+  { label: "Lab Results", href: "/portal/lab-results" },
+  { label: "Messages", href: "/portal/messages" },
+  { label: "Profile", href: "/portal/profile" },
 ];
 
 export function StaffTopNav({ links, profileImageSrc }: StaffTopNavProps) {
@@ -61,25 +65,42 @@ export function StaffTopNav({ links, profileImageSrc }: StaffTopNavProps) {
         })}
       </nav>
       <div className="ml-auto flex items-center gap-4">
-        <button className="text-gray-400 hover:text-white p-2 transition-colors">
-          <span className="material-symbols-outlined">notifications</span>
-        </button>
-        <button className="text-gray-400 hover:text-white p-2 transition-colors">
-          <span className="material-symbols-outlined">settings</span>
-        </button>
-        <div className="w-8 h-8 bg-hms-surface-container-highest flex items-center justify-center overflow-hidden">
+        <Link
+          href="/staff/queue"
+          className="text-gray-400 hover:text-white p-2 transition-colors"
+          aria-label="Open staff alerts"
+          title="Alerts"
+        >
+          <span className="material-symbols-outlined block">notifications</span>
+        </Link>
+        <Link
+          href="/staff/schedule"
+          className="text-gray-400 hover:text-white p-2 transition-colors"
+          aria-label="Open schedule settings"
+          title="Schedule settings"
+        >
+          <span className="material-symbols-outlined block">settings</span>
+        </Link>
+        <Link
+          href="/staff/doctor/dashboard"
+          className="w-8 h-8 bg-hms-surface-container-highest flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-blue-500 transition-all"
+          aria-label="Open staff profile"
+          title="Staff profile"
+        >
           {profileImageSrc ? (
-            <img
+            <Image
               alt="Administrator Profile"
               src={profileImageSrc}
               className="w-full h-full object-cover"
+              width={1200}
+              height={800}
             />
           ) : (
             <span className="material-symbols-outlined text-hms-on-surface-variant text-sm">
               account_circle
             </span>
           )}
-        </div>
+        </Link>
       </div>
     </header>
   );
@@ -93,8 +114,9 @@ export function PortalTopNav({ links, profileImageSrc }: StaffTopNavProps) {
     <header className="fixed top-0 left-0 right-0 z-50 flex px-4 h-[48px] bg-[#161616] items-center border-b-0 font-sans antialiased tracking-tight">
       <div className="flex items-center gap-8 w-full">
         <Link
-          href="/portal/overview"
+          href="/"
           className="text-lg font-semibold tracking-tighter text-white uppercase"
+          aria-label="Back to home"
         >
           HOSPITAL CORE
         </Link>
@@ -119,25 +141,45 @@ export function PortalTopNav({ links, profileImageSrc }: StaffTopNavProps) {
           })}
         </nav>
         <div className="ml-auto flex items-center gap-4">
-          <span className="material-symbols-outlined text-white cursor-pointer hover:bg-gray-800 p-2">
-            notifications
-          </span>
-          <span className="material-symbols-outlined text-white cursor-pointer hover:bg-gray-800 p-2">
-            settings
-          </span>
-          <div className="w-8 h-8 bg-hms-surface-container-highest overflow-hidden">
+          <Link
+            href="/portal/messages"
+            className="relative text-white hover:bg-gray-800 p-2 transition-colors"
+            aria-label="Open notifications"
+            title="Notifications"
+          >
+            <span className="material-symbols-outlined block">
+              notifications
+            </span>
+            <span className="absolute right-1.5 top-1.5 h-2 w-2 bg-blue-500 ring-2 ring-[#161616]" />
+          </Link>
+          <Link
+            href="/portal/profile#security-settings"
+            className="text-white hover:bg-gray-800 p-2 transition-colors"
+            aria-label="Open profile settings"
+            title="Settings"
+          >
+            <span className="material-symbols-outlined block">settings</span>
+          </Link>
+          <Link
+            href="/portal/profile"
+            className="w-8 h-8 bg-hms-surface-container-highest overflow-hidden flex items-center justify-center hover:ring-2 hover:ring-blue-500 transition-all"
+            aria-label="Open patient profile"
+            title="Profile"
+          >
             {profileImageSrc ? (
-              <img
-                alt="Administrator Profile"
+              <Image
+                alt="Patient profile"
                 src={profileImageSrc}
                 className="w-full h-full object-cover"
+                width={1200}
+                height={800}
               />
             ) : (
               <span className="material-symbols-outlined text-hms-on-surface-variant">
                 account_circle
               </span>
             )}
-          </div>
+          </Link>
         </div>
       </div>
     </header>

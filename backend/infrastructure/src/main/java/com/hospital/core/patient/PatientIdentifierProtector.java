@@ -39,7 +39,7 @@ public class PatientIdentifierProtector {
       cipher.init(Cipher.ENCRYPT_MODE, key(), new GCMParameterSpec(GCM_TAG_LENGTH, iv));
       var encrypted = cipher.doFinal(plainValue.getBytes(StandardCharsets.UTF_8));
       var payload = ByteBuffer.allocate(iv.length + encrypted.length).put(iv).put(encrypted).array();
-      return PREFIX + Base64.getEncoder().encodeToString(payload);
+      return PREFIX + Base64.getUrlEncoder().withoutPadding().encodeToString(payload);
     } catch (Exception exception) {
       throw new IllegalStateException("Failed to encrypt patient identifier", exception);
     }
@@ -54,7 +54,7 @@ public class PatientIdentifierProtector {
     }
 
     try {
-      var payload = Base64.getDecoder().decode(encryptedValue.substring(PREFIX.length()));
+      var payload = decodePayload(encryptedValue.substring(PREFIX.length()));
       var buffer = ByteBuffer.wrap(payload);
       var iv = new byte[IV_LENGTH];
       buffer.get(iv);
@@ -87,6 +87,14 @@ public class PatientIdentifierProtector {
     }
 
     return new SecretKeySpec(sha256(secret.getBytes(StandardCharsets.UTF_8)), "AES");
+  }
+
+  private byte[] decodePayload(String encodedPayload) {
+    try {
+      return Base64.getUrlDecoder().decode(encodedPayload);
+    } catch (IllegalArgumentException exception) {
+      return Base64.getDecoder().decode(encodedPayload);
+    }
   }
 
   private byte[] sha256(byte[] input) {

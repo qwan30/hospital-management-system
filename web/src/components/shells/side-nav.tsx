@@ -20,11 +20,13 @@ interface StaffSideNavProps {
 
 const defaultLinks: SideNavLink[] = [
   { label: "Overview", href: "/staff/dashboard", icon: "dashboard" },
-  { label: "Electronic Records", href: "/staff/records", icon: "assignment" },
-  { label: "Scheduling", href: "/staff/scheduling", icon: "calendar_today" },
-  { label: "Pharmacy", href: "/staff/pharmacy", icon: "medical_services" },
-  { label: "Diagnostics", href: "/staff/diagnostics", icon: "biotech" },
-  { label: "Billing", href: "/staff/billing", icon: "payments" },
+  { label: "Patient Records", href: "/staff/patients", icon: "assignment" },
+  { label: "Queue Board", href: "/staff/queue", icon: "format_list_numbered" },
+  { label: "Scheduling", href: "/staff/schedule", icon: "calendar_today" },
+  { label: "Appointments", href: "/staff/booking", icon: "event_available" },
+  { label: "Inventory", href: "/staff/inventory", icon: "inventory_2" },
+  { label: "Diagnostics", href: "/staff/lab-results", icon: "biotech" },
+  { label: "Billing", href: "/staff/invoices", icon: "payments" },
 ];
 
 export function StaffSideNav({
@@ -32,7 +34,7 @@ export function StaffSideNav({
   subtitle = "Standard Access",
   links,
   ctaLabel = "Admit Patient",
-  ctaHref = "/staff/patients/admit",
+  ctaHref = "/staff/booking",
 }: StaffSideNavProps) {
   const pathname = usePathname();
   const navLinks = links || defaultLinks;
@@ -63,7 +65,7 @@ export function StaffSideNav({
           {ctaLabel}
         </Link>
       </div>
-      <nav className="flex-1">
+      <nav className="flex-1 overflow-y-auto">
         {navLinks.map((link) => {
           const isActive =
             pathname === link.href || pathname.startsWith(link.href + "/");
@@ -110,17 +112,19 @@ export function PortalSideNav({
   title = "Clinical Suite",
   subtitle = "Standard Access",
   links,
-  ctaLabel = "Admit Patient",
-  ctaHref = "/portal/admit",
+  ctaLabel = "Book Appointment",
+  ctaHref = "/booking",
 }: StaffSideNavProps) {
   const pathname = usePathname();
   const navLinks = links || [
     { label: "Overview", href: "/portal/overview", icon: "dashboard" },
     { label: "Electronic Records", href: "/portal/records", icon: "assignment" },
-    { label: "Scheduling", href: "/portal/scheduling", icon: "calendar_today" },
+    { label: "Appointments", href: "/portal/appointments", icon: "calendar_today" },
     { label: "Pharmacy", href: "/portal/pharmacy", icon: "medical_services" },
-    { label: "Diagnostics", href: "/portal/diagnostics", icon: "biotech" },
+    { label: "Lab Results", href: "/portal/lab-results", icon: "biotech" },
     { label: "Billing", href: "/portal/billing", icon: "payments" },
+    { label: "Messages", href: "/portal/messages", icon: "mail" },
+    { label: "Profile", href: "/portal/profile", icon: "account_circle" },
   ];
 
   return (
@@ -170,7 +174,7 @@ export function PortalSideNav({
           Support
         </Link>
         <Link
-          href="/auth/logout"
+          href="/portal/login"
           className="text-gray-500 flex items-center h-[40px] px-4 hover:text-white transition-colors"
         >
           <span className="material-symbols-outlined mr-3">logout</span>

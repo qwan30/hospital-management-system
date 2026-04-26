@@ -7,8 +7,6 @@ logging:
     org.springframework.security: DEBUG
 
 integration:
-  gemini:
-    enabled: false
   gmail:
     enabled: false
 

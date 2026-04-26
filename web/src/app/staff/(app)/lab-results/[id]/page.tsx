@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function LabResultDetailPage() {
   return (
@@ -67,7 +66,7 @@ export default function LabResultDetailPage() {
 <span className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-4">Attending Clinician</span>
 <div className="flex items-center gap-4">
 <div className="w-12 h-12 bg-surface-container-low overflow-hidden">
-<img alt="Dr. Sarah Miller" className="w-full h-full object-cover grayscale" data-alt="Close-up of a female doctor in a white coat looking professionally at the camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeEpFVNiBU1r3rcAYupxpS6sfBxPz4apmNlAoRI-8t-k7p9CWk3mebI1VrKdKKGW5efo8UoxEoGh8yjtEGYf4yhUKSpqtkZ8Hn1AoTflm5tY5RQrhAI_lmhvgSeAjtyiLd30OSJBCRTiq378XBILKRLvy3RdfFOKiO3ViWE9Q3Pcb8wM-Ep2hn8F4VGWjMJISfaxoeypF_2O9NCBitN4p6D7Gm9un8EnCdH8m5ZZY0qeMxVK0tysJqEkhsAznppT2D978W6HXN4Q"/>
+<Image alt="Dr. Sarah Miller" className="w-full h-full object-cover grayscale" data-alt="Close-up of a female doctor in a white coat looking professionally at the camera" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeEpFVNiBU1r3rcAYupxpS6sfBxPz4apmNlAoRI-8t-k7p9CWk3mebI1VrKdKKGW5efo8UoxEoGh8yjtEGYf4yhUKSpqtkZ8Hn1AoTflm5tY5RQrhAI_lmhvgSeAjtyiLd30OSJBCRTiq378XBILKRLvy3RdfFOKiO3ViWE9Q3Pcb8wM-Ep2hn8F4VGWjMJISfaxoeypF_2O9NCBitN4p6D7Gm9un8EnCdH8m5ZZY0qeMxVK0tysJqEkhsAznppT2D978W6HXN4Q" width={1200} height={800}/>
 </div>
 <div>
 <div className="font-semibold text-on-surface">Dr. Sarah Miller</div>

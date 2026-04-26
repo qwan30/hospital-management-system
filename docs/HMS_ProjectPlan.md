@@ -1,6 +1,6 @@
 # Hospital Management System Project Plan
 
-Status: updated to reflect the current repository on 2026-04-25
+Status: updated to reflect the current repository on 2026-04-26 after AI and internal assistant removal.
 
 Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)
 
@@ -18,9 +18,8 @@ The next major milestone is to turn that backend into a coherent frontend produc
 | Finance APIs | Done | invoices, payments, pricing, revenue reports |
 | Inventory APIs | Done | items, lots, movements |
 | Patient portal APIs | Partially done | auth, overview, appointments, lab results, messages list, profile |
-| Internal assistant APIs | Done for v1 | sessions/current, messages, feedback, monitoring, knowledge docs |
 | Public chatbot | Done | deterministic helper for departments, doctors, and slots |
-| Frontend application | Not done | only starter Vite scaffold exists |
+| Frontend application | In progress | canonical Next.js app exists in `web/`; backend data integration is still incomplete |
 | Frontend tests | Not done | no UI test suite yet |
 
 ## 3. Recommended Frontend Delivery Phases
@@ -62,7 +61,6 @@ API dependencies:
 - departments
 - doctors
 - slots
-- ai
 - appointments
 
 ### Phase 3: Staff auth and clinical workflows
@@ -121,7 +119,7 @@ API dependencies:
 - admin content
 - admin news
 
-### Phase 5: Patient portal and internal assistant
+### Phase 5: Patient portal completion
 
 Screens:
 
@@ -132,16 +130,11 @@ Screens:
 - Patient lab results
 - Patient messages
 - Patient profile
-- Assistant panel
-- Knowledge document manager
 
 API dependencies:
 
 - patient-auth
 - patient-portal
-- internal-assistant
-- admin knowledge documents
-- admin internal assistant monitoring
 
 ## 4. Design Workstreams
 
@@ -163,13 +156,6 @@ API dependencies:
 - audit-friendly status visibility
 - low-risk destructive action patterns
 
-### 4.4 Assistant experience
-
-- citation-first answer presentation
-- patient context indicator
-- mode selector with strong guardrails
-- refusal and insufficent-evidence states
-
 ## 5. Known Risks
 
 | Risk | Impact | Mitigation |
@@ -177,8 +163,8 @@ API dependencies:
 | Designing beyond current APIs | Rework during implementation | Keep design anchored to DTOs and controllers |
 | Treating patient messages as two-way chat | Missing backend capability | Mark compose/reply as future scope only |
 | Assuming nurse room board exists | Workflow mismatch | Keep nurse workflow centered on queue and check-in |
-| Mixing public chatbot and internal assistant behavior | Confusing UX | Separate lightweight public helper from clinical assistant |
-| Treating frontend scaffold as production-ready | Planning errors | Explicitly plan frontend architecture as net-new work |
+| Reintroducing removed AI/assistant concepts in UI copy | Confusing UX | Keep chatbot framed as a scoped hospital helper only |
+| Treating static frontend screens as production-ready | Planning errors | Explicitly plan backend data integration before production use |
 
 ## 6. Definition Of Done For Frontend Delivery
 
@@ -186,5 +172,4 @@ API dependencies:
 - route map covers guest, patient, doctor, nurse, accountant, and admin
 - every designed action is backed by a current API or clearly marked future scope
 - auth refresh behavior is designed for both staff and patient sessions
-- assistant UX includes citations, suggestions, refusals, and patient-context guardrails
 - responsive rules are defined for public and patient experiences

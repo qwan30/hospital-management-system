@@ -16,6 +16,30 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Frontend Quality Checks
+
+```bash
+npm run lint
+npm run build
+npm run test:e2e:ui
+```
+
+The Playwright suite lives in `e2e/` and uses these environment variables:
+
+- `HMS_WEB_URL`: frontend base URL, default `http://localhost:3000`
+- `HMS_API_URL`: backend API base URL, default `http://localhost:8080/api/v1`
+- `NEXT_PUBLIC_API_BASE_URL`: client-side API base URL used by the app, default `http://localhost:8080/api/v1`
+
+Available E2E commands:
+
+- `npm run test:e2e:ui`: route smoke, console/runtime, accessibility, responsive, and workflow smoke checks.
+- `npm run test:e2e:integrated`: backend-backed auth, claim, logout, and booking request checks. It skips when the backend health endpoint is unavailable.
+- `npm run test:e2e:visual`: visual baseline snapshots for the highest-risk pages.
+- `npm run test:e2e:headed`: headed local debugging.
+- `npm run test:e2e:report`: open the last HTML report.
+
+The UI route audit covers public, staff, patient portal, and admin route families. Tests prefer role, label, and link selectors; add `data-testid` only when semantic selectors are not practical.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function DoctorDetailPage() {
   return (
@@ -11,7 +10,7 @@ export default function DoctorDetailPage() {
 {/* Hero Identity */}
 <section className="flex flex-col md:flex-row gap-12 items-start">
 <div className="w-64 h-80 flex-shrink-0 bg-surface-container-high relative overflow-hidden">
-<img alt="Doctor Professional Portrait" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" data-alt="professional portrait of a senior cardiologist in a white coat with a confident smile, clinical architectural background, soft cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQKBX7pN66DLIDqIM9FUgaxs9eciBMz5Vu2AW_jPDqZ6OiSNymdU5scCJwQtIrFZk0pG3eG4BcVMmeTUeRvXCHkMY9r3kvHn90nHrGY1QXqzkFOGpXIxTUrsSGLFmik72hsjqA91MQDj4S1VV2r2ve5JWva0EB0wvfLjM7N3nZQOtDd99LP1JhsAEHoalAylThSy8cv4s51EyNHLhu7UhRqErFkq7dGmgDhrGTWjrjKOHuFRNTlzYxCAxcM-bhZAK2MQ3U5h535Q"/>
+<Image alt="Doctor Professional Portrait" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" data-alt="professional portrait of a senior cardiologist in a white coat with a confident smile, clinical architectural background, soft cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQKBX7pN66DLIDqIM9FUgaxs9eciBMz5Vu2AW_jPDqZ6OiSNymdU5scCJwQtIrFZk0pG3eG4BcVMmeTUeRvXCHkMY9r3kvHn90nHrGY1QXqzkFOGpXIxTUrsSGLFmik72hsjqA91MQDj4S1VV2r2ve5JWva0EB0wvfLjM7N3nZQOtDd99LP1JhsAEHoalAylThSy8cv4s51EyNHLhu7UhRqErFkq7dGmgDhrGTWjrjKOHuFRNTlzYxCAxcM-bhZAK2MQ3U5h535Q" width={1200} height={800}/>
 </div>
 <div className="flex-grow pt-4">
 <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-4 block">Senior Consultant</span>

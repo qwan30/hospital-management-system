@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function BookingSuccessPage() {
   return (
@@ -29,7 +28,7 @@ export default function BookingSuccessPage() {
 <div className="flex flex-col space-y-2">
 <span className="text-xs font-semibold uppercase tracking-widest text-outline">Practitioner</span>
 <div className="flex items-start space-x-4">
-<img alt="Doctor Profile" className="w-12 h-12 grayscale" data-alt="Professional portrait of a male doctor in a white lab coat with a stethoscope around his neck, minimalist white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGYAfT8LWRcPEPCvaz0oYNZwLwRF0tPWJAo13CzHohYwCGfXzkEyzL4EOfWZ-XY42A1rUtPU3Qm0UXI3KDaKavGQyUQvVSKQ_ULnGTIL3azNekw7wwmb58ffbypeSes6KUZ85GQxnGX6ZniQELqQ75fYn-ILfTphg-sRbt5SP2QANxbuy5S_dSzi0fo9XiBlQVdRzYbTrLeI9mSDUYVaJXc6Ikj2EsoSlCAwhX3pLyzCnRaWWC2VwyznNIS2A_KCNQRsMZrrkDhQ"/>
+<Image alt="Doctor Profile" className="w-12 h-12 grayscale" data-alt="Professional portrait of a male doctor in a white lab coat with a stethoscope around his neck, minimalist white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGYAfT8LWRcPEPCvaz0oYNZwLwRF0tPWJAo13CzHohYwCGfXzkEyzL4EOfWZ-XY42A1rUtPU3Qm0UXI3KDaKavGQyUQvVSKQ_ULnGTIL3azNekw7wwmb58ffbypeSes6KUZ85GQxnGX6ZniQELqQ75fYn-ILfTphg-sRbt5SP2QANxbuy5S_dSzi0fo9XiBlQVdRzYbTrLeI9mSDUYVaJXc6Ikj2EsoSlCAwhX3pLyzCnRaWWC2VwyznNIS2A_KCNQRsMZrrkDhQ" width={1200} height={800}/>
 <div className="flex flex-col">
 <h2 className="text-xl font-semibold">Dr. Julian Sterling</h2>
 <p className="text-sm text-outline">Chief Cardiologist</p>

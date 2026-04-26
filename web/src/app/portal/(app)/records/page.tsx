@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function PatientRecordBrowserPage() {
   return (
@@ -95,7 +94,7 @@ export default function PatientRecordBrowserPage() {
 <div className="flex justify-between items-start">
 <div className="flex gap-6 items-center">
 <div className="w-24 h-24 bg-surface-container-highest flex-shrink-0">
-<img alt="Sarah J. Miller" className="w-full h-full object-cover grayscale" data-alt="close up headshot of a young woman with a calm professional expression against a soft neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsjvD3G_nUqQ3p-O7i9bGyRfSjfTpbqjwqWZUc4p_TmnHUfq7z_VgiWWlnCtcSS_L-4zmtN1rX3iikTdunpacJvyHD-j82s-BgXDa0TYEqG0BotqoeTJPjFGmcCNGuWAYEy5MzfdIQxgJbFiB81g8nPF-lFWxQGKufqdJmPntnZQLfHpyxeJaklYmCx6QG92dki0JI8KiIfn1OoLfeGJnnsQdWS2gFwT9EeQ1dlwNHEsCndQJeXTtmk5piC3eSlHRSkuGRr9GFCw"/>
+<Image alt="Sarah J. Miller" className="w-full h-full object-cover grayscale" data-alt="close up headshot of a young woman with a calm professional expression against a soft neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsjvD3G_nUqQ3p-O7i9bGyRfSjfTpbqjwqWZUc4p_TmnHUfq7z_VgiWWlnCtcSS_L-4zmtN1rX3iikTdunpacJvyHD-j82s-BgXDa0TYEqG0BotqoeTJPjFGmcCNGuWAYEy5MzfdIQxgJbFiB81g8nPF-lFWxQGKufqdJmPntnZQLfHpyxeJaklYmCx6QG92dki0JI8KiIfn1OoLfeGJnnsQdWS2gFwT9EeQ1dlwNHEsCndQJeXTtmk5piC3eSlHRSkuGRr9GFCw" width={1200} height={800}/>
 </div>
 <div>
 <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em]">Active Patient Record</span>

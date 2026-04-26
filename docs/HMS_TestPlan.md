@@ -1,6 +1,6 @@
 # Hospital Management System Test Plan
 
-Status: aligned to the repository on 2026-04-25
+Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
 ## 1. Current Automated Test Coverage
 
@@ -16,7 +16,6 @@ The backend tests now follow the DDD-oriented Maven split:
 
 Current unit-tested service areas include:
 
-- symptom analysis
 - appointment write workflow
 - appointment workflow
 - medical record service
@@ -25,14 +24,12 @@ Current unit-tested service areas include:
 - inventory write service
 - lab result service
 - vital signs service
-- internal assistant service and query routing
 
 ### 1.2 Backend integration tests in `backend/start`
 
 Current integration and hardening suites include:
 
 - `ClinicalWorkflowIntegrationTest`
-- `InternalAssistantIntegrationTest`
 - `SecurityHardeningIntegrationTest`
 - `ModuleBoundaryTest`
 
@@ -54,7 +51,6 @@ Verify:
 - doctor and department discovery endpoints return active data
 - booking succeeds with valid data
 - double-booking and slot conflicts are rejected correctly
-- symptom analysis returns either Gemini or heuristic output safely
 
 ### 2.2 Staff workflows
 
@@ -83,25 +79,14 @@ Verify:
 - patient auth login and refresh work with cookies
 - portal overview, appointments, lab results, messages, and profile endpoints honor patient scope
 
-### 2.5 Internal assistant
-
-Verify:
-
-- role restrictions by mode
-- patient context restrictions for doctor and nurse
-- citations are returned when evidence exists
-- refusal states occur when evidence or access is missing
-- knowledge document upload and lifecycle actions work for admin
-
 ## 3. Frontend Test Plan For Upcoming UI Work
 
-When the frontend is implemented, add:
+The canonical Next.js frontend is `web/`. Static design prototypes in `frontend/` remain references only.
 
 ### 3.1 Unit tests
 
 - form schema validation
 - auth stores
-- assistant state logic
 - table/filter helpers
 - status badge formatting
 
@@ -115,12 +100,32 @@ When the frontend is implemented, add:
 
 ### 3.3 End-to-end tests
 
-- guest booking journey
-- doctor completes encounter and downloads PDF
-- nurse checks in and records vital signs
-- accountant records a payment
-- admin uploads and activates a knowledge document
-- patient claims access and views lab results
+Playwright is configured in `web/playwright.config.ts` with tests under `web/e2e/`.
+
+Commands:
+
+- `npm run test:e2e:ui`: frontend-only route, runtime, accessibility, responsive, and workflow smoke checks.
+- `npm run test:e2e:integrated`: backend-backed auth/API checks. Requires `HMS_API_URL`, defaulting to `http://localhost:8080/api/v1`; skips if backend health is unavailable.
+- `npm run test:e2e:visual`: visual snapshot baselines for high-risk pages.
+- `npm run test:e2e:headed`: headed debug mode.
+- `npm run test:e2e:report`: open the HTML report.
+
+Covered route families:
+
+- public: home, departments, department detail, doctors, news, booking, privacy, terms, security, session-expired
+- staff: login, dashboard, patients, queue, schedule, booking, slots/review/success/symptoms, inventory, invoices, lab results, medical record editor, nurse intake, doctor dashboard/detail, prescription preview, pricing, revenue, support, vital signs
+- patient portal: login, overview, records, appointments, lab results, messages, profile, claim, billing, diagnostics, inventory, patients, pharmacy, scheduling, staff, support, admit
+- admin: dashboard, appointments, audit logs, departments, monitoring, news, public content, rooms, users, user detail
+
+Current E2E flows:
+
+- staff login calls `/api/v1/auth/login`, stores the access token in session storage, and opens `/staff/dashboard`
+- invalid staff login stays on `/staff/login` and shows an alert
+- patient login calls `/api/v1/patient-auth/login`
+- patient claim calls `/api/v1/patient-auth/claim`
+- staff logout calls `/api/v1/auth/logout`
+- public booking validates required intake fields and emits an appointment request once the backend is available
+- portal/staff/admin smoke checks validate the main user-facing destinations and headings
 
 ## 4. Manual QA Checklist For Design And Frontend Work
 
@@ -128,7 +133,6 @@ When the frontend is implemented, add:
 - forbidden actions are hidden or disabled before submission
 - cookie-based refresh does not create visible auth churn
 - PDFs open or download correctly
-- assistant refusal states are understandable
 - patient portal clearly distinguishes read-only areas from editable areas
 - public and portal layouts work on mobile
 - staff layouts remain readable on desktop and tablet widths

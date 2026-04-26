@@ -1,0 +1,28 @@
+import { expect, test } from "@playwright/test";
+import { expectNoCriticalA11yViolations } from "../helpers/a11y";
+import { collectConsoleProblems } from "../helpers/console";
+import { expectNoNextErrorOverlay } from "../helpers/layout";
+import { publicRoutes, smokeRoutes } from "../helpers/routes";
+
+test.describe("@ui route smoke audit", () => {
+  for (const route of smokeRoutes) {
+    test(`${route.label} loads ${route.path}`, async ({ page }) => {
+      const consoleProblems = collectConsoleProblems(page);
+      const response = await page.goto(route.path);
+
+      expect(response?.status(), `${route.path} response status`).toBeLessThan(400);
+      await expect(page.locator("main").first()).toBeVisible();
+      await expectNoNextErrorOverlay(page);
+      expect(consoleProblems, `${route.path} console problems`).toEqual([]);
+    });
+  }
+});
+
+test.describe("@ui public accessibility audit", () => {
+  for (const route of publicRoutes) {
+    test(`${route.label} has no serious accessibility violation`, async ({ page }) => {
+      await page.goto(route.path);
+      await expectNoCriticalA11yViolations(page);
+    });
+  }
+});

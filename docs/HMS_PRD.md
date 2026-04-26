@@ -1,6 +1,6 @@
 # Hospital Management System PRD
 
-Status: aligned to the repository on 2026-04-25
+Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
 ## 1. Purpose
 
@@ -12,31 +12,29 @@ It is intended to support UI/UX design and frontend planning from the code that 
 The project is a backend-first hospital management platform with:
 
 - public hospital discovery content
-- appointment booking with symptom-based duration suggestion
+- appointment booking with symptom intake
 - staff authentication and role-based workflows
 - doctor medical record and prescription PDF generation
 - nurse check-in, queue, and vital signs workflows
 - accountant invoice, payment, pricing, and revenue reporting workflows
 - admin operations for users, departments, rooms, schedules, content, and monitoring
 - patient portal authentication, overview, appointments, lab results, messages, and profile
-- an internal clinical assistant with document mode, patient mode, and hybrid mode
 
 ## 3. Current Implementation Baseline
 
 ### 3.1 Implemented now
 
 - Spring Boot backend with a DDD-oriented Maven layout: `domain`, `infrastructure`, `application`, `controller`, and `start`
-- roughly 122 controller route handlers in `backend/controller/src/main/java`
-- PostgreSQL schema managed by Flyway migrations `V1` through `V10`
+- controller route handlers in `backend/controller/src/main/java`
+- PostgreSQL schema managed by Flyway migrations `V1` through `V15`
 - seed data for departments, staff accounts, pricing, slots, inventory, and patient portal demo data
 - deterministic public chatbot based on live database content
-- Gemini-backed symptom analysis with heuristic fallback when Gemini is disabled or unavailable
 - Gmail integration hooks for transactional email, disabled by default unless configured
 
 ### 3.2 Not implemented yet
 
-- a production frontend application
-- a role-based React app connected to the backend APIs
+- full production readiness for every frontend workflow
+- complete backend API integration across every frontend workflow
 - patient self-service cancel/reschedule flows
 - patient portal message compose or reply APIs
 - external payment gateway integration
@@ -44,9 +42,9 @@ The project is a backend-first hospital management platform with:
 
 ### 3.3 Frontend status
 
-The `frontend/` folder is only a starter Vite TypeScript scaffold.
-It does not contain hospital screens yet.
-Design work should therefore treat the backend APIs and contract DTOs in `backend/domain` as the contract for the future UI.
+The `web/` folder contains the canonical Next.js frontend route tree for public, staff, admin, and patient portal screens.
+The `frontend/` directory is retained as migrated design-reference HTML/PNG prototypes, not as the runnable frontend.
+Design work should therefore treat the implemented `web/` app and the backend APIs and contract DTOs in `backend/domain` as the current product baseline.
 
 ## 4. Users and Roles
 
@@ -54,10 +52,10 @@ Design work should therefore treat the backend APIs and contract DTOs in `backen
 | --- | --- | --- |
 | Guest | Public content, doctor directory, department info, booking, chatbot | Needs a polished public website and booking flow |
 | Patient | Portal claim, portal login, overview, appointments, lab results, messages, profile | Needs a lightweight portal focused on visibility and trust |
-| Doctor | Staff auth, appointment list/detail, status updates, medical records, follow-up, PDFs, internal assistant | Needs an information-dense clinical workspace |
-| Nurse | Staff auth, daily appointments, queue, check-in, vital signs, internal assistant with queue-bound patient context | Needs fast list/detail interactions and low-friction intake |
+| Doctor | Staff auth, appointment list/detail, status updates, medical records, follow-up, PDFs | Needs an information-dense clinical workspace |
+| Nurse | Staff auth, daily appointments, queue, check-in, vital signs | Needs fast list/detail interactions and low-friction intake |
 | Accountant | Invoices, payments, pricing, revenue reports | Needs finance tables, filters, and status visibility |
-| Admin | Users, departments, rooms, templates, closures, slots, content, news, stats, monitoring, audit logs, knowledge docs, docs-only internal assistant | Needs a broad operations console with strong navigation |
+| Admin | Users, departments, rooms, templates, closures, slots, content, news, stats, monitoring, audit logs | Needs a broad operations console with strong navigation |
 
 ## 5. Product Scope For Frontend Design
 
@@ -72,7 +70,7 @@ Design work should therefore treat the backend APIs and contract DTOs in `backen
 
 ### 5.2 Booking experience
 
-- Symptom analysis step via `/api/v1/ai/analyze-symptoms`
+- symptom intake and clinical triage copy
 - doctor and slot selection
 - patient identity and contact capture
 - booking confirmation with generated confirmation code
@@ -97,17 +95,9 @@ Design work should therefore treat the backend APIs and contract DTOs in `backen
 - Message thread list with nested messages returned by the API
 - Profile editing
 
-### 5.5 Internal assistant
-
-- Session-aware assistant panel for doctor and nurse workflows
-- Docs mode, Patient mode, and Hybrid mode
-- citation list and deep links in every non-refused answer
-- feedback action on assistant answers
-- admin knowledge document management screens
-
 ## 6. Screen Inventory
 
-The future frontend should at minimum include the screens below.
+The frontend product should at minimum include the screens below.
 
 ### 6.1 Public screens
 
@@ -143,7 +133,6 @@ The future frontend should at minimum include the screens below.
 - Admin content and news
 - Admin stats and monitoring
 - Audit log viewer
-- Knowledge document manager
 
 ### 6.3 Patient portal screens
 
@@ -162,7 +151,6 @@ The future frontend should at minimum include the screens below.
 - empty states
 - optimistic loading and skeleton states
 - form validation states
-- file upload states for knowledge docs
 
 ## 7. Key Journeys
 
@@ -182,7 +170,6 @@ The future frontend should at minimum include the screens below.
 3. Doctor updates appointment status.
 4. Doctor creates a medical record with diagnosis, notes, optional vital signs, optional follow-up date, and prescription items.
 5. Doctor previews or downloads prescription PDF.
-6. Doctor optionally opens the internal assistant with patient context.
 
 ### 7.3 Nurse intake journey
 
@@ -190,7 +177,6 @@ The future frontend should at minimum include the screens below.
 2. Nurse opens today appointments or queue.
 3. Nurse checks in the patient.
 4. Nurse records vital signs.
-5. Nurse optionally uses the internal assistant with the currently queued patient context.
 
 ### 7.4 Accountant billing journey
 
@@ -207,23 +193,20 @@ The future frontend should at minimum include the screens below.
 2. Admin manages staff, departments, rooms, and scheduling structures.
 3. Admin manages public content and news.
 4. Admin reviews monitoring, stats, and audit logs.
-5. Admin uploads, activates, revokes, or reindexes internal assistant knowledge documents.
 
 ## 8. UX Requirements
 
 - Public and patient experiences must work well on mobile and desktop.
 - Staff experiences are desktop-first but should remain tablet-friendly.
 - UI must reflect role boundaries exactly; unavailable actions should not be shown.
-- Assistant responses must always surface citations, suggested follow-up actions, and refusal states clearly.
 - Booking and medical forms must show validation inline and preserve entered data where safe.
 - Sensitive data views must feel clinical, reliable, and low-noise rather than marketing-driven.
-- Accessibility target for the future frontend is WCAG 2.1 AA.
+- Accessibility target for the frontend is WCAG 2.1 AA.
 
 ## 9. Product Constraints From Current Code
 
-- The chatbot is rule-based and grounded in departments, doctors, and slots. It is not a general LLM chat experience.
-- Symptom analysis is the only user-facing AI feature that calls an external model today.
-- Internal assistant responses are deterministic and citation-first; the UI should not imply free-form generative behavior.
+- The chatbot is rule-based and grounded in departments, doctors, and slots. It is not a general AI or LLM chat experience.
+- There is no external AI provider integration in the current product.
 - Patient portal messaging is currently read-only from the patient side.
 - Room management exists for admin APIs only; a nurse room workflow is not implemented yet.
 - Refresh tokens are returned via HTTP-only cookies for both staff and patient authentication.
@@ -236,5 +219,5 @@ Frontend design artifacts produced from this PRD should:
 - distinguish implemented backend capability from future enhancements
 - include clear responsive behavior for public and portal views
 - include dense desktop layouts for doctor, nurse, accountant, and admin workspaces
-- show where citations, PDFs, monitoring data, and status chips appear
+- show where PDFs, monitoring data, and status chips appear
 - avoid designing flows that need APIs the current repository does not provide

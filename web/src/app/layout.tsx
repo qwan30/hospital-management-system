@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+/* eslint-disable @next/next/no-page-custom-font */
+
 export const metadata: Metadata = {
   title: "HOSPITAL CORE | Management System",
   description: "Hospital Management System – Precision healthcare operations platform",

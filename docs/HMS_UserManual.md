@@ -1,6 +1,6 @@
 # Hospital Management System User Manual
 
-Status: role workflow reference aligned to the repository on 2026-04-25
+Status: role workflow reference aligned to the repository on 2026-04-26 after AI and internal assistant removal.
 
 ## 1. How To Use This Manual
 
@@ -24,7 +24,7 @@ The booking flow should show:
 
 - selected doctor
 - selected first slot
-- AI-recommended visit duration
+- planned visit duration
 - patient identity and contact data
 - confirmation code after successful booking
 
@@ -59,7 +59,6 @@ The doctor workflow should allow a doctor to:
 - add prescription items
 - set a follow-up date
 - preview and download prescription PDF
-- open the internal assistant in docs, patient, or hybrid mode
 
 The doctor workspace should prioritize:
 
@@ -77,7 +76,6 @@ The nurse workflow should allow a nurse to:
 - open the queue view
 - check in a patient
 - record or update vital signs
-- use the internal assistant for the current queue context
 
 Important limitation:
 
@@ -118,8 +116,6 @@ The admin workflow should allow an admin to:
 - review monitoring snapshots
 - review audit logs
 - manage public content sections and news
-- manage internal assistant knowledge documents
-- use the internal assistant only in docs mode
 
 The admin UI should support:
 
@@ -127,26 +123,7 @@ The admin UI should support:
 - clear separation between content admin, operational admin, and monitoring
 - safe destructive actions with confirmation
 
-## 8. Internal Assistant User Expectations
-
-The internal assistant should present:
-
-- current mode
-- current patient or appointment context when relevant
-- assistant answer
-- citation list
-- deep links
-- follow-up suggestions
-- answer feedback controls
-
-The assistant should also clearly explain when it refuses to answer because:
-
-- the selected role is not allowed
-- required patient context is missing
-- the selected patient is outside allowed scope
-- there is not enough approved evidence
-
-## 9. UX Notes For All Roles
+## 8. UX Notes For All Roles
 
 - public and patient views should be mobile-friendly
 - staff views should be desktop-first

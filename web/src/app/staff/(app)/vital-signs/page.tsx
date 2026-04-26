@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function VitalSignsEditorPage() {
   return (
@@ -35,7 +34,7 @@ export default function VitalSignsEditorPage() {
 <section className="mb-12 flex flex-col md:flex-row gap-0.5 bg-neutral-900">
 <div className="bg-surface-container-lowest p-8 flex-1">
 <div className="flex items-center gap-4 mb-4">
-<img alt="Patient Avatar" className="w-16 h-16 grayscale border border-neutral-200" data-alt="professional headshot of an elderly man with kind eyes and short grey hair, monochromatic studio lighting, clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_DN6oozxQXNYh74iq__-BrfwcMwbt3ibtXjNtH73O_cScjRfEU03XP22nZbRj68KjSDehAxb2PKdz4Fd3o8TQ3nisTK0oK_Mh7GMmyKGj0aoAXeZXU6dptbN2OhKuxDcfAXxrHqSijtZoMLx7y6c75ltdfy8QRPrAldAtbUouVndleAz2TxhPhJ4HS3Ri1LV9XM9OSHquxxIsWX9KUaORUlg2ZKPCEVs0uAx0qVZWsPr5mn99zWNFBXtjyyTJWEAlKIAJjODwwg"/>
+<Image alt="Patient Avatar" className="w-16 h-16 grayscale border border-neutral-200" data-alt="professional headshot of an elderly man with kind eyes and short grey hair, monochromatic studio lighting, clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_DN6oozxQXNYh74iq__-BrfwcMwbt3ibtXjNtH73O_cScjRfEU03XP22nZbRj68KjSDehAxb2PKdz4Fd3o8TQ3nisTK0oK_Mh7GMmyKGj0aoAXeZXU6dptbN2OhKuxDcfAXxrHqSijtZoMLx7y6c75ltdfy8QRPrAldAtbUouVndleAz2TxhPhJ4HS3Ri1LV9XM9OSHquxxIsWX9KUaORUlg2ZKPCEVs0uAx0qVZWsPr5mn99zWNFBXtjyyTJWEAlKIAJjODwwg" width={1200} height={800}/>
 <div>
 <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600 mb-1">Current Patient</p>
 <h2 className="text-3xl font-light tracking-tight text-on-surface">DRS. HARRISON WELLS</h2>

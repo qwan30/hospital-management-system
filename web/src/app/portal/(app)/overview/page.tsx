@@ -18,48 +18,48 @@ export default function PatientPortalOverviewPage() {
 <p className="text-xs font-bold uppercase tracking-widest text-primary mb-2">Welcome back, Sarah Jenkins</p>
 <h2 className="text-5xl font-light leading-tight mb-6">Your health summary is updated for <span className="font-semibold text-primary">October 2024</span>.</h2>
 <div className="flex gap-4">
-<button className="px-6 h-12 bg-primary-container text-on-primary font-semibold hover:bg-primary transition-all">View Full Record</button>
+<Link href="/portal/records" className="px-6 h-12 bg-primary-container text-on-primary font-semibold hover:bg-primary transition-all inline-flex items-center">View Full Record</Link>
 <button className="px-6 h-12 bg-on-surface text-surface font-semibold hover:bg-surface-dim transition-all">Download PDF</button>
 </div>
 </div>
 <div className="w-full md:w-1/3 min-h-[300px] relative overflow-hidden">
-<img alt="Hospital Interior" className="absolute inset-0 w-full h-full object-cover" data-alt="Modern medical facility interior with minimalist architecture, glass surfaces, and clean lines under bright cool-toned lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsQ0LIOPXRV_ZDrz2fYyPvKj_-L3TAtd3OE-hzu1A3aZUSoDJcW0ycaisCXOaF3eKPc6e_JdfyfYitolzn963XSsS_hR8TsSw4S77ncpz5O7KfrALQk65Ex8N94LXjsBQOMDf1wifx9hTATtMyxRSUzTvCJEA6DbYODmqJslrsGkFrGPhVgrB3si0R4i5jabf1XjCVKr9uYj1rctTOICc5BA2B5BYATureevWSrPX8nD1ovFd9nHYH-9lS-6IReqfDJ72j9vadEA"/>
+<Image alt="Hospital Interior" className="absolute inset-0 w-full h-full object-cover" data-alt="Modern medical facility interior with minimalist architecture, glass surfaces, and clean lines under bright cool-toned lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsQ0LIOPXRV_ZDrz2fYyPvKj_-L3TAtd3OE-hzu1A3aZUSoDJcW0ycaisCXOaF3eKPc6e_JdfyfYitolzn963XSsS_hR8TsSw4S77ncpz5O7KfrALQk65Ex8N94LXjsBQOMDf1wifx9hTATtMyxRSUzTvCJEA6DbYODmqJslrsGkFrGPhVgrB3si0R4i5jabf1XjCVKr9uYj1rctTOICc5BA2B5BYATureevWSrPX8nD1ovFd9nHYH-9lS-6IReqfDJ72j9vadEA" width={1200} height={800} priority/>
 </div>
 </div>
 {/* Bento Grid Stats */}
 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
 {/* Data Monolith 1: Unread Messages */}
-<div className="bg-surface-container-highest p-6 flex flex-col justify-between h-48 hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<Link href="/portal/messages" className="bg-surface-container-highest p-6 flex flex-col justify-between h-48 hover:bg-surface-container-lowest transition-colors cursor-pointer">
 <span className="material-symbols-outlined text-primary" >mail</span>
 <div>
 <div className="text-4xl font-light text-on-surface">04</div>
 <div className="text-[11px] font-semibold uppercase tracking-widest text-outline">Unread Messages</div>
 </div>
-</div>
+</Link>
 {/* Data Monolith 2: Lab Results */}
-<div className="bg-surface-container-highest p-6 flex flex-col justify-between h-48 hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<Link href="/portal/lab-results" className="bg-surface-container-highest p-6 flex flex-col justify-between h-48 hover:bg-surface-container-lowest transition-colors cursor-pointer">
 <span className="material-symbols-outlined text-primary">biotech</span>
 <div>
 <div className="text-4xl font-light text-on-surface">12</div>
 <div className="text-[11px] font-semibold uppercase tracking-widest text-outline">Lab Results</div>
 </div>
-</div>
+</Link>
 {/* Data Monolith 3: Upcoming */}
-<div className="bg-primary-container p-6 flex flex-col justify-between h-48 text-on-primary transition-all cursor-pointer">
+<Link href="/portal/appointments" className="bg-primary-container p-6 flex flex-col justify-between h-48 text-on-primary transition-all cursor-pointer">
 <span className="material-symbols-outlined" >calendar_month</span>
 <div>
 <div className="text-4xl font-light">02</div>
 <div className="text-[11px] font-semibold uppercase tracking-widest opacity-80">Pending Consultations</div>
 </div>
-</div>
+</Link>
 {/* Data Monolith 4: Prescriptions */}
-<div className="bg-surface-container-highest p-6 flex flex-col justify-between h-48 hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<Link href="/portal/pharmacy" className="bg-surface-container-highest p-6 flex flex-col justify-between h-48 hover:bg-surface-container-lowest transition-colors cursor-pointer">
 <span className="material-symbols-outlined text-primary">medication</span>
 <div>
 <div className="text-4xl font-light text-on-surface">06</div>
 <div className="text-[11px] font-semibold uppercase tracking-widest text-outline">Active Prescriptions</div>
 </div>
-</div>
+</Link>
 </div>
 {/* Asymmetric Secondary Layout */}
 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -67,7 +67,7 @@ export default function PatientPortalOverviewPage() {
 <div className="lg:col-span-2">
 <div className="flex items-center justify-between mb-6">
 <h3 className="text-xl font-semibold text-on-surface">Recent Laboratory Reports</h3>
-<a className="text-xs font-bold uppercase tracking-widest text-primary border-b-2 border-primary" href="#">View All</a>
+<Link className="text-xs font-bold uppercase tracking-widest text-primary border-b-2 border-primary" href="/portal/lab-results">View All</Link>
 </div>
 <div className="space-y-4">
 <div className="bg-surface-container-low p-6 flex items-center justify-between hover:bg-surface-container-highest transition-colors">
@@ -120,7 +120,7 @@ export default function PatientPortalOverviewPage() {
 <div className="text-[11px] font-bold uppercase tracking-widest text-primary mb-4">Tomorrow at 09:30 AM</div>
 <h4 className="text-2xl font-light mb-2">Annual Physical Examination</h4>
 <p className="text-sm text-on-surface-variant mb-6">Building A, Suite 402 with Dr. Thorne</p>
-<button className="w-full h-12 border-2 border-primary text-primary font-bold hover:bg-primary-fixed transition-colors">Confirm Attendance</button>
+<Link href="/portal/appointments" className="w-full h-12 border-2 border-primary text-primary font-bold hover:bg-primary-fixed transition-colors inline-flex items-center justify-center">Confirm Attendance</Link>
 </div>
 </div>
 </div>

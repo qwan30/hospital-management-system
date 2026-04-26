@@ -1,34 +1,35 @@
 # Hospital Management System
 
-A comprehensive hospital management platform with intelligent appointment scheduling, clinical workflow automation, and AI-powered diagnostics.
+A comprehensive hospital management platform with appointment scheduling, clinical workflow automation, administration, finance, inventory, and patient portal workflows.
 
 ## Stack
 
 - **Backend**: Java 17 / Spring Boot 3.3, multi-module Maven project (`domain`, `infrastructure`, `application`, `controller`, `start`)
-- **Database**: PostgreSQL 15 with pgvector extension, managed by Flyway (10 migrations)
-- **AI Integration**: Gemini API for symptom analysis (graceful fallback when disabled)
+- **Database**: PostgreSQL 15, managed by Flyway (15 migrations; includes removal of historical assistant tables and current clinical schema catch-up)
 - **Email**: Gmail API for transactional emails (confirmation, prescriptions, reminders)
 - **API Docs**: SpringDoc OpenAPI, with roughly 122 route handlers exposed through Swagger UI
-- **Frontend**: ⚠️ **Not yet implemented** — planned as React + TypeScript (Vite)
+- **Frontend**: Next.js 16 / React 19 / TypeScript in `web/`; static design prototypes remain in `frontend/`
 
 ## Current Status
 
 The backend API is fully functional with roughly 122 mapped route handlers covering:
 - Authentication (Staff JWT + Patient portal)
-- Smart Reservation System (booking, AI duration estimation)
+- Smart Reservation System (booking and clinical triage intake)
 - Clinical Workflow (medical records, prescriptions, PDF generation)
 - Administration (users, departments, rooms, schedules, content)
 - Finance (invoices, payments, revenue reports)
 - Inventory Management (items, lots, movements)
-- AI Internal Assistant (knowledge base, RAG, feedback)
 - Patient Portal (profile, appointments, messages, lab results)
+
+The `web/` app contains the canonical Next.js route tree for public, staff, admin, and patient portal screens. The `frontend/` directory is retained as migrated design-reference HTML/PNG prototypes, not as the runnable frontend.
 
 ## Local Setup
 
 ### Prerequisites
 - Java 17+ (tested with Java 21)
 - Maven 3.9+
-- Docker Desktop (for PostgreSQL)
+- Docker Desktop (for PostgreSQL and Testcontainers-backed integration tests)
+- Node.js 20+
 
 ### Quick Start
 
@@ -36,7 +37,7 @@ The backend API is fully functional with roughly 122 mapped route handlers cover
 # 1. Start PostgreSQL
 docker compose up -d postgres
 
-# 2. Build all modules
+# 2. Build all backend modules
 cd backend
 mvn install -DskipTests
 
@@ -48,6 +49,12 @@ mvn spring-boot:run -pl start -DskipTests
 
 # 5. Health check
 # http://localhost:8080/actuator/health
+
+# 6. Run frontend checks/build (from the web directory)
+cd ../web
+npm run lint
+npm run build
+npm run dev
 ```
 
 ### Demo Users (seeded on first startup)
@@ -65,8 +72,6 @@ External integrations are disabled by default and degrade gracefully:
 
 | Variable | Default | Purpose |
 |:---------|:--------|:--------|
-| `GEMINI_ENABLED` | `false` | Enable AI symptom analysis |
-| `GEMINI_API_KEY` | unset | Google Gemini API key |
 | `GMAIL_ENABLED` | `false` | Enable email notifications |
 | `JWT_SECRET` | dev default | JWT signing secret |
 
@@ -79,13 +84,15 @@ backend/
 |-- application/     # Use-case services, auth services, orchestration, seed/backfill jobs
 |-- controller/      # REST controllers, API envelope, security filters, web error handling
 `-- start/           # Spring Boot app, runtime config, Flyway migrations, integration tests
-docs/           # PRD, Project Plan, architecture documents
-docker-compose.yml  # PostgreSQL + backend services
+docs/                # PRD, project plan, architecture, and canonical design brief
+web/                 # Canonical Next.js frontend
+frontend/            # Static design-reference prototypes
+docker-compose.yml   # PostgreSQL + backend services
 ```
 
 ## Backend Architecture
 
-The backend is now a DDD-oriented Maven reactor:
+The backend is a DDD-oriented Maven reactor:
 
 ```text
 domain <- infrastructure <- application
@@ -97,8 +104,9 @@ domain + infrastructure + application + controller <- start
 
 ## Source of Truth
 
-1. `docs/HMS_PRD.md` — Product Requirements Document
-2. `docs/HMS_ProjectPlan.md` — Phase-based development plan
+1. `docs/HMS_PRD.md` - Product Requirements Document
+2. `docs/HMS_ProjectPlan.md` - Phase-based development plan
+3. `docs/design_brief.md` - Canonical frontend design brief
 
 ## Quality Gates
 

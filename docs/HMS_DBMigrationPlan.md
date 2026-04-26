@@ -1,6 +1,6 @@
 # Hospital Management System DB Migration Plan
 
-Status: aligned to the repository on 2026-04-25
+Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
 ## 1. Purpose
 
@@ -25,8 +25,13 @@ It replaces older notes that described only an early subset of the schema.
 | `V6` | `Add_room_schedule_closure_operational_flags` | room and schedule operational flags |
 | `V7` | `Add_inventory_management_tables` | inventory items, lots, movements |
 | `V8` | `Add_patient_portal_tables` | patient portal, threads, messages, lab results |
-| `V9` | `Add_internal_assistant_knowledge_tables` | knowledge documents, chunks, nodes, edges, ingestion states |
-| `V10` | `Implement_internal_assistant_v1_safe_rollout` | assistant sessions, messages, feedback, ingestions, rollout metadata |
+| `V9` | `Add_internal_assistant_knowledge_tables` | historical assistant knowledge tables |
+| `V10` | `Implement_internal_assistant_v1_safe_rollout` | historical assistant session, message, feedback, and ingestion tables |
+| `V11` | `Remove_ai_assistant_features` | drops historical assistant and knowledge tables and removes the vector extension |
+| `V12` | `Add_appointment_follow_ups_table` | creates appointment follow-up scheduling table required by current JPA entities |
+| `V13` | `Add_appointment_vital_signs_table` | creates appointment-scoped vital-sign capture table required by current JPA entities |
+| `V14` | `Add_appointment_metadata_columns` | adds appointment notes and reason metadata columns required by current appointment entities |
+| `V15` | `Add_appointment_lab_result_columns` | aligns lab result columns shared by patient portal and clinical lab result entities |
 
 ## 4. Current Schema Domains
 
@@ -65,17 +70,9 @@ It replaces older notes that described only an early subset of the schema.
 - patient messages
 - lab results
 
-### 4.6 Internal assistant
+### 4.6 Removed assistant tables
 
-- knowledge documents
-- knowledge chunks
-- knowledge nodes
-- knowledge edges
-- knowledge ingestion states
-- knowledge document ingestions
-- internal assistant sessions
-- internal assistant messages
-- internal assistant feedback
+`V11__Remove_ai_assistant_features.sql` drops the historical assistant and knowledge tables created by `V9` and `V10`.
 
 ## 5. Migration Authoring Rules
 
@@ -104,4 +101,4 @@ For frontend design and implementation:
 - treat contract DTOs in `backend/domain` as the first UI contract
 - treat API response envelope classes in `backend/controller` as the HTTP wrapper contract
 - treat Flyway migrations as the persistence contract
-- do not rely on older schema notes that predate inventory, patient portal, lab results, or the internal assistant
+- do not rely on older schema notes that predate inventory, patient portal, lab results, or AI/assistant removal

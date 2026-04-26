@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function AdminUsersPage() {
   return (
@@ -113,11 +112,11 @@ export default function AdminUsersPage() {
               <td className="px-6 py-6">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-neutral-200">
-                    <img
+                    <Image
                       alt="Staff headshot"
                       className="w-full h-full object-cover"
                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMi4NtrE7cLB-Mg3cJYSCqkgwn7PaewieL2gpyct8ToDhhOv6pM9Ria7FtpDLvOljDnmj327VzsU2DS1TCzelIubv-g_6ePASDSDxceaH7R3qTkIT8oXXKC1wZZZDEr_5QtR_i6Tsl9PcWc2JzvxM2nd7i0VJUuYHag2GroqwS96PkRJpGcPDC3u2vwdCeBFMu25L7Od0LIyeHZtPpNqffSwhAD71T3XFWI7m5RUuTwHkoX2yjaajl1o3mwUv4IGr4QbiNk1f-Cg"
-                    />
+                     width={1200} height={800}/>
                   </div>
                   <span className="text-sm font-semibold tracking-tight">
                     Sarah Kingston
@@ -160,11 +159,11 @@ export default function AdminUsersPage() {
               <td className="px-6 py-6">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-neutral-200">
-                    <img
+                    <Image
                       alt="Staff headshot"
                       className="w-full h-full object-cover"
                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKAPoXyvhq28iZKMMaEZRu2d_7Gkgnx6CHbC4On3BNvF0F4TV_CVxMYN4hlj4D4tAkCYfC1LaikoDEAzwyWN2piQYW8KY2I4qi0pRFzPZqHqIu1bpKy_NKaSzurafBboD5D-dQJNdoDBa8AOZ235uLUzoo_axMyYkzt5M55RLw7_MrjhL7lGHvHxOiaO17ozBVphqu-I5XR7_LPBzuHwu9FMJG82jTI3iOE_5BHI0dglKQKu5DA0fKlear88H5PzIAgaGtQkbgzQ"
-                    />
+                     width={1200} height={800}/>
                   </div>
                   <span className="text-sm font-semibold tracking-tight">
                     Marcus Bennett
@@ -207,11 +206,11 @@ export default function AdminUsersPage() {
               <td className="px-6 py-6">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-neutral-200">
-                    <img
+                    <Image
                       alt="Staff headshot"
                       className="w-full h-full object-cover"
                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkuOcLIWn-PawnT9q_IZifFWMrnKPIvgQgPFs8PIkaG9iIR3KQCuDMUadNmveiyJDmCLh1wY4Vp2I5snF4aK5NtcpUDiOybCefBzw6ZpT1CA5Ujnz1up9ZL6s3fQZyP9OcgI4jFhYXccaYiEI5CRadD5XUlblPY4pzNkcN-c-99MKn2pk6o9Fh3lJck2rd9SaywTW56qDSMBQYcvfN6tc03pYd7bc-j9UKIopq45CpBNs4LP-VW3jtYwhHlkR68sGOvKIxRcsC_Q"
-                    />
+                     width={1200} height={800}/>
                   </div>
                   <span className="text-sm font-semibold tracking-tight">
                     Elena Lopez

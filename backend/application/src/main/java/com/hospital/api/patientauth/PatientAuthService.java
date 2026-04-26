@@ -55,7 +55,6 @@ public class PatientAuthService {
     var account = patientAccountRepository.findByPatientIdAndActiveTrue(patient.getId())
         .orElseGet(PatientAccountEntity::new);
     account.setPatient(patient);
-    account.setPatientId(patient.getId());
     account.setEmail(request.email().trim().toLowerCase());
     account.setPasswordHash(passwordEncoder.encode(request.password()));
     account.setActive(true);

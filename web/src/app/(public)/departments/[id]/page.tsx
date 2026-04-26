@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function DepartmentDetailPage() {
   return (
@@ -21,7 +20,7 @@ export default function DepartmentDetailPage() {
 <h1 className="text-6xl md:text-8xl font-light font-headline tracking-tighter text-on-surface mb-8 leading-[0.9]">Cardiology</h1>
 <div className="bg-surface-container-lowest p-0 relative mb-12">
 <div className="h-64 w-full bg-surface-container-highest">
-<img className="w-full h-full object-cover mix-blend-multiply opacity-80 grayscale hover:grayscale-0 transition-all duration-700" data-alt="modern medical cardiology lab with high-tech equipment and clean white architectural lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnOLeIk45kNIKHJW-UCSCA4ACkVPySFf3cIY7VjuSe39i0axlmxGZ9PCKdCRhWI7Y-NGrSoibI5A8jniky0BoRLPV9xYK6MnW4cMERNRpyhKDHmi2UzSt8Z5G9BbFHR472O7roKddeWZs9HlQhU95YX9pB_u6OMPoHJQsvWWip4czXuSeTL5kgcsiyrxkNd8W1ostMcSq4yQju6JkiIfEW-cDx5BhGUE2AqO19MswV6gFErgtDjm8EU7d8wiTf5o8Xx3KPj9I8xg"/>
+<Image className="w-full h-full object-cover mix-blend-multiply opacity-80 grayscale hover:grayscale-0 transition-all duration-700" alt="modern medical cardiology lab with high-tech equipment and clean white architectural lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnOLeIk45kNIKHJW-UCSCA4ACkVPySFf3cIY7VjuSe39i0axlmxGZ9PCKdCRhWI7Y-NGrSoibI5A8jniky0BoRLPV9xYK6MnW4cMERNRpyhKDHmi2UzSt8Z5G9BbFHR472O7roKddeWZs9HlQhU95YX9pB_u6OMPoHJQsvWWip4czXuSeTL5kgcsiyrxkNd8W1ostMcSq4yQju6JkiIfEW-cDx5BhGUE2AqO19MswV6gFErgtDjm8EU7d8wiTf5o8Xx3KPj9I8xg" width={1200} height={800}/>
 </div>
 </div>
 <div className="prose prose-neutral max-w-none">
@@ -63,7 +62,7 @@ export default function DepartmentDetailPage() {
 {/* Doctor Card 1 */}
 <div className="bg-surface-container-lowest p-6 flex gap-4 transition-colors hover:bg-white group">
 <div className="w-20 h-20 bg-surface-container-high overflow-hidden shrink-0">
-<img className="w-full h-full object-cover" data-alt="professional portrait of senior male cardiologist with graying hair and glasses in white clinical coat" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNgNwccUIsNfFjWVeu-ZSWJTelJsBS9-owR70ddmdVtgYV8qsuvzsam00ohA-NkyJPgLOyf7H_QOqMoybn9SlOW3IMTvb-UZ0YFTq9LSywyAs9xXr6Bu3lnKpmGMQCcIri5OfxdjTRCDLXMwKbtH5sRCzcOPl2HpvRnzelgJJwI72CLv37IcUsIOiqsRyAz2t8bgwwpBX8RGTRiVCcPPiza2BxJAh110BMA_XEqQzVBv_4r3ZIWsg7vuesyEdeze8D-CUDVy_tpA"/>
+<Image className="w-full h-full object-cover" alt="professional portrait of senior male cardiologist with graying hair and glasses in white clinical coat" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNgNwccUIsNfFjWVeu-ZSWJTelJsBS9-owR70ddmdVtgYV8qsuvzsam00ohA-NkyJPgLOyf7H_QOqMoybn9SlOW3IMTvb-UZ0YFTq9LSywyAs9xXr6Bu3lnKpmGMQCcIri5OfxdjTRCDLXMwKbtH5sRCzcOPl2HpvRnzelgJJwI72CLv37IcUsIOiqsRyAz2t8bgwwpBX8RGTRiVCcPPiza2BxJAh110BMA_XEqQzVBv_4r3ZIWsg7vuesyEdeze8D-CUDVy_tpA" width={1200} height={800}/>
 </div>
 <div className="flex flex-col justify-center">
 <h4 className="font-headline font-semibold text-lg leading-tight group-hover:text-primary transition-colors">Dr. Elena Rodriguez</h4>
@@ -77,7 +76,7 @@ export default function DepartmentDetailPage() {
 {/* Doctor Card 2 */}
 <div className="bg-surface-container-lowest p-6 flex gap-4 transition-colors hover:bg-white group">
 <div className="w-20 h-20 bg-surface-container-high overflow-hidden shrink-0">
-<img className="w-full h-full object-cover" data-alt="portrait of a young professional female doctor in blue scrubs with stethoscope around her neck" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi16LYKew9m6FVVmqBqLq-PjaVRoLZMbCf2CoA3asP5qZ9w6hWf0BbYCmY1dgoSlgpzAHHB9DrWy7fF9p72a6Tti0_EcYz9HXVu4yx87WVkMEG38YeBx2TT3q8iNigtu0neOM4sEU2Nf3tF6V4iH_Hul4haI1_449iR2ok0I2QytBlLNw4DKssyu_pYxECt5oTnvkbKNIuph-az2wpVPQThIUHCQ3WhrWNmxBDEGe2-iNt5dxTYdcqd7NDGRcxKM6n2lpo5SOfKA"/>
+<Image className="w-full h-full object-cover" alt="portrait of a young professional female doctor in blue scrubs with stethoscope around her neck" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi16LYKew9m6FVVmqBqLq-PjaVRoLZMbCf2CoA3asP5qZ9w6hWf0BbYCmY1dgoSlgpzAHHB9DrWy7fF9p72a6Tti0_EcYz9HXVu4yx87WVkMEG38YeBx2TT3q8iNigtu0neOM4sEU2Nf3tF6V4iH_Hul4haI1_449iR2ok0I2QytBlLNw4DKssyu_pYxECt5oTnvkbKNIuph-az2wpVPQThIUHCQ3WhrWNmxBDEGe2-iNt5dxTYdcqd7NDGRcxKM6n2lpo5SOfKA" width={1200} height={800}/>
 </div>
 <div className="flex flex-col justify-center">
 <h4 className="font-headline font-semibold text-lg leading-tight group-hover:text-primary transition-colors">Dr. Marcus Thorne</h4>
@@ -91,7 +90,7 @@ export default function DepartmentDetailPage() {
 {/* Doctor Card 3 */}
 <div className="bg-surface-container-lowest p-6 flex gap-4 transition-colors hover:bg-white group">
 <div className="w-20 h-20 bg-surface-container-high overflow-hidden shrink-0">
-<img className="w-full h-full object-cover" data-alt="professional headshot of an Asian male doctor in white coat smiling in modern clinic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNk5a66MITdOV5Hwe6lrUA4TlCJj75yCPyCBcvcD2Q6cIA6SIo-AbBST7hmiLLdUFB5JfqWz9snA_tuG3284uBVQvD_7FWOmnsXF41cYXQT2qrQG5w-M_7Bctb-o9DDXC1ZqQl9QJTv5vxn0xL3R9tbSga2s_FiYKvuzI_Oq-5x0DsC1OrkJ62qUVBS5Q8BovYTx527ragt1Ds8jmgUrU4BAi14ZEm_GIuMVsHGCwFqvge00ho0kVfA8zjeW5jos1APSMz0hujiA"/>
+<Image className="w-full h-full object-cover" alt="professional headshot of an Asian male doctor in white coat smiling in modern clinic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNk5a66MITdOV5Hwe6lrUA4TlCJj75yCPyCBcvcD2Q6cIA6SIo-AbBST7hmiLLdUFB5JfqWz9snA_tuG3284uBVQvD_7FWOmnsXF41cYXQT2qrQG5w-M_7Bctb-o9DDXC1ZqQl9QJTv5vxn0xL3R9tbSga2s_FiYKvuzI_Oq-5x0DsC1OrkJ62qUVBS5Q8BovYTx527ragt1Ds8jmgUrU4BAi14ZEm_GIuMVsHGCwFqvge00ho0kVfA8zjeW5jos1APSMz0hujiA" width={1200} height={800}/>
 </div>
 <div className="flex flex-col justify-center">
 <h4 className="font-headline font-semibold text-lg leading-tight group-hover:text-primary transition-colors">Dr. Sarah Jenkins</h4>
@@ -105,7 +104,7 @@ export default function DepartmentDetailPage() {
 {/* Doctor Card 4 */}
 <div className="bg-surface-container-lowest p-6 flex gap-4 transition-colors hover:bg-white group">
 <div className="w-20 h-20 bg-surface-container-high overflow-hidden shrink-0">
-<img className="w-full h-full object-cover" data-alt="portrait of a confident black male doctor in clinical setting wearing modern glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAE6i6pPokaB4ovb8ld23_E2WUAC8xw0d5vUmz-ol1n-sfuKW62qhxfwIq_-83uaoyLTgiW4LjbadPhzjgBePdcWoWQ_CV-q7oI9QeZcLY0lh9NY2_VI0DVE3ur8xUKOqj3pW_Ooa93SFhOPqAEi4y9MB4669AMo-PDO_1H2bDCquzD_-eL26LPz8AeVXSCrt3Lrl_ZnFFUfXGXjiXD8QOmBCCPnEiv1qmMZOwW0XJUX_iGmhDo_lueGw-bTc_nRApqjPZcT5yIWQ"/>
+<Image className="w-full h-full object-cover" alt="portrait of a confident black male doctor in clinical setting wearing modern glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAE6i6pPokaB4ovb8ld23_E2WUAC8xw0d5vUmz-ol1n-sfuKW62qhxfwIq_-83uaoyLTgiW4LjbadPhzjgBePdcWoWQ_CV-q7oI9QeZcLY0lh9NY2_VI0DVE3ur8xUKOqj3pW_Ooa93SFhOPqAEi4y9MB4669AMo-PDO_1H2bDCquzD_-eL26LPz8AeVXSCrt3Lrl_ZnFFUfXGXjiXD8QOmBCCPnEiv1qmMZOwW0XJUX_iGmhDo_lueGw-bTc_nRApqjPZcT5yIWQ" width={1200} height={800}/>
 </div>
 <div className="flex flex-col justify-center">
 <h4 className="font-headline font-semibold text-lg leading-tight group-hover:text-primary transition-colors">Dr. Alan Cooper</h4>
@@ -154,7 +153,7 @@ export default function DepartmentDetailPage() {
 {/* Contextual Map Component */}
 <div className="mt-4 bg-surface-container-highest p-4">
 <div className="h-40 bg-outline-variant/30 flex items-center justify-center overflow-hidden">
-<img className="w-full h-full object-cover grayscale brightness-110" data-alt="clean abstract geometric map visualization with high contrast blue and white aesthetics" data-location="Chicago Medical District" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArNSuP3GACJLcUFWdP0XbC8evHXJnp0tezFuGM_HZLtA_w2U4kMACvTApZ__l3Uu9kys4TggxX-nHXKK5Hk3i9KvE5WM5QcwGeQ-4w9EqEVfixt_mzlLCx9-Nxt17AMrG_r1G2CSCyXXNg88dM8R1n0od0dvQNsBWrwyXPKbT8MXj0fj5fDfZ3ZDDabHPZf7qQWz9qrGj4oRQ9u_y-UQNf2d2K0cmvTLqrQbN9hqJzHgG4c4z1Iuq2A7waUIV53viPuC4DDNELaw"/>
+<Image className="w-full h-full object-cover grayscale brightness-110" alt="clean abstract geometric map visualization with high contrast blue and white aesthetics" data-location="Chicago Medical District" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArNSuP3GACJLcUFWdP0XbC8evHXJnp0tezFuGM_HZLtA_w2U4kMACvTApZ__l3Uu9kys4TggxX-nHXKK5Hk3i9KvE5WM5QcwGeQ-4w9EqEVfixt_mzlLCx9-Nxt17AMrG_r1G2CSCyXXNg88dM8R1n0od0dvQNsBWrwyXPKbT8MXj0fj5fDfZ3ZDDabHPZf7qQWz9qrGj4oRQ9u_y-UQNf2d2K0cmvTLqrQbN9hqJzHgG4c4z1Iuq2A7waUIV53viPuC4DDNELaw" width={1200} height={800}/>
 </div>
 <div className="mt-4 flex items-center justify-between">
 <span className="text-[10px] font-semibold uppercase tracking-widest text-on-surface">Facility Navigation</span>

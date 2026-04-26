@@ -157,7 +157,8 @@ public class MedicalRecordService {
 
   @Transactional(readOnly = true)
   public PatientHistoryResponse getPatientHistory(String cccd) {
-    var patient = patientRepository.findByCccdHash(patientIdentifierProtector.hash(cccd))
+    var plainCccd = patientIdentifierProtector.decrypt(cccd);
+    var patient = patientRepository.findByCccdHash(patientIdentifierProtector.hash(plainCccd))
         .orElseThrow(() -> new NotFoundException("Patient not found"));
 
     var appointments = appointmentRepository.findByPatientIdOrderByAppointmentDateDescFirstSlotStartTimeDesc(patient.getId());

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function BookingWizardSymptomsPage() {
   return (
@@ -121,7 +120,7 @@ export default function BookingWizardSymptomsPage() {
 </ul>
 </div>
 <div className="relative overflow-hidden">
-<img className="w-full h-48 object-cover opacity-80 grayscale hover:grayscale-0 transition-all duration-500" data-alt="high-tech clinical setting with sterile environment, blue-toned medical equipment and medical professional in soft focus background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvYfG9LUpiwHQg7TFOLBbm_p80bQl39VmGsH6gDJst9BWxOvwWTcMpEqHN3DpmwzBNWxmVcqrzk60YYu0SKnp2-fAeQ7j0_mdUKNyNa8Mw-2_ULZ3cm3Eq9hhEmxYkUx5WKaLpfQzk6sCF0ZOR5mhygt5P4NOQyLVPMUaX3-if8hv8lvt6wpQ_HPAyn9y-ticXOLFGxaGxvVbHK3StLh-RBzVpjXfGhqsgiC3ZOzH6jtrU2JDX8TVbPHEusS5Hk2ibDdHE_hf29Q"/>
+<Image className="w-full h-48 object-cover opacity-80 grayscale hover:grayscale-0 transition-all duration-500" alt="high-tech clinical setting with sterile environment, blue-toned medical equipment and medical professional in soft focus background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvYfG9LUpiwHQg7TFOLBbm_p80bQl39VmGsH6gDJst9BWxOvwWTcMpEqHN3DpmwzBNWxmVcqrzk60YYu0SKnp2-fAeQ7j0_mdUKNyNa8Mw-2_ULZ3cm3Eq9hhEmxYkUx5WKaLpfQzk6sCF0ZOR5mhygt5P4NOQyLVPMUaX3-if8hv8lvt6wpQ_HPAyn9y-ticXOLFGxaGxvVbHK3StLh-RBzVpjXfGhqsgiC3ZOzH6jtrU2JDX8TVbPHEusS5Hk2ibDdHE_hf29Q" width={1200} height={800}/>
 <div className="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
 </div>
 </div>

@@ -61,7 +61,7 @@ public class SecurityConfig {
             .requestMatchers("/api/v1/auth/**").permitAll()
             .requestMatchers("/api/v1/patient-auth/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/v1/departments/**", "/api/v1/doctors/**", "/api/v1/content/**", "/api/v1/news").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/v1/ai/analyze-symptoms", "/api/v1/appointments", "/api/v1/chatbot/messages").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/v1/appointments", "/api/v1/chatbot/messages").permitAll()
             .anyRequest().authenticated())
         .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(jwtAuthenticationFilter, RateLimitFilter.class);

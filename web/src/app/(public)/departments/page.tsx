@@ -1,3 +1,4 @@
+import Image from "next/image";
 const departmentCards = [
     {
         id: "Diagnostic Engineering",
@@ -127,11 +128,11 @@ export default function PublicDepartmentsPage() {
 
                     <div className="relative lg:col-span-7">
                         <div className="relative aspect-video bg-surface-container-highest">
-                            <img
+                            <Image
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4XSqqTiJld1_uOWOrBCprpDchv79zkxGxn7RdZVPnxDNf8G9KZpRjZSwa-0-Y-86AgLlx2JvFyoTOEiPC32CW0T7v80W3uR0cBRoDnDpdZBWxK_5rZC7MkctfTJINviVrSDSk7Vb8N3rQrPlZjpCcNjyjO_IDrbRBcUvh1gOZUhRAsk_LsbxEZKmHCq9ABZEr3hC0NS_2X0FkzGbKSxrIDbIdHlbLHomd8V_ARUcCH6CH6vw9-Zw4BHAG1V6yZjt3TbfvQqDohA"
                                 alt="Modern clinical corridor"
                                 className="h-full w-full object-cover"
-                            />
+                             width={1200} height={800}/>
                             <div className="absolute -bottom-8 -right-8 hidden bg-primary-container p-12 md:block">
                                 <div className="text-on-primary-container">
                                     <span className="mb-2 block text-5xl font-light leading-none">

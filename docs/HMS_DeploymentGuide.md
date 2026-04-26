@@ -1,6 +1,6 @@
 # Hospital Management System Deployment Guide
 
-Status: aligned to the repository on 2026-04-25
+Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
 Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)
 
@@ -10,7 +10,7 @@ This guide reflects the deployment shape that currently exists in the repository
 
 - PostgreSQL in Docker
 - Spring Boot backend
-- optional frontend dev server only
+- optional Next.js frontend dev server
 
 It does not assume a production frontend container because the repo does not include one yet.
 
@@ -19,7 +19,7 @@ It does not assume a production frontend container because the repo does not inc
 - Docker Desktop or compatible Docker runtime
 - Java 17 or newer
 - Maven 3.9 or newer
-- Node.js 20 or newer if you want to start the frontend scaffold
+- Node.js 20 or newer if you want to start the frontend app
 
 ## 3. Current Services
 
@@ -72,16 +72,12 @@ The authoritative backend config currently lives in `backend/start/src/main/reso
 | `HMS_SECURE_COOKIES` | `false` |
 | `HMS_REFRESH_COOKIE_SAME_SITE` | `Lax` |
 | `HMS_PUBLIC_RATE_LIMIT_PER_MINUTE` | `30` |
-| `HMS_INTERNAL_ASSISTANT_RATE_LIMIT_PER_MINUTE` | `12` |
 | `PATIENT_IDENTIFIER_SECRET` | falls back to `JWT_SECRET` |
 
 ### 4.3 Integrations
 
 | Variable | Default |
 | --- | --- |
-| `GEMINI_ENABLED` | `false` |
-| `GEMINI_API_KEY` | empty |
-| `GEMINI_MODEL` | `gemini-2.0-flash` |
 | `GMAIL_ENABLED` | `false` |
 | `GMAIL_CLIENT_ID` | empty |
 | `GMAIL_CLIENT_SECRET` | empty |
@@ -121,18 +117,18 @@ Backend endpoints:
 - Swagger UI: `http://localhost:8080/swagger-ui`
 - Health: `http://localhost:8080/actuator/health`
 
-### 5.3 Optional: start the frontend scaffold
+### 5.3 Optional: start the frontend app
 
 ```bash
-cd frontend
+cd web
 npm install
 npm run dev
 ```
 
 Important note:
 
-- this starts the Vite scaffold only
-- it does not start a hospital UI because that frontend has not been implemented yet
+- this starts the Next.js frontend app
+- most screens are currently static or locally composed until backend data-access integration is added
 
 ## 6. Docker Compose Notes
 
@@ -145,7 +141,7 @@ The active compose file currently:
 The commented frontend section in `docker-compose.yml` is not deployable as-is because:
 
 - there is no frontend Dockerfile
-- the frontend source is still starter content
+- the frontend source does not include a production container configuration yet
 
 ## 7. Seed Data
 
@@ -169,9 +165,8 @@ On first backend startup with an empty database, the app seeds demo data automat
 
 ## 8. Operational Warnings
 
-- Older docs and the root `.env.example` still contain stale variables such as `ANTHROPIC_API_KEY`.
-- The current backend reads Gemini settings, not Claude settings, for symptom analysis.
-- The backend can run without Gemini and Gmail; both integrations degrade gracefully when disabled.
+- The backend can run without Gmail; email delivery degrades gracefully when disabled.
+- Gemini, Anthropic, and internal-assistant settings are no longer used by the active backend.
 
 ## 9. Troubleshooting
 
@@ -181,10 +176,10 @@ On first backend startup with an empty database, the app seeds demo data automat
 - confirm the backend is using the same database credentials as Docker Compose
 - confirm port `5432` is available
 
-### Frontend shows starter page instead of hospital screens
+### Frontend screens do not show live backend data
 
-- this is expected with the current repository
-- the frontend app has not been implemented yet
+- confirm the backend is running on `http://localhost:8080`
+- confirm the screen has backend data-access integration; some current screens are static or locally composed
 
 ### Swagger UI is empty or unavailable
 
@@ -197,9 +192,3 @@ On first backend startup with an empty database, the app seeds demo data automat
 - confirm `GMAIL_ENABLED=true`
 - confirm all Gmail OAuth2 variables are set
 - confirm the configured refresh token is valid
-
-### Symptom analysis does not use Gemini
-
-- confirm `GEMINI_ENABLED=true`
-- confirm `GEMINI_API_KEY` is present
-- if Gemini still fails, the app will fall back to heuristic estimates by design

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function PatientMessagesPage() {
   return (
@@ -27,7 +26,7 @@ export default function PatientMessagesPage() {
 <span className="material-symbols-outlined text-neutral-600 cursor-pointer hover:bg-neutral-50" data-icon="settings">settings</span>
 <span className="material-symbols-outlined text-neutral-600 cursor-pointer hover:bg-neutral-50" data-icon="help">help</span>
 <div className="w-8 h-8 bg-neutral-200 overflow-hidden ml-2">
-<img alt="User profile" className="w-full h-full object-cover" data-alt="professional portrait of a medical practitioner in a clinical setting with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-8JQkL_viGHTunh86gLEWrRpL0iJC96lcT9o71Ijk4IcnH3yVQJYuGVuOa8tNcm93yAvZ-hs8uoLKD10hi84ipZ__gAMeGgT0ivpn9J2DXUi7cC1jG1vNFeCLjZslHwVxotqPs3KzItERYUk8lA-ylIxRbumoQxm24ksy1gJGFMSk9ZnankCTmauf-NqoRX9jB0pGz4jUYF4bPJM8z0bD-5nEXQlvv60ByuPnd0K6uQFjtXtWTXePvhQZcOOU3T81dkyLA1XB6A"/>
+<Image alt="User profile" className="w-full h-full object-cover" data-alt="professional portrait of a medical practitioner in a clinical setting with soft natural lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-8JQkL_viGHTunh86gLEWrRpL0iJC96lcT9o71Ijk4IcnH3yVQJYuGVuOa8tNcm93yAvZ-hs8uoLKD10hi84ipZ__gAMeGgT0ivpn9J2DXUi7cC1jG1vNFeCLjZslHwVxotqPs3KzItERYUk8lA-ylIxRbumoQxm24ksy1gJGFMSk9ZnankCTmauf-NqoRX9jB0pGz4jUYF4bPJM8z0bD-5nEXQlvv60ByuPnd0K6uQFjtXtWTXePvhQZcOOU3T81dkyLA1XB6A" width={1200} height={800}/>
 </div>
 </div>
 </div>

@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
+@Entity(name = "PatientPortalLabResultEntity")
 @Table(name = "lab_results")
 @Getter
 @Setter

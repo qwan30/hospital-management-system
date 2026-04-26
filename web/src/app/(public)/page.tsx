@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function PublicHomePage() {
   return (
@@ -83,7 +82,7 @@ export default function PublicHomePage() {
 </div>
 </div>
 <div className="md:col-span-8 bg-surface-container-highest p-0 relative overflow-hidden group">
-<img alt="Clinical Center" className="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" data-alt="wide shot of a clean modern clinical laboratory with stainless steel equipment and bright white lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcvFt1XHaghSjVXGavDUD66dWH0i1qfaQglymOPm5Mt5-ALENn8pCKWY_1A_CKADgh-bYFv3FPuRQYQ6alZyd-Qi_nKA0obBx4q6-hjNTSQ8AryEA3KNQKvbrSE0OB15hVMxF4MUbyCppDR1YrfgIzjBXZkTebPfzWOu5wp9jKtqHXPjxT9n_454paLSlRovg4siSLAJpLjKwGbVGLXgog2j9x_cQxLGPail5JvAiYqqucXkZtIceh3e02i3F2JcYKPda5cFGlIQ"/>
+<Image alt="Clinical Center" className="w-full h-full object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" data-alt="wide shot of a clean modern clinical laboratory with stainless steel equipment and bright white lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcvFt1XHaghSjVXGavDUD66dWH0i1qfaQglymOPm5Mt5-ALENn8pCKWY_1A_CKADgh-bYFv3FPuRQYQ6alZyd-Qi_nKA0obBx4q6-hjNTSQ8AryEA3KNQKvbrSE0OB15hVMxF4MUbyCppDR1YrfgIzjBXZkTebPfzWOu5wp9jKtqHXPjxT9n_454paLSlRovg4siSLAJpLjKwGbVGLXgog2j9x_cQxLGPail5JvAiYqqucXkZtIceh3e02i3F2JcYKPda5cFGlIQ" width={1200} height={800}/>
 <div className="absolute inset-0 p-10 flex flex-col justify-end text-white pointer-events-none">
 <h3 className="text-3xl font-light mb-2">Centralized Registry</h3>
 <p className="text-gray-300 max-w-xs">Unified Electronic Health Records (EHR) with immutable audit trails.</p>
@@ -95,7 +94,7 @@ export default function PublicHomePage() {
 <section className="bg-surface py-24 px-6 md:px-24">
 <div className="grid grid-cols-1 md:grid-cols-2 gap-24 items-center">
 <div className="order-2 md:order-1">
-<img alt="Infrastructure" className="w-full aspect-square object-cover shadow-2xl" data-alt="abstract close up of high-end server hardware and network cables with cool blue technical lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEO13-EEZtuXxRfyAvoPToBA_DQ0ninAkJl04GsG8ItTS2JXS-q4PJMa2wg52GT8mq8TN7uc52TXlqBMQuGQZ_GHtQxEVLaVtQJQZ29-k55YIk0-_BKP4UnPwqR1OuroO9M4kMHvJ1kO3PeptmZBEgH7HRxZHwaTTaUPDNrbENbkEx4LhjXEtWuWU3860o81piV5CMtlQbwXdInXJ2JwsFn2akVEKKYTeoZwuZSs4ja8BrJhkHgGglV4OG2WMM85nzBGidwmmBRg"/>
+<Image alt="Infrastructure" className="w-full aspect-square object-cover shadow-2xl" data-alt="abstract close up of high-end server hardware and network cables with cool blue technical lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEO13-EEZtuXxRfyAvoPToBA_DQ0ninAkJl04GsG8ItTS2JXS-q4PJMa2wg52GT8mq8TN7uc52TXlqBMQuGQZ_GHtQxEVLaVtQJQZ29-k55YIk0-_BKP4UnPwqR1OuroO9M4kMHvJ1kO3PeptmZBEgH7HRxZHwaTTaUPDNrbENbkEx4LhjXEtWuWU3860o81piV5CMtlQbwXdInXJ2JwsFn2akVEKKYTeoZwuZSs4ja8BrJhkHgGglV4OG2WMM85nzBGidwmmBRg" width={1200} height={800}/>
 </div>
 <div className="order-1 md:order-2">
 <h2 className="text-4xl font-light tracking-tight text-on-background mb-8">Architectural Precision</h2>

@@ -1,0 +1,68 @@
+@startuml
+left to right direction
+
+actor Guest
+actor Patient
+actor Doctor
+actor Nurse
+actor Accountant
+actor Admin
+actor "Gmail API" as Gmail <<external>>
+
+rectangle "Hospital Management System" {
+  usecase "Browse public content" as UC_PublicContent
+  usecase "Browse departments and doctors" as UC_Discovery
+  usecase "Create appointment booking" as UC_Booking
+  usecase "Use scoped public chatbot" as UC_Chatbot
+
+  usecase "Claim portal access" as UC_Claim
+  usecase "Use patient portal" as UC_Portal
+
+  usecase "Manage appointments" as UC_Appointments
+  usecase "Create medical record" as UC_Record
+  usecase "Generate prescription PDF" as UC_Pdf
+  usecase "Manage queue and check-in" as UC_Queue
+  usecase "Record vital signs" as UC_Vitals
+  usecase "Manage lab results" as UC_Labs
+
+  usecase "Manage invoices and payments" as UC_Finance
+  usecase "Review revenue reports" as UC_Revenue
+  usecase "Manage inventory" as UC_Inventory
+
+  usecase "Manage users and departments" as UC_AdminPeople
+  usecase "Manage rooms and schedules" as UC_AdminOps
+  usecase "Manage public content and news" as UC_AdminContent
+  usecase "Review monitoring and audit logs" as UC_Monitoring
+  usecase "Send transactional email" as UC_Email
+}
+
+Guest --> UC_PublicContent
+Guest --> UC_Discovery
+Guest --> UC_Booking
+Guest --> UC_Chatbot
+
+Patient --> UC_Claim
+Patient --> UC_Portal
+
+Doctor --> UC_Appointments
+Doctor --> UC_Record
+Doctor --> UC_Pdf
+Doctor --> UC_Labs
+
+Nurse --> UC_Queue
+Nurse --> UC_Vitals
+Nurse --> UC_Labs
+
+Accountant --> UC_Finance
+Accountant --> UC_Revenue
+
+Admin --> UC_AdminPeople
+Admin --> UC_AdminOps
+Admin --> UC_AdminContent
+Admin --> UC_Monitoring
+Admin --> UC_Inventory
+
+UC_Booking --> UC_Email
+UC_Record --> UC_Email
+Gmail --> UC_Email
+@enduml

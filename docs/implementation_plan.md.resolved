@@ -1,6 +1,6 @@
 # Implementation Status Note
 
-Status: updated against the repository on 2026-04-25
+Status: updated against the repository on 2026-04-26 after AI and internal assistant removal.
 
 This file replaces an older "150 APIs full-stack delivery" plan that no longer matches the current repository.
 Use the files below as the active source of truth:
@@ -16,15 +16,15 @@ Use the files below as the active source of truth:
 - The backend is the primary implemented product surface.
 - The backend source is organized as DDD-oriented Maven modules: `domain`, `infrastructure`, `application`, `controller`, and `start`.
 - The codebase contains roughly 122 controller route handlers under `backend/controller/src/main/java`.
-- The frontend exists only as a starter Vite project and is not yet a hospital application UI.
+- The `web/` frontend contains a Next.js route tree for hospital screens, but still needs production backend data integration.
 - Several roadmap streams from the old plan are now implemented:
   - inventory write APIs
   - lab result APIs
   - vital signs APIs
   - patient portal authentication and read experience
-  - internal assistant session, feedback, monitoring, and knowledge document admin
+  - AI and internal assistant removal through a forward Flyway cleanup migration
 - Several roadmap items from the old plan are still not implemented:
-  - full production frontend
+  - full production frontend data integration
   - payment gateway integration
   - patient self-service cancellation or rescheduling
   - patient portal message compose and thread detail endpoints beyond the current aggregated list
@@ -36,9 +36,9 @@ Use the files below as the active source of truth:
 - `HMS_PRD.md` explains the product baseline and screen inventory for UI/UX design.
 - `HMS_SRS.md` maps functional requirements to the implemented API surface.
 - `HMS_TDD.md` describes the current architecture, stack, migrations, and integration behavior.
-- `HMS_ProjectPlan.md` describes the remaining work to turn the current backend into a complete frontend experience.
+- `HMS_ProjectPlan.md` describes the remaining work to turn the current static frontend screens into a complete backend-connected experience.
 - `HMS_UserManual.md` is now a role workflow reference for design, not proof that the frontend already exists.
 
 ## Design implication
 
-If you are designing the frontend, treat the backend APIs and contract DTOs in `backend/domain` as the implementation contract, and treat any older references to "0% frontend", "Claude API", "150 APIs", `backend/shared`, `backend/core`, `backend/api`, or "missing inventory/lab/vitals endpoints" as obsolete.
+If you are designing the frontend, treat the `web/` app, backend APIs, and contract DTOs in `backend/domain` as the implementation contract, and treat any older references to "0% frontend", "starter Vite frontend", "Claude API", "150 APIs", `backend/shared`, `backend/core`, `backend/api`, or "missing inventory/lab/vitals endpoints" as obsolete.

@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function PublicDoctorsPage() {
   return (
@@ -34,7 +33,7 @@ export default function PublicDoctorsPage() {
 </div>
 <div className="md:col-span-4 bg-white p-4 flex items-center border-l border-surface-container-low">
 <span className="material-symbols-outlined text-outline mr-3" data-icon="filter_list">filter_list</span>
-<select className="w-full border-none focus:ring-0 text-sm p-0 appearance-none bg-transparent">
+<select aria-label="Filter doctors by department" className="w-full border-none focus:ring-0 text-sm p-0 appearance-none bg-transparent">
 <option>All Departments</option>
 <option>Cardiology</option>
 <option>Neurology</option>
@@ -55,7 +54,7 @@ export default function PublicDoctorsPage() {
 {/* Doctor Card 1 */}
 <div className="group bg-surface flex flex-col h-full transition-all duration-150 hover:translate-y-[-4px]">
 <div className="aspect-[4/5] bg-surface-container-highest overflow-hidden">
-<img alt="Doctor" className="w-full h-full object-cover" data-alt="professional portrait of a male doctor in a white coat with a stethoscope against a clean gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXPMQebdR-fxZtCLREoYqCQHol61kxiR99A3iSr6OGqC9KFRiRp7lS7VAgRAuSGwc10ZRNhxBVIE_c8TWJCzwqZg2scGpmQuOv9i1Uaz601kZU5b9drk6Kb9IPSpjeu2tZ9RuTXXa0kz4KomwK2LnS82hnRa4H98qb6T-VJVP5gZi9-WMqfVtIbrKiqKLcEH2o9B9EOHvE2D6FsQ5iHYfPj19uZY3sZjJgkVZOL1_iTdtmh8b5OtGA0A3veBk3S6LmXIPZDjbl9g"/>
+<Image alt="Doctor" className="w-full h-full object-cover" data-alt="professional portrait of a male doctor in a white coat with a stethoscope against a clean gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXPMQebdR-fxZtCLREoYqCQHol61kxiR99A3iSr6OGqC9KFRiRp7lS7VAgRAuSGwc10ZRNhxBVIE_c8TWJCzwqZg2scGpmQuOv9i1Uaz601kZU5b9drk6Kb9IPSpjeu2tZ9RuTXXa0kz4KomwK2LnS82hnRa4H98qb6T-VJVP5gZi9-WMqfVtIbrKiqKLcEH2o9B9EOHvE2D6FsQ5iHYfPj19uZY3sZjJgkVZOL1_iTdtmh8b5OtGA0A3veBk3S6LmXIPZDjbl9g" width={1200} height={800}/>
 </div>
 <div className="p-6 flex flex-col flex-grow">
 <span className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1">Cardiology</span>
@@ -73,7 +72,7 @@ export default function PublicDoctorsPage() {
 {/* Doctor Card 2 */}
 <div className="group bg-surface flex flex-col h-full transition-all duration-150 hover:translate-y-[-4px]">
 <div className="aspect-[4/5] bg-surface-container-highest overflow-hidden">
-<img alt="Doctor" className="w-full h-full object-cover" data-alt="confident female physician in professional medical attire looking into camera in a minimalist studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBVt1FA_9MmoUvBJjGF1vYDC-OMyvOBrZjuwShCnOaYff_xUoyhCCFxfHeTV7-EGW72W0d0jJVG9DfK-EBHy0l06ZKhhMF9gar8bWPKq98pjPY_3dMCDxIqgDE8_flzFgFnyRHxkfzRNEM4KUdNaQvBnn7oRT60XdSEUuUjiJb3v56IeH3dt5wxm-KHlCY5xjWsgV-m2BbKAg7_dr-5IzAGXGVhWM8eaJ9xBMuY8gvqIPzERfyJGXJdrLOFOl-2Ss_PqAUWdqkxQ"/>
+<Image alt="Doctor" className="w-full h-full object-cover" data-alt="confident female physician in professional medical attire looking into camera in a minimalist studio setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBVt1FA_9MmoUvBJjGF1vYDC-OMyvOBrZjuwShCnOaYff_xUoyhCCFxfHeTV7-EGW72W0d0jJVG9DfK-EBHy0l06ZKhhMF9gar8bWPKq98pjPY_3dMCDxIqgDE8_flzFgFnyRHxkfzRNEM4KUdNaQvBnn7oRT60XdSEUuUjiJb3v56IeH3dt5wxm-KHlCY5xjWsgV-m2BbKAg7_dr-5IzAGXGVhWM8eaJ9xBMuY8gvqIPzERfyJGXJdrLOFOl-2Ss_PqAUWdqkxQ" width={1200} height={800}/>
 </div>
 <div className="p-6 flex flex-col flex-grow">
 <span className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1">Neurology</span>
@@ -91,7 +90,7 @@ export default function PublicDoctorsPage() {
 {/* Doctor Card 3 */}
 <div className="group bg-surface flex flex-col h-full transition-all duration-150 hover:translate-y-[-4px]">
 <div className="aspect-[4/5] bg-surface-container-highest overflow-hidden">
-<img alt="Doctor" className="w-full h-full object-cover" data-alt="middle-aged male specialist with glasses and medical scrub standing in a high-tech hospital environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhivfa0YQwIp4KIqsfK-toBdQMTtZ0AXQ9YzxS7oj7sd5uJmNh4FE1KDqQR7Ts9oLGUO8XYvMQOj6nf4yeh69GBiRl6XNwdJD4_wVGI084VuqfFB6iZYZW-drmhr1x1mAC7urNB8NCArMJ6LAiJWq1gOJtRsT1J_S13i3_-iSxVOGXAwJ63aNwk5B_SLKgHlJ3SDxxKnosz6d7_BfnnHvm4Gewre0HEJbJ6KTVxkABdacoEBAXtLnmh0L42W_T1N7RVGcjTcL5Mg"/>
+<Image alt="Doctor" className="w-full h-full object-cover" data-alt="middle-aged male specialist with glasses and medical scrub standing in a high-tech hospital environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhivfa0YQwIp4KIqsfK-toBdQMTtZ0AXQ9YzxS7oj7sd5uJmNh4FE1KDqQR7Ts9oLGUO8XYvMQOj6nf4yeh69GBiRl6XNwdJD4_wVGI084VuqfFB6iZYZW-drmhr1x1mAC7urNB8NCArMJ6LAiJWq1gOJtRsT1J_S13i3_-iSxVOGXAwJ63aNwk5B_SLKgHlJ3SDxxKnosz6d7_BfnnHvm4Gewre0HEJbJ6KTVxkABdacoEBAXtLnmh0L42W_T1N7RVGcjTcL5Mg" width={1200} height={800}/>
 </div>
 <div className="p-6 flex flex-col flex-grow">
 <span className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1">Oncology</span>
@@ -109,7 +108,7 @@ export default function PublicDoctorsPage() {
 {/* Doctor Card 4 */}
 <div className="group bg-surface flex flex-col h-full transition-all duration-150 hover:translate-y-[-4px]">
 <div className="aspect-[4/5] bg-surface-container-highest overflow-hidden">
-<img alt="Doctor" className="w-full h-full object-cover" data-alt="professional female doctor in surgical scrubs looking focused in a clean bright clinical hallway" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4OUdUE3PIBAolR4-7MQKVn2th0Y4MV08CtaspcWaPen8Fv3ZPmeZx_t1I0EhpmTFNUHwdzDJ3AR_qiVUto7F66Uj7fomMV8QkuTdUPJhVmEszyimwsXBtIGVirqISJFWoHTeSDM-JB3H0VZbyZQ8J9rWN6z965rueNgqxaux8JQwtG9VltKkthWI_UBzbj42TWOsTJGFeiy6V6StxTBjlHOncv_KgFYo6ZUQs486xPS4MRLb8iiw__XNKOIDaXDPiQZOfiYIMtw"/>
+<Image alt="Doctor" className="w-full h-full object-cover" data-alt="professional female doctor in surgical scrubs looking focused in a clean bright clinical hallway" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4OUdUE3PIBAolR4-7MQKVn2th0Y4MV08CtaspcWaPen8Fv3ZPmeZx_t1I0EhpmTFNUHwdzDJ3AR_qiVUto7F66Uj7fomMV8QkuTdUPJhVmEszyimwsXBtIGVirqISJFWoHTeSDM-JB3H0VZbyZQ8J9rWN6z965rueNgqxaux8JQwtG9VltKkthWI_UBzbj42TWOsTJGFeiy6V6StxTBjlHOncv_KgFYo6ZUQs486xPS4MRLb8iiw__XNKOIDaXDPiQZOfiYIMtw" width={1200} height={800}/>
 </div>
 <div className="p-6 flex flex-col flex-grow">
 <span className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1">Pediatrics</span>
@@ -127,7 +126,7 @@ export default function PublicDoctorsPage() {
 {/* Doctor Card 5 */}
 <div className="group bg-surface flex flex-col h-full transition-all duration-150 hover:translate-y-[-4px]">
 <div className="aspect-[4/5] bg-surface-container-highest overflow-hidden">
-<img alt="Doctor" className="w-full h-full object-cover" data-alt="smiling medical professional in blue scrubs holding a digital tablet in a clean hospital lobby" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbiE_z0Fv_5j07BqDt9_l5UvvDkRNGDzKRjKcvRkES5nVlwjgoSreOAcLLi80Abf2_mPytmgb6FNd5CFX_FV-cHxiwDzs3RI_mTfHjRruQgpA-ligktAtkkTYRZujx6mOIJc9zGobQk4i6djoRHJnThmhZOkNXd2n3K676MaMQ9bQUMmHbPZH-ktcbSQlC4V1SJhOWwOfK14UF6wwxHhKvfkUBUuXdWMPg0I0mDsicJ_300bj30AcyzCzq_c7OhI-2FnUrBzHacA"/>
+<Image alt="Doctor" className="w-full h-full object-cover" data-alt="smiling medical professional in blue scrubs holding a digital tablet in a clean hospital lobby" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbiE_z0Fv_5j07BqDt9_l5UvvDkRNGDzKRjKcvRkES5nVlwjgoSreOAcLLi80Abf2_mPytmgb6FNd5CFX_FV-cHxiwDzs3RI_mTfHjRruQgpA-ligktAtkkTYRZujx6mOIJc9zGobQk4i6djoRHJnThmhZOkNXd2n3K676MaMQ9bQUMmHbPZH-ktcbSQlC4V1SJhOWwOfK14UF6wwxHhKvfkUBUuXdWMPg0I0mDsicJ_300bj30AcyzCzq_c7OhI-2FnUrBzHacA" width={1200} height={800}/>
 </div>
 <div className="p-6 flex flex-col flex-grow">
 <span className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1">Orthopedics</span>
@@ -145,7 +144,7 @@ export default function PublicDoctorsPage() {
 {/* Doctor Card 6 */}
 <div className="group bg-surface flex flex-col h-full transition-all duration-150 hover:translate-y-[-4px]">
 <div className="aspect-[4/5] bg-surface-container-highest overflow-hidden">
-<img alt="Doctor" className="w-full h-full object-cover" data-alt="female specialist in laboratory setting looking at results with a focused and professional expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2FZJ350dULlNXOpEhIjDTTtmebUNH6rP5xl9RiWUZnBKIZqzu8s1oeeYudCf0uwAvrweCcIBqU7A5igvcjpA2I1sz4vVokuwQRcR4zc5WVkSVtN9-7DtUR-nziMr8OltD8V1yvcoDRl5G1W79ZGArX8gHyJinvS_FCSh29qalzcbsMubwm6YR2ilc3sgP1rqLDcTzUBtpCP4Exicr_J-BbKZtXFI0MYH1Ky8QjcrqEgRJj9TqKRxPDHC_1UToXrgpYU_g3dboMg"/>
+<Image alt="Doctor" className="w-full h-full object-cover" data-alt="female specialist in laboratory setting looking at results with a focused and professional expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2FZJ350dULlNXOpEhIjDTTtmebUNH6rP5xl9RiWUZnBKIZqzu8s1oeeYudCf0uwAvrweCcIBqU7A5igvcjpA2I1sz4vVokuwQRcR4zc5WVkSVtN9-7DtUR-nziMr8OltD8V1yvcoDRl5G1W79ZGArX8gHyJinvS_FCSh29qalzcbsMubwm6YR2ilc3sgP1rqLDcTzUBtpCP4Exicr_J-BbKZtXFI0MYH1Ky8QjcrqEgRJj9TqKRxPDHC_1UToXrgpYU_g3dboMg" width={1200} height={800}/>
 </div>
 <div className="p-6 flex flex-col flex-grow">
 <span className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase mb-1">Dermatology</span>

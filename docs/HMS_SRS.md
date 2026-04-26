@@ -1,6 +1,6 @@
 # Hospital Management System SRS
 
-Status: aligned to the repository on 2026-04-25
+Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
 ## 1. Scope
 
@@ -27,7 +27,7 @@ When this document conflicts with older notes, prefer:
 | Doctor | staff auth endpoints | Own appointments and doctor workflows |
 | Nurse | staff auth endpoints | Queue, check-in, and vital signs workflows |
 | Accountant | staff auth endpoints | Finance workflows |
-| Admin | staff auth endpoints | Configuration, monitoring, and knowledge management |
+| Admin | staff auth endpoints | Configuration, monitoring, content, audit, and operational management |
 
 ## 4. Functional Requirements
 
@@ -47,7 +47,6 @@ The frontend must support:
 
 The booking UI must support:
 
-- symptom analysis via `POST /api/v1/ai/analyze-symptoms`
 - appointment creation via `POST /api/v1/appointments`
 - success state using the returned confirmation code and booking payload
 
@@ -55,7 +54,7 @@ The booking form must capture these required fields:
 
 - `doctorId`
 - `firstSlotId`
-- `aiDurationMinutes`
+- `aiDurationMinutes` as a legacy booking duration field
 - `patientFullName`
 - `patientCccd` as 12 digits
 - `patientEmail`
@@ -154,11 +153,9 @@ Admin-facing UI must support:
 - slot generation and deletion from `/api/v1/admin/slots`
 - stats from `/api/v1/admin/stats`
 - system monitoring from `/api/v1/admin/monitoring`
-- internal assistant monitoring from `/api/v1/admin/monitoring/internal-assistant`
 - audit log list from `/api/v1/admin/audit-logs`
 - public content admin from `/api/v1/admin/content/sections` and `/api/v1/admin/public-content`
 - news admin from `/api/v1/admin/news`
-- internal assistant knowledge document management from `/api/v1/admin/knowledge-documents`
 
 ### 4.8 Patient portal
 
@@ -212,33 +209,6 @@ The lab result form must capture:
 - optional `status`
 - optional `notes`
 
-### 4.11 Internal clinical assistant
-
-The assistant UI must support:
-
-- current session retrieval from `GET /api/v1/internal-assistant/sessions/current`
-- sending messages from `POST /api/v1/internal-assistant/messages`
-- feedback on responses from `POST /api/v1/internal-assistant/messages/{messageId}/feedback`
-
-Mode behavior:
-
-- `DOCS`: internal documents only
-- `PATIENT`: patient context only
-- `HYBRID`: combines patient and document evidence
-
-Access rules:
-
-- doctor: docs, patient, hybrid
-- nurse: docs, patient, hybrid, but only for the current queue context
-- admin: docs only
-
-Required UI behavior:
-
-- show citations
-- show deep links
-- show suggested follow-up prompts
-- handle refusal states clearly
-
 ## 5. Data And Form Requirements
 
 ### 5.1 Patient portal claim form
@@ -289,10 +259,10 @@ Optional but supported:
 
 - JWT access tokens must expire quickly and refresh through secure HTTP-only cookies.
 - CORS must support configured frontend origins only.
-- Public routes and assistant message routes are rate-limited.
+- Public routes are rate-limited.
 - Sensitive patient data must not be shown to unauthorized roles.
 - UI should render clearly on desktop and mobile for public and portal surfaces.
-- Staff workspaces should prioritize speed, scanability, and low interaction cost.
+- Staff workspaces should prioritize speed, scannability, and low interaction cost.
 - Error states must not expose secrets or stack traces.
 
 ## 7. Design Constraints
@@ -300,4 +270,4 @@ Optional but supported:
 - Do not design features that require patient-side message send or cancel APIs unless they are marked as future scope.
 - Do not assume a rich real-time room board exists for nurses.
 - Do not imply the chatbot is a general AI assistant; it is a scoped helper for departments, doctors, and booking.
-- Do not imply the internal assistant is free-form or uncited; every answer is evidence-based and session-aware.
+- Do not design internal assistant, knowledge document, or AI symptom-analysis workflows unless a future API reintroduces them.

@@ -39,20 +39,14 @@ security:
     allowed-origins:
       - ${HMS_ALLOWED_ORIGIN_PRIMARY:http://localhost:3000}
       - ${HMS_ALLOWED_ORIGIN_SECONDARY:http://localhost:4173}
-    allow-credentials: ${HMS_ALLOW_CREDENTIALS:true}
+    allow-credentials: ${HMS_ALLOW_CREDENTIALS:false}
     secure-cookies: ${HMS_SECURE_COOKIES:false}
     refresh-cookie-same-site: ${HMS_REFRESH_COOKIE_SAME_SITE:Lax}
     public-rate-limit-per-minute: ${HMS_PUBLIC_RATE_LIMIT_PER_MINUTE:30}
-    internal-assistant-rate-limit-per-minute: ${HMS_INTERNAL_ASSISTANT_RATE_LIMIT_PER_MINUTE:12}
   patient-identifier:
     secret: ${PATIENT_IDENTIFIER_SECRET:${JWT_SECRET:replace-with-a-random-32-character-secret}}
 
 integration:
-  gemini:
-    enabled: ${GEMINI_ENABLED:false}
-    api-key: ${GEMINI_API_KEY:}
-    model: ${GEMINI_MODEL:gemini-2.0-flash}
-    api-base-url: ${GEMINI_API_BASE_URL:https://generativelanguage.googleapis.com/v1beta}
   gmail:
     enabled: ${GMAIL_ENABLED:false}
     client-id: ${GMAIL_CLIENT_ID:}

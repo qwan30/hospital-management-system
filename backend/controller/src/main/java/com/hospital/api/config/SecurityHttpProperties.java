@@ -9,6 +9,5 @@ public record SecurityHttpProperties(
     boolean allowCredentials,
     boolean secureCookies,
     String refreshCookieSameSite,
-    int publicRateLimitPerMinute,
-    int internalAssistantRateLimitPerMinute
+    int publicRateLimitPerMinute
 ) {}

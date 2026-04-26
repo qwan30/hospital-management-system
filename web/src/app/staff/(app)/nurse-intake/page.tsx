@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function NurseIntakeBoardPage() {
   return (
@@ -28,7 +27,7 @@ export default function NurseIntakeBoardPage() {
 <p className="text-[10px] font-bold uppercase leading-none">Nurse Sarah Chen</p>
 <p className="text-[9px] text-neutral-500 uppercase">Shift Lead • Ward 4C</p>
 </div>
-<img alt="User Profile Avatar" className="w-8 h-8 grayscale" data-alt="professional portrait of a female nurse in blue scrubs with a warm and focused expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTBrouVq_vDn_wN1T7LJqW3K8Sdz-g73F9f11rWaGanQsQ1ZN3SICIbtTI3_3JL64fEFOIzb2HFKqrMdytFLviQ3HPQqLL_mZ1Lymw0_E0MKoG4uLZkmAwQ49V2EYm15d6wVvs1641VkRPxnUxW6hacHunrFHhF3coLgyHuDWCKoCgj1X-MWXgb00SfiIB4dXmzxkUHNO_FhrGoorJ6WIMI0X_SzdxMM-N6Tw4N4ZuJcWnA-2Z5E0CsQw8d7Nw_s14cxOpgnhUJA"/>
+<Image alt="User Profile Avatar" className="w-8 h-8 grayscale" data-alt="professional portrait of a female nurse in blue scrubs with a warm and focused expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTBrouVq_vDn_wN1T7LJqW3K8Sdz-g73F9f11rWaGanQsQ1ZN3SICIbtTI3_3JL64fEFOIzb2HFKqrMdytFLviQ3HPQqLL_mZ1Lymw0_E0MKoG4uLZkmAwQ49V2EYm15d6wVvs1641VkRPxnUxW6hacHunrFHhF3coLgyHuDWCKoCgj1X-MWXgb00SfiIB4dXmzxkUHNO_FhrGoorJ6WIMI0X_SzdxMM-N6Tw4N4ZuJcWnA-2Z5E0CsQw8d7Nw_s14cxOpgnhUJA" width={1200} height={800}/>
 </div>
 </div>
 </header>
@@ -175,7 +174,7 @@ export default function NurseIntakeBoardPage() {
 </div>
 </div>
 </section>
-{/* Right: Vitals Summary / Assistant Card (3 cols) */}
+{/* Right: Vitals Summary / Handoff Card (3 cols) */}
 <section className="col-span-3 space-y-6">
 <div className="bg-surface-container-low p-6 space-y-6">
 <div className="flex items-center justify-between">
@@ -215,10 +214,10 @@ export default function NurseIntakeBoardPage() {
 <div className="bg-neutral-900 p-6 space-y-4">
 <div className="flex items-center gap-2">
 <span className="material-symbols-outlined text-blue-500" data-icon="bolt">bolt</span>
-<h4 className="text-[10px] font-black uppercase tracking-widest text-white">AI Assistant Insight</h4>
+<h4 className="text-[10px] font-black uppercase tracking-widest text-white">Clinical Handoff Insight</h4>
 </div>
 <p className="text-xs text-neutral-400 font-medium leading-relaxed italic">
-                            "Arthur Morgan's BP has trended slightly lower over the last 3 visits. Recommend verifying baseline and noting current medication compliance for Metoprolol."
+                            "Arthur Morgan's BP has trended slightly lower over the last 3 visits. Verify baseline and note current medication compliance for Metoprolol."
                         </p>
 <button className="text-[10px] font-black text-blue-500 uppercase flex items-center gap-1 hover:text-white transition-colors">
                             ACKNOWLEDGE INSIGHT <span className="material-symbols-outlined text-xs" data-icon="check">check</span>

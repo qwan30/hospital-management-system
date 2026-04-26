@@ -1,5 +1,3 @@
-import Image from "next/image";
-import Link from "next/link";
 
 export default function AdminAuditLogsPage() {
   return (
@@ -23,7 +21,7 @@ export default function AdminAuditLogsPage() {
 <div className="flex-1 max-w-xs ml-8">
 <label className="block text-[11px] font-bold text-on-surface uppercase mb-2">Date Range</label>
 <div className="relative">
-<input className="w-full bg-surface-container-high border-none border-b-2 border-outline focus:border-primary focus:ring-0 text-sm py-3 px-4 transition-all" type="text" value="Oct 20, 2023 - Oct 27, 2023"/>
+<input className="w-full bg-surface-container-high border-none border-b-2 border-outline focus:border-primary focus:ring-0 text-sm py-3 px-4 transition-all" type="text" defaultValue="Oct 20, 2023 - Oct 27, 2023"/>
 <span className="material-symbols-outlined absolute right-3 top-3 text-outline">calendar_today</span>
 </div>
 </div>

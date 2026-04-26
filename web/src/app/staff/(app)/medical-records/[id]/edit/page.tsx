@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function MedicalRecordEditorPage() {
   return (
@@ -76,14 +75,14 @@ export default function MedicalRecordEditorPage() {
 <td className="py-4 px-4 text-xs">1 Tablet</td>
 <td className="py-4 px-4 text-xs">Twice Daily</td>
 <td className="py-4 px-4 text-xs">Oral</td>
-<td className="py-4 px-4 text-xs"><button className="text-error font-bold text-[10px]">REMOVE</button></td>
+<td className="py-4 px-4 text-xs"><button className="min-h-6 text-error font-bold text-[10px]">REMOVE</button></td>
 </tr>
 <tr>
 <td className="py-4 px-4 text-xs font-semibold">Sumatriptan 50mg</td>
 <td className="py-4 px-4 text-xs">1 Tablet</td>
 <td className="py-4 px-4 text-xs">As Needed (PRN)</td>
 <td className="py-4 px-4 text-xs">Oral</td>
-<td className="py-4 px-4 text-xs"><button className="text-error font-bold text-[10px]">REMOVE</button></td>
+<td className="py-4 px-4 text-xs"><button className="min-h-6 text-error font-bold text-[10px]">REMOVE</button></td>
 </tr>
 </tbody>
 </table>
@@ -125,7 +124,7 @@ export default function MedicalRecordEditorPage() {
 <h3 className="text-3xl font-light tracking-tight">Kerrigan, Sarah</h3>
 </div>
 <div className="h-16 w-16 bg-surface/10 overflow-hidden">
-<img alt="Patient thumbnail" className="h-full w-full object-cover grayscale" data-alt="high-contrast monochromatic portrait of a middle-aged woman with thoughtful expression, minimalist clinical background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsZFc7iacn0IOG97tSc0c7Q9Xs2-jV7aJmQJTvBqhgASN-nffi3q5YMLRHjn-8-8ocFx2F4atljdiw6dVy1n7yfCBCzYKpxkd5mNtYzC7GMXc5GKTv1TdVugJ3akkSx_FHTULGwBlqCJTxdQNOdABArRmJEKX6iCWfCbypyg0zGh5F1Y3_VDbPP-HiEzDPalItwueWXjpwmr5MVUBgEvdTWv6biCiogUosH0snGlftcMxxBbE5Ba51ILO-RHVRXF34uFASWE7rQg"/>
+<Image alt="Patient thumbnail" className="h-full w-full object-cover grayscale" data-alt="high-contrast monochromatic portrait of a middle-aged woman with thoughtful expression, minimalist clinical background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsZFc7iacn0IOG97tSc0c7Q9Xs2-jV7aJmQJTvBqhgASN-nffi3q5YMLRHjn-8-8ocFx2F4atljdiw6dVy1n7yfCBCzYKpxkd5mNtYzC7GMXc5GKTv1TdVugJ3akkSx_FHTULGwBlqCJTxdQNOdABArRmJEKX6iCWfCbypyg0zGh5F1Y3_VDbPP-HiEzDPalItwueWXjpwmr5MVUBgEvdTWv6biCiogUosH0snGlftcMxxBbE5Ba51ILO-RHVRXF34uFASWE7rQg" width={1200} height={800}/>
 </div>
 </div>
 <div className="grid grid-cols-2 gap-y-6">

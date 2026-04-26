@@ -302,12 +302,26 @@ class ClinicalWorkflowIntegrationTest {
         .getPatient()
         .getCccd();
 
-    mockMvc.perform(get("/api/v1/patients/{cccd}/history", patientCccd)
+    var historyResult = mockMvc.perform(get("/api/v1/patients/{cccd}/history", patientCccd)
             .header("Authorization", "Bearer " + doctorToken))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data.patientId").value(patientId))
-        .andExpect(jsonPath("$.data.appointments[0].appointmentId").value(appointmentId))
-        .andExpect(jsonPath("$.data.appointments[0].medicalRecord.diagnosis").value("Upper respiratory infection"));
+        .andReturn();
+
+    var historyAppointments = objectMapper.readTree(historyResult.getResponse().getContentAsString())
+        .get("data")
+        .get("appointments");
+    JsonNode workflowAppointment = null;
+    for (JsonNode appointment : historyAppointments) {
+      if (appointmentId.equals(appointment.get("appointmentId").asText())) {
+        workflowAppointment = appointment;
+        break;
+      }
+    }
+
+    assertThat(workflowAppointment).isNotNull();
+    assertThat(workflowAppointment.path("medicalRecord").path("diagnosis").asText())
+        .isEqualTo("Upper respiratory infection");
 
     mockMvc.perform(get("/api/v1/medical-records/{recordId}/prescription.pdf", recordId)
             .header("Authorization", "Bearer " + doctorToken))

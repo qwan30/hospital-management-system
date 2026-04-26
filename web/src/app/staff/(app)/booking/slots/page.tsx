@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function BookingDoctorSlotSelectionPage() {
   return (
@@ -48,7 +47,7 @@ export default function BookingDoctorSlotSelectionPage() {
 {/* Doctor Card 1 */}
 <div className="bg-surface-container-low p-6 flex flex-col md:flex-row gap-8 hover:bg-surface-container-lowest transition-colors group">
 <div className="shrink-0">
-<img alt="Dr. Sarah Jenkins" className="w-24 h-24 object-cover" data-alt="Professional headshot of a male doctor in glasses and blue scrubs with a clean clinic background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBb1_yE4u4Bwq2YnFYxt4yB433OfkmINjPK-A9GS28YBNnZkZbLXxr-PJGK0jQsgIc8Qen_LkkguBNAo7KcVqViGw96CYukI9Biz-VCXleX7NA88OXszRdvvoWS00EEu9-OdH1ZGzAbBpFvo_rsyBM9FyCnV97fwtWHcfVaSf8tH5RO3A8AKEJV-rWULczf_dK7gRnA-wH-yMeAq5YaiLj5kfq32WxqjGjXdActBuGXBQ6a26hFN2ACfi90Gfrka7Vc7QIrOlwbg"/>
+<Image alt="Dr. Sarah Jenkins" className="w-24 h-24 object-cover" data-alt="Professional headshot of a male doctor in glasses and blue scrubs with a clean clinic background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBb1_yE4u4Bwq2YnFYxt4yB433OfkmINjPK-A9GS28YBNnZkZbLXxr-PJGK0jQsgIc8Qen_LkkguBNAo7KcVqViGw96CYukI9Biz-VCXleX7NA88OXszRdvvoWS00EEu9-OdH1ZGzAbBpFvo_rsyBM9FyCnV97fwtWHcfVaSf8tH5RO3A8AKEJV-rWULczf_dK7gRnA-wH-yMeAq5YaiLj5kfq32WxqjGjXdActBuGXBQ6a26hFN2ACfi90Gfrka7Vc7QIrOlwbg" width={1200} height={800}/>
 </div>
 <div className="flex-1">
 <div className="flex justify-between items-start mb-4">
@@ -84,7 +83,7 @@ export default function BookingDoctorSlotSelectionPage() {
 {/* Doctor Card 2 */}
 <div className="bg-surface-container-low p-6 flex flex-col md:flex-row gap-8 hover:bg-surface-container-lowest transition-colors group">
 <div className="shrink-0">
-<img alt="Dr. Marcus Thorne" className="w-24 h-24 object-cover" data-alt="Medical professional headshot of a female doctor in a white coat with a friendly smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkixEEDa4D_UpfICVURFVwbixMF_TdxHPVQacbh7KHWWQikXwcL7GrapqPfKnVlS48MJUXiXqRR7UCGDKryWFSSWglL0zClIQgKWOr3s3pdnPvvY2vpbmm7Hj7ezXPVBbaMgKklBMJJDcvR39awxoNCxMm-BtU2UFJ3LV47IRqu3gYZVJh-Wv8QvbY8bxoW1WpnCSLis3jvT7INZg8gwmhfu-miKz1JHR9omKXa0bAAmJ2G-9fcHSqs-ImgHOoM8Tx-pAZbPSA6A"/>
+<Image alt="Dr. Marcus Thorne" className="w-24 h-24 object-cover" data-alt="Medical professional headshot of a female doctor in a white coat with a friendly smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkixEEDa4D_UpfICVURFVwbixMF_TdxHPVQacbh7KHWWQikXwcL7GrapqPfKnVlS48MJUXiXqRR7UCGDKryWFSSWglL0zClIQgKWOr3s3pdnPvvY2vpbmm7Hj7ezXPVBbaMgKklBMJJDcvR39awxoNCxMm-BtU2UFJ3LV47IRqu3gYZVJh-Wv8QvbY8bxoW1WpnCSLis3jvT7INZg8gwmhfu-miKz1JHR9omKXa0bAAmJ2G-9fcHSqs-ImgHOoM8Tx-pAZbPSA6A" width={1200} height={800}/>
 </div>
 <div className="flex-1">
 <div className="flex justify-between items-start mb-4">
@@ -129,7 +128,7 @@ export default function BookingDoctorSlotSelectionPage() {
 <div className="mb-6">
 <span className="text-[10px] font-bold uppercase text-primary">Healthcare Professional</span>
 <div className="flex items-center gap-4 mt-2">
-<img alt="Dr. Sarah Jenkins" className="w-10 h-10 object-cover" data-alt="Micro headshot of a professional doctor for a UI summary card" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKZnYcR7GpVX28RJIrG-nm_5-n0U2i314IyfHzPHTJNch7EOXpCvNl4X3iLO1Hia2lr8uOSN50pRTcapUqEd45UhQmGgx1p0w7EeDI8Z3q0htXLvjMfBblX5a5-T8upGERFzeYTObzeeRXRau22BF4zL6hX3EmllQQ7t0GesGTlpB2W7RgdBm746RMrpEVz80Qj3BhKbIGHqWY_LCFEFEqhtU26LLp0LieLZRtdxrwq5_XNd-ENeP5AeWifjEts3O1awamtmUZlg"/>
+<Image alt="Dr. Sarah Jenkins" className="w-10 h-10 object-cover" data-alt="Micro headshot of a professional doctor for a UI summary card" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKZnYcR7GpVX28RJIrG-nm_5-n0U2i314IyfHzPHTJNch7EOXpCvNl4X3iLO1Hia2lr8uOSN50pRTcapUqEd45UhQmGgx1p0w7EeDI8Z3q0htXLvjMfBblX5a5-T8upGERFzeYTObzeeRXRau22BF4zL6hX3EmllQQ7t0GesGTlpB2W7RgdBm746RMrpEVz80Qj3BhKbIGHqWY_LCFEFEqhtU26LLp0LieLZRtdxrwq5_XNd-ENeP5AeWifjEts3O1awamtmUZlg" width={1200} height={800}/>
 <div>
 <div className="text-sm font-semibold text-on-surface">Dr. Sarah Jenkins</div>
 <div className="text-[11px] text-on-surface-variant">Senior Cardiologist</div>

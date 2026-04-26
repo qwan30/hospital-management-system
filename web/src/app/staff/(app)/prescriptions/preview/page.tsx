@@ -1,10 +1,10 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export default function PrescriptionPreviewPage() {
   return (
     <>
       <main>
+<h1 className="sr-only">Prescription Preview</h1>
 
 {/* Document Sidebar (Info Panels) */}
 <aside className="hidden md:flex w-80 flex-col bg-surface-container-low p-8 gap-8 overflow-y-auto">
@@ -132,7 +132,7 @@ export default function PrescriptionPreviewPage() {
 <p className="text-[10px] font-bold uppercase text-outline mt-1">Hospital Stamp / Digital ID</p>
 </div>
 <div className="flex flex-col items-center">
-<img alt="Doctor Signature" className="w-24 h-12 mix-blend-multiply opacity-80" data-alt="Stylized digital handwritten signature of a doctor in blue ink on a white paper background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2_WJCiHfQ1tH5s5AvN3gEYvHuuOAYGJ7RwnYAIqnTBQeAgFAIqNW2ks9Kw8qn5zvYC2IjHQ79efobopfnS39OwHemQbgNrpymLYIUqC651Qgy3fwWwhJSfKmc60uU4Z2olOYvy2Xo6NxGzGYHQa8t_AWNQruYrwJC7n762e7g0nZw4vScxD5i09VzQ8M377wk5sgRkxteJ1DiRAKzl7By_U9Bs2lt0yIq08J6gEPHmr-7Fu7VWiW_4nZa_O3IfsmOR-xWf-wUhw"/>
+<Image alt="Doctor Signature" className="w-24 h-12 mix-blend-multiply opacity-80" data-alt="Stylized digital handwritten signature of a doctor in blue ink on a white paper background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2_WJCiHfQ1tH5s5AvN3gEYvHuuOAYGJ7RwnYAIqnTBQeAgFAIqNW2ks9Kw8qn5zvYC2IjHQ79efobopfnS39OwHemQbgNrpymLYIUqC651Qgy3fwWwhJSfKmc60uU4Z2olOYvy2Xo6NxGzGYHQa8t_AWNQruYrwJC7n762e7g0nZw4vScxD5i09VzQ8M377wk5sgRkxteJ1DiRAKzl7By_U9Bs2lt0yIq08J6gEPHmr-7Fu7VWiW_4nZa_O3IfsmOR-xWf-wUhw" width={1200} height={800}/>
 <div className="w-64 h-[1px] bg-on-surface mt-2"></div>
 <p className="text-[10px] font-bold uppercase mt-2">Authorized Signatory: Sarah Chen, MD</p>
 </div>
@@ -143,13 +143,13 @@ export default function PrescriptionPreviewPage() {
 </section>
 {/* Floating Action Tool (Contextual) */}
 <div className="fixed bottom-8 right-8 flex flex-col gap-2">
-<button className="w-12 h-12 bg-white flex items-center justify-center hover:bg-neutral-50 transition-colors cursor-pointer active:opacity-80">
+<button aria-label="Zoom prescription in" className="w-12 h-12 bg-white flex items-center justify-center hover:bg-neutral-50 transition-colors cursor-pointer active:opacity-80">
 <span className="material-symbols-outlined text-neutral-600" data-icon="zoom_in">zoom_in</span>
 </button>
-<button className="w-12 h-12 bg-white flex items-center justify-center hover:bg-neutral-50 transition-colors cursor-pointer active:opacity-80">
+<button aria-label="Zoom prescription out" className="w-12 h-12 bg-white flex items-center justify-center hover:bg-neutral-50 transition-colors cursor-pointer active:opacity-80">
 <span className="material-symbols-outlined text-neutral-600" data-icon="zoom_out">zoom_out</span>
 </button>
-<button className="w-12 h-12 bg-primary-container text-white flex items-center justify-center hover:bg-primary transition-colors cursor-pointer active:opacity-80">
+<button aria-label="Share prescription" className="w-12 h-12 bg-primary-container text-white flex items-center justify-center hover:bg-primary transition-colors cursor-pointer active:opacity-80">
 <span className="material-symbols-outlined" data-icon="share" >share</span>
 </button>
 </div>
