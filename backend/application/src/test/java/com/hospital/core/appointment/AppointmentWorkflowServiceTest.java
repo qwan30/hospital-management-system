@@ -2,6 +2,7 @@ package com.hospital.core.appointment;
 
 import com.hospital.core.common.ConflictException;
 import com.hospital.core.common.NotFoundException;
+import com.hospital.core.audit.AuditLogService;
 import com.hospital.core.patient.PatientEntity;
 import com.hospital.core.patient.PatientIdentifierProtector;
 import com.hospital.core.timeslot.TimeSlotEntity;
@@ -44,6 +45,7 @@ class AppointmentWorkflowServiceTest {
   @Mock private FollowUpRepository followUpRepository;
   @Mock private PatientIdentifierProtector patientIdentifierProtector;
   @Mock private UserRepository userRepository;
+  @Mock private AuditLogService auditLogService;
 
   @InjectMocks private AppointmentWorkflowService service;
 
@@ -353,6 +355,86 @@ class AppointmentWorkflowServiceTest {
 
       assertThatThrownBy(() -> service.checkInAppointment(appointmentId, LocalDateTime.now()))
           .isInstanceOf(ConflictException.class);
+    }
+  }
+
+  @Nested
+  class QueueActions {
+    @Test
+    void shouldCallPatientAndRecordAuditTrail() {
+      sampleAppointment.setStatus(AppointmentStatus.CHECKED_IN);
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(patientIdentifierProtector.decrypt(any())).thenReturn("123456789012");
+
+      var result = service.callQueuePatient(appointmentId);
+
+      assertThat(result.status()).isEqualTo(AppointmentStatus.CHECKED_IN);
+      verify(auditLogService).record(eq("QUEUE_CALL_PATIENT"), eq("APPOINTMENT"), eq(appointmentId), anyMap());
+    }
+
+    @Test
+    void shouldSkipPatientToBackOfReadyQueueAndRecordAuditTrail() {
+      sampleAppointment.setStatus(AppointmentStatus.CHECKED_IN);
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(patientIdentifierProtector.decrypt(any())).thenReturn("123456789012");
+
+      var skippedAt = LocalDateTime.of(2026, 4, 26, 10, 15);
+      var result = service.skipQueuePatient(appointmentId, skippedAt);
+
+      assertThat(result.checkedInAt()).isEqualTo(skippedAt);
+      verify(auditLogService).record(eq("QUEUE_SKIP_PATIENT"), eq("APPOINTMENT"), eq(appointmentId), anyMap());
+    }
+
+    @Test
+    void shouldAssignRoomInNotesAndRecordAuditTrail() {
+      sampleAppointment.setStatus(AppointmentStatus.CHECKED_IN);
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(patientIdentifierProtector.decrypt(any())).thenReturn("123456789012");
+
+      service.assignQueueRoom(appointmentId, "Consult 2");
+
+      assertThat(sampleAppointment.getNotes()).contains("Consult 2");
+      verify(auditLogService).record(eq("QUEUE_ASSIGN_ROOM"), eq("APPOINTMENT"), eq(appointmentId), anyMap());
+    }
+
+    @Test
+    void shouldMarkInConsultationFromCheckedInAndRecordAuditTrail() {
+      sampleAppointment.setStatus(AppointmentStatus.CHECKED_IN);
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(patientIdentifierProtector.decrypt(any())).thenReturn("123456789012");
+
+      var result = service.markInConsultation(appointmentId);
+
+      assertThat(result.status()).isEqualTo(AppointmentStatus.IN_PROGRESS);
+      verify(auditLogService).record(eq("QUEUE_START_CONSULTATION"), eq("APPOINTMENT"), eq(appointmentId), anyMap());
+    }
+
+    @Test
+    void shouldCompleteVisitFromInProgressAndRecordAuditTrail() {
+      sampleAppointment.setStatus(AppointmentStatus.IN_PROGRESS);
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(patientIdentifierProtector.decrypt(any())).thenReturn("123456789012");
+
+      var result = service.completeQueueVisit(appointmentId);
+
+      assertThat(result.status()).isEqualTo(AppointmentStatus.DONE);
+      verify(auditLogService).record(eq("QUEUE_COMPLETE_VISIT"), eq("APPOINTMENT"), eq(appointmentId), anyMap());
+    }
+
+    @Test
+    void shouldRejectCompletingVisitBeforeConsultationStarts() {
+      sampleAppointment.setStatus(AppointmentStatus.CHECKED_IN);
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+
+      assertThatThrownBy(() -> service.completeQueueVisit(appointmentId))
+          .isInstanceOf(ConflictException.class)
+          .hasMessageContaining("in consultation");
     }
   }
 }

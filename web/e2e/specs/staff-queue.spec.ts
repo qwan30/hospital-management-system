@@ -153,4 +153,116 @@ test.describe("@ui staff queue board", () => {
       page.getByTestId("queue-row").filter({ hasText: "Mai Nguyen" }),
     ).toContainText("Checked in");
   });
+
+  test("supports queue call, room assignment, consultation, and completion actions", async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      window.sessionStorage.setItem("hms_staff_access_token", "staff-token");
+      window.sessionStorage.setItem("hms_staff_role", "NURSE");
+    });
+
+    let callRequests = 0;
+    let assignRequests = 0;
+    let startRequests = 0;
+    let completeRequests = 0;
+
+    await page.route("**/api/v1/queue/today", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          success: true,
+          data: [checkedInAppointment],
+        }),
+      });
+    });
+
+    await page.route("**/api/v1/appointments/today", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          success: true,
+          data: [checkedInAppointment],
+        }),
+      });
+    });
+
+    await page.route(`**/api/v1/queue/${checkedInAppointmentId}/call`, async (route) => {
+      callRequests += 1;
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ success: true, data: checkedInAppointment }),
+      });
+    });
+
+    await page.route(
+      `**/api/v1/queue/${checkedInAppointmentId}/assign-room`,
+      async (route) => {
+        assignRequests += 1;
+        expect(route.request().postDataJSON()).toEqual({ roomName: "Consult Room 1" });
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({ success: true, data: checkedInAppointment }),
+        });
+      },
+    );
+
+    await page.route(
+      `**/api/v1/queue/${checkedInAppointmentId}/start-consultation`,
+      async (route) => {
+        startRequests += 1;
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            success: true,
+            data: { ...checkedInAppointment, status: "IN_PROGRESS" },
+          }),
+        });
+      },
+    );
+
+    await page.route(
+      `**/api/v1/queue/${checkedInAppointmentId}/complete`,
+      async (route) => {
+        completeRequests += 1;
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            success: true,
+            data: { ...checkedInAppointment, status: "DONE" },
+          }),
+        });
+      },
+    );
+
+    await page.goto("/staff/queue");
+    await page.getByRole("button", { name: "Ready" }).click();
+
+    const row = page.getByTestId("queue-row").filter({ hasText: "Bao Le" });
+    await row.getByRole("button", { name: /Call Bao Le/i }).click();
+    await row.getByRole("button", { name: /Assign room Bao Le/i }).click();
+    await row.getByRole("button", { name: /Start consultation Bao Le/i }).click();
+
+    await expect(page.getByRole("button", { name: "In progress" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await page
+      .getByTestId("queue-row")
+      .filter({ hasText: "Bao Le" })
+      .getByRole("button", { name: /Complete visit Bao Le/i })
+      .click();
+
+    expect(callRequests).toBe(1);
+    expect(assignRequests).toBe(1);
+    expect(startRequests).toBe(1);
+    expect(completeRequests).toBe(1);
+    await expect(page.getByText("Bao Le", { exact: true })).toHaveCount(0);
+  });
 });
