@@ -1,10 +1,10 @@
 # Hospital Management System Test Plan
 
-Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
+Status: aligned with the repository on 2026-04-26 after staff queue backend integration.
 
 ## 1. Current Automated Test Coverage
 
-The repository currently has meaningful backend test coverage and no real frontend test suite.
+The repository currently has meaningful backend test coverage and a Playwright-based frontend suite under `web/e2e/`.
 
 The backend tests now follow the DDD-oriented Maven split:
 
@@ -37,9 +37,9 @@ Current integration and hardening suites include:
 
 ### 1.3 Frontend tests
 
-- no frontend unit tests
-- no frontend integration tests
-- no frontend end-to-end tests
+- API-client behavior coverage verifies optional staff bearer-token attachment without changing public calls.
+- Mocked UI coverage verifies `/staff/queue` unauthorized handling, live queue rendering, and check-in row updates.
+- Backend-integrated Playwright coverage verifies staff auth, patient auth/claim, logout, public booking, nurse queue access, nurse check-in when a waiting appointment exists, and forbidden non-nurse queue access.
 
 ## 2. Current Backend Verification Goals
 
@@ -120,6 +120,8 @@ Covered route families:
 Current E2E flows:
 
 - staff login calls `/api/v1/auth/login`, stores the access token in session storage, and opens `/staff/dashboard`
+- nurse queue opens `/staff/queue`, calls `/api/v1/queue/today`, merges today appointment data for waiting check-in actions, and posts `/api/v1/appointments/{appointmentId}/checkin`
+- non-nurse staff queue access handles `403` with an unauthorized state
 - invalid staff login stays on `/staff/login` and shows an alert
 - patient login calls `/api/v1/patient-auth/login`
 - patient claim calls `/api/v1/patient-auth/claim`

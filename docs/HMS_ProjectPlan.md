@@ -19,8 +19,8 @@ The next major milestone is to turn that backend into a coherent frontend produc
 | Inventory APIs | Done | items, lots, movements |
 | Patient portal APIs | Partially done | auth, overview, appointments, lab results, messages list, profile |
 | Public chatbot | Done | deterministic helper for departments, doctors, and slots |
-| Frontend application | In progress | canonical Next.js app exists in `web/`; backend data integration is still incomplete |
-| Frontend tests | Not done | no UI test suite yet |
+| Frontend application | In progress | canonical Next.js app exists in `web/`; `/staff/queue` is backend-integrated for nurse queue and check-in |
+| Frontend tests | In progress | Playwright covers route smoke, auth/API flows, and staff queue behavior |
 
 ## 3. Recommended Frontend Delivery Phases
 

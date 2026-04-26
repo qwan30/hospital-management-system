@@ -33,12 +33,12 @@ The Playwright suite lives in `e2e/` and uses these environment variables:
 Available E2E commands:
 
 - `npm run test:e2e:ui`: route smoke, console/runtime, accessibility, responsive, and workflow smoke checks.
-- `npm run test:e2e:integrated`: backend-backed auth, claim, logout, and booking request checks. It skips when the backend health endpoint is unavailable.
+- `npm run test:e2e:integrated`: backend-backed auth, claim, logout, public booking, and staff queue checks. It skips when the backend health endpoint is unavailable.
 - `npm run test:e2e:visual`: visual baseline snapshots for the highest-risk pages.
 - `npm run test:e2e:headed`: headed local debugging.
 - `npm run test:e2e:report`: open the last HTML report.
 
-The UI route audit covers public, staff, patient portal, and admin route families. Tests prefer role, label, and link selectors; add `data-testid` only when semantic selectors are not practical.
+The UI route audit covers public, staff, patient portal, and admin route families. `/staff/queue` is backend-integrated: it reads nurse queue data, handles unauthorized staff sessions, and can post appointment check-ins. Tests prefer role, label, and link selectors; add `data-testid` only when semantic selectors are not practical.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

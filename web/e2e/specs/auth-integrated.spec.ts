@@ -23,6 +23,65 @@ test.describe("@integrated auth and API flows", () => {
     await expect(page).toHaveURL(/\/staff\/dashboard$/);
   });
 
+  test("nurse opens live queue and can check in a waiting appointment", async ({ page }) => {
+    const login = new StaffLoginPage(page);
+
+    await login.goto();
+    await login.login(staffPersonas.nurse.email, staffPersonas.nurse.password);
+    await expect(page).toHaveURL(/\/staff\/dashboard$/);
+
+    const queueResponse = page.waitForResponse((response) =>
+      response.url().includes("/api/v1/queue/today"),
+    );
+    await page.goto("/staff/queue");
+
+    expect((await queueResponse).status()).toBeLessThan(500);
+    await expect(page.getByTestId("queue-board")).toBeVisible();
+
+    const rows = page.getByTestId("queue-row");
+    const rowCount = await rows.count();
+
+    if (rowCount === 0) {
+      await expect(page.getByTestId("queue-empty")).toBeVisible();
+      return;
+    }
+
+    await expect(rows.first()).toBeVisible();
+
+    const checkInButton = page.getByRole("button", { name: /^Check in /i }).first();
+
+    if ((await checkInButton.count()) === 0) {
+      return;
+    }
+
+    const checkInResponse = page.waitForResponse((response) =>
+      /\/api\/v1\/appointments\/[^/]+\/checkin$/.test(response.url()),
+    );
+    await checkInButton.click();
+
+    expect((await checkInResponse).status()).toBeLessThan(500);
+    await expect(page.getByRole("button", { name: "Ready" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+  });
+
+  test("non-nurse staff sees forbidden queue state", async ({ page }) => {
+    const login = new StaffLoginPage(page);
+
+    await login.goto();
+    await login.login(staffPersonas.doctor.email, staffPersonas.doctor.password);
+    await expect(page).toHaveURL(/\/staff\/dashboard$/);
+
+    const queueResponse = page.waitForResponse((response) =>
+      response.url().includes("/api/v1/queue/today"),
+    );
+    await page.goto("/staff/queue");
+
+    expect((await queueResponse).status()).toBe(403);
+    await expect(page.getByTestId("queue-unauthorized")).toBeVisible();
+  });
+
   test("staff invalid login stays on login and shows an error", async ({ page }) => {
     const login = new StaffLoginPage(page);
 
