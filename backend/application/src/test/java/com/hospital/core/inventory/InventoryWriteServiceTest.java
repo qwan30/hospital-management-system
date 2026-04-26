@@ -3,9 +3,12 @@ package com.hospital.core.inventory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.hospital.core.audit.AuditLogService;
 import com.hospital.core.common.NotFoundException;
 import com.hospital.core.department.DepartmentEntity;
 import com.hospital.core.department.DepartmentRepository;
@@ -31,12 +34,18 @@ class InventoryWriteServiceTest {
   @Mock private InventoryLotRepository lotRepository;
   @Mock private InventoryMovementRepository movementRepository;
   @Mock private DepartmentRepository departmentRepository;
+  @Mock private AuditLogService auditLogService;
 
   private InventoryWriteService service;
 
   @BeforeEach
   void setUp() {
-    service = new InventoryWriteService(itemRepository, lotRepository, movementRepository, departmentRepository);
+    service = new InventoryWriteService(
+        itemRepository,
+        lotRepository,
+        movementRepository,
+        departmentRepository,
+        auditLogService);
   }
 
   // ── createItem ──────────────────────────────────────────────────────────
@@ -90,6 +99,21 @@ class InventoryWriteServiceTest {
     assertThatThrownBy(() -> service.createItem(request))
         .isInstanceOf(NotFoundException.class)
         .hasMessageContaining("Department not found");
+  }
+
+  @Test
+  void createItem_belowReorderLevelMarksLowStockAndAudits() {
+    when(itemRepository.save(any(InventoryItemEntity.class))).thenAnswer(inv -> {
+      var e = inv.getArgument(0, InventoryItemEntity.class);
+      e.prePersist();
+      return e;
+    });
+
+    var request = new InventoryItemCreateRequest("MED-LOW", "Low stock medicine", "Medicine", "box", 20, 12, null);
+    var response = service.createItem(request);
+
+    assertThat(response.status()).isEqualTo("LOW_STOCK");
+    verify(auditLogService).record(eq("INVENTORY_ITEM_CREATED"), eq("INVENTORY_ITEM"), eq(response.itemId()), anyMap());
   }
 
   // ── updateItem ──────────────────────────────────────────────────────────
@@ -225,6 +249,28 @@ class InventoryWriteServiceTest {
     assertThat(response.movementType()).isEqualTo("RECEIPT");
     assertThat(response.quantityDelta()).isEqualTo(50);
     assertThat(item.getQuantityOnHand()).isEqualTo(150); // 100 + 50
+    verify(auditLogService).record(eq("INVENTORY_MOVEMENT_RECORDED"), eq("INVENTORY_ITEM"), eq(itemId), anyMap());
+  }
+
+  @Test
+  void recordMovement_whenQuantityFallsBelowReorderLevelMarksLowStockAndAudits() {
+    var itemId = UUID.randomUUID();
+    var item = buildItemEntity(itemId, "MED-001", "Paracetamol");
+    item.setQuantityOnHand(12);
+    item.setReorderLevel(10);
+    when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+    when(movementRepository.save(any(InventoryMovementEntity.class))).thenAnswer(inv -> {
+      var e = inv.getArgument(0, InventoryMovementEntity.class);
+      e.prePersist();
+      return e;
+    });
+    when(itemRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+    service.recordMovement(new InventoryMovementCreateRequest(itemId, "ISSUE", -4, "Dispensed"));
+
+    assertThat(item.getQuantityOnHand()).isEqualTo(8);
+    assertThat(item.getStatus()).isEqualTo("LOW_STOCK");
+    verify(auditLogService).record(eq("INVENTORY_MOVEMENT_RECORDED"), eq("INVENTORY_ITEM"), eq(itemId), anyMap());
   }
 
   @Test
