@@ -31,4 +31,5 @@ __pycache__/
 
 # Generated uploads
 uploads/
+.codex-run/
 .gitnexus

@@ -1,5 +1,6 @@
 package com.hospital.core.inventory;
 
+import com.hospital.core.audit.AuditLogService;
 import com.hospital.core.common.NotFoundException;
 import com.hospital.core.department.DepartmentRepository;
 import com.hospital.shared.inventory.InventoryItemCreateRequest;
@@ -11,6 +12,7 @@ import com.hospital.shared.inventory.InventoryLotUpdateRequest;
 import com.hospital.shared.inventory.InventoryMovementCreateRequest;
 import com.hospital.shared.inventory.InventoryMovementResponse;
 import java.time.Instant;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,16 +23,19 @@ public class InventoryWriteService {
   private final InventoryLotRepository lotRepository;
   private final InventoryMovementRepository movementRepository;
   private final DepartmentRepository departmentRepository;
+  private final AuditLogService auditLogService;
 
   public InventoryWriteService(
       InventoryItemRepository itemRepository,
       InventoryLotRepository lotRepository,
       InventoryMovementRepository movementRepository,
-      DepartmentRepository departmentRepository) {
+      DepartmentRepository departmentRepository,
+      AuditLogService auditLogService) {
     this.itemRepository = itemRepository;
     this.lotRepository = lotRepository;
     this.movementRepository = movementRepository;
     this.departmentRepository = departmentRepository;
+    this.auditLogService = auditLogService;
   }
 
   @Transactional
@@ -42,7 +47,7 @@ public class InventoryWriteService {
     entity.setUnit(request.unit());
     entity.setReorderLevel(request.reorderLevel());
     entity.setQuantityOnHand(request.quantityOnHand());
-    entity.setStatus(request.quantityOnHand() > 0 ? "IN_STOCK" : "OUT_OF_STOCK");
+    entity.setStatus(toStockStatus(request.quantityOnHand(), request.reorderLevel()));
 
     if (request.departmentId() != null) {
       var dept = departmentRepository.findById(request.departmentId())
@@ -51,6 +56,11 @@ public class InventoryWriteService {
     }
 
     var saved = itemRepository.save(entity);
+    recordInventoryAudit("INVENTORY_ITEM_CREATED", saved, Map.of(
+        "sku", saved.getSku(),
+        "quantityOnHand", saved.getQuantityOnHand(),
+        "reorderLevel", saved.getReorderLevel(),
+        "status", saved.getStatus()));
     return toItemResponse(saved);
   }
 
@@ -78,6 +88,11 @@ public class InventoryWriteService {
     }
 
     var saved = itemRepository.save(entity);
+    recordInventoryAudit("INVENTORY_ITEM_UPDATED", saved, Map.of(
+        "sku", saved.getSku(),
+        "quantityOnHand", saved.getQuantityOnHand(),
+        "reorderLevel", saved.getReorderLevel(),
+        "status", saved.getStatus()));
     return toItemResponse(saved);
   }
 
@@ -87,6 +102,7 @@ public class InventoryWriteService {
       throw new NotFoundException("Inventory item not found");
     }
     itemRepository.deleteById(itemId);
+    auditLogService.record("INVENTORY_ITEM_DELETED", "INVENTORY_ITEM", itemId, Map.of());
   }
 
   @Transactional
@@ -103,6 +119,10 @@ public class InventoryWriteService {
     entity.setExpiresOn(request.expiresOn());
 
     var saved = lotRepository.save(entity);
+    auditLogService.record("INVENTORY_LOT_CREATED", "INVENTORY_LOT", saved.getId(), Map.of(
+        "itemId", item.getId().toString(),
+        "lotCode", saved.getLotCode(),
+        "quantityRemaining", saved.getQuantityRemaining()));
     return toLotResponse(saved);
   }
 
@@ -119,6 +139,10 @@ public class InventoryWriteService {
     }
 
     var saved = lotRepository.save(entity);
+    auditLogService.record("INVENTORY_LOT_UPDATED", "INVENTORY_LOT", saved.getId(), Map.of(
+        "itemId", saved.getItem().getId().toString(),
+        "lotCode", saved.getLotCode(),
+        "quantityRemaining", saved.getQuantityRemaining()));
     return toLotResponse(saved);
   }
 
@@ -137,11 +161,35 @@ public class InventoryWriteService {
     // Update item quantity on hand
     item.setQuantityOnHand(item.getQuantityOnHand() + request.quantityDelta());
     item.setLastRestockedAt(request.quantityDelta() > 0 ? Instant.now() : item.getLastRestockedAt());
-    item.setStatus(item.getQuantityOnHand() > 0 ? "IN_STOCK"
-        : item.getQuantityOnHand() <= item.getReorderLevel() ? "LOW_STOCK" : "OUT_OF_STOCK");
+    item.setStatus(toStockStatus(item.getQuantityOnHand(), item.getReorderLevel()));
     itemRepository.save(item);
+    recordInventoryAudit("INVENTORY_MOVEMENT_RECORDED", item, Map.of(
+        "movementId", entity.getId().toString(),
+        "movementType", entity.getMovementType(),
+        "quantityDelta", entity.getQuantityDelta(),
+        "quantityOnHand", item.getQuantityOnHand(),
+        "status", item.getStatus()));
 
     return toMovementResponse(entity);
+  }
+
+  private String toStockStatus(int quantityOnHand, int reorderLevel) {
+    if (quantityOnHand <= 0) {
+      return "OUT_OF_STOCK";
+    }
+
+    if (quantityOnHand <= reorderLevel) {
+      return "LOW_STOCK";
+    }
+
+    return "IN_STOCK";
+  }
+
+  private void recordInventoryAudit(
+      String action,
+      InventoryItemEntity item,
+      Map<String, Object> metadata) {
+    auditLogService.record(action, "INVENTORY_ITEM", item.getId(), metadata);
   }
 
   private InventoryItemResponse toItemResponse(InventoryItemEntity entity) {

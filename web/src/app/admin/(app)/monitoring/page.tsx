@@ -70,8 +70,10 @@ export default function AdminMonitoringPage() {
         />
       </section>
 
-      <section className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-3">
+      <section className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-5">
         <Metric label="Active Alerts" value={snapshot?.activeAlerts ?? 0} />
+        <Metric label="Inventory Alerts" value={snapshot?.inventoryAlertCount ?? 0} />
+        <Metric label="Schedule Alerts" value={snapshot?.scheduleAlertCount ?? 0} />
         <Metric label="Uptime" value={formatUptime(snapshot?.uptimeSeconds ?? 0)} />
         <Metric
           label="Generated"

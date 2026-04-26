@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  listInventoryAlerts,
   listInventoryItems,
   listInventoryLots,
   listInventoryMovements,
+  type InventoryAlertResponse,
   type InventoryItemResponse,
   type InventoryLotResponse,
   type InventoryMovementResponse,
@@ -14,6 +16,7 @@ export default function InventoryPage() {
   const [items, setItems] = useState<InventoryItemResponse[]>([]);
   const [lots, setLots] = useState<InventoryLotResponse[]>([]);
   const [movements, setMovements] = useState<InventoryMovementResponse[]>([]);
+  const [alerts, setAlerts] = useState<InventoryAlertResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,18 +25,21 @@ export default function InventoryPage() {
     setError(null);
 
     try {
-      const [nextItems, nextLots, nextMovements] = await Promise.all([
+      const [nextItems, nextLots, nextMovements, nextAlerts] = await Promise.all([
         listInventoryItems(),
         listInventoryLots(),
         listInventoryMovements(),
+        listInventoryAlerts(),
       ]);
       setItems(nextItems);
       setLots(nextLots);
       setMovements(nextMovements);
+      setAlerts(nextAlerts);
     } catch (loadError) {
       setItems([]);
       setLots([]);
       setMovements([]);
+      setAlerts([]);
       setError(loadError instanceof Error ? loadError.message : "Unable to load inventory.");
     } finally {
       setIsLoading(false);
@@ -49,17 +55,17 @@ export default function InventoryPage() {
   }, [loadInventory]);
 
   const summary = useMemo(() => {
-    const lowStockItems = items.filter(isLowStock);
-    const expiringLots = lots.filter(isExpiringSoon);
+    const lowStockAlerts = alerts.filter((alert) => alert.alertType === "LOW_STOCK");
+    const expiryAlerts = alerts.filter(isExpiryAlert);
     const totalQuantity = items.reduce((total, item) => total + item.quantityOnHand, 0);
 
     return {
-      lowStockItems,
-      expiringLots,
+      lowStockAlerts,
+      expiryAlerts,
       totalQuantity,
       movementCount: movements.length,
     };
-  }, [items, lots, movements]);
+  }, [alerts, items, movements]);
 
   return (
     <main className="p-8" data-testid="inventory-workspace">
@@ -87,14 +93,14 @@ export default function InventoryPage() {
         <Metric label="On Hand Units" value={summary.totalQuantity} />
         <Metric
           label="Critical Alerts"
-          value={summary.lowStockItems.length}
-          detail={pluralize(summary.lowStockItems.length, "low-stock item")}
+          value={summary.lowStockAlerts.length}
+          detail={pluralize(summary.lowStockAlerts.length, "low-stock item")}
           tone="critical"
         />
         <Metric
           label="Expiry Warnings"
-          value={summary.expiringLots.length}
-          detail={pluralize(summary.expiringLots.length, "expiring lot")}
+          value={summary.expiryAlerts.length}
+          detail={pluralize(summary.expiryAlerts.length, "expiring lot")}
           tone="warning"
         />
       </section>
@@ -271,6 +277,10 @@ function isExpiringSoon(lot: InventoryLotResponse) {
     (expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24),
   );
   return daysUntilExpiry >= 0 && daysUntilExpiry <= 30;
+}
+
+function isExpiryAlert(alert: InventoryAlertResponse) {
+  return alert.alertType === "EXPIRING_SOON" || alert.alertType === "EXPIRED";
 }
 
 function formatDate(value: string) {

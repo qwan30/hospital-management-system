@@ -7,6 +7,8 @@ public record SystemMonitoringSnapshotResponse(
     long uptimeSeconds,
     boolean healthy,
     int activeAlerts,
+    int scheduleAlertCount,
+    int inventoryAlertCount,
     String databaseStatus,
     String queueStatus
 ) {}

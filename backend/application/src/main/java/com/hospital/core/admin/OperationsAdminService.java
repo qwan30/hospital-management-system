@@ -3,6 +3,7 @@ package com.hospital.core.admin;
 import com.hospital.core.common.NotFoundException;
 import com.hospital.core.content.ContentAdminService;
 import com.hospital.core.department.DepartmentRepository;
+import com.hospital.core.inventory.InventoryService;
 import com.hospital.core.user.UserRepository;
 import com.hospital.shared.admin.AdminPublicContentResponse;
 import com.hospital.shared.admin.AdminRoomResponse;
@@ -16,6 +17,7 @@ import com.hospital.shared.admin.SystemMonitoringSnapshotResponse;
 import com.hospital.shared.enums.RoomStatus;
 import com.hospital.shared.enums.UserRole;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,7 @@ public class OperationsAdminService {
   private final DoctorScheduleTemplateRepository doctorScheduleTemplateRepository;
   private final SpecialClosureRepository specialClosureRepository;
   private final UserRepository userRepository;
+  private final InventoryService inventoryService;
 
   public OperationsAdminService(
       ContentAdminService contentAdminService,
@@ -36,13 +39,15 @@ public class OperationsAdminService {
       RoomRepository roomRepository,
       DoctorScheduleTemplateRepository doctorScheduleTemplateRepository,
       SpecialClosureRepository specialClosureRepository,
-      UserRepository userRepository) {
+      UserRepository userRepository,
+      InventoryService inventoryService) {
     this.contentAdminService = contentAdminService;
     this.departmentRepository = departmentRepository;
     this.roomRepository = roomRepository;
     this.doctorScheduleTemplateRepository = doctorScheduleTemplateRepository;
     this.specialClosureRepository = specialClosureRepository;
     this.userRepository = userRepository;
+    this.inventoryService = inventoryService;
   }
 
   @Transactional(readOnly = true)
@@ -173,14 +178,19 @@ public class OperationsAdminService {
 
   @Transactional(readOnly = true)
   public SystemMonitoringSnapshotResponse getMonitoringSnapshot() {
-    var activeAlerts = (int) specialClosureRepository.findAllByOrderByClosureDateDescTitleAsc().stream()
+    var scheduleAlertCount = (int) specialClosureRepository.findAllByOrderByClosureDateDescTitleAsc().stream()
         .filter(SpecialClosureEntity::isActive)
         .count();
+    var inventoryAlertCount = inventoryService.listAlerts(LocalDate.now()).size();
+    var activeAlerts = scheduleAlertCount + inventoryAlertCount;
+
     return new SystemMonitoringSnapshotResponse(
         Instant.now(),
         0L,
-        true,
+        activeAlerts == 0,
         activeAlerts,
+        scheduleAlertCount,
+        inventoryAlertCount,
         "UP",
         "UP");
   }

@@ -80,6 +80,42 @@ test.describe("@ui live operations API screens", () => {
         }),
       });
     });
+    await page.route("**/api/v1/inventory/alerts", async (route) => {
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({
+          success: true,
+          data: [
+            {
+              alertType: "LOW_STOCK",
+              severity: "WARNING",
+              itemId: "item-1",
+              itemName: "Normal Saline 500ml",
+              lotId: null,
+              lotCode: null,
+              quantityOnHand: 18,
+              reorderLevel: 40,
+              expiresOn: null,
+              daysUntilExpiry: null,
+              message: "Normal Saline 500ml is at or below reorder level",
+            },
+            {
+              alertType: "EXPIRING_SOON",
+              severity: "WARNING",
+              itemId: "item-1",
+              itemName: "Normal Saline 500ml",
+              lotId: "lot-1",
+              lotCode: "LOT-SAL-2401",
+              quantityOnHand: 18,
+              reorderLevel: 40,
+              expiresOn: "2026-05-10",
+              daysUntilExpiry: 14,
+              message: "LOT-SAL-2401 expires on 2026-05-10",
+            },
+          ],
+        }),
+      });
+    });
 
     await page.goto("/staff/inventory");
 
@@ -105,6 +141,8 @@ test.describe("@ui live operations API screens", () => {
             uptimeSeconds: 3661,
             healthy: true,
             activeAlerts: 2,
+            scheduleAlertCount: 1,
+            inventoryAlertCount: 1,
             databaseStatus: "UP",
             queueStatus: "DEGRADED",
           },
@@ -135,6 +173,7 @@ test.describe("@ui live operations API screens", () => {
     await page.goto("/admin/monitoring");
     await expect(page.getByTestId("monitoring-snapshot")).toContainText("DEGRADED");
     await expect(page.getByText("2 active alerts")).toBeVisible();
+    await expect(page.getByText("Inventory Alerts")).toBeVisible();
 
     await page.goto("/admin/audit-logs");
     await expect(page.getByTestId("audit-log-table")).toContainText("QUEUE_CALL_PATIENT");

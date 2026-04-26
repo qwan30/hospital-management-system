@@ -34,11 +34,27 @@ export interface InventoryMovementResponse {
   createdAt: string;
 }
 
+export interface InventoryAlertResponse {
+  alertType: "LOW_STOCK" | "EXPIRING_SOON" | "EXPIRED" | string;
+  severity: "WARNING" | "CRITICAL" | string;
+  itemId: string;
+  itemName: string;
+  lotId: string | null;
+  lotCode: string | null;
+  quantityOnHand: number;
+  reorderLevel: number;
+  expiresOn: string | null;
+  daysUntilExpiry: number | null;
+  message: string;
+}
+
 export interface SystemMonitoringSnapshotResponse {
   generatedAt: string;
   uptimeSeconds: number;
   healthy: boolean;
   activeAlerts: number;
+  scheduleAlertCount: number;
+  inventoryAlertCount: number;
   databaseStatus: string;
   queueStatus: string;
 }
@@ -102,6 +118,15 @@ export async function listInventoryLots() {
 export async function listInventoryMovements() {
   const response = await apiRequest<InventoryMovementResponse[]>(
     "/inventory/movements",
+    {},
+    { authScope: "staff" },
+  );
+  return response.data ?? [];
+}
+
+export async function listInventoryAlerts() {
+  const response = await apiRequest<InventoryAlertResponse[]>(
+    "/inventory/alerts",
     {},
     { authScope: "staff" },
   );
