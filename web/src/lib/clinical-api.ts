@@ -28,6 +28,10 @@ export interface AppointmentCheckInRequest {
   checkedInAt: string;
 }
 
+export interface QueueRoomAssignmentRequest {
+  roomName: string;
+}
+
 export async function getTodayQueue() {
   const response = await apiRequest<ClinicalAppointmentResponse[]>(
     "/queue/today",
@@ -66,4 +70,57 @@ export async function checkInAppointment(
   }
 
   return response.data;
+}
+
+export async function callQueuePatient(appointmentId: string) {
+  return queueAction(appointmentId, "call");
+}
+
+export async function skipQueuePatient(appointmentId: string) {
+  return queueAction(appointmentId, "skip");
+}
+
+export async function assignQueueRoom(
+  appointmentId: string,
+  request: QueueRoomAssignmentRequest,
+) {
+  const response = await apiRequest<ClinicalAppointmentResponse>(
+    `/queue/${appointmentId}/assign-room`,
+    {
+      method: "POST",
+      body: JSON.stringify(request),
+    },
+    { authScope: "staff" },
+  );
+
+  return requireAppointmentResponse(response.data, "Room assignment");
+}
+
+export async function startQueueConsultation(appointmentId: string) {
+  return queueAction(appointmentId, "start-consultation");
+}
+
+export async function completeQueueVisit(appointmentId: string) {
+  return queueAction(appointmentId, "complete");
+}
+
+async function queueAction(appointmentId: string, action: string) {
+  const response = await apiRequest<ClinicalAppointmentResponse>(
+    `/queue/${appointmentId}/${action}`,
+    { method: "POST" },
+    { authScope: "staff" },
+  );
+
+  return requireAppointmentResponse(response.data, "Queue action");
+}
+
+function requireAppointmentResponse(
+  appointment: ClinicalAppointmentResponse | undefined,
+  actionName: string,
+) {
+  if (!appointment) {
+    throw new Error(`${actionName} did not return an appointment`);
+  }
+
+  return appointment;
 }

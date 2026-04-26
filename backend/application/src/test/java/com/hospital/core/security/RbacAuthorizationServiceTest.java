@@ -41,6 +41,9 @@ class RbacAuthorizationServiceTest {
     assertAllowed("QUEUE_CHECK_IN", UserRole.ADMIN, UserRole.NURSE, UserRole.RECEPTIONIST);
     assertDenied("QUEUE_CHECK_IN", UserRole.DOCTOR, UserRole.PHARMACIST, UserRole.ACCOUNTANT, UserRole.PATIENT);
 
+    assertAllowed("QUEUE_MANAGE", UserRole.ADMIN, UserRole.NURSE, UserRole.RECEPTIONIST);
+    assertDenied("QUEUE_MANAGE", UserRole.DOCTOR, UserRole.PHARMACIST, UserRole.ACCOUNTANT, UserRole.PATIENT);
+
     assertAllowed("MEDICAL_RECORD_WRITE", UserRole.ADMIN, UserRole.DOCTOR);
     assertDenied("MEDICAL_RECORD_WRITE", UserRole.NURSE, UserRole.RECEPTIONIST, UserRole.PHARMACIST, UserRole.ACCOUNTANT, UserRole.PATIENT);
 

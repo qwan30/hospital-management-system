@@ -2,6 +2,7 @@ package com.hospital.core.appointment;
 
 import com.hospital.core.common.ConflictException;
 import com.hospital.core.common.NotFoundException;
+import com.hospital.core.audit.AuditLogService;
 import com.hospital.core.patient.PatientIdentifierProtector;
 import com.hospital.core.user.UserRepository;
 import com.hospital.shared.appointment.AppointmentDetailResponse;
@@ -19,6 +20,7 @@ import java.util.Comparator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,18 +35,21 @@ public class AppointmentWorkflowService {
   private final FollowUpRepository followUpRepository;
   private final PatientIdentifierProtector patientIdentifierProtector;
   private final UserRepository userRepository;
+  private final AuditLogService auditLogService;
 
   public AppointmentWorkflowService(
       AppointmentRepository appointmentRepository,
       AppointmentVitalSignsRepository vitalSignsRepository,
       FollowUpRepository followUpRepository,
       PatientIdentifierProtector patientIdentifierProtector,
-      UserRepository userRepository) {
+      UserRepository userRepository,
+      AuditLogService auditLogService) {
     this.appointmentRepository = appointmentRepository;
     this.vitalSignsRepository = vitalSignsRepository;
     this.followUpRepository = followUpRepository;
     this.patientIdentifierProtector = patientIdentifierProtector;
     this.userRepository = userRepository;
+    this.auditLogService = auditLogService;
   }
 
   @Transactional(readOnly = true)
@@ -170,6 +175,75 @@ public class AppointmentWorkflowService {
         .toList();
   }
 
+  @Transactional
+  public ClinicalAppointmentResponse callQueuePatient(UUID appointmentId) {
+    var appointment = requireQueueAppointment(
+        appointmentId,
+        List.of(AppointmentStatus.CHECKED_IN, AppointmentStatus.IN_PROGRESS),
+        "Only active queue appointments can be called");
+
+    recordQueueAudit(appointment, "QUEUE_CALL_PATIENT", Map.of(
+        "status", appointment.getStatus().name()));
+    return toResponse(appointment);
+  }
+
+  @Transactional
+  public ClinicalAppointmentResponse skipQueuePatient(UUID appointmentId, LocalDateTime skippedAt) {
+    var appointment = requireQueueAppointment(
+        appointmentId,
+        List.of(AppointmentStatus.CHECKED_IN),
+        "Only ready queue appointments can be skipped");
+
+    appointment.setCheckedInAt(skippedAt);
+    recordQueueAudit(appointment, "QUEUE_SKIP_PATIENT", Map.of(
+        "status", appointment.getStatus().name(),
+        "checkedInAt", skippedAt.toString()));
+    return toResponse(appointment);
+  }
+
+  @Transactional
+  public ClinicalAppointmentResponse assignQueueRoom(UUID appointmentId, String roomName) {
+    var normalizedRoomName = normalizeRoomName(roomName);
+    var appointment = requireQueueAppointment(
+        appointmentId,
+        List.of(AppointmentStatus.CHECKED_IN, AppointmentStatus.IN_PROGRESS),
+        "Only active queue appointments can be assigned to a room");
+
+    appointment.setNotes(appendQueueNote(appointment.getNotes(), "Assigned room: " + normalizedRoomName));
+    recordQueueAudit(appointment, "QUEUE_ASSIGN_ROOM", Map.of(
+        "status", appointment.getStatus().name(),
+        "roomName", normalizedRoomName));
+    return toResponse(appointment);
+  }
+
+  @Transactional
+  public ClinicalAppointmentResponse markInConsultation(UUID appointmentId) {
+    var appointment = requireQueueAppointment(
+        appointmentId,
+        List.of(AppointmentStatus.CHECKED_IN),
+        "Only ready queue appointments can move into consultation");
+
+    appointment.setStatus(AppointmentStatus.IN_PROGRESS);
+    recordQueueAudit(appointment, "QUEUE_START_CONSULTATION", Map.of(
+        "previousStatus", AppointmentStatus.CHECKED_IN.name(),
+        "nextStatus", AppointmentStatus.IN_PROGRESS.name()));
+    return toResponse(appointment);
+  }
+
+  @Transactional
+  public ClinicalAppointmentResponse completeQueueVisit(UUID appointmentId) {
+    var appointment = requireQueueAppointment(
+        appointmentId,
+        List.of(AppointmentStatus.IN_PROGRESS),
+        "Appointment must be in consultation before it can be completed");
+
+    appointment.setStatus(AppointmentStatus.DONE);
+    recordQueueAudit(appointment, "QUEUE_COMPLETE_VISIT", Map.of(
+        "previousStatus", AppointmentStatus.IN_PROGRESS.name(),
+        "nextStatus", AppointmentStatus.DONE.name()));
+    return toResponse(appointment);
+  }
+
   @Transactional(readOnly = true)
   public List<ClinicalAppointmentResponse> listScheduleForDoctor(UUID doctorId, LocalDate startDate, LocalDate endDate) {
     userRepository.findByIdAndRoleAndActiveTrue(doctorId, UserRole.DOCTOR)
@@ -226,6 +300,40 @@ public class AppointmentWorkflowService {
 
   private boolean isAllowedDoctorTransition(AppointmentStatus currentStatus, AppointmentStatus nextStatus) {
     return currentStatus == AppointmentStatus.CHECKED_IN && nextStatus == AppointmentStatus.IN_PROGRESS;
+  }
+
+  private AppointmentEntity requireQueueAppointment(
+      UUID appointmentId,
+      List<AppointmentStatus> allowedStatuses,
+      String conflictMessage) {
+    var appointment = appointmentRepository.findDetailedById(appointmentId)
+        .orElseThrow(() -> new NotFoundException("Appointment not found"));
+
+    if (!allowedStatuses.contains(appointment.getStatus())) {
+      throw new ConflictException(conflictMessage);
+    }
+
+    return appointment;
+  }
+
+  private void recordQueueAudit(AppointmentEntity appointment, String action, Map<String, Object> metadata) {
+    auditLogService.record(action, "APPOINTMENT", appointment.getId(), metadata);
+  }
+
+  private String normalizeRoomName(String roomName) {
+    if (roomName == null || roomName.isBlank()) {
+      throw new ConflictException("Room name is required for queue assignment");
+    }
+
+    return roomName.trim();
+  }
+
+  private String appendQueueNote(String existingNotes, String queueNote) {
+    if (existingNotes == null || existingNotes.isBlank()) {
+      return queueNote;
+    }
+
+    return existingNotes + System.lineSeparator() + queueNote;
   }
 
   private BigDecimal toBigDecimal(Double value) {

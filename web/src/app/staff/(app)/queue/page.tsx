@@ -1,10 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
+  assignQueueRoom,
+  callQueuePatient,
   checkInAppointment,
+  completeQueueVisit,
   getTodayAppointments,
   getTodayQueue,
+  skipQueuePatient,
+  startQueueConsultation,
   type ClinicalAppointmentResponse,
 } from "@/lib/clinical-api";
 import {
@@ -28,6 +33,10 @@ import {
   type QueueFilter,
 } from "@/lib/staff-queue";
 
+const DEFAULT_CONSULT_ROOM = "Consult Room 1";
+
+type QueueAction = "call" | "assign-room" | "skip" | "start-consultation" | "complete";
+
 export default function QueueBoardPage() {
   const [appointments, setAppointments] = useState<ClinicalAppointmentResponse[]>([]);
   const [activeFilter, setActiveFilter] = useState<QueueFilter>("waiting");
@@ -36,6 +45,10 @@ export default function QueueBoardPage() {
   const [rowErrors, setRowErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [checkingInId, setCheckingInId] = useState<string | null>(null);
+  const [pendingAction, setPendingAction] = useState<{
+    appointmentId: string;
+    action: QueueAction;
+  } | null>(null);
   const [now, setNow] = useState(() => new Date());
 
   const loadQueue = useCallback(async () => {
@@ -132,6 +145,35 @@ export default function QueueBoardPage() {
       }));
     } finally {
       setCheckingInId(null);
+    }
+  };
+
+  const applyAppointmentUpdate = (updatedAppointment: ClinicalAppointmentResponse) => {
+    setAppointments((current) => mergeAppointments(current, [updatedAppointment]));
+  };
+
+  const handleQueueAction = async (
+    appointment: ClinicalAppointmentResponse,
+    action: QueueAction,
+    execute: () => Promise<ClinicalAppointmentResponse>,
+    nextFilter?: QueueFilter,
+  ) => {
+    setPendingAction({ appointmentId: appointment.appointmentId, action });
+    setRowErrors((current) => removeRecordKey(current, appointment.appointmentId));
+
+    try {
+      const updatedAppointment = await execute();
+      applyAppointmentUpdate(updatedAppointment);
+      if (nextFilter) {
+        setActiveFilter(nextFilter);
+      }
+    } catch (queueActionError) {
+      setRowErrors((current) => ({
+        ...current,
+        [appointment.appointmentId]: getErrorMessage(queueActionError),
+      }));
+    } finally {
+      setPendingAction(null);
     }
   };
 
@@ -253,8 +295,45 @@ export default function QueueBoardPage() {
                   appointment={appointment}
                   now={now}
                   isCheckingIn={checkingInId === appointment.appointmentId}
+                  pendingAction={
+                    pendingAction?.appointmentId === appointment.appointmentId
+                      ? pendingAction.action
+                      : null
+                  }
                   rowError={rowErrors[appointment.appointmentId]}
                   onCheckIn={handleCheckIn}
+                  onCall={(selectedAppointment) =>
+                    handleQueueAction(selectedAppointment, "call", () =>
+                      callQueuePatient(selectedAppointment.appointmentId),
+                    )
+                  }
+                  onAssignRoom={(selectedAppointment) =>
+                    handleQueueAction(selectedAppointment, "assign-room", () =>
+                      assignQueueRoom(selectedAppointment.appointmentId, {
+                        roomName: DEFAULT_CONSULT_ROOM,
+                      }),
+                    )
+                  }
+                  onSkip={(selectedAppointment) =>
+                    handleQueueAction(selectedAppointment, "skip", () =>
+                      skipQueuePatient(selectedAppointment.appointmentId),
+                    )
+                  }
+                  onStartConsultation={(selectedAppointment) =>
+                    handleQueueAction(
+                      selectedAppointment,
+                      "start-consultation",
+                      () => startQueueConsultation(selectedAppointment.appointmentId),
+                      "in_progress",
+                    )
+                  }
+                  onCompleteVisit={(selectedAppointment) =>
+                    handleQueueAction(
+                      selectedAppointment,
+                      "complete",
+                      () => completeQueueVisit(selectedAppointment.appointmentId),
+                    )
+                  }
                 />
               ))
             ) : (
@@ -352,19 +431,34 @@ function QueueHeader({
 function QueueRow({
   appointment,
   isCheckingIn,
+  pendingAction,
   now,
   rowError,
   onCheckIn,
+  onCall,
+  onAssignRoom,
+  onSkip,
+  onStartConsultation,
+  onCompleteVisit,
 }: {
   appointment: ClinicalAppointmentResponse;
   isCheckingIn: boolean;
+  pendingAction: QueueAction | null;
   now: Date;
   rowError?: string;
   onCheckIn: (appointment: ClinicalAppointmentResponse) => void;
+  onCall: (appointment: ClinicalAppointmentResponse) => void;
+  onAssignRoom: (appointment: ClinicalAppointmentResponse) => void;
+  onSkip: (appointment: ClinicalAppointmentResponse) => void;
+  onStartConsultation: (appointment: ClinicalAppointmentResponse) => void;
+  onCompleteVisit: (appointment: ClinicalAppointmentResponse) => void;
 }) {
   const waitMinutes = calculateWaitMinutes(appointment, now);
   const state = getQueueState(appointment);
   const canCheckIn = !appointment.checkedInAt;
+  const isActionPending = pendingAction !== null;
+  const isReady = appointment.status === "CHECKED_IN";
+  const isInProgress = appointment.status === "IN_PROGRESS";
 
   return (
     <>
@@ -417,11 +511,63 @@ function QueueRow({
             >
               {isCheckingIn ? "Checking in" : "Check in"}
             </button>
-          ) : (
-            <span className="text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
-              Checked in
-            </span>
-          )}
+          ) : null}
+          {isReady ? (
+            <div className="flex flex-col items-end gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
+                Checked in
+              </span>
+              <div className="flex flex-wrap justify-end gap-2">
+                <QueueActionButton
+                  ariaLabel={`Call ${appointment.patientFullName}`}
+                  disabled={isActionPending}
+                  isPending={pendingAction === "call"}
+                  onClick={() => onCall(appointment)}
+                >
+                  Call
+                </QueueActionButton>
+                <QueueActionButton
+                  ariaLabel={`Assign room ${appointment.patientFullName}`}
+                  disabled={isActionPending}
+                  isPending={pendingAction === "assign-room"}
+                  onClick={() => onAssignRoom(appointment)}
+                >
+                  Room
+                </QueueActionButton>
+                <QueueActionButton
+                  ariaLabel={`Start consultation ${appointment.patientFullName}`}
+                  disabled={isActionPending}
+                  isPending={pendingAction === "start-consultation"}
+                  onClick={() => onStartConsultation(appointment)}
+                >
+                  Start
+                </QueueActionButton>
+                <QueueActionButton
+                  ariaLabel={`Skip ${appointment.patientFullName}`}
+                  disabled={isActionPending}
+                  isPending={pendingAction === "skip"}
+                  onClick={() => onSkip(appointment)}
+                >
+                  Skip
+                </QueueActionButton>
+              </div>
+            </div>
+          ) : null}
+          {isInProgress ? (
+            <div className="flex flex-col items-end gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-hms-primary">
+                In consultation
+              </span>
+              <QueueActionButton
+                ariaLabel={`Complete visit ${appointment.patientFullName}`}
+                disabled={isActionPending}
+                isPending={pendingAction === "complete"}
+                onClick={() => onCompleteVisit(appointment)}
+              >
+                Complete
+              </QueueActionButton>
+            </div>
+          ) : null}
         </td>
       </tr>
       {rowError ? (
@@ -432,6 +578,32 @@ function QueueRow({
         </tr>
       ) : null}
     </>
+  );
+}
+
+function QueueActionButton({
+  ariaLabel,
+  children,
+  disabled,
+  isPending,
+  onClick,
+}: {
+  ariaLabel: string;
+  children: ReactNode;
+  disabled: boolean;
+  isPending: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      aria-label={ariaLabel}
+      className="bg-hms-surface-container-high px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface transition-colors hover:bg-hms-primary-container hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {isPending ? "Saving" : children}
+    </button>
   );
 }
 

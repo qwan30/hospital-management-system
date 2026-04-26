@@ -20,6 +20,7 @@ public class RbacAuthorizationService {
 
       entry("QUEUE_READ", UserRole.ADMIN, UserRole.NURSE, UserRole.RECEPTIONIST),
       entry("QUEUE_CHECK_IN", UserRole.ADMIN, UserRole.NURSE, UserRole.RECEPTIONIST),
+      entry("QUEUE_MANAGE", UserRole.ADMIN, UserRole.NURSE, UserRole.RECEPTIONIST),
       entry("APPOINTMENT_READ", UserRole.ADMIN, UserRole.DOCTOR, UserRole.NURSE, UserRole.RECEPTIONIST),
       entry("APPOINTMENT_WRITE", UserRole.ADMIN, UserRole.DOCTOR, UserRole.NURSE, UserRole.RECEPTIONIST),
       entry("APPOINTMENT_CANCEL", UserRole.ADMIN, UserRole.NURSE, UserRole.RECEPTIONIST),
