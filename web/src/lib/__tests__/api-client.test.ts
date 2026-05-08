@@ -1,0 +1,186 @@
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import {
+  apiRequest,
+  getApiBaseUrl,
+  persistSession,
+  clearSessions,
+  getStoredRole,
+  ApiClientError,
+} from '../api-client';
+
+describe('api-client', () => {
+  const originalFetch = global.fetch;
+  const originalEnv = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  beforeEach(() => {
+    global.fetch = vi.fn();
+    sessionStorage.clear();
+  });
+
+  afterEach(() => {
+    global.fetch = originalFetch;
+    process.env.NEXT_PUBLIC_API_BASE_URL = originalEnv;
+    vi.restoreAllMocks();
+  });
+
+  describe('getApiBaseUrl', () => {
+    it('7. returns env variable when set', () => {
+      process.env.NEXT_PUBLIC_API_BASE_URL = 'http://custom-url/api/v1';
+      expect(getApiBaseUrl()).toBe('http://custom-url/api/v1');
+    });
+
+    it('8. falls back to localhost:8080', () => {
+      delete process.env.NEXT_PUBLIC_API_BASE_URL;
+      expect(getApiBaseUrl()).toBe('http://localhost:8080/api/v1');
+    });
+  });
+
+  describe('persistSession', () => {
+    it('9. stores token, expiry, and role in sessionStorage', () => {
+      persistSession('staff', { accessToken: 'token123', expiresInSeconds: 3600 }, 'DOCTOR');
+      
+      expect(sessionStorage.getItem('hms_staff_access_token')).toBe('token123');
+      expect(sessionStorage.getItem('hms_staff_access_token_expires_in')).toBe('3600');
+      expect(sessionStorage.getItem('hms_staff_role')).toBe('DOCTOR');
+    });
+
+    it('10. is no-op when accessToken is missing', () => {
+      persistSession('staff', { accessToken: '', expiresInSeconds: 3600 }, 'DOCTOR');
+      
+      expect(sessionStorage.getItem('hms_staff_access_token')).toBeNull();
+      expect(sessionStorage.getItem('hms_staff_role')).toBeNull();
+    });
+  });
+
+  describe('clearSessions', () => {
+    it('11. removes all 6 session keys', () => {
+      sessionStorage.setItem('hms_staff_access_token', 'token');
+      sessionStorage.setItem('hms_staff_access_token_expires_in', '3600');
+      sessionStorage.setItem('hms_staff_role', 'DOCTOR');
+      sessionStorage.setItem('hms_patient_access_token', 'token');
+      sessionStorage.setItem('hms_patient_access_token_expires_in', '3600');
+      sessionStorage.setItem('hms_patient_role', 'PATIENT');
+      
+      clearSessions();
+      
+      expect(sessionStorage.getItem('hms_staff_access_token')).toBeNull();
+      expect(sessionStorage.getItem('hms_staff_access_token_expires_in')).toBeNull();
+      expect(sessionStorage.getItem('hms_staff_role')).toBeNull();
+      expect(sessionStorage.getItem('hms_patient_access_token')).toBeNull();
+      expect(sessionStorage.getItem('hms_patient_access_token_expires_in')).toBeNull();
+      expect(sessionStorage.getItem('hms_patient_role')).toBeNull();
+    });
+  });
+
+  describe('getStoredRole', () => {
+    it('12. returns stored role from session', () => {
+      sessionStorage.setItem('hms_staff_role', 'ADMIN');
+      expect(getStoredRole('staff')).toBe('ADMIN');
+    });
+
+    it('returns null if no role is stored', () => {
+      expect(getStoredRole('patient')).toBeNull();
+    });
+
+    // We can't perfectly test SSR environment because vitest jsdom defines window,
+    // but the logic relies on `typeof window === "undefined"`. We assume it works
+    // based on reading the code. We'll skip strict SSR testing here.
+  });
+
+  describe('apiRequest', () => {
+    const mockSuccessResponse = (body = {}) => {
+      (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: () => Promise.resolve(JSON.stringify(body)),
+      });
+    };
+
+    const mockErrorResponse = (status: number, body: any) => {
+      (global.fetch as any).mockResolvedValueOnce({
+        ok: false,
+        status,
+        text: () => Promise.resolve(JSON.stringify(body)),
+      });
+    };
+
+    it('1. GET request builds correct URL', async () => {
+      delete process.env.NEXT_PUBLIC_API_BASE_URL; // Force default
+      mockSuccessResponse({ data: 'ok' });
+      
+      await apiRequest('/test-path');
+      
+      expect(global.fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/test-path', expect.objectContaining({
+        credentials: 'include',
+      }));
+    });
+
+    it('2. POST sends JSON body + Content-Type header', async () => {
+      mockSuccessResponse({ success: true });
+      
+      const body = JSON.stringify({ name: 'test' });
+      await apiRequest('/submit', {
+        method: 'POST',
+        body,
+      });
+      
+      expect(global.fetch).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
+        method: 'POST',
+        body,
+      }));
+
+      const calledInit = (global.fetch as any).mock.calls[0][1];
+      const headers = calledInit.headers as Headers;
+      expect(headers.get('Content-Type')).toBe('application/json');
+    });
+
+    it('3. attaches patient bearer token for authScope: "patient"', async () => {
+      sessionStorage.setItem('hms_patient_access_token', 'pat-token-123');
+      mockSuccessResponse();
+      
+      await apiRequest('/secure', {}, { authScope: 'patient' });
+      
+      const calledInit = (global.fetch as any).mock.calls[0][1];
+      const headers = calledInit.headers as Headers;
+      expect(headers.get('Authorization')).toBe('Bearer pat-token-123');
+    });
+
+    it('4. throws ApiClientError on 4xx with error envelope', async () => {
+      mockErrorResponse(400, {
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Invalid input',
+        }
+      });
+      
+      await expect(apiRequest('/bad-request')).rejects.toMatchObject({
+        name: 'ApiClientError',
+        message: 'Invalid input',
+        status: 400,
+        code: 'VALIDATION_ERROR'
+      });
+    });
+
+    it('5. throws ApiClientError on 5xx with fallback message', async () => {
+      mockErrorResponse(500, {}); // Empty body
+      
+      await expect(apiRequest('/server-error')).rejects.toMatchObject({
+        name: 'ApiClientError',
+        message: 'Request failed',
+        status: 500,
+        code: undefined
+      });
+    });
+
+    it('6. handles empty response body gracefully', async () => {
+      (global.fetch as any).mockResolvedValueOnce({
+        ok: true,
+        status: 204,
+        text: () => Promise.resolve(''),
+      });
+      
+      const response = await apiRequest('/empty');
+      expect(response).toEqual({});
+    });
+  });
+});
