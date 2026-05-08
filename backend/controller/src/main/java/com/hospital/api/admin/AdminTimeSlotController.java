@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,14 @@ public class AdminTimeSlotController {
 
   public AdminTimeSlotController(TimeSlotAdminService timeSlotAdminService) {
     this.timeSlotAdminService = timeSlotAdminService;
+  }
+
+  @GetMapping
+  @Operation(
+      summary = "Get all time slots",
+      description = "Returns a list of all available and blocked time slots.")
+  public ApiResponse<java.util.List<AdminSlotResponse>> getSlots() {
+    return ApiResponse.ok(timeSlotAdminService.getSlots(), "Time slots retrieved");
   }
 
   @PostMapping("/generate")

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import com.hospital.core.appointment.AppointmentEntity;
 import com.hospital.core.appointment.AppointmentRepository;
 import com.hospital.core.common.NotFoundException;
+import com.hospital.core.patient.PatientEntity;
 import com.hospital.shared.lab.LabResultCreateRequest;
 import java.time.Instant;
 import java.util.List;
@@ -38,6 +39,7 @@ class LabResultServiceTest {
     var appointmentId = UUID.randomUUID();
     var appointment = new AppointmentEntity();
     appointment.setId(appointmentId);
+    appointment.setPatient(new PatientEntity());
     when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(appointment));
     when(labResultRepository.save(any(LabResultEntity.class))).thenAnswer(inv -> {
       var e = inv.getArgument(0, LabResultEntity.class);
@@ -123,9 +125,11 @@ class LabResultServiceTest {
   private LabResultEntity buildLabResult(UUID id) {
     var appointment = new AppointmentEntity();
     appointment.setId(UUID.randomUUID());
+    appointment.setPatient(new PatientEntity());
 
     var entity = new LabResultEntity();
     entity.setId(id);
+    entity.setPatient(appointment.getPatient());
     entity.setAppointment(appointment);
     entity.setTestName("Blood Glucose");
     entity.setResultValue("95 mg/dL");

@@ -1,6 +1,7 @@
 package com.hospital.core.lab;
 
 import com.hospital.core.appointment.AppointmentEntity;
+import com.hospital.core.patient.PatientEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,6 +27,10 @@ public class LabResultEntity {
   private UUID id;
 
   @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "patient_id", nullable = false)
+  private PatientEntity patient;
+
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "appointment_id", nullable = false)
   private AppointmentEntity appointment;
 
@@ -44,6 +49,9 @@ public class LabResultEntity {
   @Column(columnDefinition = "text")
   private String notes;
 
+  @Column(name = "collected_at", nullable = false)
+  private Instant collectedAt;
+
   @Column(nullable = false)
   private boolean deleted;
 
@@ -58,6 +66,9 @@ public class LabResultEntity {
     var now = Instant.now();
     if (id == null) {
       id = UUID.randomUUID();
+    }
+    if (collectedAt == null) {
+      collectedAt = now;
     }
     createdAt = now;
     updatedAt = now;

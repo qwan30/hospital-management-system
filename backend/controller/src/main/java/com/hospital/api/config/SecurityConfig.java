@@ -66,8 +66,8 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.GET, "/api/v1/departments/**", "/api/v1/doctors/**", "/api/v1/content/**", "/api/v1/news").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/v1/appointments", "/api/v1/chatbot/messages").permitAll()
             .anyRequest().authenticated())
-        .addFilterBefore(authorizationDenialAuditFilter, RateLimitFilter.class)
         .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(authorizationDenialAuditFilter, RateLimitFilter.class)
         .addFilterAfter(jwtAuthenticationFilter, RateLimitFilter.class);
 
     return http.build();

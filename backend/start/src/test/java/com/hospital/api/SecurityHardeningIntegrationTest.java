@@ -10,9 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.hospital.api.config.JwtProperties;
 import com.hospital.core.audit.AuditLogRepository;
-import com.hospital.core.user.UserRepository;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -22,50 +20,21 @@ import javax.crypto.SecretKey;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Testcontainers
+/**
+ * Security hardening tests: auth errors, CORS, and audit logging.
+ * Extends AbstractIntegrationTest to reuse the shared Testcontainers instance
+ * and rate-limit-disabled test properties.
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class SecurityHardeningIntegrationTest {
-  @Container
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("pgvector/pgvector:pg15");
-
-  static {
-    postgres.start();
-  }
-
-  @Autowired
-  private MockMvc mockMvc;
-
-  @Autowired
-  private UserRepository userRepository;
+class SecurityHardeningIntegrationTest extends AbstractIntegrationTest {
 
   @Autowired
   private AuditLogRepository auditLogRepository;
 
   @Autowired
   private JwtProperties jwtProperties;
-
-  @DynamicPropertySource
-  static void databaseProperties(DynamicPropertyRegistry registry) {
-    registry.add("POSTGRES_HOST", postgres::getHost);
-    registry.add("POSTGRES_PORT", () -> postgres.getMappedPort(5432));
-    registry.add("POSTGRES_DB", postgres::getDatabaseName);
-    registry.add("POSTGRES_USER", postgres::getUsername);
-    registry.add("POSTGRES_PASSWORD", postgres::getPassword);
-    registry.add("security.jwt.secret", () -> "test-jwt-secret-with-at-least-32-characters");
-    registry.add("security.patient-identifier.secret", () -> "test-patient-identifier-secret");
-  }
 
   @Test
   void rejectsMissingTokenWithUnauthorizedEnvelope() throws Exception {
@@ -173,27 +142,6 @@ class SecurityHardeningIntegrationTest {
         .andExpect(header().doesNotExist(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS));
   }
 
-  private String loginAndGetAccessToken(String email, String password) throws Exception {
-    var response = mockMvc.perform(post("/api/v1/auth/login")
-            .contentType("application/json")
-            .content("""
-                {
-                  "email": "%s",
-                  "password": "%s"
-                }
-                """.formatted(email, password)))
-        .andExpect(status().isOk())
-        .andReturn()
-        .getResponse()
-        .getContentAsString();
-
-    var tokenMarker = "\"accessToken\":\"";
-    var tokenStart = response.indexOf(tokenMarker);
-    var valueStart = tokenStart + tokenMarker.length();
-    var valueEnd = response.indexOf('"', valueStart);
-    return response.substring(valueStart, valueEnd);
-  }
-
   private void assertLatestSecurityDenial(int status, String method, String path) {
     var latest = auditLogRepository.findAllByOrderByCreatedAtDesc().stream()
         .filter(entry -> "SECURITY_ACCESS_DENIED".equals(entry.getAction()))
@@ -201,10 +149,16 @@ class SecurityHardeningIntegrationTest {
         .orElseThrow();
 
     assert latest.getMetadata() != null;
+    try {
+      var metadataNode = objectMapper.readTree(latest.getMetadata());
+      org.assertj.core.api.Assertions.assertThat(metadataNode.get("status").asInt()).isEqualTo(status);
+      org.assertj.core.api.Assertions.assertThat(metadataNode.get("method").asText()).isEqualTo(method);
+      org.assertj.core.api.Assertions.assertThat(metadataNode.get("path").asText()).isEqualTo(path);
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to parse audit log metadata", e);
+    }
+
     org.assertj.core.api.Assertions.assertThat(latest.getMetadata())
-        .contains("\"status\":" + status)
-        .contains("\"method\":\"" + method + "\"")
-        .contains("\"path\":\"" + path + "\"")
         .doesNotContain("Bearer")
         .doesNotContain("password")
         .doesNotContain("accessToken")
@@ -233,6 +187,6 @@ class SecurityHardeningIntegrationTest {
       return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+    return Keys.hmacShaKeyFor(io.jsonwebtoken.io.Decoders.BASE64.decode(secret));
   }
 }

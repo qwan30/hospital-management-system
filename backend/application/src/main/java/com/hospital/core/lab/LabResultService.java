@@ -25,6 +25,7 @@ public class LabResultService {
         .orElseThrow(() -> new NotFoundException("Appointment not found"));
 
     var entity = new LabResultEntity();
+    entity.setPatient(appointment.getPatient());
     entity.setAppointment(appointment);
     entity.setTestName(request.testName());
     entity.setResultValue(request.resultValue());

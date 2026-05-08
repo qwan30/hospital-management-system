@@ -1,0 +1,170 @@
+# Hospital Management System — Comprehensive API Testing Plan
+
+## Status: IMPLEMENTED
+
+## 1. Executive Summary
+
+This plan covers **all 60+ API endpoints** across 12 domain areas. The existing test suite has **5 test files** with 15 tests covering auth, clinical workflow, security hardening, module boundaries, and security config defaults. We need to add comprehensive integration tests for **8 untested domains** plus edge-case coverage for the 3 already-tested domains.
+
+---
+
+## 2. Current Test Coverage Analysis
+
+| Test File | Tests | Coverage Area |
+|-----------|-------|---------------|
+| `AuthenticationIntegrationTest` | 3 | Login, bad credentials, token refresh |
+| `ClinicalWorkflowIntegrationTest` | 7 | Booking, check-in, medical record, patient history |
+| `SecurityHardeningIntegrationTest` | 7 | Auth envelopes, CORS, expired tokens |
+| `ModuleBoundaryTest` | 2 | Module dependency graph |
+| `SecurityConfigurationDefaultsTest` | 2 | Config secrets validation |
+
+### Gaps Identified
+- ❌ **Patient Auth** (claim, login, refresh, logout)
+- ❌ **Patient Portal** (overview, appointments, lab results, messages, profile)
+- ❌ **Admin Users** (CRUD, activate/deactivate, role change)
+- ❌ **Admin Departments** (CRUD, doctor assignment)
+- ❌ **Admin Rooms** (CRUD, status)
+- ❌ **Admin Schedule/Slots/Closures** (templates, time slots)
+- ❌ **Inventory** (items CRUD, lots CRUD, movements, alerts)
+- ❌ **Finance/Invoices** (create, pay, void, revenue reports, pricing)
+- ❌ **Lab Results** (CRUD)
+- ❌ **Queue** (today, call, skip, assign-room, start-consultation, complete)
+- ❌ **Public Content** (home, news, departments, doctors)
+- ❌ **Edge cases**: duplicate booking, slot conflict, invalid UUID, pagination, etc.
+
+---
+
+## 3. Implementation Phases
+
+### Phase 1: Shared Test Infrastructure (Base Class)
+Create `AbstractIntegrationTest` to eliminate boilerplate across test files.
+
+### Phase 2: Public Endpoints (No Auth Required)
+- `GET /api/v1/content/home`
+- `GET /api/v1/news`  
+- `GET /api/v1/departments`
+- `GET /api/v1/doctors`
+
+### Phase 3: Patient Auth & Portal
+- `POST /api/v1/patient-auth/claim`
+- `POST /api/v1/patient-auth/login`
+- `POST /api/v1/patient-auth/refresh`
+- `POST /api/v1/patient-auth/logout`
+- Patient portal: overview, appointments, lab-results, messages, profile, profile update
+
+### Phase 4: Admin Endpoints
+- Admin Users: list, get, create, update, delete, activate, deactivate, role change
+- Admin Departments: list, get, create, update, delete, assign-doctor, remove-doctor
+- Admin Rooms: list, get, create, update, status, delete  
+- Admin Schedule: templates, time slots, special closures
+- Admin Stats, Monitoring, Audit Logs
+
+### Phase 5: Finance & Inventory
+- Invoices: list, create, pay, void
+- Pricing: list, create, update
+- Revenue Reports: daily, monthly
+- Inventory Items: list, create, update, delete
+- Inventory Lots: list, create, update
+- Inventory Movements: list, create
+- Inventory Alerts
+
+### Phase 6: Queue & Lab Results
+- Queue: today, call, skip, assign-room, start-consultation, complete
+- Lab Results: create, get, list by appointment, delete
+
+### Phase 7: Edge Cases & Data Validation
+- Duplicate booking same slot
+- Invalid UUID formats
+- Empty/missing required fields
+- Boundary values (dates in past, overlapping slots)
+- Pagination edge cases (page out of range)
+- Concurrent status transitions
+- Cross-role authorization violations
+- SQL injection attempts in search params
+
+### Phase 8: Enhanced Sample Data
+- Ensure all seed data covers realistic scenarios
+- Add edge-case seed data for testing
+
+---
+
+## 4. Test Files to Create
+
+| # | File | Phase | Tests |
+|---|------|-------|-------|
+| 1 | `AbstractIntegrationTest.java` | 1 | Base class |
+| 2 | `PublicEndpointIntegrationTest.java` | 2 | ~6 |
+| 3 | `PatientAuthIntegrationTest.java` | 3 | ~10 |
+| 4 | `PatientPortalIntegrationTest.java` | 3 | ~12 |
+| 5 | `AdminUserIntegrationTest.java` | 4 | ~14 |
+| 6 | `AdminDepartmentIntegrationTest.java` | 4 | ~10 |
+| 7 | `AdminRoomIntegrationTest.java` | 4 | ~10 |
+| 8 | `AdminOperationsIntegrationTest.java` | 4 | ~8 |
+| 9 | `InventoryIntegrationTest.java` | 5 | ~14 |
+| 10 | `FinanceIntegrationTest.java` | 5 | ~14 |
+| 11 | `QueueWorkflowIntegrationTest.java` | 6 | ~10 |
+| 12 | `LabResultIntegrationTest.java` | 6 | ~8 |
+| 13 | `EdgeCaseIntegrationTest.java` | 7 | ~12 |
+
+**Total new tests: ~128** (bringing total from 21 to ~149)
+
+---
+
+## 5. Edge Cases Per Domain
+
+### Authentication
+- Login with non-existent email
+- Login with empty body
+- Login with SQL injection in email
+- Refresh with expired refresh token
+- Refresh with invalid cookie
+- Logout without being logged in
+
+### Appointments/Booking
+- Book with past date
+- Book with duplicate slot (already booked)
+- Book with non-existent doctor
+- Book with invalid CCCD format
+- Cancel already-cancelled appointment
+- Status transition: CONFIRMED → DONE (should fail, must go through workflow)
+
+### Admin
+- Create user with duplicate email
+- Delete the last admin (should prevent?)
+- Assign doctor to non-existent department
+- Create department with duplicate name
+- Update non-existent user/department/room
+
+### Inventory
+- Create item with negative quantity
+- Movement that would make stock negative
+- Lot with past expiration date
+- Delete item that has active lots
+
+### Finance
+- Create invoice for non-existent appointment
+- Pay already-paid invoice
+- Void already-voided invoice
+- Revenue report for future date
+- Revenue report for date with no data
+
+### Patient Portal
+- Access with staff token (should fail)
+- Update profile with invalid data
+- Access non-existent patient resources
+
+---
+
+## 6. Implementation Order
+
+1. ✅ Create plan (this document)
+2. ✅ Phase 1: Abstract base class
+3. ✅ Phase 2: Public endpoints
+4. ✅ Phase 3: Patient auth & portal
+5. ✅ Phase 4: Admin endpoints
+6. ✅ Phase 5: Finance & inventory
+7. ✅ Phase 6: Queue & lab results
+8. ✅ Phase 7: Edge cases
+9. ✅ Phase 8: Enhanced sample data
+10. ✅ Run full suite & verify
+11. ✅ Commit with descriptive message

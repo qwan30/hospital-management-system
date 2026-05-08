@@ -89,6 +89,13 @@ public class TimeSlotAdminService {
     return new AdminSlotGenerateResult(created, skipped, "%d slots created, %d skipped (already existed)".formatted(created, skipped));
   }
 
+  @Transactional(readOnly = true)
+  public List<AdminSlotResponse> getSlots() {
+    return timeSlotRepository.findAll().stream()
+        .map(this::toResponse)
+        .toList();
+  }
+
   @Transactional
   public AdminSlotResponse blockSlot(UUID slotId) {
     var slot = findSlot(slotId);
