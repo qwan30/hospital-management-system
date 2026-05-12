@@ -34,15 +34,11 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ClinicalWorkflowIntegrationTest {
   @Container
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("pgvector/pgvector:pg15");
-
-  static {
-    postgres.start();
-  }
 
   @Autowired
   private MockMvc mockMvc;
@@ -61,6 +57,9 @@ class ClinicalWorkflowIntegrationTest {
 
   @DynamicPropertySource
   static void databaseProperties(DynamicPropertyRegistry registry) {
+    if (!postgres.isRunning()) {
+      postgres.start();
+    }
     registry.add("POSTGRES_HOST", postgres::getHost);
     registry.add("POSTGRES_PORT", () -> postgres.getMappedPort(5432));
     registry.add("POSTGRES_DB", postgres::getDatabaseName);

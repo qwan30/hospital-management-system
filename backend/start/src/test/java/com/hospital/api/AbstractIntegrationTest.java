@@ -27,7 +27,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,16 +39,13 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@Testcontainers(disabledWithoutDocker = true)
 abstract class AbstractIntegrationTest {
 
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("pgvector/pgvector:pg15");
 
   /** Cache tokens per email to avoid hitting login repeatedly. */
   private static final Map<String, String> TOKEN_CACHE = new ConcurrentHashMap<>();
-
-  static {
-    postgres.start();
-  }
 
   @Autowired
   protected MockMvc mockMvc;
@@ -77,6 +73,9 @@ abstract class AbstractIntegrationTest {
 
   @DynamicPropertySource
   static void databaseProperties(DynamicPropertyRegistry registry) {
+    if (!postgres.isRunning()) {
+      postgres.start();
+    }
     registry.add("POSTGRES_HOST", postgres::getHost);
     registry.add("POSTGRES_PORT", () -> postgres.getMappedPort(5432));
     registry.add("POSTGRES_DB", postgres::getDatabaseName);
