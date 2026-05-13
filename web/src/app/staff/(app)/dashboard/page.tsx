@@ -64,18 +64,25 @@ export default function DoctorDashboardPage() {
                 search
               </span>
               <input
+                aria-label="Search patients by name or ID"
                 className="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder-hms-on-surface-variant outline-none"
                 placeholder="Search by name or ID..."
                 type="text"
               />
             </div>
-            <select className="bg-hms-surface-container-low border-none border-b-2 border-hms-outline focus:ring-0 h-10 text-sm px-3 w-40 font-semibold outline-none">
+            <select
+              aria-label="Filter patients by status"
+              className="bg-hms-surface-container-low border-none border-b-2 border-hms-outline focus:ring-0 h-10 text-sm px-3 w-40 font-semibold outline-none"
+            >
               <option>All Status</option>
               <option>Critical</option>
               <option>Stable</option>
               <option>Discharging</option>
             </select>
-            <select className="bg-hms-surface-container-low border-none border-b-2 border-hms-outline focus:ring-0 h-10 text-sm px-3 w-40 font-semibold outline-none">
+            <select
+              aria-label="Filter patients by ward"
+              className="bg-hms-surface-container-low border-none border-b-2 border-hms-outline focus:ring-0 h-10 text-sm px-3 w-40 font-semibold outline-none"
+            >
               <option>Ward 4-A</option>
               <option>ICU East</option>
               <option>Cardiology</option>

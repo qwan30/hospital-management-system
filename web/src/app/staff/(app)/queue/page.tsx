@@ -572,7 +572,11 @@ function QueueRow({
       </tr>
       {rowError ? (
         <tr className="border-b border-hms-error-container bg-red-50">
-          <td className="px-4 py-3 text-sm font-semibold text-hms-error" colSpan={7}>
+          <td
+            className="px-4 py-3 text-sm font-semibold text-hms-error"
+            colSpan={7}
+            role="alert"
+          >
             {rowError}
           </td>
         </tr>

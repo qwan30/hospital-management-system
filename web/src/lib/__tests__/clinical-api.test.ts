@@ -131,6 +131,25 @@ describe("clinical-api", () => {
       expect(result).toEqual(mockAppointment);
     });
 
+    it("assignQueueRoom throws if no appointment is returned", async () => {
+      vi.mocked(apiRequest).mockResolvedValueOnce({ data: undefined });
+
+      await expect(
+        assignQueueRoom("123", { roomName: "Room 101" }),
+      ).rejects.toThrow("Room assignment did not return an appointment");
+    });
+
+    it.each([
+      ["startQueueConsultation", startQueueConsultation],
+      ["completeQueueVisit", completeQueueVisit],
+    ])("%s throws if no appointment is returned", async (_name, action) => {
+      vi.mocked(apiRequest).mockResolvedValueOnce({ data: undefined });
+
+      await expect(action("123")).rejects.toThrow(
+        "Queue action did not return an appointment",
+      );
+    });
+
     it("throws error if queue action returns no data", async () => {
       vi.mocked(apiRequest).mockResolvedValueOnce({ data: undefined });
       await expect(callQueuePatient("123")).rejects.toThrow("Queue action did not return an appointment");

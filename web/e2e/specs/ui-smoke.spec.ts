@@ -8,7 +8,7 @@ test.describe("@ui route smoke audit", () => {
   for (const route of smokeRoutes) {
     test(`${route.label} loads ${route.path}`, async ({ page }) => {
       const consoleProblems = collectConsoleProblems(page);
-      const response = await page.goto(route.path);
+      const response = await page.goto(route.path, { waitUntil: "domcontentloaded" });
 
       expect(response?.status(), `${route.path} response status`).toBeLessThan(400);
       await expect(page.locator("main").first()).toBeVisible();
@@ -21,7 +21,7 @@ test.describe("@ui route smoke audit", () => {
 test.describe("@ui public accessibility audit", () => {
   for (const route of publicRoutes) {
     test(`${route.label} has no serious accessibility violation`, async ({ page }) => {
-      await page.goto(route.path);
+      await page.goto(route.path, { waitUntil: "domcontentloaded" });
       await expectNoCriticalA11yViolations(page);
     });
   }

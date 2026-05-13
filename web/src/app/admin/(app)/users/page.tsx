@@ -57,19 +57,26 @@ export default function AdminUsersPage() {
               search
             </span>
             <input
+              aria-label="Search users by name, email or ID"
               className="w-full bg-hms-surface border-none border-b-2 border-hms-outline focus:border-hms-primary focus:ring-0 pl-12 py-3 text-sm placeholder:uppercase placeholder:text-[10px] placeholder:font-bold placeholder:tracking-widest outline-none"
               placeholder="Search by name, email or ID..."
               type="text"
             />
           </div>
           <div className="flex items-center gap-4 w-full md:w-auto">
-            <select className="bg-hms-surface border-none border-b-2 border-hms-outline focus:border-hms-primary focus:ring-0 py-3 px-4 text-xs font-bold uppercase tracking-widest w-full md:w-48 outline-none">
+            <select
+              aria-label="Filter users by role"
+              className="bg-hms-surface border-none border-b-2 border-hms-outline focus:border-hms-primary focus:ring-0 py-3 px-4 text-xs font-bold uppercase tracking-widest w-full md:w-48 outline-none"
+            >
               <option>Role: All</option>
               <option>Practitioner</option>
               <option>Nurse</option>
               <option>Administrator</option>
             </select>
-            <select className="bg-hms-surface border-none border-b-2 border-hms-outline focus:border-hms-primary focus:ring-0 py-3 px-4 text-xs font-bold uppercase tracking-widest w-full md:w-48 outline-none">
+            <select
+              aria-label="Filter users by status"
+              className="bg-hms-surface border-none border-b-2 border-hms-outline focus:border-hms-primary focus:ring-0 py-3 px-4 text-xs font-bold uppercase tracking-widest w-full md:w-48 outline-none"
+            >
               <option>Status: Active</option>
               <option>Inactive</option>
               <option>On Leave</option>

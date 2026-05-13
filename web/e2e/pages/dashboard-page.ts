@@ -16,11 +16,11 @@ export class DashboardPage {
   }
 
   async gotoStaffDashboard() {
-    await this.page.goto("/staff/dashboard");
+    await this.page.goto("/staff/dashboard", { waitUntil: "domcontentloaded" });
   }
 
   async gotoAdminDashboard() {
-    await this.page.goto("/admin/dashboard");
+    await this.page.goto("/admin/dashboard", { waitUntil: "domcontentloaded" });
   }
 
   async search(query: string) {

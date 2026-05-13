@@ -37,7 +37,7 @@ export default function AdminNewsPage() {
 <div className="flex items-center space-x-4">
 <div className="relative">
 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
-<input className="pl-10 pr-4 py-2 bg-surface border-none focus:ring-0 w-64 text-sm" placeholder="Search news articles..." type="text"/>
+<input aria-label="Search news articles" className="pl-10 pr-4 py-2 bg-surface border-none focus:ring-0 w-64 text-sm" placeholder="Search news articles..." type="text"/>
 </div>
 <button className="flex items-center space-x-2 text-xs font-bold uppercase tracking-widest px-4 py-2 hover:bg-surface-container-high transition-colors">
 <span className="material-symbols-outlined text-sm">filter_list</span>
@@ -49,7 +49,7 @@ export default function AdminNewsPage() {
 <thead>
 <tr className="bg-surface-container-highest border-b border-outline-variant/20">
 <th className="p-4 text-left w-12">
-<input className="border-on-surface-variant focus:ring-primary text-primary-container rounded-none" type="checkbox"/>
+<input aria-label="Select all news articles" className="border-on-surface-variant focus:ring-primary text-primary-container rounded-none" type="checkbox"/>
 </th>
 <th className="p-4 text-[10px] font-bold text-on-surface uppercase tracking-widest text-left">Title</th>
 <th className="p-4 text-[10px] font-bold text-on-surface uppercase tracking-widest text-left">Publish Date</th>
@@ -60,7 +60,7 @@ export default function AdminNewsPage() {
 </thead>
 <tbody className="divide-y divide-outline-variant/10">
 <tr className="group hover:bg-surface-container-lowest transition-colors cursor-pointer">
-<td className="p-4"><input className="rounded-none" type="checkbox"/></td>
+<td className="p-4"><input aria-label="Select New Oncology Wing Opening Ceremony" className="rounded-none" type="checkbox"/></td>
 <td className="p-4 font-semibold text-sm">New Oncology Wing Opening Ceremony</td>
 <td className="p-4 text-sm text-on-surface-variant">Oct 24, 2023</td>
 <td className="p-4 text-sm text-on-surface-variant">Dr. Sarah Jenkins</td>
@@ -74,7 +74,7 @@ export default function AdminNewsPage() {
 </td>
 </tr>
 <tr className="group bg-surface-container-low border-l-4 border-primary">
-<td className="p-4"><input defaultChecked className="rounded-none" type="checkbox"/></td>
+<td className="p-4"><input aria-label="Select Q4 Staff Wellness Program Updates" defaultChecked className="rounded-none" type="checkbox"/></td>
 <td className="p-4 font-semibold text-sm">Q4 Staff Wellness Program Updates</td>
 <td className="p-4 text-sm text-on-surface-variant">Nov 02, 2023</td>
 <td className="p-4 text-sm text-on-surface-variant">HR Department</td>
@@ -88,7 +88,7 @@ export default function AdminNewsPage() {
 </td>
 </tr>
 <tr className="group hover:bg-surface-container-lowest transition-colors cursor-pointer">
-<td className="p-4"><input className="rounded-none" type="checkbox"/></td>
+<td className="p-4"><input aria-label="Select Annual Medical Research Symposium 2024" className="rounded-none" type="checkbox"/></td>
 <td className="p-4 font-semibold text-sm">Annual Medical Research Symposium 2024</td>
 <td className="p-4 text-sm text-on-surface-variant">Dec 15, 2023</td>
 <td className="p-4 text-sm text-on-surface-variant">Research Office</td>
@@ -102,7 +102,7 @@ export default function AdminNewsPage() {
 </td>
 </tr>
 <tr className="group hover:bg-surface-container-lowest transition-colors cursor-pointer">
-<td className="p-4"><input className="rounded-none" type="checkbox"/></td>
+<td className="p-4"><input aria-label="Select Changes to Patient Visitation Hours" className="rounded-none" type="checkbox"/></td>
 <td className="p-4 font-semibold text-sm">Changes to Patient Visitation Hours</td>
 <td className="p-4 text-sm text-on-surface-variant">Oct 30, 2023</td>
 <td className="p-4 text-sm text-on-surface-variant">Admin Liaison</td>

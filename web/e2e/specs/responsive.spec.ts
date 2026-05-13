@@ -13,7 +13,7 @@ test.describe("@ui responsive layout audit", () => {
     for (const route of responsiveRoutes) {
       test(`${route.label} fits ${viewport.name}`, async ({ page }) => {
         await page.setViewportSize(viewport);
-        await page.goto(route.path);
+        await page.goto(route.path, { waitUntil: "domcontentloaded" });
         await expectNoNextErrorOverlay(page);
         await expectStableLayout(page);
       });

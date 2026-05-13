@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { filterNavigationLinks } from "@/lib/rbac";
+import { filterNavigationLinks, getRouteDecision } from "@/lib/rbac";
 import { useStoredRole } from "@/lib/use-stored-role";
 import { cn } from "@/lib/utils";
 
@@ -41,6 +41,7 @@ export function StaffSideNav({
   const pathname = usePathname();
   const role = useStoredRole("staff");
   const navLinks = filterNavigationLinks(links || defaultLinks, role);
+  const canUseCta = getRouteDecision(ctaHref, role).allowed;
 
   return (
     <aside className="fixed left-0 top-[48px] bottom-0 hidden md:flex flex-col w-64 bg-[#f4f4f4] border-r-0">
@@ -60,13 +61,15 @@ export function StaffSideNav({
             </div>
           </div>
         </div>
-        <Link
-          href={ctaHref}
-          className="w-full bg-hms-primary-container text-white py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-hms-primary transition-all"
-        >
-          <span className="material-symbols-outlined text-sm">add</span>
-          {ctaLabel}
-        </Link>
+        {canUseCta ? (
+          <Link
+            href={ctaHref}
+            className="w-full bg-hms-primary-container text-white py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-hms-primary transition-all"
+          >
+            <span className="material-symbols-outlined text-sm">add</span>
+            {ctaLabel}
+          </Link>
+        ) : null}
       </div>
       <nav className="flex-1 overflow-y-auto">
         {navLinks.map((link) => {

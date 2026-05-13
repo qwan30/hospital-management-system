@@ -19,41 +19,41 @@ export default function PatientPortalProfilePage() {
 <div className="col-span-2 md:col-span-1">
 <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Full Name</label>
 <div className="bg-surface-container-low border-b-2 border-outline focus-within:border-primary transition-colors">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="text" defaultValue="Alexander Vance"/>
+<input aria-label="Full Name" className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="text" defaultValue="Alexander Vance"/>
 </div>
 </div>
 <div className="col-span-2 md:col-span-1">
 <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Date of Birth</label>
 <div className="bg-surface-container-low border-b-2 border-outline focus-within:border-primary transition-colors">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="text" defaultValue="May 14, 1982"/>
+<input aria-label="Date of Birth" className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="text" defaultValue="May 14, 1982"/>
 </div>
 </div>
 <div className="col-span-2 md:col-span-1">
 <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Email Address</label>
 <div className="bg-surface-container-low border-b-2 border-outline focus-within:border-primary transition-colors">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="email" defaultValue="a.vance@example.com"/>
+<input aria-label="Email Address" className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="email" defaultValue="a.vance@example.com"/>
 </div>
 </div>
 <div className="col-span-2 md:col-span-1">
 <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Phone Number</label>
 <div className="bg-surface-container-low border-b-2 border-outline focus-within:border-primary transition-colors">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="tel" defaultValue="+1 (555) 902-1422"/>
+<input aria-label="Phone Number" className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="tel" defaultValue="+1 (555) 902-1422"/>
 </div>
 </div>
 <div className="col-span-2">
 <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">Residential Address</label>
 <div className="bg-surface-container-low border-b-2 border-outline focus-within:border-primary transition-colors">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="text" defaultValue="1288 Oakwood Heights, Suite 400"/>
+<input aria-label="Residential Address" className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium" type="text" defaultValue="1288 Oakwood Heights, Suite 400"/>
 </div>
 <div className="grid grid-cols-3 gap-4 mt-4">
 <div className="bg-surface-container-low border-b-2 border-outline">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 text-sm" type="text" defaultValue="Boston"/>
+<input aria-label="City" className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 text-sm" type="text" defaultValue="Boston"/>
 </div>
 <div className="bg-surface-container-low border-b-2 border-outline">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 text-sm" type="text" defaultValue="MA"/>
+<input aria-label="State" className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 text-sm" type="text" defaultValue="MA"/>
 </div>
 <div className="bg-surface-container-low border-b-2 border-outline">
-<input className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 text-sm" type="text" defaultValue="02108"/>
+<input aria-label="Postal Code" className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 text-sm" type="text" defaultValue="02108"/>
 </div>
 </div>
 </div>

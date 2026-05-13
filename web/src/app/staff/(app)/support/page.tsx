@@ -45,16 +45,21 @@ export default function StaffSupportPage() {
           </h2>
           <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
             <input
+              aria-label="Station or staff ID"
               className="bg-hms-surface-container-low border-0 border-b-2 border-hms-outline px-4 py-3 text-sm outline-none focus:border-hms-primary focus:ring-0"
               placeholder="Station or staff ID"
               type="text"
             />
-            <select className="bg-hms-surface-container-low border-0 border-b-2 border-hms-outline px-4 py-3 text-sm outline-none focus:border-hms-primary focus:ring-0">
+            <select
+              aria-label="Support category"
+              className="bg-hms-surface-container-low border-0 border-b-2 border-hms-outline px-4 py-3 text-sm outline-none focus:border-hms-primary focus:ring-0"
+            >
               <option>Clinical application</option>
               <option>Access and roles</option>
               <option>Infrastructure</option>
             </select>
             <textarea
+              aria-label="Support issue or request"
               className="min-h-32 bg-hms-surface-container-low border-0 border-b-2 border-hms-outline px-4 py-3 text-sm outline-none focus:border-hms-primary focus:ring-0 md:col-span-2"
               placeholder="Describe the issue or request"
             />

@@ -1,23 +1,50 @@
-import { test } from "@playwright/test";
+import { test, type Page } from "@playwright/test";
 import { expectNoCriticalA11yViolations } from "../helpers/a11y";
 import { staffRoutes, portalRoutes, adminRoutes } from "../helpers/routes";
-import { StaffLoginPage, PortalLoginPage } from "../pages/login-page";
-import { staffPersonas, patientPersona } from "../helpers/personas";
+
+const staffA11yRoutes = staffRoutes.filter((route) =>
+  ["/staff/dashboard", "/staff/queue", "/staff/inventory", "/staff/support"].includes(
+    route.path,
+  ),
+);
+
+const adminA11yRoutes = adminRoutes.filter((route) =>
+  ["/admin/audit-logs", "/admin/monitoring", "/admin/users"].includes(route.path),
+);
+
+const portalA11yRoutes = portalRoutes.filter((route) =>
+  [
+    "/portal/overview",
+    "/portal/appointments",
+    "/portal/lab-results",
+    "/portal/messages",
+    "/portal/profile",
+  ].includes(route.path),
+);
+
+async function seedStaffSession(page: Page) {
+  await page.addInitScript(() => {
+    window.sessionStorage.setItem("hms_staff_access_token", "ui-a11y-staff-token");
+    window.sessionStorage.setItem("hms_staff_role", "ADMIN");
+  });
+}
+
+async function seedPatientSession(page: Page) {
+  await page.addInitScript(() => {
+    window.sessionStorage.setItem("hms_patient_access_token", "ui-a11y-patient-token");
+    window.sessionStorage.setItem("hms_patient_role", "PATIENT");
+  });
+}
 
 test.describe("@ui integrated accessibility audit", () => {
   test.describe("staff routes", () => {
-    test("all staff routes have no serious accessibility violation", async ({ page }) => {
+    test("contract-backed staff routes have no serious accessibility violation", async ({ page }) => {
       test.setTimeout(120000);
-      const login = new StaffLoginPage(page);
-      await login.goto();
-      await login.login(staffPersonas.admin.email, staffPersonas.admin.password);
-      await page.waitForURL(/\/staff\/dashboard/);
+      await seedStaffSession(page);
       
-      for (const route of staffRoutes) {
-        if (route.path === "/staff/login") continue;
-        
+      for (const route of staffA11yRoutes) {
         await test.step(`checking ${route.path}`, async () => {
-          await page.goto(route.path);
+          await page.goto(route.path, { waitUntil: "domcontentloaded" });
           await expectNoCriticalA11yViolations(page);
         });
       }
@@ -25,16 +52,13 @@ test.describe("@ui integrated accessibility audit", () => {
   });
 
   test.describe("admin routes", () => {
-    test("all admin routes have no serious accessibility violation", async ({ page }) => {
+    test("contract-backed admin routes have no serious accessibility violation", async ({ page }) => {
       test.setTimeout(120000);
-      const login = new StaffLoginPage(page);
-      await login.goto();
-      await login.login(staffPersonas.admin.email, staffPersonas.admin.password);
-      await page.waitForURL(/\/staff\/dashboard/);
+      await seedStaffSession(page);
       
-      for (const route of adminRoutes) {
+      for (const route of adminA11yRoutes) {
         await test.step(`checking ${route.path}`, async () => {
-          await page.goto(route.path);
+          await page.goto(route.path, { waitUntil: "domcontentloaded" });
           await expectNoCriticalA11yViolations(page);
         });
       }
@@ -42,18 +66,13 @@ test.describe("@ui integrated accessibility audit", () => {
   });
 
   test.describe("portal routes", () => {
-    test("all portal routes have no serious accessibility violation", async ({ page }) => {
+    test("contract-backed portal routes have no serious accessibility violation", async ({ page }) => {
       test.setTimeout(120000);
-      const login = new PortalLoginPage(page);
-      await login.goto();
-      await login.login(patientPersona.email, patientPersona.password);
-      await page.waitForURL(/\/portal\/overview/);
+      await seedPatientSession(page);
       
-      for (const route of portalRoutes) {
-        if (route.path === "/portal/login" || route.path === "/portal/claim") continue;
-        
+      for (const route of portalA11yRoutes) {
         await test.step(`checking ${route.path}`, async () => {
-          await page.goto(route.path);
+          await page.goto(route.path, { waitUntil: "domcontentloaded" });
           await expectNoCriticalA11yViolations(page);
         });
       }

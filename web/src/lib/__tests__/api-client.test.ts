@@ -5,7 +5,6 @@ import {
   persistSession,
   clearSessions,
   getStoredRole,
-  ApiClientError,
 } from '../api-client';
 
 describe('api-client', () => {
@@ -13,7 +12,7 @@ describe('api-client', () => {
   const originalEnv = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   beforeEach(() => {
-    global.fetch = vi.fn();
+    global.fetch = vi.fn<typeof fetch>();
     sessionStorage.clear();
   });
 
@@ -88,20 +87,22 @@ describe('api-client', () => {
   });
 
   describe('apiRequest', () => {
-    const mockSuccessResponse = (body = {}) => {
-      (global.fetch as any).mockResolvedValueOnce({
+    const fetchMock = () => vi.mocked(global.fetch);
+
+    const mockSuccessResponse = (body: unknown = {}) => {
+      fetchMock().mockResolvedValueOnce({
         ok: true,
         status: 200,
         text: () => Promise.resolve(JSON.stringify(body)),
-      });
+      } as Response);
     };
 
-    const mockErrorResponse = (status: number, body: any) => {
-      (global.fetch as any).mockResolvedValueOnce({
+    const mockErrorResponse = (status: number, body: unknown) => {
+      fetchMock().mockResolvedValueOnce({
         ok: false,
         status,
         text: () => Promise.resolve(JSON.stringify(body)),
-      });
+      } as Response);
     };
 
     it('1. GET request builds correct URL', async () => {
@@ -129,7 +130,7 @@ describe('api-client', () => {
         body,
       }));
 
-      const calledInit = (global.fetch as any).mock.calls[0][1];
+      const calledInit = fetchMock().mock.calls[0][1] as RequestInit;
       const headers = calledInit.headers as Headers;
       expect(headers.get('Content-Type')).toBe('application/json');
     });
@@ -140,7 +141,7 @@ describe('api-client', () => {
       
       await apiRequest('/secure', {}, { authScope: 'patient' });
       
-      const calledInit = (global.fetch as any).mock.calls[0][1];
+      const calledInit = fetchMock().mock.calls[0][1] as RequestInit;
       const headers = calledInit.headers as Headers;
       expect(headers.get('Authorization')).toBe('Bearer pat-token-123');
     });
@@ -173,11 +174,11 @@ describe('api-client', () => {
     });
 
     it('6. handles empty response body gracefully', async () => {
-      (global.fetch as any).mockResolvedValueOnce({
+      fetchMock().mockResolvedValueOnce({
         ok: true,
         status: 204,
         text: () => Promise.resolve(''),
-      });
+      } as Response);
       
       const response = await apiRequest('/empty');
       expect(response).toEqual({});
