@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function NurseIntakeBoardPage() {
   return (
     <>
@@ -8,18 +9,18 @@ export default function NurseIntakeBoardPage() {
 {/* TopNavBar */}
 <header className="flex justify-between items-center w-full px-8 h-16 sticky top-0 z-50 bg-white dark:bg-neutral-900 border-b-2 border-neutral-900 dark:border-neutral-800 font-public-sans tracking-tighter antialiased">
 <div className="flex items-center gap-8">
-<span className="text-xl font-bold tracking-widest text-neutral-900 dark:text-white uppercase">MEDCORE OS</span>
+<span className="text-xl font-bold tracking-widest text-neutral-900 dark:text-white uppercase">HOSPITAL CORE</span>
 <div className="relative group">
-<span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-blue-600" data-icon="search">search</span>
+<HcIcon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-blue-600" />
 <input className="bg-surface-container-low border-b-2 border-neutral-900 focus:border-blue-600 focus:ring-0 w-80 pl-10 pr-4 py-1 text-xs font-semibold uppercase placeholder:text-neutral-400 outline-none transition-all" placeholder="SEARCH PATIENT, ID, OR CLINICIAN..." type="text"/>
 </div>
 </div>
 <div className="flex items-center gap-2">
 <button className="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors active:bg-neutral-200">
-<span className="material-symbols-outlined" data-icon="notifications">notifications</span>
+<HcIcon name="notifications" />
 </button>
 <button className="p-2 text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors active:bg-neutral-200">
-<span className="material-symbols-outlined" data-icon="help">help</span>
+<HcIcon name="help" />
 </button>
 <div className="h-8 w-[2px] bg-neutral-200 dark:bg-neutral-800 mx-2"></div>
 <div className="flex items-center gap-3 px-2 py-1 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer">
@@ -41,11 +42,11 @@ export default function NurseIntakeBoardPage() {
 <p className="text-4xl font-light text-neutral-900">14</p>
 </div>
 <div className="z-10 flex items-center gap-2 text-[10px] font-bold text-blue-600 uppercase">
-<span className="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<HcIcon name="trending_up" className="text-sm" />
 <span>+2 from last hour</span>
 </div>
 <div className="absolute right-0 bottom-0 translate-x-4 translate-y-4 opacity-5">
-<span className="material-symbols-outlined text-9xl" data-icon="groups">groups</span>
+<HcIcon name="groups" className="text-9xl" />
 </div>
 </div>
 <div className="col-span-4 bg-surface-container-highest p-6 flex flex-col justify-between h-32 relative overflow-hidden">
@@ -54,7 +55,7 @@ export default function NurseIntakeBoardPage() {
 <p className="text-4xl font-light text-neutral-900">28</p>
 </div>
 <div className="z-10 flex items-center gap-2 text-[10px] font-bold text-blue-600 uppercase">
-<span className="material-symbols-outlined text-sm" data-icon="timer">timer</span>
+<HcIcon name="timer" className="text-sm" />
 <span>Avg. Wait: 12m</span>
 </div>
 </div>
@@ -64,7 +65,7 @@ export default function NurseIntakeBoardPage() {
 <p className="text-4xl font-light text-error">03</p>
 </div>
 <div className="z-10 flex items-center gap-2 text-[10px] font-bold text-error uppercase">
-<span className="material-symbols-outlined text-sm" data-icon="warning">warning</span>
+<HcIcon name="warning" className="text-sm" />
 <span>Requires Immediate Action</span>
 </div>
 </div>
@@ -92,7 +93,7 @@ export default function NurseIntakeBoardPage() {
 <h4 className="text-sm font-bold uppercase tracking-tight">Arthur Morgan</h4>
 <p className="text-[10px] text-neutral-500 uppercase font-semibold">Post-Op Follow-up • Dr. Adler</p>
 </div>
-<span className="material-symbols-outlined text-blue-600" data-icon="chevron_right">chevron_right</span>
+<HcIcon name="chevron_right" className="text-blue-600" />
 </div>
 {/* Patient Item */}
 <div className="bg-surface p-4 border-l-4 border-transparent flex items-center gap-4 cursor-pointer hover:bg-neutral-100 transition-colors">
@@ -118,7 +119,7 @@ export default function NurseIntakeBoardPage() {
 <h4 className="text-sm font-bold uppercase tracking-tight">Sadie Miller</h4>
 <p className="text-[10px] text-neutral-500 uppercase font-semibold">Emergency Chest Pain • Triage 1</p>
 </div>
-<span className="material-symbols-outlined text-error" data-icon="priority_high">priority_high</span>
+<HcIcon name="priority_high" className="text-error" />
 </div>
 <div className="bg-surface p-4 border-l-4 border-transparent flex items-center gap-4 cursor-pointer hover:bg-neutral-100 transition-colors">
 <div className="w-10 h-10 bg-neutral-100 flex items-center justify-center font-bold text-neutral-400">DB</div>
@@ -179,7 +180,7 @@ export default function NurseIntakeBoardPage() {
 <div className="bg-surface-container-low p-6 space-y-6">
 <div className="flex items-center justify-between">
 <h4 className="text-[10px] font-black uppercase tracking-widest text-neutral-500">Quick Vitals</h4>
-<span className="material-symbols-outlined text-sm text-blue-600" data-icon="history">history</span>
+<HcIcon name="history" className="text-sm text-blue-600" />
 </div>
 <div className="space-y-4">
 <div className="flex justify-between items-end">
@@ -213,19 +214,19 @@ export default function NurseIntakeBoardPage() {
 </div>
 <div className="bg-neutral-900 p-6 space-y-4">
 <div className="flex items-center gap-2">
-<span className="material-symbols-outlined text-blue-500" data-icon="bolt">bolt</span>
+<HcIcon name="bolt" className="text-blue-500" />
 <h4 className="text-[10px] font-black uppercase tracking-widest text-white">Clinical Handoff Insight</h4>
 </div>
 <p className="text-xs text-neutral-400 font-medium leading-relaxed italic">
                             "Arthur Morgan's BP has trended slightly lower over the last 3 visits. Verify baseline and note current medication compliance for Metoprolol."
                         </p>
 <button className="text-[10px] font-black text-blue-500 uppercase flex items-center gap-1 hover:text-white transition-colors">
-                            ACKNOWLEDGE INSIGHT <span className="material-symbols-outlined text-xs" data-icon="check">check</span>
+                            ACKNOWLEDGE INSIGHT <HcIcon name="check" className="text-xs" />
 </button>
 </div>
 <div className="bg-surface-container-highest p-6">
 <div className="flex items-center gap-2 mb-4">
-<span className="material-symbols-outlined text-sm" data-icon="event_note">event_note</span>
+<HcIcon name="event_note" className="text-sm" />
 <h4 className="text-[10px] font-black uppercase tracking-widest">Upcoming Shift Tasks</h4>
 </div>
 <div className="space-y-3">
@@ -235,7 +236,7 @@ export default function NurseIntakeBoardPage() {
 </div>
 <div className="flex items-center gap-3">
 <div className="w-4 h-4 border-2 border-neutral-900 flex-shrink-0 bg-neutral-900 flex items-center justify-center">
-<span className="material-symbols-outlined text-[10px] text-white" data-icon="check">check</span>
+<HcIcon name="check" className="text-[10px] text-white" />
 </div>
 <span className="text-[11px] font-bold uppercase line-through text-neutral-400">Review Lab Results Room 12</span>
 </div>

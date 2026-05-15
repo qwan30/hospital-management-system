@@ -1,4 +1,5 @@
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function SpecialClosuresPage() {
   return (
     <>
@@ -19,10 +20,10 @@ export default function SpecialClosuresPage() {
 <input className="bg-surface-container-low border-none focus:ring-1 focus:ring-primary px-4 py-1.5 text-sm w-64 font-['Public_Sans']" placeholder="Search operations..." type="text"/>
 </div>
 <div className="flex items-center gap-2">
-<button className="p-2 hover:bg-[#f6f3f2] dark:hover:bg-[#262626] transition-colors"><span className="material-symbols-outlined text-on-surface" data-icon="notifications">notifications</span></button>
-<button className="p-2 hover:bg-[#f6f3f2] dark:hover:bg-[#262626] transition-colors"><span className="material-symbols-outlined text-on-surface" data-icon="settings">settings</span></button>
+<button className="p-2 hover:bg-[#f6f3f2] dark:hover:bg-[#262626] transition-colors"><HcIcon name="notifications" className="text-on-surface" /></button>
+<button className="p-2 hover:bg-[#f6f3f2] dark:hover:bg-[#262626] transition-colors"><HcIcon name="settings" className="text-on-surface" /></button>
 <div className="h-8 w-8 bg-surface-container-high flex items-center justify-center">
-<span className="material-symbols-outlined text-primary" data-icon="account_circle">account_circle</span>
+<HcIcon name="account_circle" className="text-primary" />
 </div>
 </div>
 </div>
@@ -36,7 +37,7 @@ export default function SpecialClosuresPage() {
 <p className="text-sm text-outline font-medium uppercase tracking-[0.2em]">Administration &amp; Lab Suspension Schedules</p>
 </div>
 <button className="bg-primary-container text-white px-6 py-3 font-semibold text-sm flex items-center gap-3 active:bg-[#004ccd] transition-all">
-<span className="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<HcIcon name="add_circle" />
                     CREATE_NEW_CLOSURE
                 </button>
 </div>
@@ -48,9 +49,9 @@ export default function SpecialClosuresPage() {
 <div className="mb-8 flex justify-between items-center">
 <h2 className="text-xl font-semibold tracking-tight">Closure Calendar</h2>
 <div className="flex gap-1">
-<button className="p-2 hover:bg-surface-container-highest transition-colors"><span className="material-symbols-outlined" data-icon="chevron_left">chevron_left</span></button>
+<button className="p-2 hover:bg-surface-container-highest transition-colors"><HcIcon name="chevron_left" /></button>
 <button className="px-4 text-sm font-bold uppercase tracking-widest">October 2023</button>
-<button className="p-2 hover:bg-surface-container-highest transition-colors"><span className="material-symbols-outlined" data-icon="chevron_right">chevron_right</span></button>
+<button className="p-2 hover:bg-surface-container-highest transition-colors"><HcIcon name="chevron_right" /></button>
 </div>
 </div>
 {/* Utility-First Calendar */}
@@ -145,14 +146,14 @@ export default function SpecialClosuresPage() {
 <h3 className="font-semibold text-lg leading-tight mb-1 uppercase tracking-tight">National Health Observance Day</h3>
 <p className="text-sm text-on-surface-variant mb-3">All clinics and laboratories closed. Emergency ER services remain at 50% capacity.</p>
 <div className="flex gap-4">
-<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><span className="material-symbols-outlined text-[14px]" data-icon="timer">timer</span> FULL DAY</span>
-<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><span className="material-symbols-outlined text-[14px]" data-icon="location_on">location_on</span> CAMPUS_WIDE</span>
+<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><HcIcon name="timer" className="text-[14px]" /> FULL DAY</span>
+<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><HcIcon name="location_on" className="text-[14px]" /> CAMPUS_WIDE</span>
 </div>
 </div>
 </div>
 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button className="p-2 hover:bg-surface-container-high"><span className="material-symbols-outlined text-outline" data-icon="edit">edit</span></button>
-<button className="p-2 hover:bg-error-container text-error"><span className="material-symbols-outlined" data-icon="delete">delete</span></button>
+<button className="p-2 hover:bg-surface-container-high"><HcIcon name="edit" className="text-outline" /></button>
+<button className="p-2 hover:bg-error-container text-error"><HcIcon name="delete" /></button>
 </div>
 </div>
 {/* Closure Card 2 */}
@@ -166,14 +167,14 @@ export default function SpecialClosuresPage() {
 <h3 className="font-semibold text-lg leading-tight mb-1 uppercase tracking-tight">System Infrastructure Upgrade</h3>
 <p className="text-sm text-on-surface-variant mb-3">Electronic Medical Records (EMR) system offline for periodic DB migration.</p>
 <div className="flex gap-4">
-<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><span className="material-symbols-outlined text-[14px]" data-icon="timer">timer</span> 22:00 - 04:00</span>
-<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><span className="material-symbols-outlined text-[14px]" data-icon="biotech">biotech</span> RADIOLOGY_DEPT</span>
+<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><HcIcon name="timer" className="text-[14px]" /> 22:00 - 04:00</span>
+<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><HcIcon name="biotech" className="text-[14px]" /> RADIOLOGY_DEPT</span>
 </div>
 </div>
 </div>
 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button className="p-2 hover:bg-surface-container-high"><span className="material-symbols-outlined text-outline" data-icon="edit">edit</span></button>
-<button className="p-2 hover:bg-error-container text-error"><span className="material-symbols-outlined" data-icon="delete">delete</span></button>
+<button className="p-2 hover:bg-surface-container-high"><HcIcon name="edit" className="text-outline" /></button>
+<button className="p-2 hover:bg-error-container text-error"><HcIcon name="delete" /></button>
 </div>
 </div>
 {/* Closure Card 3 */}
@@ -187,14 +188,14 @@ export default function SpecialClosuresPage() {
 <h3 className="font-semibold text-lg leading-tight mb-1 uppercase tracking-tight">Staff Professional Development</h3>
 <p className="text-sm text-on-surface-variant mb-3">Internal training session. OPD closed for the afternoon session.</p>
 <div className="flex gap-4">
-<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><span className="material-symbols-outlined text-[14px]" data-icon="timer">timer</span> 13:00 - 18:00</span>
-<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><span className="material-symbols-outlined text-[14px]" data-icon="medical_services">medical_services</span> OPD_UNIT_B</span>
+<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><HcIcon name="timer" className="text-[14px]" /> 13:00 - 18:00</span>
+<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><HcIcon name="medical_services" className="text-[14px]" /> OPD_UNIT_B</span>
 </div>
 </div>
 </div>
 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button className="p-2 hover:bg-surface-container-high"><span className="material-symbols-outlined text-outline" data-icon="edit">edit</span></button>
-<button className="p-2 hover:bg-error-container text-error"><span className="material-symbols-outlined" data-icon="delete">delete</span></button>
+<button className="p-2 hover:bg-surface-container-high"><HcIcon name="edit" className="text-outline" /></button>
+<button className="p-2 hover:bg-error-container text-error"><HcIcon name="delete" /></button>
 </div>
 </div>
 </div>

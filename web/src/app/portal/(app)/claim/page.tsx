@@ -9,6 +9,7 @@ import {
   type PatientLoginResponse,
 } from "@/lib/api-client";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function PatientClaimAccessPage() {
   const [message, setMessage] = useState("");
   const [messageTone, setMessageTone] = useState<"error" | "success">("error");
@@ -50,12 +51,10 @@ export default function PatientClaimAccessPage() {
         <header className="p-8 pb-4">
           <div className="flex items-center gap-2 mb-12">
             <div className="w-8 h-8 bg-primary-container flex items-center justify-center">
-              <span className="material-symbols-outlined text-white text-xl" data-icon="health_metrics">
-                health_metrics
-              </span>
+              <HcIcon name="health_metrics" className="text-white text-xl" />
             </div>
             <span className="text-xl font-bold tracking-widest text-neutral-900 uppercase">
-              MEDCORE OS
+              HOSPITAL CORE
             </span>
           </div>
           <h1 className="text-3xl font-light text-on-surface leading-tight mb-2 tracking-tight">
@@ -154,9 +153,7 @@ export default function PatientClaimAccessPage() {
             </div>
 
             <div className="bg-surface-container-high p-4 flex gap-4 items-start">
-              <span className="material-symbols-outlined text-primary text-xl" data-icon="info">
-                info
-              </span>
+              <HcIcon name="info" className="text-primary text-xl" />
               <p className="text-xs text-on-surface-variant leading-relaxed">
                 Your identity will be cross-referenced with our secure Clinical Staff registry. Ensure the details match your latest hospital admission record.
               </p>
@@ -184,9 +181,7 @@ export default function PatientClaimAccessPage() {
               <span className="font-semibold tracking-wide uppercase text-sm">
                 {isSubmitting ? "Requesting Verification" : "Request Verification Code"}
               </span>
-              <span className="material-symbols-outlined transition-transform group-hover:translate-x-1" data-icon="arrow_forward">
-                arrow_forward
-              </span>
+              <HcIcon name="arrow_forward" className="transition-transform group-hover:translate-x-1" />
             </button>
             <Link className="text-xs font-semibold text-primary hover:underline self-start uppercase tracking-wider" href="/portal/login">
               Already activated? Sign in

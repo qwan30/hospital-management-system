@@ -13,6 +13,8 @@ export default function LogoutPage() {
     async function logout() {
       try {
         await apiRequest("/auth/logout", { method: "POST" });
+      } catch {
+        // Local UI logout must clear client state even when the API is unavailable.
       } finally {
         clearSessions();
 

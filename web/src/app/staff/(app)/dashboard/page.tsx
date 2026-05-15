@@ -1,403 +1,312 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import { Activity, AlertTriangle, Clock, FlaskConical, Filter, Download, Stethoscope } from "lucide-react";
+import { HcIcon } from "@/components/ui/hc-icon";
+import { PageHeader } from "@/components/ui/page-header";
+import { KpiCard } from "@/components/ui/kpi-card";
+import { DataPanel } from "@/components/ui/data-panel";
+
+const MOCK_PATIENTS = [
+  { id: "PX-2024-8812", name: "Elena Rodriguez", initials: "ER", status: "Critical", ward: "ER", bp: "145/92", hr: 98, o2: 91, lastCheck: "13:45:00", nurse: "Nurse S. Miller", avatarColor: "bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)]" },
+  { id: "PX-2024-8740", name: "James T. Kendrick", initials: "JK", status: "Stable", ward: "Ward 4-A", bp: "120/80", hr: 72, o2: 98, lastCheck: "12:10:22", nurse: "Nurse R. Chen", avatarColor: "bg-[#ECFCCB] text-[#4D7C0F]" },
+  { id: "PX-2024-9003", name: "Linda Wu", initials: "LW", status: "Observation", ward: "Observation", bp: "132/85", hr: 84, o2: 96, lastCheck: "14:00:15", nurse: "Nurse S. Miller", avatarColor: "bg-[var(--hc-info-bg)] text-[var(--hc-info)]" },
+  { id: "PX-2024-8119", name: "Marcus V. Aurelius", initials: "MA", status: "Critical", ward: "ICU East", bp: "90/60", hr: 110, o2: 94, lastCheck: "13:58:10", nurse: "Nurse R. Chen", avatarColor: "bg-[var(--hc-purple-bg)] text-[var(--hc-purple)]" },
+];
+
 export default function DoctorDashboardPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All Status");
+  const [wardFilter, setWardFilter] = useState("All Wards");
+
+  const filteredPatients = useMemo(() => {
+    return MOCK_PATIENTS.filter(p => {
+      const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.id.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === "All Status" || p.status === statusFilter;
+      const matchesWard = wardFilter === "All Wards" || p.ward === wardFilter;
+      return matchesSearch && matchesStatus && matchesWard;
+    });
+  }, [searchQuery, statusFilter, wardFilter]);
+
   return (
     <div className="p-8">
       {/* Header Section */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-light tracking-tight text-hms-on-surface">
-          Doctor Dashboard
-        </h1>
-        <p className="text-sm text-hms-on-surface-variant font-mono mt-1">
-          ID: HMS-PHYS-9942 // LAST REFRESH: 14:02:11
-        </p>
+      <PageHeader 
+        title="Doctor Dashboard"
+        description="ID: HMS-PHYS-9942 • LAST REFRESH: 14:02:11"
+        action={
+          <button className="flex items-center gap-2 text-sm font-semibold text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] transition-colors">
+            <HcIcon name="refresh" className="text-lg" />
+          </button>
+        }
+      />
+
+      {/* KPI Cards */}
+      <div className="hc-kpi-grid">
+        <KpiCard
+          label="Active Rounds"
+          value="12"
+          helper="↑ 2 from previous shift"
+          icon={Stethoscope}
+          tone="blue"
+        />
+        <KpiCard
+          label="Critical Alerts"
+          value="03"
+          helper="Requires immediate action"
+          icon={AlertTriangle}
+          tone="red"
+        />
+        <KpiCard
+          label="Wait Time Avg"
+          value="18m"
+          helper="Unit efficiency: 94%"
+          icon={Clock}
+          tone="teal"
+        />
+        <KpiCard
+          label="Pending Lab Reports"
+          value="24"
+          helper="5 expiring soon"
+          icon={FlaskConical}
+          tone="purple"
+        />
       </div>
 
-      {/* KPI Cards - Monolithic Data Blocks */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-0 mb-8">
-        <div className="bg-hms-surface-container-low p-6 border-r border-hms-surface-container">
-          <span className="text-[11px] font-semibold uppercase tracking-widest text-hms-on-surface-variant">
-            Active Rounds
-          </span>
-          <div className="text-4xl font-light mt-2 text-hms-primary-container">
-            12
-          </div>
-          <div className="mt-4 text-[10px] mono text-hms-on-surface-variant">
-            +2 FROM PREV. SHIFT
-          </div>
-        </div>
-        <div className="bg-hms-surface-container-low p-6 border-r border-hms-surface-container">
-          <span className="text-[11px] font-semibold uppercase tracking-widest text-hms-on-surface-variant">
-            Critical Alerts
-          </span>
-          <div className="text-4xl font-light mt-2 text-hms-error">03</div>
-          <div className="mt-4 text-[10px] mono text-hms-error">
-            REQUIRES IMMEDIATE ACTION
-          </div>
-        </div>
-        <div className="bg-hms-surface-container-low p-6 border-r border-hms-surface-container">
-          <span className="text-[11px] font-semibold uppercase tracking-widest text-hms-on-surface-variant">
-            Wait Time Avg
-          </span>
-          <div className="text-4xl font-light mt-2">
-            18<span className="text-xl">min</span>
-          </div>
-          <div className="mt-4 text-[10px] mono text-hms-on-surface-variant">
-            UNIT EFFICIENCY: 94%
-          </div>
-        </div>
-        <div className="bg-hms-surface-container-low p-6">
-          <span className="text-[11px] font-semibold uppercase tracking-widest text-hms-on-surface-variant">
-            Pending Lab Reports
-          </span>
-          <div className="text-4xl font-light mt-2">24</div>
-          <div className="mt-4 text-[10px] mono text-hms-on-surface-variant">
-            5 EXPIRING SOON
-          </div>
-        </div>
-      </div>
-
-      {/* Sticky Filters & Table Header */}
-      <div className="sticky top-[48px] bg-hms-surface z-40 py-4 border-b-2 border-hms-primary-container mb-1">
-        <div className="flex items-center justify-between">
-          <div className="flex gap-4 items-center">
-            <div className="flex items-center bg-hms-surface-container-low px-3 h-10 border-b-2 border-hms-outline focus-within:border-hms-primary">
-              <span className="material-symbols-outlined text-hms-on-surface-variant text-sm mr-2">
-                search
-              </span>
-              <input
-                aria-label="Search patients by name or ID"
-                className="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder-hms-on-surface-variant outline-none"
-                placeholder="Search by name or ID..."
-                type="text"
-              />
+      {/* Data Panel */}
+      <DataPanel
+        className="mb-8"
+        filters={
+          <div className="flex flex-1 items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="hc-search">
+                <HcIcon name="search" className="text-[var(--hc-text-placeholder)]" />
+                <input
+                  aria-label="Search patients by name or ID"
+                  placeholder="Search by name or ID..."
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <select
+                aria-label="Filter patients by status"
+                className="hc-select"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="All Status">All Status</option>
+                <option value="Critical">Critical</option>
+                <option value="Stable">Stable</option>
+                <option value="Observation">Observation</option>
+              </select>
+              <select
+                aria-label="Filter patients by ward"
+                className="hc-select"
+                value={wardFilter}
+                onChange={(e) => setWardFilter(e.target.value)}
+              >
+                <option value="All Wards">All Wards</option>
+                <option value="Ward 4-A">Ward 4-A</option>
+                <option value="ICU East">ICU East</option>
+                <option value="Cardiology">Cardiology</option>
+                <option value="ER">ER</option>
+                <option value="Observation">Observation</option>
+              </select>
             </div>
-            <select
-              aria-label="Filter patients by status"
-              className="bg-hms-surface-container-low border-none border-b-2 border-hms-outline focus:ring-0 h-10 text-sm px-3 w-40 font-semibold outline-none"
-            >
-              <option>All Status</option>
-              <option>Critical</option>
-              <option>Stable</option>
-              <option>Discharging</option>
+            <div className="flex gap-2">
+              <button className="flex items-center gap-2 px-4 h-10 border border-[var(--hc-border)] rounded-[var(--radius-md)] text-[13px] font-semibold text-[var(--hc-text)] hover:bg-[var(--hc-surface-soft)] transition-colors bg-[var(--hc-surface)] shadow-[var(--shadow-xs)]">
+                <Filter className="w-4 h-4 text-[var(--hc-text-secondary)]" />
+                More Filters
+              </button>
+              <button className="flex items-center gap-2 px-4 h-10 border border-[var(--hc-border)] rounded-[var(--radius-md)] text-[13px] font-semibold text-[var(--hc-text)] hover:bg-[var(--hc-surface-soft)] transition-colors bg-[var(--hc-surface)] shadow-[var(--shadow-xs)]">
+                <Download className="w-4 h-4 text-[var(--hc-text-secondary)]" />
+                Export
+              </button>
+            </div>
+          </div>
+        }
+        footer={
+          <>
+            <span className="text-[13px] font-medium text-[var(--hc-text-secondary)]">Showing {filteredPatients.length > 0 ? 1 : 0}-{filteredPatients.length} of {filteredPatients.length} patients</span>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <button className="w-8 h-8 rounded-[var(--radius-sm)] border border-[var(--hc-border)] flex items-center justify-center text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50" disabled>
+                  {"<"}
+                </button>
+                <button className="w-8 h-8 rounded-[var(--radius-sm)] border border-[var(--hc-blue-600)] bg-[var(--hc-blue-600)] flex items-center justify-center text-white font-medium text-sm">
+                  1
+                </button>
+                <button className="w-8 h-8 rounded-[var(--radius-sm)] border border-[var(--hc-border)] flex items-center justify-center text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50" disabled>
+                  {">"}
+                </button>
+              </div>
+              <div className="flex items-center gap-2 ml-4">
+                <span className="text-[13px] text-[var(--hc-text-secondary)]">Show</span>
+                <select className="border border-[var(--hc-border)] rounded-[var(--radius-sm)] h-8 px-2 text-[13px] text-[var(--hc-text)] font-medium bg-[var(--hc-surface)] outline-none">
+                  <option>10</option>
+                  <option>20</option>
+                  <option>50</option>
+                </select>
+              </div>
+            </div>
+          </>
+        }
+      >
+        <div className="overflow-x-auto">
+          <table className="hc-table w-full text-left">
+            <thead>
+              <tr>
+                <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] bg-[var(--hc-surface-soft)]">Patient / Case ID</th>
+                <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] bg-[var(--hc-surface-soft)]">Priority</th>
+                <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] bg-[var(--hc-surface-soft)]">Vital Stats</th>
+                <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] bg-[var(--hc-surface-soft)]">Last Check</th>
+                <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] bg-[var(--hc-surface-soft)]">Attending Nurse</th>
+                <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] bg-[var(--hc-surface-soft)]">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--hc-border-soft)]">
+              {filteredPatients.length > 0 ? (
+                filteredPatients.map(patient => (
+                  <tr key={patient.id} className="group transition-colors hover:bg-[var(--hc-blue-50)]">
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${patient.avatarColor}`}>
+                          {patient.initials}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-[var(--hc-text)] text-[13px]">{patient.name}</div>
+                          <div className="text-[11px] text-[var(--hc-text-secondary)] mt-0.5">{patient.id}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <span className={`hc-badge ${
+                        patient.status === 'Critical' ? 'bg-[var(--hc-critical-bg)] text-[var(--hc-critical)]' :
+                        patient.status === 'Stable' ? 'bg-[var(--hc-success-bg)] text-[var(--hc-success)]' :
+                        'bg-[var(--hc-info-bg)] text-[var(--hc-info)]'
+                      }`}>
+                        {patient.status}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-4">
+                        <span><span className="text-[10px] text-[var(--hc-text-placeholder)] mr-1 uppercase font-bold">BP</span><span className={`font-mono text-[13px] ${patient.bp.startsWith('90/') ? 'text-[var(--hc-danger)]' : ''}`}>{patient.bp}</span></span>
+                        <span><span className="text-[10px] text-[var(--hc-text-placeholder)] mr-1 uppercase font-bold">HR</span><span className="font-mono text-[13px]">{patient.hr}</span></span>
+                        <span><span className="text-[10px] text-[var(--hc-text-placeholder)] mr-1 uppercase font-bold">O₂</span><span className={`font-mono text-[13px] ${patient.o2 < 95 ? 'text-[var(--hc-danger)]' : 'text-[var(--hc-success)]'}`}>{patient.o2}%</span></span>
+                      </div>
+                    </td>
+                    <td className="p-4 text-[13px] text-[var(--hc-text)] font-mono">{patient.lastCheck}</td>
+                    <td className="p-4 text-[13px] text-[var(--hc-text)] font-medium">{patient.nurse}</td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-1">
+                        <button className="hc-icon-btn text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] hover:bg-[var(--hc-surface-soft)] p-1.5 rounded-md transition-colors"><HcIcon name="visibility" className="text-[18px]" /></button>
+                        <button className="hc-icon-btn text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] hover:bg-[var(--hc-surface-soft)] p-1.5 rounded-md transition-colors"><HcIcon name="more_vert" className="text-[18px]" /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="p-10 text-center text-[13px] font-medium text-[var(--hc-text-secondary)]">
+                    No patients match your search criteria.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </DataPanel>
+
+      {/* Dashboard Secondary Insights */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section className="lg:col-span-2 rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-[var(--hc-surface)] p-[24px] shadow-[var(--shadow-card)] flex flex-col h-full">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--hc-surface-soft)] flex items-center justify-center text-[var(--hc-text-secondary)]">
+                <HcIcon name="science" className="text-[20px]" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-[var(--hc-text)] leading-tight">Laboratory Queue Trends</h2>
+                <p className="text-sm text-[var(--hc-text-secondary)] mt-0.5">Next 12 hours forecast</p>
+              </div>
+            </div>
+            <select className="border border-[var(--hc-border)] rounded-md px-3 h-9 text-sm text-[var(--hc-text)] bg-[var(--hc-surface)] font-medium outline-none">
+              <option>Next 12 Hours</option>
+              <option>Next 24 Hours</option>
             </select>
-            <select
-              aria-label="Filter patients by ward"
-              className="bg-hms-surface-container-low border-none border-b-2 border-hms-outline focus:ring-0 h-10 text-sm px-3 w-40 font-semibold outline-none"
-            >
-              <option>Ward 4-A</option>
-              <option>ICU East</option>
-              <option>Cardiology</option>
-            </select>
           </div>
-          <div className="flex gap-2">
-            <button className="bg-hms-surface-container-high px-4 h-10 text-xs font-semibold uppercase tracking-wider flex items-center gap-2 hover:bg-hms-surface-container-highest transition-colors">
-              <span className="material-symbols-outlined text-sm">
-                filter_list
-              </span>
-              Advanced Filter
-            </button>
-            <button className="bg-hms-surface-container-high px-4 h-10 text-xs font-semibold uppercase tracking-wider flex items-center gap-2 hover:bg-hms-surface-container-highest transition-colors">
-              <span className="material-symbols-outlined text-sm">
-                download
-              </span>
-              Export
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* High Density Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="bg-hms-surface-container-low">
-              <th className="p-4 text-[11px] font-semibold uppercase tracking-widest text-hms-on-surface-variant">
-                Patient / Case ID
-              </th>
-              <th className="p-4 text-[11px] font-semibold uppercase tracking-widest text-hms-on-surface-variant">
-                Priority
-              </th>
-              <th className="p-4 text-[11px] font-semibold uppercase tracking-widest text-hms-on-surface-variant">
-                Vital Stats
-              </th>
-              <th className="p-4 text-[11px] font-semibold uppercase tracking-widest text-hms-on-surface-variant">
-                Last Check
-              </th>
-              <th className="p-4 text-[11px] font-semibold uppercase tracking-widest text-hms-on-surface-variant">
-                Attending Nurse
-              </th>
-              <th className="p-4 text-[11px] font-semibold uppercase tracking-widest text-hms-on-surface-variant">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-hms-surface-container">
-            {/* Patient Row 1 */}
-            <tr className="hms-row transition-colors group">
-              <td className="p-4">
-                <div className="font-semibold text-sm">Elena Rodriguez</div>
-                <div className="mono text-[11px] text-hms-on-surface-variant">
-                  PX-2024-8812
-                </div>
-              </td>
-              <td className="p-4">
-                <span className="bg-hms-error-container text-hms-on-error-container px-2 py-0.5 text-[10px] font-bold uppercase">
-                  Critical
-                </span>
-              </td>
-              <td className="p-4">
-                <div className="flex gap-4">
-                  <div className="text-sm">
-                    <span className="text-[10px] text-hms-on-surface-variant mr-1">
-                      BP
-                    </span>
-                    <span className="mono">145/92</span>
-                  </div>
-                  <div className="text-sm">
-                    <span className="text-[10px] text-hms-on-surface-variant mr-1">
-                      HR
-                    </span>
-                    <span className="mono">98</span>
-                  </div>
-                  <div className="text-sm">
-                    <span className="text-[10px] text-hms-on-surface-variant mr-1">
-                      O2
-                    </span>
-                    <span className="mono text-hms-error">91%</span>
-                  </div>
-                </div>
-              </td>
-              <td className="p-4 mono text-sm">13:45:00</td>
-              <td className="p-4 text-sm font-medium">Nurse S. Miller</td>
-              <td className="p-4">
-                <div className="flex gap-2">
-                  <button className="w-8 h-8 flex items-center justify-center hover:bg-hms-surface-container-highest transition-colors">
-                    <span className="material-symbols-outlined text-[18px]">
-                      visibility
-                    </span>
-                  </button>
-                  <button className="w-8 h-8 flex items-center justify-center hover:bg-hms-surface-container-highest transition-colors">
-                    <span className="material-symbols-outlined text-[18px]">
-                      edit_note
-                    </span>
-                  </button>
-                </div>
-              </td>
-            </tr>
-
-            {/* Patient Row 2 */}
-            <tr className="hms-row transition-colors group">
-              <td className="p-4">
-                <div className="font-semibold text-sm">James T. Kendrick</div>
-                <div className="mono text-[11px] text-hms-on-surface-variant">
-                  PX-2024-8740
-                </div>
-              </td>
-              <td className="p-4">
-                <span className="bg-hms-surface-container-highest text-hms-on-surface-variant px-2 py-0.5 text-[10px] font-bold uppercase">
-                  Stable
-                </span>
-              </td>
-              <td className="p-4">
-                <div className="flex gap-4">
-                  <div className="text-sm">
-                    <span className="text-[10px] text-hms-on-surface-variant mr-1">
-                      BP
-                    </span>
-                    <span className="mono">120/80</span>
-                  </div>
-                  <div className="text-sm">
-                    <span className="text-[10px] text-hms-on-surface-variant mr-1">
-                      HR
-                    </span>
-                    <span className="mono">72</span>
-                  </div>
-                  <div className="text-sm">
-                    <span className="text-[10px] text-hms-on-surface-variant mr-1">
-                      O2
-                    </span>
-                    <span className="mono">98%</span>
-                  </div>
-                </div>
-              </td>
-              <td className="p-4 mono text-sm">12:10:22</td>
-              <td className="p-4 text-sm font-medium">Nurse R. Chen</td>
-              <td className="p-4">
-                <div className="flex gap-2">
-                  <button className="w-8 h-8 flex items-center justify-center hover:bg-hms-surface-container-highest transition-colors">
-                    <span className="material-symbols-outlined text-[18px]">
-                      visibility
-                    </span>
-                  </button>
-                  <button className="w-8 h-8 flex items-center justify-center hover:bg-hms-surface-container-highest transition-colors">
-                    <span className="material-symbols-outlined text-[18px]">
-                      edit_note
-                    </span>
-                  </button>
-                </div>
-              </td>
-            </tr>
-
-            {/* Patient Row 3 */}
-            <tr className="hms-row transition-colors group">
-              <td className="p-4">
-                <div className="font-semibold text-sm">Linda Wu</div>
-                <div className="mono text-[11px] text-hms-on-surface-variant">
-                  PX-2024-9003
-                </div>
-              </td>
-              <td className="p-4">
-                <span className="bg-hms-secondary-container text-hms-on-secondary-container px-2 py-0.5 text-[10px] font-bold uppercase">
-                  Observation
-                </span>
-              </td>
-              <td className="p-4">
-                <div className="flex gap-4">
-                  <div className="text-sm">
-                    <span className="text-[10px] text-hms-on-surface-variant mr-1">
-                      BP
-                    </span>
-                    <span className="mono">132/85</span>
-                  </div>
-                  <div className="text-sm">
-                    <span className="text-[10px] text-hms-on-surface-variant mr-1">
-                      HR
-                    </span>
-                    <span className="mono">84</span>
-                  </div>
-                  <div className="text-sm">
-                    <span className="text-[10px] text-hms-on-surface-variant mr-1">
-                      O2
-                    </span>
-                    <span className="mono">96%</span>
-                  </div>
-                </div>
-              </td>
-              <td className="p-4 mono text-sm">14:00:15</td>
-              <td className="p-4 text-sm font-medium">Nurse S. Miller</td>
-              <td className="p-4">
-                <div className="flex gap-2">
-                  <button className="w-8 h-8 flex items-center justify-center hover:bg-hms-surface-container-highest transition-colors">
-                    <span className="material-symbols-outlined text-[18px]">
-                      visibility
-                    </span>
-                  </button>
-                  <button className="w-8 h-8 flex items-center justify-center hover:bg-hms-surface-container-highest transition-colors">
-                    <span className="material-symbols-outlined text-[18px]">
-                      edit_note
-                    </span>
-                  </button>
-                </div>
-              </td>
-            </tr>
-
-            {/* Patient Row 4 */}
-            <tr className="hms-row transition-colors group">
-              <td className="p-4">
-                <div className="font-semibold text-sm">Marcus V. Aurelius</div>
-                <div className="mono text-[11px] text-hms-on-surface-variant">
-                  PX-2024-8119
-                </div>
-              </td>
-              <td className="p-4">
-                <span className="bg-hms-error-container text-hms-on-error-container px-2 py-0.5 text-[10px] font-bold uppercase">
-                  Critical
-                </span>
-              </td>
-              <td className="p-4">
-                <div className="flex gap-4">
-                  <div className="text-sm">
-                    <span className="text-[10px] text-hms-on-surface-variant mr-1">
-                      BP
-                    </span>
-                    <span className="mono text-hms-error">90/60</span>
-                  </div>
-                  <div className="text-sm">
-                    <span className="text-[10px] text-hms-on-surface-variant mr-1">
-                      HR
-                    </span>
-                    <span className="mono">110</span>
-                  </div>
-                  <div className="text-sm">
-                    <span className="text-[10px] text-hms-on-surface-variant mr-1">
-                      O2
-                    </span>
-                    <span className="mono">94%</span>
-                  </div>
-                </div>
-              </td>
-              <td className="p-4 mono text-sm">13:58:10</td>
-              <td className="p-4 text-sm font-medium">Nurse R. Chen</td>
-              <td className="p-4">
-                <div className="flex gap-2">
-                  <button className="w-8 h-8 flex items-center justify-center hover:bg-hms-surface-container-highest transition-colors">
-                    <span className="material-symbols-outlined text-[18px]">
-                      visibility
-                    </span>
-                  </button>
-                  <button className="w-8 h-8 flex items-center justify-center hover:bg-hms-surface-container-highest transition-colors">
-                    <span className="material-symbols-outlined text-[18px]">
-                      edit_note
-                    </span>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      {/* Dashboard Bento Grid - Secondary Insights */}
-      <div className="grid grid-cols-12 gap-8 mt-12">
-        <div className="col-span-12 lg:col-span-8 bg-hms-surface-container-low p-8">
-          <div className="flex justify-between items-end mb-8">
-            <div>
-              <h3 className="text-xl font-light">Laboratory Queue Trends</h3>
-              <p className="text-[11px] font-semibold uppercase tracking-widest text-hms-on-surface-variant mt-1">
-                Next 12 Hours Forecast
-              </p>
+          <div className="bg-[var(--hc-surface-soft)] rounded-[var(--radius-lg)] h-[220px] w-full flex items-end px-8 pb-8 pt-8 gap-4 border border-[var(--hc-border-soft)]">
+            {/* CSS-Based Bar Chart */}
+            <div className="flex-1 bg-[var(--hc-purple-300)] rounded-t-sm h-[30%] transition-all hover:bg-[var(--hc-purple-600)] relative group">
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">12</div>
             </div>
-            <div className="flex gap-1">
-              <div className="w-2 h-8 bg-hms-primary-container" />
-              <div className="w-2 h-12 bg-hms-primary" />
-              <div className="w-2 h-16 bg-hms-primary-container" />
-              <div className="w-2 h-10 bg-hms-primary" />
-              <div className="w-2 h-14 bg-hms-primary-container" />
+            <div className="flex-1 bg-[var(--hc-purple-400)] rounded-t-sm h-[45%] transition-all hover:bg-[var(--hc-purple-600)] relative group">
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">18</div>
+            </div>
+            <div className="flex-1 bg-[var(--hc-purple-500)] rounded-t-sm h-[75%] transition-all hover:bg-[var(--hc-purple-600)] relative group">
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">32</div>
+            </div>
+            <div className="flex-1 bg-[var(--hc-purple-600)] rounded-t-sm h-[95%] transition-all hover:bg-[var(--hc-purple-700)] relative group">
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">45</div>
+            </div>
+            <div className="flex-1 bg-[var(--hc-purple-500)] rounded-t-sm h-[60%] transition-all hover:bg-[var(--hc-purple-600)] relative group">
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">28</div>
+            </div>
+            <div className="flex-1 bg-[var(--hc-purple-400)] rounded-t-sm h-[50%] transition-all hover:bg-[var(--hc-purple-600)] relative group">
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">22</div>
+            </div>
+            <div className="flex-1 bg-[var(--hc-purple-300)] rounded-t-sm h-[20%] transition-all hover:bg-[var(--hc-purple-600)] relative group">
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">8</div>
             </div>
           </div>
-          <div className="h-48 bg-hms-surface-container-highest flex items-center justify-center relative">
-            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,_#1c1b1b_1px,_transparent_0)] bg-[size:24px_24px]" />
-            <div className="text-[10px] mono text-hms-on-surface-variant font-bold">
-              DATA_STREAM_VISUALIZATION_LAYER
+        </section>
+
+        <section className="rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-[var(--hc-surface)] p-[24px] shadow-[var(--shadow-card)] flex flex-col h-full">
+          <div className="flex items-center gap-3 mb-6">
+             <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--hc-surface-soft)] flex items-center justify-center text-[var(--hc-text-secondary)]">
+                <HcIcon name="groups" className="text-[20px]" />
+             </div>
+             <h2 className="text-lg font-bold text-[var(--hc-text)]">Staffing Overview</h2>
+          </div>
+          
+          <div className="flex flex-col gap-0 flex-1">
+            <div className="flex items-center justify-between py-4 border-b border-[var(--hc-border-soft)]">
+              <div className="flex items-center gap-3">
+                 <div className="w-8 h-8 rounded-full bg-[var(--hc-success-bg)] text-[var(--hc-success)] flex items-center justify-center">
+                    <HcIcon name="favorite" className="text-[16px]" />
+                 </div>
+                 <span className="text-[13px] font-semibold text-[var(--hc-text)]">Cardiology Team</span>
+              </div>
+              <span className="hc-badge bg-[var(--hc-success-bg)] text-[var(--hc-success)]">ON-CALL</span>
+            </div>
+            <div className="flex items-center justify-between py-4 border-b border-[var(--hc-border-soft)]">
+              <div className="flex items-center gap-3">
+                 <div className="w-8 h-8 rounded-full bg-[var(--hc-purple-bg)] text-[var(--hc-purple)] flex items-center justify-center">
+                    <HcIcon name="stethoscope" className="text-[16px]" />
+                 </div>
+                 <span className="text-[13px] font-semibold text-[var(--hc-text)]">ER Resident Pool</span>
+              </div>
+              <span className="hc-badge bg-[var(--hc-danger-bg)] text-[var(--hc-danger)] border border-[var(--hc-danger-bg)]">STRETCHED (82%)</span>
+            </div>
+            <div className="flex items-center justify-between py-4">
+              <div className="flex items-center gap-3">
+                 <div className="w-8 h-8 rounded-full bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] flex items-center justify-center">
+                    <HcIcon name="content_cut" className="text-[16px]" />
+                 </div>
+                 <span className="text-[13px] font-semibold text-[var(--hc-text)]">Surgery Prep Unit</span>
+              </div>
+              <span className="hc-badge bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)]">OPTIMAL</span>
             </div>
           </div>
-        </div>
-        <div className="col-span-12 lg:col-span-4 bg-hms-surface-container-low p-8 flex flex-col">
-          <h3 className="text-xl font-light mb-6">Staffing Overview</h3>
-          <div className="space-y-6 flex-1">
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">Cardiology Team</span>
-              <span className="mono text-xs bg-hms-surface-container-highest px-2 py-1">
-                ON-CALL
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">ER Resident Pool</span>
-              <span className="mono text-xs text-hms-error font-bold">
-                STRETCHED (82%)
-              </span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">Surgery Prep Unit</span>
-              <span className="mono text-xs text-hms-primary font-bold">
-                OPTIMAL
-              </span>
-            </div>
-          </div>
-          <button className="w-full mt-8 border border-hms-outline px-4 py-3 text-xs font-semibold uppercase tracking-widest hover:bg-hms-surface-container-highest transition-colors">
+          
+          <button className="mt-auto flex items-center justify-center gap-2 w-full h-[42px] border border-[var(--hc-border)] bg-[var(--hc-surface)] text-[var(--hc-blue-600)] rounded-[var(--radius-md)] text-sm font-bold hover:bg-[var(--hc-blue-50)] hover:border-[var(--hc-blue-600)] transition-all shadow-[var(--shadow-xs)]">
+            <HcIcon name="manage_accounts" className="text-[18px]" />
             Reassign Resources
           </button>
-        </div>
+        </section>
       </div>
     </div>
   );
 }
+

@@ -24,8 +24,32 @@ export interface ClinicalAppointmentResponse {
   patientCccd: string;
 }
 
+export interface AppointmentListResponse {
+  appointmentId: string;
+  confirmationCode: string;
+  status: ClinicalAppointmentStatus;
+  appointmentDate: string;
+  startTime: string;
+  endTime: string;
+  doctorId: string;
+  doctorName: string;
+  patientId: string;
+  patientName: string;
+  patientPhone: string;
+  symptoms: string | null;
+  createdAt: string;
+}
+
 export interface AppointmentCheckInRequest {
   checkedInAt: string;
+}
+
+export interface ListAppointmentsParams {
+  status?: ClinicalAppointmentStatus;
+  doctorId?: string;
+  date?: string;
+  page?: number;
+  size?: number;
 }
 
 export interface QueueRoomAssignmentRequest {
@@ -52,6 +76,31 @@ export async function getTodayAppointments() {
   return response.data ?? [];
 }
 
+export async function listAppointments(params: ListAppointmentsParams = {}) {
+  const searchParams = new URLSearchParams();
+
+  if (params.status) {
+    searchParams.set("status", params.status);
+  }
+  if (params.doctorId) {
+    searchParams.set("doctorId", params.doctorId);
+  }
+  if (params.date) {
+    searchParams.set("date", params.date);
+  }
+  searchParams.set("page", String(params.page ?? 0));
+  searchParams.set("size", String(params.size ?? 100));
+
+  const query = searchParams.toString();
+  const response = await apiRequest<AppointmentListResponse[]>(
+    `/appointments${query ? `?${query}` : ""}`,
+    {},
+    { authScope: "staff" },
+  );
+
+  return response.data ?? [];
+}
+
 export async function checkInAppointment(
   appointmentId: string,
   request: AppointmentCheckInRequest,
@@ -70,6 +119,22 @@ export async function checkInAppointment(
   }
 
   return response.data;
+}
+
+export async function updateAppointmentStatus(
+  appointmentId: string,
+  status: ClinicalAppointmentStatus,
+) {
+  const response = await apiRequest<ClinicalAppointmentResponse>(
+    `/appointments/${appointmentId}/status`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ status }),
+    },
+    { authScope: "staff" },
+  );
+
+  return requireAppointmentResponse(response.data, "Appointment status update");
 }
 
 export async function callQueuePatient(appointmentId: string) {

@@ -1,7 +1,6 @@
 import { RouteGuard } from "@/components/auth/route-guard";
 import { StaffTopNav } from "@/components/shells/top-nav";
 import { StaffSideNav } from "@/components/shells/side-nav";
-import { HmsFooter } from "@/components/shells/footer";
 
 export default function StaffLayout({
   children,
@@ -10,13 +9,12 @@ export default function StaffLayout({
 }) {
   return (
     <RouteGuard scope="staff">
-      <div className="bg-hms-surface text-hms-on-surface min-h-screen overflow-x-hidden">
+      <div className="hc-app min-h-screen overflow-x-hidden bg-[var(--hc-bg)] text-[var(--hc-text)]">
         <StaffTopNav />
         <StaffSideNav />
-        <main className="mt-[48px] min-h-screen bg-hms-surface md:ml-64 overflow-x-hidden">
+        <main className="hc-main min-h-screen overflow-x-hidden bg-[var(--hc-content-bg)] pt-[var(--hc-topbar-h)] md:ml-[var(--hc-sidebar-w)]">
           {children}
         </main>
-        <HmsFooter />
       </div>
     </RouteGuard>
   );

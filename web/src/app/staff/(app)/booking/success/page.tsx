@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function BookingSuccessPage() {
   return (
     <>
@@ -10,7 +11,7 @@ export default function BookingSuccessPage() {
 {/* Success Indicator & Display Heading */}
 <header className="flex flex-col items-center text-center space-y-6">
 <div className="w-20 h-20 flex items-center justify-center bg-primary-container text-white">
-<span className="material-symbols-outlined text-5xl" >check_circle</span>
+<HcIcon name="check_circle" className="text-5xl" />
 </div>
 <div className="space-y-2">
 <h1 className="text-5xl font-[300] tracking-tight text-on-surface leading-tight">
@@ -40,11 +41,11 @@ export default function BookingSuccessPage() {
 <span className="text-xs font-semibold uppercase tracking-widest text-outline">Schedule Details</span>
 <div className="space-y-1">
 <div className="flex items-center space-x-2">
-<span className="material-symbols-outlined text-primary text-xl">calendar_today</span>
+<HcIcon name="calendar_today" className="text-primary text-xl" />
 <span className="text-xl font-semibold">October 24, 2023</span>
 </div>
 <div className="flex items-center space-x-2">
-<span className="material-symbols-outlined text-primary text-xl">schedule</span>
+<HcIcon name="schedule" className="text-primary text-xl" />
 <span className="text-xl font-semibold">09:15 AM (EST)</span>
 </div>
 </div>
@@ -57,11 +58,11 @@ export default function BookingSuccessPage() {
 <span className="text-xs font-semibold uppercase tracking-widest text-outline">Instructions</span>
 <ul className="space-y-4">
 <li className="flex items-start space-x-3">
-<span className="material-symbols-outlined text-primary mt-0.5">info</span>
+<HcIcon name="info" className="text-primary mt-0.5" />
 <p className="text-sm leading-relaxed">Please arrive 15 minutes prior to your appointment at the <strong>West Wing Cardiology Department, Level 4</strong>.</p>
 </li>
 <li className="flex items-start space-x-3">
-<span className="material-symbols-outlined text-primary mt-0.5">mail</span>
+<HcIcon name="mail" className="text-primary mt-0.5" />
 <p className="text-sm leading-relaxed">A confirmation email has been sent to your registered address with the digital check-in QR code.</p>
 </li>
 </ul>
@@ -79,7 +80,7 @@ export default function BookingSuccessPage() {
 {/* Branding Footer */}
 <div className="pt-12 text-center">
 <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-outline-variant">
-                    Automated Health Management System © 2023 MED-CARBON HMS
+                    Automated Hospital Core System (c) 2024 HOSPITAL CORE
                 </p>
 </div>
 </div>

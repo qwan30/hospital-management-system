@@ -1,269 +1,389 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import {
+  getPatientRecordDetail,
+  searchPatientRecords,
+  type PatientRecordDetailResponse,
+  type PatientRecordListItemResponse,
+} from "@/lib/patient-records-api";
+
+import { HcIcon } from "@/components/ui/hc-icon";
+import { PageHeader } from "@/components/ui/page-header";
+
+function calculateAge(dateOfBirth: string | null) {
+  if (!dateOfBirth) {
+    return "Unknown";
+  }
+
+  const birthDate = new Date(dateOfBirth);
+  if (Number.isNaN(birthDate.getTime())) {
+    return "Unknown";
+  }
+
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    age -= 1;
+  }
+
+  return `${age}y`;
+}
+
+function formatDate(value: string | null) {
+  if (!value) {
+    return "Not recorded";
+  }
+
+  return new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(new Date(value));
+}
+
+function formatTimeRange(startTime: string, endTime: string) {
+  return `${startTime.slice(0, 5)} - ${endTime.slice(0, 5)}`;
+}
+
+function getStatusTone(status: string) {
+  if (["DONE", "CANCELLED"].includes(status)) {
+    return "bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]";
+  }
+  if (["CHECKED_IN", "IN_PROGRESS"].includes(status)) {
+    return "bg-[var(--hc-primary)] text-white";
+  }
+  return "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]";
+}
 
 export default function PatientsPage() {
+  const [query, setQuery] = useState("");
+  const [patients, setPatients] = useState<PatientRecordListItemResponse[]>([]);
+  const [selectedPatientId, setSelectedPatientId] = useState("");
+  const [selectedDetail, setSelectedDetail] = useState<PatientRecordDetailResponse | null>(null);
+  const [isSearching, setIsSearching] = useState(true);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [detailError, setDetailError] = useState<string | null>(null);
+
+  async function loadPatients(nextQuery = query) {
+    setIsSearching(true);
+    setSearchError(null);
+
+    try {
+      const nextPatients = await searchPatientRecords(nextQuery);
+      setPatients(nextPatients);
+      if (!nextPatients.some((patient) => patient.patientId === selectedPatientId)) {
+        setSelectedPatientId("");
+        setSelectedDetail(null);
+      }
+    } catch (loadError) {
+      setPatients([]);
+      setSelectedPatientId("");
+      setSelectedDetail(null);
+      setSearchError(loadError instanceof Error ? loadError.message : "Unable to search patients");
+    } finally {
+      setIsSearching(false);
+    }
+  }
+
+  async function loadPatientDetail(patientId: string) {
+    setSelectedPatientId(patientId);
+    setIsLoadingDetail(true);
+    setDetailError(null);
+
+    try {
+      setSelectedDetail(await getPatientRecordDetail(patientId));
+    } catch (loadError) {
+      setSelectedDetail(null);
+      setDetailError(loadError instanceof Error ? loadError.message : "Unable to load patient detail");
+    } finally {
+      setIsLoadingDetail(false);
+    }
+  }
+
+  useEffect(() => {
+    let isActive = true;
+
+    searchPatientRecords()
+      .then((nextPatients) => {
+        if (!isActive) {
+          return;
+        }
+        setPatients(nextPatients);
+        setSearchError(null);
+      })
+      .catch((loadError) => {
+        if (!isActive) {
+          return;
+        }
+        setPatients([]);
+        setSearchError(loadError instanceof Error ? loadError.message : "Unable to search patients");
+      })
+      .finally(() => {
+        if (isActive) {
+          setIsSearching(false);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const selectedSummary = useMemo(
+    () => patients.find((patient) => patient.patientId === selectedPatientId) ?? null,
+    [patients, selectedPatientId],
+  );
+
+  function handleSearchSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void loadPatients(query);
+  }
+
   return (
-    <div className="flex bg-hms-surface-container-low h-[calc(100vh-48px)] overflow-hidden">
-      {/* Left Pane: Search and List (5/12 columns equivalent) */}
-      <div className="w-[41.66%] bg-white border-r border-hms-outline-variant flex flex-col h-full z-10">
-        <div className="p-8 space-y-6">
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-hms-outline">Patient Directory</label>
-            <h1 className="text-3xl font-light tracking-tight text-hms-on-background">Search Records</h1>
-          </div>
-          <div className="relative group">
+    <div className="flex bg-[var(--hc-background)] h-[calc(100vh-[var(--hc-topbar-height)])] overflow-hidden">
+      <div className="w-[41.66%] bg-[var(--hc-surface)] border-r border-[var(--hc-border)] flex flex-col h-full z-10">
+        <form className="p-8 pb-6 border-b border-[var(--hc-border-soft)] space-y-6" onSubmit={handleSearchSubmit}>
+          <PageHeader 
+            title="Search Records" 
+            description="Patient Directory"
+            className="mb-0"
+          />
+          <div className="hc-search relative group">
+            <HcIcon name="search" className="text-[var(--hc-text-placeholder)] absolute left-4 top-1/2 -translate-y-1/2" />
             <input
-              className="w-full bg-hms-surface-container-low border-0 border-b-2 border-hms-outline p-4 pr-12 focus:ring-0 focus:border-hms-primary transition-all font-body text-sm placeholder:text-hms-outline placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest outline-none"
-              placeholder="Search by name, ID or DOB..."
-              type="text"
+              aria-label="Search patients"
+              className="w-full bg-[var(--hc-surface)] border border-[var(--hc-border)] rounded-[var(--radius-md)] p-3 pl-12 pr-12 focus:ring-2 focus:ring-[var(--hc-primary)] transition-all text-sm placeholder:text-[var(--hc-text-placeholder)] outline-none"
+              id="patient-search"
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search by name, phone, email, or CCCD..."
+              type="search"
+              value={query}
             />
-            <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-hms-outline group-focus-within:text-hms-primary">search</span>
+            <button
+              aria-label="Submit patient search"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)]"
+              disabled={isSearching}
+              type="submit"
+            >
+              <HcIcon name="arrow_forward" />
+            </button>
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            <button className="whitespace-nowrap px-3 py-1 bg-hms-primary-container text-white text-[10px] font-bold uppercase tracking-widest">Active</button>
-            <button className="whitespace-nowrap px-3 py-1 bg-hms-surface-container-highest text-hms-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-hms-surface-container-high transition-colors">Inpatient</button>
-            <button className="whitespace-nowrap px-3 py-1 bg-hms-surface-container-highest text-hms-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-hms-surface-container-high transition-colors">Emergency</button>
-            <button className="whitespace-nowrap px-3 py-1 bg-hms-surface-container-highest text-hms-on-surface text-[10px] font-bold uppercase tracking-widest hover:bg-hms-surface-container-high transition-colors">Follow-up</button>
-          </div>
-        </div>
+        </form>
 
-        <div className="flex-1 overflow-y-auto px-8 pb-8 space-y-4">
-          {/* Patient Card Active */}
-          <div className="p-6 bg-hms-surface-container-lowest border-l-4 border-hms-primary transition-all cursor-pointer">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="font-bold text-hms-on-background text-lg leading-tight">Sarah J. Miller</h3>
-                <p className="text-[10px] font-bold text-hms-outline uppercase tracking-widest mt-1">ID: #MC-902341</p>
-              </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-hms-error-container text-hms-on-error-container uppercase">Critical</span>
+        <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[var(--hc-surface-soft)]">
+          {isSearching ? (
+            <div className="p-6 text-sm text-[var(--hc-text-secondary)] text-center">
+              Searching patient records...
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-hms-surface-container-low p-2">
-                <span className="block text-[9px] text-hms-outline font-bold uppercase">Age / Sex</span>
-                <span className="text-xs font-semibold">34 / Female</span>
-              </div>
-              <div className="bg-hms-surface-container-low p-2">
-                <span className="block text-[9px] text-hms-outline font-bold uppercase">Last Visit</span>
-                <span className="text-xs font-semibold">Oct 12, 2023</span>
-              </div>
+          ) : searchError ? (
+            <div className="p-6 bg-[var(--hc-danger-bg)] text-[var(--hc-danger)] text-sm rounded-[var(--radius-md)]" role="alert">
+              {searchError}
             </div>
-          </div>
-
-          {/* Patient Card */}
-          <div className="p-6 bg-hms-surface-container-high hover:bg-hms-surface-container-lowest transition-all cursor-pointer group">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="font-bold text-hms-on-background text-lg leading-tight group-hover:text-hms-primary">Marcus V. Thorne</h3>
-                <p className="text-[10px] font-bold text-hms-outline uppercase tracking-widest mt-1">ID: #MC-902352</p>
-              </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-hms-surface-container-highest text-hms-outline uppercase">Stable</span>
+          ) : patients.length === 0 ? (
+            <div className="p-6 text-sm text-[var(--hc-text-secondary)] text-center">
+              No patients found.
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/50 p-2">
-                <span className="block text-[9px] text-hms-outline font-bold uppercase">Age / Sex</span>
-                <span className="text-xs font-semibold">58 / Male</span>
-              </div>
-              <div className="bg-white/50 p-2">
-                <span className="block text-[9px] text-hms-outline font-bold uppercase">Last Visit</span>
-                <span className="text-xs font-semibold">Oct 08, 2023</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Patient Card */}
-          <div className="p-6 bg-hms-surface-container-high hover:bg-hms-surface-container-lowest transition-all cursor-pointer group">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="font-bold text-hms-on-background text-lg leading-tight group-hover:text-hms-primary">Elena Rodriguez</h3>
-                <p className="text-[10px] font-bold text-hms-outline uppercase tracking-widest mt-1">ID: #MC-902364</p>
-              </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-hms-surface-container-highest text-hms-outline uppercase">Stable</span>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/50 p-2">
-                <span className="block text-[9px] text-hms-outline font-bold uppercase">Age / Sex</span>
-                <span className="text-xs font-semibold">27 / Female</span>
-              </div>
-              <div className="bg-white/50 p-2">
-                <span className="block text-[9px] text-hms-outline font-bold uppercase">Last Visit</span>
-                <span className="text-xs font-semibold">Sep 29, 2023</span>
-              </div>
-            </div>
-          </div>
+          ) : (
+            patients.map((patient) => (
+              <button
+                className={`w-full p-5 text-left rounded-[var(--radius-lg)] transition-all border ${
+                  selectedPatientId === patient.patientId
+                    ? "bg-[var(--hc-surface)] border-[var(--hc-primary)] shadow-[var(--shadow-card)] ring-1 ring-[var(--hc-primary)]"
+                    : "bg-[var(--hc-surface)] border-[var(--hc-border)] hover:border-[var(--hc-border-hover)] hover:shadow-sm"
+                }`}
+                key={patient.patientId}
+                onClick={() => void loadPatientDetail(patient.patientId)}
+                type="button"
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h2 className="font-bold text-[var(--hc-text)] text-base leading-tight">
+                      {patient.fullName}
+                    </h2>
+                    <p className="text-[11px] font-medium text-[var(--hc-text-secondary)] mt-1 font-mono">
+                      {patient.patientId}
+                    </p>
+                  </div>
+                  <span className="hc-badge bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]">
+                    {patient.totalAppointments} visits
+                  </span>
+                </div>
+                <div className="flex gap-4">
+                  <div>
+                    <span className="block text-[10px] text-[var(--hc-text-placeholder)] font-bold uppercase">Age</span>
+                    <span className="text-[13px] font-semibold text-[var(--hc-text)]">{calculateAge(patient.dateOfBirth)}</span>
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-[var(--hc-text-placeholder)] font-bold uppercase">Last Visit</span>
+                    <span className="text-[13px] font-semibold text-[var(--hc-text)]">{formatDate(patient.latestAppointmentDate)}</span>
+                  </div>
+                </div>
+              </button>
+            ))
+          )}
         </div>
       </div>
 
-      {/* Right Pane: Details (7/12 columns equivalent) */}
-      <div className="flex-1 overflow-y-auto bg-hms-surface-container-low p-8">
-        <div className="max-w-5xl mx-auto space-y-8">
-          {/* Identity Section */}
-          <div className="bg-white p-8 space-y-8">
-            <div className="flex justify-between items-start">
-              <div className="flex gap-6 items-center">
-                <div className="w-24 h-24 bg-hms-surface-container-highest flex-shrink-0">
-                  <Image
-                    alt="Sarah J. Miller"
-                    className="w-full h-full object-cover grayscale"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsjvD3G_nUqQ3p-O7i9bGyRfSjfTpbqjwqWZUc4p_TmnHUfq7z_VgiWWlnCtcSS_L-4zmtN1rX3iikTdunpacJvyHD-j82s-BgXDa0TYEqG0BotqoeTJPjFGmcCNGuWAYEy5MzfdIQxgJbFiB81g8nPF-lFWxQGKufqdJmPntnZQLfHpyxeJaklYmCx6QG92dki0JI8KiIfn1OoLfeGJnnsQdWS2gFwT9EeQ1dlwNHEsCndQJeXTtmk5piC3eSlHRSkuGRr9GFCw"
-                    width={96}
-                    height={96}
-                    unoptimized
-                  />
-                </div>
-                <div>
-                  <span className="text-[10px] font-bold text-hms-primary uppercase tracking-[0.2em]">Active Patient Record</span>
-                  <h2 className="text-4xl font-light tracking-tighter text-hms-on-background mt-1">Sarah J. Miller</h2>
-                  <p className="text-sm text-hms-outline mt-2 font-medium">Primary Physician: <span className="text-hms-on-background">Dr. Julian Vance</span></p>
-                </div>
+      <div className="flex-1 overflow-y-auto bg-[var(--hc-background)] p-8">
+        <div className="max-w-5xl mx-auto">
+          {!selectedPatientId ? (
+            <div className="bg-[var(--hc-surface)] rounded-[var(--radius-xl)] border border-[var(--hc-border)] p-12 text-center shadow-[var(--shadow-card)] flex flex-col items-center justify-center min-h-[400px]">
+              <div className="w-16 h-16 rounded-full bg-[var(--hc-surface-soft)] text-[var(--hc-text-placeholder)] flex items-center justify-center mb-6">
+                 <HcIcon name="person_search" className="text-3xl" />
               </div>
-              <div className="flex gap-3">
-                <button className="bg-hms-surface-container-highest p-3 hover:bg-hms-surface-container-high transition-colors">
-                  <span className="material-symbols-outlined text-hms-on-surface">edit</span>
-                </button>
-                <button className="bg-hms-surface-container-highest p-3 hover:bg-hms-surface-container-high transition-colors">
-                  <span className="material-symbols-outlined text-hms-on-surface">print</span>
-                </button>
-                <button className="bg-hms-primary-container text-white px-6 py-3 font-bold uppercase text-[10px] tracking-widest hover:bg-hms-primary transition-colors">
-                  Update Record
-                </button>
-              </div>
+              <h2 className="text-2xl font-bold text-[var(--hc-text)]">
+                Select a patient record
+              </h2>
+              <p className="mt-2 text-sm text-[var(--hc-text-secondary)] max-w-sm mx-auto">
+                Search results are loaded from the backend. Select a patient row to load their comprehensive medical profile.
+              </p>
             </div>
-
-            <div className="grid grid-cols-4 gap-8">
-              <div>
-                <span className="block text-[10px] font-bold text-hms-outline uppercase tracking-widest mb-2">Date of Birth</span>
-                <p className="text-sm font-semibold">May 14, 1989 (34y)</p>
-              </div>
-              <div>
-                <span className="block text-[10px] font-bold text-hms-outline uppercase tracking-widest mb-2">Blood Type</span>
-                <p className="text-sm font-semibold">O Positive (O+)</p>
-              </div>
-              <div>
-                <span className="block text-[10px] font-bold text-hms-outline uppercase tracking-widest mb-2">Contact</span>
-                <p className="text-sm font-semibold">+1 (555) 012-9934</p>
-              </div>
-              <div>
-                <span className="block text-[10px] font-bold text-hms-outline uppercase tracking-widest mb-2">Insurance</span>
-                <p className="text-sm font-semibold">BlueShield PPO</p>
-              </div>
+          ) : isLoadingDetail ? (
+            <div className="bg-[var(--hc-surface)] rounded-[var(--radius-xl)] border border-[var(--hc-border)] p-12 text-center text-sm text-[var(--hc-text-secondary)]">
+              Loading patient detail...
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-8">
-            {/* Conditions & Allergies */}
-            <div className="bg-white p-8">
-              <h3 className="text-xs font-bold uppercase tracking-widest border-b-2 border-hms-surface-container-highest pb-4 mb-6">Conditions &amp; Allergies</h3>
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <span className="text-[10px] font-bold text-hms-outline uppercase tracking-widest">Medical History</span>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-3 py-1.5 bg-hms-surface-container-low text-hms-on-surface text-[11px] font-medium border-l-2 border-hms-outline">Type 1 Diabetes</span>
-                    <span className="px-3 py-1.5 bg-hms-surface-container-low text-hms-on-surface text-[11px] font-medium border-l-2 border-hms-outline">Hypothyroidism</span>
+          ) : detailError ? (
+            <div className="bg-[var(--hc-danger-bg)] rounded-[var(--radius-xl)] p-8 text-sm text-[var(--hc-danger)]" role="alert">
+              {detailError}
+            </div>
+          ) : selectedDetail ? (
+            <div className="space-y-6">
+              <div className="bg-[var(--hc-surface)] rounded-[var(--radius-xl)] border border-[var(--hc-border)] shadow-[var(--shadow-card)] p-8">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                       <span className="hc-badge bg-[var(--hc-info-bg)] text-[var(--hc-info)]">Active Record</span>
+                       <span className="text-[11px] font-mono font-medium text-[var(--hc-text-secondary)]">ID: {selectedDetail.patientId}</span>
+                    </div>
+                    <h2 className="text-3xl font-bold tracking-tight text-[var(--hc-text)]">
+                      {selectedDetail.fullName}
+                    </h2>
+                  </div>
+                  <div className="flex gap-2">
+                    {["edit", "print"].map((icon) => (
+                      <button
+                        className="w-10 h-10 flex items-center justify-center rounded-[var(--radius-md)] border border-[var(--hc-border)] text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] transition-colors opacity-60 cursor-not-allowed"
+                        disabled
+                        key={icon}
+                        title="Unsupported by current flow"
+                        type="button"
+                      >
+                        <HcIcon name={icon} className="text-xl" />
+                      </button>
+                    ))}
                   </div>
                 </div>
-                <div className="space-y-3">
-                  <span className="text-[10px] font-bold text-hms-error uppercase tracking-widest">Allergies (High Severity)</span>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-3 py-1.5 bg-hms-error-container text-hms-on-error-container text-[11px] font-bold border-l-2 border-hms-error">Penicillin</span>
-                    <span className="px-3 py-1.5 bg-hms-error-container text-hms-on-error-container text-[11px] font-bold border-l-2 border-hms-error">Latex</span>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            {/* Appointment History */}
-            <div className="bg-white p-8">
-              <div className="flex justify-between items-center border-b-2 border-hms-surface-container-highest pb-4 mb-6">
-                <h3 className="text-xs font-bold uppercase tracking-widest">Recent Activity</h3>
-                <button className="text-[10px] font-bold text-hms-primary uppercase tracking-widest hover:underline">View All</button>
-              </div>
-              <div className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 bg-hms-surface-container-low flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-hms-primary">calendar_month</span>
+                <div className="grid grid-cols-4 gap-6 mt-8 pt-8 border-t border-[var(--hc-border-soft)]">
+                  <div>
+                    <span className="block text-[11px] font-bold text-[var(--hc-text-placeholder)] uppercase tracking-widest mb-1">
+                      Date of Birth
+                    </span>
+                    <p className="text-sm font-semibold text-[var(--hc-text)]">{formatDate(selectedDetail.dateOfBirth)}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold">Endocrinology Check-up</h4>
-                    <p className="text-xs text-hms-outline">Oct 12, 2023 • Dr. Vance</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 bg-hms-surface-container-low flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-hms-primary">biotech</span>
+                    <span className="block text-[11px] font-bold text-[var(--hc-text-placeholder)] uppercase tracking-widest mb-1">
+                      Blood Type
+                    </span>
+                    <p className="text-sm font-semibold text-[var(--hc-text)]">{selectedDetail.bloodType || "Not recorded"}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold">Comprehensive Metabolic Panel</h4>
-                    <p className="text-xs text-hms-outline">Oct 05, 2023 • LabCorp HQ</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 bg-hms-surface-container-low flex items-center justify-center flex-shrink-0">
-                    <span className="material-symbols-outlined text-hms-primary">pill</span>
+                    <span className="block text-[11px] font-bold text-[var(--hc-text-placeholder)] uppercase tracking-widest mb-1">
+                      Contact
+                    </span>
+                    <p className="text-sm font-semibold text-[var(--hc-text)]">{selectedDetail.phone || "Not recorded"}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold">Insulin Prescription Refill</h4>
-                    <p className="text-xs text-hms-outline">Sep 28, 2023 • CVS Pharmacy</p>
+                    <span className="block text-[11px] font-bold text-[var(--hc-text-placeholder)] uppercase tracking-widest mb-1">
+                      Insurance
+                    </span>
+                    <p className="text-sm font-semibold text-[var(--hc-text)] font-mono">
+                      {selectedDetail.insuranceNumber || "Not recorded"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div className="bg-[var(--hc-surface)] rounded-[var(--radius-xl)] border border-[var(--hc-border)] shadow-[var(--shadow-card)] p-8">
+                  <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--hc-border-soft)]">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--hc-surface-soft)] flex items-center justify-center text-[var(--hc-text-secondary)]">
+                       <HcIcon name="medical_information" className="text-lg" />
+                    </div>
+                    <h3 className="text-base font-bold text-[var(--hc-text)]">
+                      Conditions & Allergies
+                    </h3>
+                  </div>
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <span className="text-[11px] font-bold text-[var(--hc-text-secondary)] uppercase tracking-widest">
+                        Medical History
+                      </span>
+                      <p className="text-[13px] text-[var(--hc-text)] leading-relaxed">
+                        {selectedDetail.medicalHistory || "No medical history recorded."}
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <span className="text-[11px] font-bold text-[var(--hc-danger)] uppercase tracking-widest">
+                        Allergies
+                      </span>
+                      <div className="bg-[var(--hc-danger-bg)] p-3 rounded-[var(--radius-md)] border border-[var(--hc-danger)] border-opacity-20">
+                         <p className="text-[13px] text-[var(--hc-danger)] font-medium">
+                           {selectedDetail.drugAllergies || "No drug allergies recorded."}
+                         </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-[var(--hc-surface)] rounded-[var(--radius-xl)] border border-[var(--hc-border)] shadow-[var(--shadow-card)] p-8">
+                  <div className="flex items-center gap-3 mb-6 pb-4 border-b border-[var(--hc-border-soft)]">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--hc-surface-soft)] flex items-center justify-center text-[var(--hc-text-secondary)]">
+                       <HcIcon name="history" className="text-lg" />
+                    </div>
+                    <h3 className="text-base font-bold text-[var(--hc-text)]">
+                      Recent Appointments
+                    </h3>
+                  </div>
+                  <div className="space-y-4">
+                    {selectedDetail.appointments.length > 0 ? (
+                      selectedDetail.appointments.slice(0, 5).map((appointment) => (
+                        <div className="flex gap-4 p-4 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] hover:bg-[var(--hc-surface-soft)] transition-colors" key={appointment.appointmentId}>
+                          <div className="w-10 h-10 bg-[var(--hc-surface)] border border-[var(--hc-border)] rounded-full flex items-center justify-center flex-shrink-0 text-[var(--hc-primary)]">
+                            <HcIcon name="calendar_month" className="text-lg" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                               <h4 className="text-[13px] font-bold text-[var(--hc-text)]">{appointment.doctorName}</h4>
+                               <span className={`hc-badge ${getStatusTone(appointment.status)}`}>
+                                 {appointment.status}
+                               </span>
+                            </div>
+                            <p className="text-xs text-[var(--hc-text-secondary)] mt-1 font-medium">
+                              {formatDate(appointment.appointmentDate)} • {formatTimeRange(appointment.startTime, appointment.endTime)}
+                            </p>
+                            {appointment.medicalRecord ? (
+                              <div className="mt-3 text-[13px] text-[var(--hc-text)] bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] p-3 rounded-[var(--radius-md)]">
+                                <span className="font-bold block mb-1">Diagnosis:</span> 
+                                {appointment.medicalRecord.diagnosis}
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-[var(--hc-text-secondary)] text-center py-4">
+                        No appointments are recorded for this patient.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Labs Snapshot (Bento Style) */}
-          <div className="bg-white p-8">
-            <h3 className="text-xs font-bold uppercase tracking-widest border-b-2 border-hms-surface-container-highest pb-4 mb-6">Vitals &amp; Labs Snapshot</h3>
-            <div className="grid grid-cols-4 gap-4">
-              <div className="bg-hms-surface-container-low p-6">
-                <span className="text-[10px] font-bold text-hms-outline uppercase tracking-widest block mb-4">Glucose</span>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-light text-hms-on-background">112</span>
-                  <span className="text-xs font-medium text-hms-outline">mg/dL</span>
-                </div>
-                <div className="mt-4 h-1 bg-hms-surface-container-highest relative">
-                  <div className="absolute inset-y-0 left-0 bg-hms-primary w-[70%]"></div>
-                </div>
-              </div>
-              <div className="bg-hms-surface-container-low p-6">
-                <span className="text-[10px] font-bold text-hms-outline uppercase tracking-widest block mb-4">A1C</span>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-light text-hms-error">7.1</span>
-                  <span className="text-xs font-medium text-hms-outline">%</span>
-                </div>
-                <div className="mt-4 flex items-center gap-1 text-[10px] font-bold text-hms-error uppercase">
-                  <span className="material-symbols-outlined text-[14px]">trending_up</span> Elevated
-                </div>
-              </div>
-              <div className="bg-hms-surface-container-low p-6">
-                <span className="text-[10px] font-bold text-hms-outline uppercase tracking-widest block mb-4">BP</span>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-light text-hms-on-background">118/76</span>
-                  <span className="text-xs font-medium text-hms-outline">mmHg</span>
-                </div>
-                <div className="mt-4 flex items-center gap-1 text-[10px] font-bold text-hms-primary uppercase">
-                  <span className="material-symbols-outlined text-[14px]">check_circle</span> Normal
-                </div>
-              </div>
-              <div className="bg-hms-surface-container-low p-6">
-                <span className="text-[10px] font-bold text-hms-outline uppercase tracking-widest block mb-4">Weight</span>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-light text-hms-on-background">142</span>
-                  <span className="text-xs font-medium text-hms-outline">lbs</span>
-                </div>
-                <p className="mt-4 text-[10px] font-bold text-hms-outline uppercase">-2 lbs since last visit</p>
-              </div>
+          ) : selectedSummary ? (
+            <div className="bg-[var(--hc-surface)] rounded-[var(--radius-xl)] border border-[var(--hc-border)] p-12 text-center text-sm text-[var(--hc-text-secondary)]">
+              Select {selectedSummary.fullName} again to retry detail loading.
             </div>
-          </div>
-
-          {/* Footer-like action area */}
-          <div className="flex justify-end pt-4 pb-12">
-            <div className="flex gap-4">
-              <button className="bg-hms-surface-container-highest text-hms-on-surface px-8 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-hms-surface-container-high transition-colors">
-                Archive Record
-              </button>
-              <button className="bg-hms-on-background text-white px-12 py-3 text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity">
-                Schedule Appointment
-              </button>
-            </div>
-          </div>
+          ) : null}
         </div>
       </div>
     </div>

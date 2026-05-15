@@ -60,14 +60,14 @@ export function getQueueState(appointment: ClinicalAppointmentResponse) {
   const filter = getQueueFilter(appointment);
 
   if (filter === "in_progress") {
-    return { label: "In progress", dotClass: "bg-hms-primary" };
+    return { label: "In progress", dotClass: "bg-hc-primary" };
   }
 
   if (filter === "ready") {
-    return { label: "Ready", dotClass: "bg-hms-secondary" };
+    return { label: "Ready", dotClass: "bg-hc-secondary" };
   }
 
-  return { label: "Waiting", dotClass: "bg-hms-tertiary" };
+  return { label: "Waiting", dotClass: "bg-hc-tertiary" };
 }
 
 export function calculatePhysicianLoads(
@@ -138,14 +138,14 @@ export function calculateWaitMinutes(
 
 export function getWaitBadgeClass(waitMinutes: number) {
   if (waitMinutes >= 30) {
-    return "bg-hms-error-container text-hms-on-error-container";
+    return "bg-hc-error-container text-hc-on-error-container";
   }
 
   if (waitMinutes >= 15) {
-    return "bg-hms-tertiary-container text-hms-on-tertiary";
+    return "bg-hc-tertiary-container text-hc-on-tertiary";
   }
 
-  return "bg-hms-secondary-container text-hms-on-secondary-container";
+  return "bg-hc-secondary-container text-hc-on-secondary-container";
 }
 
 export function formatWait(waitMinutes: number) {

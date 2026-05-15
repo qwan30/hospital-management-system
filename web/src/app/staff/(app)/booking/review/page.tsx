@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function BookingDetailsReviewPage() {
   return (
     <>
@@ -82,7 +83,7 @@ export default function BookingDetailsReviewPage() {
 <div className="text-[10px] font-bold uppercase tracking-widest text-primary mb-2">Review Summary</div>
 <h3 className="text-2xl font-bold tracking-tight">Surgery Booking</h3>
 </div>
-<span className="material-symbols-outlined text-on-surface-variant">info</span>
+<HcIcon name="info" className="text-on-surface-variant" />
 </div>
 <div className="flex flex-col gap-6">
 <div className="flex flex-col gap-1">
@@ -131,7 +132,7 @@ export default function BookingDetailsReviewPage() {
                         </p>
 </div>
 <div className="mt-8 p-6 bg-surface-container-low flex items-start gap-4">
-<span className="material-symbols-outlined text-primary" >verified_user</span>
+<HcIcon name="verified_user" className="text-primary" />
 <div>
 <div className="text-[10px] font-bold uppercase tracking-widest text-on-surface">Data Protection</div>
 <p className="text-[10px] text-on-surface-variant mt-1 leading-tight">This session is encrypted using 256-bit AES. All PHI is handled per HIPAA and GDPR standards.</p>

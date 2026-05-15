@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function PrescriptionPreviewPage() {
   return (
     <>
@@ -34,7 +35,7 @@ export default function PrescriptionPreviewPage() {
 </div>
 <div className="mt-auto">
 <div className="bg-primary-fixed p-6 flex items-start gap-3">
-<span className="material-symbols-outlined text-primary" data-icon="verified">verified</span>
+<HcIcon name="verified" className="text-primary" />
 <div>
 <p className="text-[10px] text-on-primary-fixed-variant font-bold uppercase">Digital Signature</p>
 <p className="text-xs font-medium">Verified by Dr. Sarah Chen</p>
@@ -83,7 +84,7 @@ export default function PrescriptionPreviewPage() {
 <div className="space-y-8">
 {/* Item 1 */}
 <div className="flex gap-6 items-start">
-<span className="material-symbols-outlined text-primary text-3xl" data-icon="medical_services">medical_services</span>
+<HcIcon name="medical_services" className="text-primary text-3xl" />
 <div className="flex-1">
 <div className="flex justify-between items-baseline mb-1">
 <p className="text-base font-bold">Lisinopril 20mg Tablet</p>
@@ -98,7 +99,7 @@ export default function PrescriptionPreviewPage() {
 </div>
 {/* Item 2 */}
 <div className="flex gap-6 items-start">
-<span className="material-symbols-outlined text-primary text-3xl" data-icon="medication">medication</span>
+<HcIcon name="medication" className="text-primary text-3xl" />
 <div className="flex-1">
 <div className="flex justify-between items-baseline mb-1">
 <p className="text-base font-bold">Metformin HCl 500mg ER</p>
@@ -144,13 +145,13 @@ export default function PrescriptionPreviewPage() {
 {/* Floating Action Tool (Contextual) */}
 <div className="fixed bottom-8 right-8 flex flex-col gap-2">
 <button aria-label="Zoom prescription in" className="w-12 h-12 bg-white flex items-center justify-center hover:bg-neutral-50 transition-colors cursor-pointer active:opacity-80">
-<span className="material-symbols-outlined text-neutral-600" data-icon="zoom_in">zoom_in</span>
+<HcIcon name="zoom_in" className="text-neutral-600" />
 </button>
 <button aria-label="Zoom prescription out" className="w-12 h-12 bg-white flex items-center justify-center hover:bg-neutral-50 transition-colors cursor-pointer active:opacity-80">
-<span className="material-symbols-outlined text-neutral-600" data-icon="zoom_out">zoom_out</span>
+<HcIcon name="zoom_out" className="text-neutral-600" />
 </button>
 <button aria-label="Share prescription" className="w-12 h-12 bg-primary-container text-white flex items-center justify-center hover:bg-primary transition-colors cursor-pointer active:opacity-80">
-<span className="material-symbols-outlined" data-icon="share" >share</span>
+<HcIcon name="share" />
 </button>
 </div>
 

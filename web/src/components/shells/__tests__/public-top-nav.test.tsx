@@ -44,7 +44,8 @@ describe("PublicTopNav", () => {
     render(<PublicTopNav />);
 
     const activeLink = screen.getByRole("link", { name: /departments/i });
-    expect(activeLink.className).toContain("border-b-2");
+    expect(activeLink).toHaveAttribute("data-active", "true");
+    expect(activeLink.className).toContain("border-b-[3px]");
     expect(activeLink.className).toContain("text-white");
   });
 
@@ -52,7 +53,7 @@ describe("PublicTopNav", () => {
     render(<PublicTopNav />);
 
     expect(screen.getByRole("link", { name: /home/i }).className).not.toContain(
-      "border-b-2",
+      "border-b-[3px]",
     );
   });
 });

@@ -45,7 +45,8 @@ describe("StaffTopNav", () => {
     render(<StaffTopNav />);
 
     const activeLink = screen.getByRole("link", { name: /queue/i });
-    expect(activeLink.className).toContain("border-b-2");
+    expect(activeLink).toHaveAttribute("data-active", "true");
+    expect(activeLink.className).toContain("border-b-[3px]");
     expect(activeLink.className).toContain("text-white");
   });
 
@@ -96,7 +97,8 @@ describe("PortalTopNav", () => {
     render(<PortalTopNav />);
 
     const activeLink = screen.getByRole("link", { name: /messages/i });
-    expect(activeLink.className).toContain("border-b-2");
+    expect(activeLink).toHaveAttribute("data-active", "true");
+    expect(activeLink.className).toContain("border-b-[3px]");
     expect(activeLink.className).toContain("text-white");
     expect(screen.getByLabelText(/open notifications/i)).toHaveAttribute(
       "href",

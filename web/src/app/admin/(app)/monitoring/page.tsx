@@ -6,6 +6,11 @@ import {
   type SystemMonitoringSnapshotResponse,
 } from "@/lib/operations-api";
 
+import { PageHeader } from "@/components/ui/page-header";
+import { DataPanel } from "@/components/ui/data-panel";
+import { KpiCard } from "@/components/ui/kpi-card";
+import { Activity, AlertTriangle, CheckCircle2, Clock, Database, Server, Settings } from "lucide-react";
+
 export default function AdminMonitoringPage() {
   const [snapshot, setSnapshot] = useState<SystemMonitoringSnapshotResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -33,90 +38,66 @@ export default function AdminMonitoringPage() {
   }, []);
 
   return (
-    <main className="p-8" data-testid="monitoring-snapshot">
-      <header className="mb-10">
-        <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-          Monitoring Dashboard
-        </span>
-        <h1 className="text-4xl font-light tracking-tight text-on-background">
-          HMS Operational Health
-        </h1>
-      </header>
+    <main data-testid="monitoring-snapshot">
+      <PageHeader 
+        title="HMS Operational Health"
+      />
 
-      {error ? (
-        <section className="mb-8 border border-error-container bg-white p-6" role="alert">
-          <p className="text-sm font-semibold text-error">{error}</p>
+      <div className="p-8 pt-0 space-y-8">
+        {error ? (
+          <section className="border border-[var(--hc-danger)] bg-[var(--hc-danger-bg)] p-6 rounded-[var(--radius-md)]" role="alert">
+            <p className="text-sm font-semibold text-[var(--hc-danger)]">{error}</p>
+          </section>
+        ) : null}
+
+        <section className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <KpiCard
+            label="Database"
+            value={snapshot?.databaseStatus ?? "Loading"}
+            helper="PostgreSQL schema validation"
+            tone={snapshot?.databaseStatus === "UP" ? "green" : "amber"}
+            icon={Database}
+          />
+          <KpiCard
+            label="Queue"
+            value={snapshot?.queueStatus ?? "Loading"}
+            helper="Staff queue workflow"
+            tone={snapshot?.queueStatus === "UP" ? "green" : "amber"}
+            icon={Settings}
+          />
+          <KpiCard
+            label="System"
+            value={snapshot?.healthy ? "HEALTHY" : snapshot ? "ATTENTION" : "Loading"}
+            helper={snapshot ? pluralize(snapshot.activeAlerts, "active alert") : "Loading alerts"}
+            tone={snapshot?.healthy ? "green" : "amber"}
+            icon={snapshot?.healthy ? CheckCircle2 : AlertTriangle}
+          />
         </section>
-      ) : null}
 
-      <section className="grid grid-cols-1 gap-px bg-outline-variant/20 md:grid-cols-3">
-        <HealthTile
-          label="Database"
-          value={snapshot?.databaseStatus ?? "Loading"}
-          detail="PostgreSQL schema validation"
-          healthy={snapshot?.databaseStatus === "UP"}
-        />
-        <HealthTile
-          label="Queue"
-          value={snapshot?.queueStatus ?? "Loading"}
-          detail="Staff queue workflow"
-          healthy={snapshot?.queueStatus === "UP"}
-        />
-        <HealthTile
-          label="System"
-          value={snapshot?.healthy ? "HEALTHY" : snapshot ? "ATTENTION" : "Loading"}
-          detail={snapshot ? pluralize(snapshot.activeAlerts, "active alert") : "Loading alerts"}
-          healthy={Boolean(snapshot?.healthy)}
-        />
-      </section>
-
-      <section className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-5">
-        <Metric label="Active Alerts" value={snapshot?.activeAlerts ?? 0} />
-        <Metric label="Inventory Alerts" value={snapshot?.inventoryAlertCount ?? 0} />
-        <Metric label="Schedule Alerts" value={snapshot?.scheduleAlertCount ?? 0} />
-        <Metric label="Uptime" value={formatUptime(snapshot?.uptimeSeconds ?? 0)} />
-        <Metric
-          label="Generated"
-          value={snapshot ? formatDateTime(snapshot.generatedAt) : "Pending"}
-        />
-      </section>
-    </main>
-  );
-}
-
-function HealthTile({
-  label,
-  value,
-  detail,
-  healthy,
-}: {
-  label: string;
-  value: string;
-  detail: string;
-  healthy: boolean;
-}) {
-  return (
-    <div className="bg-surface-container-low p-8">
-      <span className="mb-4 block text-[10px] font-bold uppercase tracking-widest text-outline">
-        {label}
-      </span>
-      <div className="mb-2 text-2xl font-semibold text-on-background">{value}</div>
-      <div className="text-xs text-outline">{detail}</div>
-      <div className="mt-8 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
-        <span className={`h-2 w-2 ${healthy ? "bg-emerald-500" : "bg-error"}`} />
-        {healthy ? "Operational" : "Review"}
+        <DataPanel>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
+            <Metric label="Active Alerts" value={snapshot?.activeAlerts ?? 0} />
+            <Metric label="Inventory Alerts" value={snapshot?.inventoryAlertCount ?? 0} />
+            <Metric label="Schedule Alerts" value={snapshot?.scheduleAlertCount ?? 0} />
+            <Metric label="Uptime" value={formatUptime(snapshot?.uptimeSeconds ?? 0)} />
+            <Metric
+              label="Generated"
+              value={snapshot ? formatDateTime(snapshot.generatedAt) : "Pending"}
+            />
+          </div>
+        </DataPanel>
       </div>
-    </div>
+    </main>
   );
 }
 
 function Metric({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="border-t-2 border-primary pt-6">
-      <div className="mb-2 text-[10px] font-bold uppercase tracking-widest text-outline">
+    <div className="border-t-2 border-[var(--hc-primary)] pt-6">
+      <div className="mb-2 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
         {label}
       </div>
-      <div className="text-xl font-semibold">{value}</div>
+      <div className="text-xl font-semibold text-[var(--hc-text)]">{value}</div>
     </div>
   );
 }

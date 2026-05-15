@@ -3,13 +3,30 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Bell, Settings, ShieldPlus } from "lucide-react";
 import { filterNavigationLinks } from "@/lib/rbac";
 import { useStoredRole } from "@/lib/use-stored-role";
 import { cn } from "@/lib/utils";
 
-interface TopNavLink {
+export interface TopNavLink {
   label: string;
   href: string;
+}
+
+interface HcTopbarProps {
+  links?: TopNavLink[];
+  roleScope: "staff" | "patient";
+  homeHref: string;
+  alertHref: string;
+  settingsHref: string;
+  profileHref: string;
+  userName: string;
+  userRole: string;
+  profileImageSrc?: string;
+  alertCount?: number;
+  alertLabel?: string;
+  settingsLabel?: string;
+  profileLabel?: string;
 }
 
 interface StaffTopNavProps {
@@ -34,32 +51,69 @@ const defaultPortalLinks: TopNavLink[] = [
   { label: "Profile", href: "/portal/profile" },
 ];
 
-export function StaffTopNav({ links, profileImageSrc }: StaffTopNavProps) {
+export const defaultAdminTopLinks: TopNavLink[] = [
+  { label: "Dashboard", href: "/admin/dashboard" },
+  { label: "Departments", href: "/admin/departments" },
+  { label: "Schedule", href: "/admin/appointments" },
+  { label: "Rooms", href: "/admin/rooms" },
+  { label: "Staff", href: "/admin/users" },
+  { label: "Audit", href: "/admin/audit-logs" },
+];
+
+function initialsFor(name: string) {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+}
+
+export function HcTopbar({
+  links,
+  roleScope,
+  homeHref,
+  alertHref,
+  settingsHref,
+  profileHref,
+  userName,
+  userRole,
+  profileImageSrc,
+  alertCount = 2,
+  alertLabel = "Open notifications",
+  settingsLabel = "Open settings",
+  profileLabel = "Open profile",
+}: HcTopbarProps) {
   const pathname = usePathname();
-  const role = useStoredRole("staff");
+  const role = useStoredRole(roleScope);
   const navLinks = filterNavigationLinks(links || defaultStaffLinks, role);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex px-4 h-[48px] bg-[#161616] items-center">
+    <header className="fixed inset-x-0 top-0 z-50 grid h-[var(--hc-topbar-h)] grid-cols-[minmax(0,1fr)_auto] items-center border-b border-white/10 bg-[var(--hc-navy-950)] px-4 text-white shadow-[0_10px_32px_rgba(6,23,53,0.22)] md:grid-cols-[var(--hc-sidebar-w)_minmax(0,1fr)_auto] md:px-7">
       <Link
-        href="/staff/dashboard"
-        className="text-lg font-semibold tracking-tighter text-white uppercase font-sans antialiased"
+        href={homeHref}
+        className="flex min-w-0 items-center gap-3 text-[18px] font-bold leading-6 tracking-normal text-white"
+        aria-label="Hospital Core home"
       >
-        HOSPITAL CORE
+        <span className="grid size-9 shrink-0 place-items-center rounded-[10px] border border-white/15 bg-white/10 text-[var(--hc-blue-500)]">
+          <ShieldPlus className="size-5" aria-hidden="true" />
+        </span>
+        <span className="truncate">HOSPITAL CORE</span>
       </Link>
-      <nav className="hidden md:flex h-full ml-12">
+
+      <nav className="hidden h-full min-w-0 items-stretch gap-4 lg:flex">
         {navLinks.map((link) => {
           const isActive =
             pathname === link.href || pathname.startsWith(link.href + "/");
+
           return (
             <Link
               key={link.href}
               href={link.href}
+              data-active={isActive ? "true" : undefined}
               className={cn(
-                "h-full flex items-center px-4 text-sm font-medium transition-colors duration-150",
-                isActive
-                  ? "text-white border-b-2 border-blue-600"
-                  : "text-gray-400 hover:bg-gray-800"
+                "flex h-full items-center border-b-[3px] border-transparent px-2 text-sm font-semibold text-white/75 transition-colors duration-150 hover:text-white",
+                isActive && "border-[var(--hc-blue-500)] text-white",
               )}
             >
               {link.label}
@@ -67,125 +121,93 @@ export function StaffTopNav({ links, profileImageSrc }: StaffTopNavProps) {
           );
         })}
       </nav>
-      <div className="ml-auto flex items-center gap-4">
+
+      <div className="ml-auto flex items-center gap-2 sm:gap-3">
         <Link
-          href="/staff/queue"
-          className="text-gray-400 hover:text-white p-2 transition-colors"
-          aria-label="Open staff alerts"
-          title="Alerts"
+          href={alertHref}
+          className="relative grid size-9 place-items-center rounded-full text-white/85 transition hover:bg-white/10 hover:text-white"
+          aria-label={alertLabel}
+          title={alertLabel}
         >
-          <span className="material-symbols-outlined block">notifications</span>
-        </Link>
-        <Link
-          href="/staff/schedule"
-          className="text-gray-400 hover:text-white p-2 transition-colors"
-          aria-label="Open schedule settings"
-          title="Schedule settings"
-        >
-          <span className="material-symbols-outlined block">settings</span>
-        </Link>
-        <Link
-          href="/staff/doctor/dashboard"
-          className="w-8 h-8 bg-hms-surface-container-highest flex items-center justify-center overflow-hidden hover:ring-2 hover:ring-blue-500 transition-all"
-          aria-label="Open staff profile"
-          title="Staff profile"
-        >
-          {profileImageSrc ? (
-            <Image
-              alt="Administrator Profile"
-              src={profileImageSrc}
-              className="w-full h-full object-cover"
-              width={1200}
-              height={800}
-            />
-          ) : (
-            <span className="material-symbols-outlined text-hms-on-surface-variant text-sm">
-              account_circle
+          <Bell className="size-5" aria-hidden="true" />
+          {alertCount > 0 ? (
+            <span className="absolute right-1 top-1 min-w-4 rounded-full bg-[var(--hc-danger)] px-1 text-center text-[10px] font-bold leading-4 text-white ring-2 ring-[var(--hc-navy-950)]">
+              {alertCount}
             </span>
-          )}
+          ) : null}
+        </Link>
+        <Link
+          href={settingsHref}
+          className="grid size-9 place-items-center rounded-full text-white/85 transition hover:bg-white/10 hover:text-white"
+          aria-label={settingsLabel}
+          title={settingsLabel}
+        >
+          <Settings className="size-5" aria-hidden="true" />
+        </Link>
+        <Link
+          href={profileHref}
+          className="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 text-white transition hover:bg-white/10"
+          aria-label={profileLabel}
+          title={profileLabel}
+        >
+          <span className="grid size-[38px] shrink-0 place-items-center overflow-hidden rounded-full bg-white text-[13px] font-bold text-[var(--hc-navy-950)]">
+            {profileImageSrc ? (
+              <Image
+                alt={userName}
+                src={profileImageSrc}
+                className="size-full object-cover"
+                width={1200}
+                height={800}
+              />
+            ) : (
+              initialsFor(userName)
+            )}
+          </span>
+          <span className="hidden text-left leading-tight xl:block">
+            <span className="block text-sm font-bold">{userName}</span>
+            <span className="block text-xs text-white/70">{userRole}</span>
+          </span>
         </Link>
       </div>
     </header>
   );
 }
 
-export function PortalTopNav({ links, profileImageSrc }: StaffTopNavProps) {
-  const pathname = usePathname();
-  const role = useStoredRole("patient");
-  const navLinks = filterNavigationLinks(links || defaultPortalLinks, role);
-
+export function StaffTopNav({ links, profileImageSrc }: StaffTopNavProps) {
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex px-4 h-[48px] bg-[#161616] items-center border-b-0 font-sans antialiased tracking-tight">
-      <div className="flex items-center gap-8 w-full">
-        <Link
-          href="/"
-          className="text-lg font-semibold tracking-tighter text-white uppercase"
-          aria-label="Back to home"
-        >
-          HOSPITAL CORE
-        </Link>
-        <nav className="hidden md:flex h-full items-center">
-          {navLinks.map((link) => {
-            const isActive =
-              pathname === link.href || pathname.startsWith(link.href + "/");
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "h-full flex items-center px-4 transition-colors duration-150",
-                  isActive
-                    ? "text-white border-b-2 border-blue-600"
-                    : "text-gray-400 hover:bg-gray-800"
-                )}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
-        <div className="ml-auto flex items-center gap-4">
-          <Link
-            href="/portal/messages"
-            className="relative text-white hover:bg-gray-800 p-2 transition-colors"
-            aria-label="Open notifications"
-            title="Notifications"
-          >
-            <span className="material-symbols-outlined block">
-              notifications
-            </span>
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 bg-blue-500 ring-2 ring-[#161616]" />
-          </Link>
-          <Link
-            href="/portal/profile#security-settings"
-            className="text-white hover:bg-gray-800 p-2 transition-colors"
-            aria-label="Open profile settings"
-            title="Settings"
-          >
-            <span className="material-symbols-outlined block">settings</span>
-          </Link>
-          <Link
-            href="/portal/profile"
-            className="w-8 h-8 bg-hms-surface-container-highest overflow-hidden flex items-center justify-center hover:ring-2 hover:ring-blue-500 transition-all"
-            aria-label="Open patient profile"
-            title="Profile"
-          >
-            {profileImageSrc ? (
-              <Image
-                alt="Patient profile"
-                src={profileImageSrc}
-                className="w-full h-full object-cover"
-                width={1200}
-                height={800}
-              />
-            ) : (
-              <span className="material-symbols-outlined text-hms-on-surface-variant">
-                account_circle
-              </span>
-            )}
-          </Link>
-        </div>
-      </div>
-    </header>
+    <HcTopbar
+      links={links || defaultStaffLinks}
+      roleScope="staff"
+      homeHref="/staff/dashboard"
+      alertHref="/staff/queue"
+      settingsHref="/staff/schedule"
+      profileHref="/staff/doctor/dashboard"
+      userName="Staff Ops"
+      userRole="Clinical team"
+      profileImageSrc={profileImageSrc}
+      alertLabel="Open staff alerts"
+      settingsLabel="Open schedule settings"
+      profileLabel="Open staff profile"
+    />
+  );
+}
+
+export function PortalTopNav({ links, profileImageSrc }: StaffTopNavProps) {
+  return (
+    <HcTopbar
+      links={links || defaultPortalLinks}
+      roleScope="patient"
+      homeHref="/"
+      alertHref="/portal/messages"
+      settingsHref="/portal/profile#security-settings"
+      profileHref="/portal/profile"
+      userName="Patient"
+      userRole="Verified portal"
+      profileImageSrc={profileImageSrc}
+      alertCount={1}
+      alertLabel="Open notifications"
+      settingsLabel="Open profile settings"
+      profileLabel="Open patient profile"
+    />
   );
 }

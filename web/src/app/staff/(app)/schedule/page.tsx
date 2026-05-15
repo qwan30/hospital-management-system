@@ -1,4 +1,5 @@
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function ScheduleTemplatesPage() {
   return (
     <>
@@ -30,7 +31,7 @@ export default function ScheduleTemplatesPage() {
 <div className="p-6 border-b-2 border-surface-container flex justify-between items-center bg-surface-container-low">
 <h2 className="text-xs font-bold tracking-widest uppercase">TEMPLATE_LIBRARY_INDEX</h2>
 <button className="bg-on-surface text-white px-4 py-2 text-[10px] font-bold tracking-widest uppercase hover:bg-black transition-colors flex items-center gap-2">
-<span className="material-symbols-outlined text-sm">add</span> CREATE_TEMPLATE
+<HcIcon name="add" className="text-sm" /> CREATE_TEMPLATE
                         </button>
 </div>
 <table className="w-full text-left border-collapse">
@@ -91,15 +92,15 @@ export default function ScheduleTemplatesPage() {
 <p className="text-xs text-outline mt-1 font-mono uppercase tracking-tight">ID: TEM-GP-SUM24-001</p>
 </div>
 <button className="p-2 hover:bg-surface-container-high transition-colors">
-<span className="material-symbols-outlined">close</span>
+<HcIcon name="close" />
 </button>
 </div>
 <div className="flex-grow overflow-y-auto p-8">
 <div className="flex justify-between items-center mb-6">
 <h4 className="text-xs font-bold uppercase tracking-widest">WEEKLY_MATRIX_CONFIGURATION</h4>
 <div className="flex gap-2">
-<button className="p-1 bg-primary text-white"><span className="material-symbols-outlined text-xs">edit</span></button>
-<button className="p-1 bg-surface-container-highest"><span className="material-symbols-outlined text-xs">history</span></button>
+<button className="p-1 bg-primary text-white"><HcIcon name="edit" className="text-xs" /></button>
+<button className="p-1 bg-surface-container-highest"><HcIcon name="history" className="text-xs" /></button>
 </div>
 </div>
 {/* Matrix Editor Grid */}
@@ -113,11 +114,11 @@ export default function ScheduleTemplatesPage() {
 <div className="space-y-2">
 <div className="flex items-center justify-between text-xs p-3 bg-white border-b border-surface-container group hover:bg-primary-container hover:text-white transition-colors cursor-pointer">
 <span className="font-bold tracking-tight">08:00 AM - 12:00 PM</span>
-<span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100">settings</span>
+<HcIcon name="settings" className="text-sm opacity-0 group-hover:opacity-100" />
 </div>
 <div className="flex items-center justify-between text-xs p-3 bg-white border-b border-surface-container group hover:bg-primary-container hover:text-white transition-colors cursor-pointer">
 <span className="font-bold tracking-tight">01:00 PM - 05:00 PM</span>
-<span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100">settings</span>
+<HcIcon name="settings" className="text-sm opacity-0 group-hover:opacity-100" />
 </div>
 <button className="w-full py-2 border-2 border-dashed border-outline-variant text-[9px] font-bold uppercase tracking-widest text-outline hover:border-primary hover:text-primary transition-all">
                                 ADD_TIME_WINDOW
@@ -133,11 +134,11 @@ export default function ScheduleTemplatesPage() {
 <div className="space-y-2">
 <div className="flex items-center justify-between text-xs p-3 bg-white border-b border-surface-container group hover:bg-primary-container hover:text-white transition-colors cursor-pointer">
 <span className="font-bold tracking-tight">09:00 AM - 01:00 PM</span>
-<span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100">settings</span>
+<HcIcon name="settings" className="text-sm opacity-0 group-hover:opacity-100" />
 </div>
 <div className="flex items-center justify-between text-xs p-3 bg-white border-b border-surface-container group hover:bg-primary-container hover:text-white transition-colors cursor-pointer">
 <span className="font-bold tracking-tight">02:00 PM - 06:00 PM</span>
-<span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-100">settings</span>
+<HcIcon name="settings" className="text-sm opacity-0 group-hover:opacity-100" />
 </div>
 </div>
 </div>
@@ -148,7 +149,7 @@ export default function ScheduleTemplatesPage() {
 <span className="text-[10px] font-mono text-outline font-bold">--_SLOTS</span>
 </div>
 <div className="bg-white/50 p-6 flex flex-col items-center justify-center border-2 border-dashed border-outline-variant">
-<span className="material-symbols-outlined text-outline-variant mb-2">event_busy</span>
+<HcIcon name="event_busy" className="text-outline-variant mb-2" />
 <span className="text-[9px] font-bold text-outline-variant uppercase tracking-widest">NO_WINDOWS_DEFINED</span>
 </div>
 </div>

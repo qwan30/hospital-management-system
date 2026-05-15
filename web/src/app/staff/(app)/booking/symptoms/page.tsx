@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function BookingWizardSymptomsPage() {
   return (
     <>
@@ -69,7 +70,7 @@ export default function BookingWizardSymptomsPage() {
 <div className="flex space-x-4">
 <button className="bg-primary-container text-white px-8 py-3 font-medium flex items-center group">
                             Next: Analyze Results
-                            <span className="material-symbols-outlined ml-2 transition-transform group-hover:translate-x-1">arrow_forward</span>
+                            <HcIcon name="arrow_forward" className="ml-2 transition-transform group-hover:translate-x-1" />
 </button>
 <button className="bg-surface-container-high text-on-surface px-8 py-3 font-medium">
                             Save Draft
@@ -106,15 +107,15 @@ export default function BookingWizardSymptomsPage() {
 <h4 className="text-xs font-semibold uppercase tracking-widest text-outline mb-4">Diagnostic Flags</h4>
 <ul className="space-y-3">
 <li className="flex items-center text-sm">
-<span className="material-symbols-outlined text-primary text-lg mr-3">check_circle</span>
+<HcIcon name="check_circle" className="text-primary text-lg mr-3" />
                                     Inflammation Markers Suggested
                                 </li>
 <li className="flex items-center text-sm">
-<span className="material-symbols-outlined text-primary text-lg mr-3">check_circle</span>
+<HcIcon name="check_circle" className="text-primary text-lg mr-3" />
                                     History: Patient #88219 Match
                                 </li>
 <li className="flex items-center text-sm text-outline">
-<span className="material-symbols-outlined text-lg mr-3">radio_button_unchecked</span>
+<HcIcon name="radio_button_unchecked" className="text-lg mr-3" />
                                     Secondary Triage Required
                                 </li>
 </ul>

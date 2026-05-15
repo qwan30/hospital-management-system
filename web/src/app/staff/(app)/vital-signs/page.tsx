@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function VitalSignsEditorPage() {
   return (
     <>
@@ -8,23 +9,23 @@ export default function VitalSignsEditorPage() {
 {/* TopAppBar (Authority: Shared Components JSON) */}
 <header className="flex justify-between items-center w-full px-8 h-16 sticky top-0 z-50 bg-white dark:bg-neutral-900 border-b-2 border-neutral-900 dark:border-neutral-800">
 <div className="flex items-center gap-4">
-<span className="text-xl font-bold tracking-widest text-neutral-900 dark:text-white uppercase">MEDCORE OS</span>
+<span className="text-xl font-bold tracking-widest text-neutral-900 dark:text-white uppercase">HOSPITAL CORE</span>
 </div>
 <div className="flex-1 max-w-md ml-12">
 <div className="relative group">
-<span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">search</span>
+<HcIcon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
 <input className="w-full bg-neutral-100 border-none px-10 py-2 focus:ring-2 focus:ring-blue-600 outline-none text-sm" placeholder="Search patient or record..." type="text"/>
 </div>
 </div>
 <div className="flex items-center gap-2">
 <button className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-75 active:bg-neutral-200">
-<span className="material-symbols-outlined text-neutral-600">notifications</span>
+<HcIcon name="notifications" className="text-neutral-600" />
 </button>
 <button className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-75 active:bg-neutral-200">
-<span className="material-symbols-outlined text-neutral-600">help</span>
+<HcIcon name="help" className="text-neutral-600" />
 </button>
 <div className="h-8 w-8 bg-blue-600 flex items-center justify-center ml-2">
-<span className="material-symbols-outlined text-white text-sm" >account_circle</span>
+<HcIcon name="account_circle" className="text-white text-sm" />
 </div>
 </div>
 </header>
@@ -135,11 +136,11 @@ export default function VitalSignsEditorPage() {
 <footer className="mt-24 border-t-2 border-neutral-900 pt-8 flex items-center justify-between">
 <div className="flex items-center gap-6">
 <div className="flex items-center gap-2 text-neutral-500">
-<span className="material-symbols-outlined text-sm">schedule</span>
+<HcIcon name="schedule" className="text-sm" />
 <span className="text-[10px] font-bold uppercase tracking-widest">Entry Time: 14:22:05 EST</span>
 </div>
 <div className="flex items-center gap-2 text-neutral-500">
-<span className="material-symbols-outlined text-sm">lock</span>
+<HcIcon name="lock" className="text-sm" />
 <span className="text-[10px] font-bold uppercase tracking-widest">Secure Ledger Protocol V2</span>
 </div>
 </div>
@@ -148,7 +149,7 @@ export default function VitalSignsEditorPage() {
                         Discard Changes
                     </button>
 <button className="bg-primary-container text-white px-12 py-3 text-xs font-bold uppercase tracking-widest flex items-center gap-3 hover:bg-primary active:translate-y-0.5 transition-all">
-                        Save Vitals <span className="material-symbols-outlined text-sm">send</span>
+                        Save Vitals <HcIcon name="send" className="text-sm" />
 </button>
 </div>
 </footer>
@@ -204,7 +205,7 @@ export default function VitalSignsEditorPage() {
 <div className="p-8 bg-neutral-950 text-white">
 <button className="w-full flex justify-between items-center group">
 <span className="text-[10px] font-black uppercase tracking-[0.2em]">View Full Patient History</span>
-<span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+<HcIcon name="arrow_forward" className="text-sm group-hover:translate-x-1 transition-transform" />
 </button>
 </div>
 </div>

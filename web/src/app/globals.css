@@ -4,13 +4,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ===== HMS Design System Tokens ===== */
+/* ================================================================
+   Hospital Core — Design Token Foundation
+   Source of truth: docs/design_system.md
+   ================================================================ */
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-public-sans);
-  --font-mono: var(--font-ibm-plex-mono);
-  --font-heading: var(--font-public-sans);
+  --font-sans: var(--hc-font-sans);
+  --font-mono: var(--hc-font-mono);
+  --font-heading: var(--hc-font-sans);
 
   /* shadcn semantic tokens */
   --color-sidebar-ring: var(--sidebar-ring);
@@ -50,154 +54,238 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* HMS Custom Color Tokens */
-  --color-hms-surface: #fcf9f8;
-  --color-hms-surface-container: #f0edec;
-  --color-hms-surface-container-low: #f6f3f2;
-  --color-hms-surface-container-high: #eae7e7;
-  --color-hms-surface-container-highest: #e5e2e1;
-  --color-hms-surface-container-lowest: #ffffff;
-  --color-hms-on-surface: #1c1b1b;
-  --color-hms-on-surface-variant: #424656;
-  --color-hms-primary: #004ccd;
-  --color-hms-primary-container: #0f62fe;
-  --color-hms-on-primary: #ffffff;
-  --color-hms-on-primary-container: #f3f3ff;
-  --color-hms-secondary: #445ba1;
-  --color-hms-secondary-container: #9db3ff;
-  --color-hms-on-secondary: #ffffff;
-  --color-hms-on-secondary-container: #2b4388;
-  --color-hms-tertiary: #9e3100;
-  --color-hms-tertiary-container: #c84000;
-  --color-hms-on-tertiary: #ffffff;
-  --color-hms-on-tertiary-container: #fff1ed;
-  --color-hms-error: #ba1a1a;
-  --color-hms-error-container: #ffdad6;
-  --color-hms-on-error: #ffffff;
-  --color-hms-on-error-container: #93000a;
-  --color-hms-outline: #737687;
-  --color-hms-outline-variant: #c3c6d8;
-  --color-hms-inverse-surface: #313030;
-  --color-hms-inverse-on-surface: #f3f0ef;
-  --color-hms-surface-tint: #0052dd;
-  --color-hms-primary-fixed: #dbe1ff;
-  --color-hms-shell-dark: #161616;
-  --color-hms-sidebar-bg: #f4f4f4;
+  /* HC surface aliases for Tailwind utility classes */
+  --color-hc-navy-950: #061735;
+  --color-hc-navy-900: #071B3A;
+  --color-hc-navy-850: #0A2148;
+  --color-hc-navy-800: #0C2A5A;
+  --color-hc-blue-700: #0B4EDB;
+  --color-hc-blue-600: #0F62FE;
+  --color-hc-blue-500: #1D6FFF;
+  --color-hc-blue-100: #DBEAFE;
+  --color-hc-blue-50: #EFF6FF;
+  --color-hc-cyan: #00B8FF;
+  --color-hc-purple: #7C3AED;
+  --color-hc-purple-bg: #F3E8FF;
+  --color-hc-bg: #F6F8FB;
+  --color-hc-content-bg: #FFFFFF;
+  --color-hc-sidebar-bg: #FBFCFE;
+  --color-hc-surface: #FFFFFF;
+  --color-hc-surface-muted: #F8FAFC;
+  --color-hc-surface-soft: #F1F5F9;
+  --color-hc-border: #E2E8F0;
+  --color-hc-border-strong: #CBD5E1;
+  --color-hc-border-soft: #EEF2F7;
+  --color-hc-text: #0F172A;
+  --color-hc-text-secondary: #475569;
+  --color-hc-text-muted: #64748B;
+  --color-hc-text-placeholder: #94A3B8;
+  --color-hc-success: #079669;
+  --color-hc-success-bg: #DDFBEA;
+  --color-hc-warning: #F97316;
+  --color-hc-warning-bg: #FFEDD5;
+  --color-hc-danger: #DC2626;
+  --color-hc-danger-bg: #FEE2E2;
+  --color-hc-info: #2563EB;
+  --color-hc-info-bg: #DBEAFE;
 
-  /* Legacy unprefixed token aliases used by migrated pages */
-  --color-surface: var(--color-hms-surface);
-  --color-surface-bright: var(--color-hms-surface);
-  --color-surface-dim: #dcd9d9;
-  --color-surface-container: var(--color-hms-surface-container);
-  --color-surface-container-low: var(--color-hms-surface-container-low);
-  --color-surface-container-high: var(--color-hms-surface-container-high);
-  --color-surface-container-highest: var(--color-hms-surface-container-highest);
-  --color-surface-container-lowest: var(--color-hms-surface-container-lowest);
-  --color-on-surface: var(--color-hms-on-surface);
-  --color-on-surface-variant: var(--color-hms-on-surface-variant);
+  /* Legacy unprefixed aliases */
+  --color-surface: var(--color-hc-surface);
+  --color-surface-bright: var(--color-hc-surface);
+  --color-surface-dim: var(--color-hc-border-strong);
+  --color-surface-container: var(--color-hc-surface-soft);
+  --color-surface-container-low: var(--color-hc-surface-muted);
+  --color-surface-container-high: var(--color-hc-border);
+  --color-surface-container-highest: var(--color-hc-border-strong);
+  --color-surface-container-lowest: var(--color-hc-content-bg);
+  --color-on-surface: var(--color-hc-text);
+  --color-on-surface-variant: var(--color-hc-text-secondary);
   --color-on-background: var(--foreground);
-  --color-primary-container: var(--color-hms-primary-container);
-  --color-on-primary: var(--color-hms-on-primary);
-  --color-on-primary-container: var(--color-hms-on-primary-container);
-  --color-secondary-container: var(--color-hms-secondary-container);
-  --color-on-secondary: var(--color-hms-on-secondary);
-  --color-on-secondary-container: var(--color-hms-on-secondary-container);
-  --color-tertiary-container: var(--color-hms-tertiary-container);
-  --color-on-tertiary: var(--color-hms-on-tertiary);
-  --color-on-tertiary-container: var(--color-hms-on-tertiary-container);
-  --color-error-container: var(--color-hms-error-container);
-  --color-on-error: var(--color-hms-on-error);
-  --color-on-error-container: var(--color-hms-on-error-container);
-  --color-outline: var(--color-hms-outline);
-  --color-outline-variant: var(--color-hms-outline-variant);
-  --color-inverse-surface: var(--color-hms-inverse-surface);
-  --color-inverse-on-surface: var(--color-hms-inverse-on-surface);
-  --color-inverse-primary: #b4c5ff;
-  --color-surface-tint: var(--color-hms-surface-tint);
-  --color-surface-variant: var(--color-hms-surface-container-highest);
-  --color-primary-fixed: var(--color-hms-primary-fixed);
-  --color-primary-fixed-dim: #b4c5ff;
-  --color-secondary-fixed: #dbe1ff;
-  --color-secondary-fixed-dim: #b4c5ff;
-  --color-tertiary-fixed: #ffdbd0;
-  --color-tertiary-fixed-dim: #ffb59d;
-  --color-on-primary-fixed: #00174c;
-  --color-on-primary-fixed-variant: #003da9;
-  --color-on-secondary-fixed: #00174c;
-  --color-on-secondary-fixed-variant: #2a4387;
-  --color-on-tertiary-fixed: #390c00;
-  --color-on-tertiary-fixed-variant: #832700;
+  --color-primary-container: var(--color-hc-blue-600);
+  --color-on-primary: #FFFFFF;
+  --color-on-primary-container: #FFFFFF;
+  --color-secondary-container: var(--color-hc-blue-100);
+  --color-on-secondary: #FFFFFF;
+  --color-on-secondary-container: var(--color-hc-text);
+  --color-error-container: var(--color-hc-danger-bg);
+  --color-on-error: #FFFFFF;
+  --color-on-error-container: var(--color-hc-danger);
+  --color-outline: var(--color-hc-border-strong);
+  --color-outline-variant: var(--color-hc-border);
+  --color-inverse-surface: #0F172A;
+  --color-inverse-on-surface: #F8FAFC;
+  --color-inverse-primary: #93B4FF;
+  --color-surface-tint: #0F62FE;
+  --color-surface-variant: var(--color-hc-border-strong);
 }
 
 :root {
-  --font-public-sans: "Public Sans", Arial, Helvetica, sans-serif;
-  --font-ibm-plex-mono: "IBM Plex Mono", "Courier New", monospace;
-  --background: #fcf9f8;
-  --foreground: #1c1b1b;
-  --card: #ffffff;
-  --card-foreground: #1c1b1b;
-  --popover: #ffffff;
-  --popover-foreground: #1c1b1b;
-  --primary: #004ccd;
-  --primary-foreground: #ffffff;
-  --secondary: #f6f3f2;
-  --secondary-foreground: #1c1b1b;
-  --muted: #f0edec;
-  --muted-foreground: #424656;
-  --accent: #eae7e7;
-  --accent-foreground: #1c1b1b;
-  --destructive: #ba1a1a;
-  --border: #c3c6d8;
-  --input: #c3c6d8;
-  --ring: #0f62fe;
-  --chart-1: #0f62fe;
-  --chart-2: #445ba1;
-  --chart-3: #9e3100;
-  --chart-4: #737687;
-  --chart-5: #424656;
-  --radius: 0px;
-  --sidebar: #f4f4f4;
-  --sidebar-foreground: #1c1b1b;
-  --sidebar-primary: #0f62fe;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #ffffff;
-  --sidebar-accent-foreground: #0f62fe;
-  --sidebar-border: #f0edec;
-  --sidebar-ring: #0f62fe;
+  /* ── Hospital Core Design Tokens ── */
+
+  /* Layout */
+  --hc-topbar-h: 64px;
+  --hc-sidebar-w: 280px;
+
+  /* Font */
+  --hc-font-sans: Inter, "IBM Plex Sans", "SF Pro Display", "Segoe UI", Arial, sans-serif;
+  --hc-font-mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+
+  /* Brand navy / topbar */
+  --hc-navy-950: #061735;
+  --hc-navy-900: #071B3A;
+  --hc-navy-850: #0A2148;
+  --hc-navy-800: #0C2A5A;
+
+  /* Primary blue */
+  --hc-blue-700: #0B4EDB;
+  --hc-blue-600: #0F62FE;
+  --hc-blue-500: #1D6FFF;
+  --hc-blue-100: #DBEAFE;
+  --hc-blue-50: #EFF6FF;
+
+  /* Accent */
+  --hc-cyan: #00B8FF;
+  --hc-purple: #7C3AED;
+  --hc-purple-bg: #F3E8FF;
+
+  /* App surfaces */
+  --hc-bg: #F6F8FB;
+  --hc-content-bg: #FFFFFF;
+  --hc-sidebar-bg: #FBFCFE;
+  --hc-surface: #FFFFFF;
+  --hc-surface-muted: #F8FAFC;
+  --hc-surface-soft: #F1F5F9;
+
+  /* Borders */
+  --hc-border: #E2E8F0;
+  --hc-border-strong: #CBD5E1;
+  --hc-border-soft: #EEF2F7;
+
+  /* Text */
+  --hc-text: #0F172A;
+  --hc-text-secondary: #475569;
+  --hc-text-muted: #64748B;
+  --hc-text-placeholder: #94A3B8;
+  --hc-white: #FFFFFF;
+
+  /* Semantic */
+  --hc-success: #079669;
+  --hc-success-bg: #DDFBEA;
+  --hc-warning: #F97316;
+  --hc-warning-bg: #FFEDD5;
+  --hc-danger: #DC2626;
+  --hc-danger-bg: #FEE2E2;
+  --hc-info: #2563EB;
+  --hc-info-bg: #DBEAFE;
+
+  /* Operational semantic */
+  --hc-stock: #059669;
+  --hc-stock-bg: #DFF8EA;
+  --hc-low-stock: #EA580C;
+  --hc-low-stock-bg: #FFEDD5;
+  --hc-critical: #DC2626;
+  --hc-critical-bg: #FEE2E2;
+  --hc-expiring: #7C3AED;
+  --hc-expiring-bg: #F3E8FF;
+
+  /* Radius */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 18px;
+  --radius-full: 999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-card: 0 8px 24px rgba(15, 23, 42, 0.06);
+  --shadow-card-hover: 0 12px 30px rgba(15, 23, 42, 0.09);
+  --shadow-blue: 0 8px 18px rgba(15, 98, 254, 0.22);
+
+  /* Motion */
+  --motion-fast: 140ms ease;
+  --motion-base: 180ms ease;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* ── shadcn/Tailwind semantic mappings ── */
+  --background: #F6F8FB;
+  --foreground: #0F172A;
+  --card: #FFFFFF;
+  --card-foreground: #0F172A;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F172A;
+  --primary: #0F62FE;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F8FAFC;
+  --secondary-foreground: #0F172A;
+  --muted: #F1F5F9;
+  --muted-foreground: #475569;
+  --accent: #E2E8F0;
+  --accent-foreground: #0F172A;
+  --destructive: #DC2626;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #0F62FE;
+  --chart-1: #0F62FE;
+  --chart-2: #079669;
+  --chart-3: #F97316;
+  --chart-4: #7C3AED;
+  --chart-5: #64748B;
+  --radius: 10px;
+  --sidebar: #FBFCFE;
+  --sidebar-foreground: #0F172A;
+  --sidebar-primary: #0F62FE;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #EFF6FF;
+  --sidebar-accent-foreground: #0F62FE;
+  --sidebar-border: #E2E8F0;
+  --sidebar-ring: #0F62FE;
 }
 
 .dark {
-  --background: #161616;
-  --foreground: #f3f0ef;
-  --card: #262626;
-  --card-foreground: #f3f0ef;
-  --popover: #262626;
-  --popover-foreground: #f3f0ef;
-  --primary: #b4c5ff;
-  --primary-foreground: #00174c;
-  --secondary: #393939;
-  --secondary-foreground: #f3f0ef;
-  --muted: #393939;
-  --muted-foreground: #c3c6d8;
-  --accent: #393939;
-  --accent-foreground: #f3f0ef;
-  --destructive: #ffdad6;
+  --background: #0F172A;
+  --foreground: #F8FAFC;
+  --card: #1E293B;
+  --card-foreground: #F8FAFC;
+  --popover: #1E293B;
+  --popover-foreground: #F8FAFC;
+  --primary: #93B4FF;
+  --primary-foreground: #061735;
+  --secondary: #334155;
+  --secondary-foreground: #F8FAFC;
+  --muted: #334155;
+  --muted-foreground: #94A3B8;
+  --accent: #334155;
+  --accent-foreground: #F8FAFC;
+  --destructive: #FEE2E2;
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.15);
-  --ring: #b4c5ff;
-  --chart-1: #b4c5ff;
-  --chart-2: #9db3ff;
-  --chart-3: #ffb59d;
-  --chart-4: #c3c6d8;
-  --chart-5: #737687;
-  --sidebar: #262626;
-  --sidebar-foreground: #f3f0ef;
-  --sidebar-primary: #b4c5ff;
-  --sidebar-primary-foreground: #00174c;
-  --sidebar-accent: #393939;
-  --sidebar-accent-foreground: #f3f0ef;
+  --ring: #93B4FF;
+  --chart-1: #93B4FF;
+  --chart-2: #6EE7B7;
+  --chart-3: #FDBA74;
+  --chart-4: #C4B5FD;
+  --chart-5: #94A3B8;
+  --sidebar: #1E293B;
+  --sidebar-foreground: #F8FAFC;
+  --sidebar-primary: #93B4FF;
+  --sidebar-primary-foreground: #061735;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #F8FAFC;
   --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #b4c5ff;
+  --sidebar-ring: #93B4FF;
 }
 
 @layer base {
@@ -207,7 +295,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Public Sans', sans-serif;
+    font-family: var(--hc-font-sans);
   }
 
   html {
@@ -215,57 +303,32 @@
   }
 }
 
-/* ===== Material Symbols ===== */
-.material-symbols-outlined {
-  font-variation-settings: 'FILL'0, 'wght'400, 'GRAD'0, 'opsz'24;
-  vertical-align: middle;
-  font-size: 24px;
-  line-height: 1;
-}
-
-/* ===== HMS Utility Classes ===== */
+/* ===== Hospital Core Utility Classes ===== */
 .mono {
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: var(--hc-font-mono);
 }
 
-.hero-gradient {
-  background: linear-gradient(90deg, #161616 0%, #262626 100%);
-}
-
-.editorial-headline {
-  font-weight: 300;
-  letter-spacing: -1.4px;
-}
-
+/* Label caps for uppercase micro labels */
 .label-caps {
   font-size: 11px;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
+  font-weight: 700;
 }
 
 .ss01 {
   font-feature-settings: "ss01"on;
 }
 
-.glass-overlay {
-  background: rgb(248 249 255 / 70%);
-  backdrop-filter: blur(20px);
+/* Legacy utility classes (deprecated — use --hc-* tokens instead) */
+.hc-row:hover {
+  background-color: var(--hc-surface-soft);
 }
 
-.ambient-shadow {
-  box-shadow: 0 7px 14px 0 rgb(50 50 93 / 10%), 0 3px 6px 0 rgb(0 0 0 / 7%);
-}
-
-/* High density table row hover */
-.hms-row:hover {
-  background-color: #f6f3f2;
-}
-
-/* IBM-style border-bottom inputs */
-.hms-input {
-  background-color: #f6f3f2;
-  border: none;
-  border-bottom: 2px solid #737687;
+.hc-input {
+  background-color: var(--hc-surface-muted);
+  border: 1px solid var(--hc-border);
+  border-radius: var(--radius-md);
   outline: none;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
@@ -273,10 +336,181 @@
   transition: border-color 150ms;
 }
 
-.hms-input:focus {
-  border-bottom-color: #0f62fe;
+.hc-input:focus {
+  border-color: var(--hc-blue-600);
+  box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.12);
 }
 
-.hms-input::placeholder {
-  color: #424656;
+.hc-input::placeholder {
+  color: var(--hc-text-placeholder);
+}
+
+@layer components {
+  .hc-app {
+    min-height: 100vh;
+    background: var(--hc-bg);
+    color: var(--hc-text);
+    font-family: var(--hc-font-sans);
+  }
+
+  .hc-main {
+    min-height: calc(100vh - var(--hc-topbar-h));
+    background: var(--hc-content-bg);
+  }
+
+  .hc-main > main,
+  .hc-main > section,
+  .hc-main > div {
+    max-width: none;
+  }
+
+  .hc-main :where(header.sticky) {
+    top: var(--hc-topbar-h) !important;
+    z-index: 30 !important;
+    border-bottom: 1px solid var(--hc-border);
+    background: var(--hc-content-bg);
+  }
+
+  .hc-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .hc-search {
+    min-width: 280px;
+    flex: 1 1 320px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+    border: 1px solid var(--hc-border);
+    border-radius: var(--radius-md);
+    background: var(--hc-surface);
+    color: var(--hc-text);
+  }
+
+  .hc-search:focus-within {
+    border-color: var(--hc-blue-600);
+    box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.12);
+  }
+
+  .hc-search input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--hc-text);
+    font-size: 13px;
+  }
+
+  .hc-search input::placeholder {
+    color: var(--hc-text-placeholder);
+  }
+
+  .hc-select,
+  .hc-input {
+    height: 40px;
+    min-width: 150px;
+    padding: 0 12px;
+    border: 1px solid var(--hc-border);
+    border-radius: var(--radius-md);
+    background: var(--hc-surface);
+    color: var(--hc-text);
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .hc-select:focus,
+  .hc-input:focus {
+    outline: none;
+    border-color: var(--hc-blue-600);
+    box-shadow: 0 0 0 3px rgba(15, 98, 254, 0.12);
+  }
+
+  .hc-icon-btn {
+    width: 36px;
+    height: 36px;
+    display: inline-grid;
+    place-items: center;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: #334155;
+    cursor: pointer;
+  }
+
+  .hc-icon-btn:hover {
+    background: var(--hc-blue-50);
+    color: var(--hc-blue-600);
+  }
+
+  .hc-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+  }
+
+  .hc-table thead th {
+    height: 42px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--hc-border);
+    background: var(--hc-surface-muted);
+    color: #334155;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 14px;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .hc-table tbody td {
+    height: 48px;
+    padding: 0 14px;
+    border-bottom: 1px solid var(--hc-border-soft);
+    color: #1E293B;
+    font-size: 13px;
+    font-weight: 500;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  .hc-table tbody tr:hover td {
+    background: #FAFCFF;
+  }
+
+  .hc-table tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .hc-badge {
+    min-height: 22px;
+    border-radius: var(--radius-xs);
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 14px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 1024px) {
+    .hc-kpi-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hc-kpi-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hc-filter-row {
+      flex-wrap: wrap;
+    }
+  }
 }

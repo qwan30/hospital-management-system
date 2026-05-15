@@ -1,290 +1,565 @@
-import Image from "next/image";
+"use client";
+
+import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  activateAdminUser,
+  createAdminUser,
+  deactivateAdminUser,
+  listAdminUsers,
+  updateAdminUser,
+  type AdminUserResponse,
+  type AdminUserUpsertRequest,
+  type UserRole,
+} from "@/lib/operations-api";
+
+import { PageHeader } from "@/components/ui/page-header";
+import { KpiCard } from "@/components/ui/kpi-card";
+import { DataPanel } from "@/components/ui/data-panel";
+import { Users, UserPlus, HeartPulse, Building2, ShieldCheck, Search, X } from "lucide-react";
+
+const roles: UserRole[] = [
+  "ADMIN",
+  "DOCTOR",
+  "NURSE",
+  "RECEPTIONIST",
+  "PHARMACIST",
+  "ACCOUNTANT",
+];
+
+interface UserFormState {
+  email: string;
+  password: string;
+  fullName: string;
+  phone: string;
+  role: UserRole;
+  departmentId: string;
+  specialty: string;
+  qualification: string;
+  experienceYears: string;
+  active: boolean;
+}
+
+const emptyForm: UserFormState = {
+  email: "",
+  password: "",
+  fullName: "",
+  phone: "",
+  role: "DOCTOR",
+  departmentId: "",
+  specialty: "",
+  qualification: "",
+  experienceYears: "",
+  active: true,
+};
 
 export default function AdminUsersPage() {
+  const [users, setUsers] = useState<AdminUserResponse[]>([]);
+  const [query, setQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState<"ALL" | UserRole>("ALL");
+  const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "INACTIVE">("ALL");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<AdminUserResponse | null>(null);
+  const [form, setForm] = useState<UserFormState>(emptyForm);
+
+  const loadUsers = useCallback(async (isMounted: () => boolean = () => true) => {
+    if (isMounted()) {
+      setIsLoading(true);
+    }
+    try {
+      const nextUsers = await listAdminUsers();
+      if (!isMounted()) {
+        return;
+      }
+      setUsers(nextUsers);
+      setError(null);
+    } catch (caught) {
+      if (!isMounted()) {
+        return;
+      }
+      setUsers([]);
+      setError(errorMessage(caught, "Unable to load admin users."));
+    } finally {
+      if (isMounted()) {
+        setIsLoading(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    void Promise.resolve().then(() => loadUsers(() => mounted));
+
+    return () => {
+      mounted = false;
+    };
+  }, [loadUsers]);
+
+  const filteredUsers = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    return users.filter((user) => {
+      const matchesQuery =
+        !normalizedQuery ||
+        [
+          user.userId,
+          user.fullName,
+          user.email,
+          user.phone,
+          user.departmentName,
+          user.specialty,
+          user.qualification,
+        ]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedQuery);
+      const matchesRole = roleFilter === "ALL" || user.role === roleFilter;
+      const matchesStatus =
+        statusFilter === "ALL" ||
+        (statusFilter === "ACTIVE" ? user.active : !user.active);
+      return matchesQuery && matchesRole && matchesStatus;
+    });
+  }, [query, roleFilter, statusFilter, users]);
+
+  const stats = useMemo(() => {
+    const medical = users.filter((user) => ["DOCTOR", "NURSE", "PHARMACIST"].includes(user.role)).length;
+    const administration = users.filter((user) => ["ADMIN", "RECEPTIONIST", "ACCOUNTANT"].includes(user.role)).length;
+    const active = users.filter((user) => user.active).length;
+    return { total: users.length, medical, administration, active };
+  }, [users]);
+
+  function openCreateForm() {
+    setEditingUser(null);
+    setForm(emptyForm);
+    setFormError(null);
+    setSuccess(null);
+    setIsFormOpen(true);
+  }
+
+  function openEditForm(user: AdminUserResponse) {
+    setEditingUser(user);
+    setForm({
+      email: user.email,
+      password: "",
+      fullName: user.fullName,
+      phone: user.phone ?? "",
+      role: user.role,
+      departmentId: user.departmentId ?? "",
+      specialty: user.specialty ?? "",
+      qualification: user.qualification ?? "",
+      experienceYears: user.experienceYears == null ? "" : String(user.experienceYears),
+      active: user.active,
+    });
+    setFormError(null);
+    setSuccess(null);
+    setIsFormOpen(true);
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const request = toUserRequest(form, editingUser);
+    const validationError = validateUserRequest(request, Boolean(editingUser));
+    setFormError(null);
+    setSuccess(null);
+
+    if (validationError) {
+      setFormError(validationError);
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const saved = editingUser
+        ? await updateAdminUser(editingUser.userId, request)
+        : await createAdminUser(request);
+      setSuccess(saved ? `User ${saved.fullName} saved.` : "User saved.");
+      setIsFormOpen(false);
+      setEditingUser(null);
+      setForm(emptyForm);
+      await loadUsers();
+    } catch (caught) {
+      setFormError(errorMessage(caught, "Unable to save admin user."));
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  async function toggleUserActive(user: AdminUserResponse) {
+    setFormError(null);
+    setSuccess(null);
+    setIsSaving(true);
+    try {
+      const saved = user.active
+        ? await deactivateAdminUser(user.userId)
+        : await activateAdminUser(user.userId);
+      setSuccess(saved ? `User ${saved.fullName} ${saved.active ? "activated" : "deactivated"}.` : "User status updated.");
+      await loadUsers();
+    } catch (caught) {
+      setFormError(errorMessage(caught, "Unable to update user status."));
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   return (
-    <div className="max-w-[1200px] mx-auto p-10">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-        <div>
-          <span className="text-hms-primary font-bold text-[10px] uppercase tracking-[0.2em] mb-2 block">
-            System Administration
-          </span>
-          <h1 className="text-4xl md:text-5xl font-light tracking-tighter text-hms-on-background">
-            Staff Directory
-          </h1>
+    <div className="p-8 pb-20">
+      <PageHeader
+        title="Staff Directory"
+        description="System Administration • Manage user roles and access"
+        action={
+          <button
+            className="hc-button-primary flex items-center gap-2"
+            onClick={openCreateForm}
+            type="button"
+          >
+            <UserPlus className="w-4 h-4" />
+            <span className="font-bold text-[11px] uppercase tracking-widest">Add User</span>
+          </button>
+        }
+      />
+
+      {error ? (
+        <div className="mb-6 rounded-[var(--radius-md)] border border-[var(--hc-danger)] bg-[var(--hc-danger-bg)] p-4 text-sm font-medium text-[var(--hc-danger)]" role="alert">
+          {error}
         </div>
-        <button className="bg-hms-primary-container hover:bg-hms-primary text-white px-6 py-3 flex items-center gap-3 transition-colors">
-          <span className="material-symbols-outlined text-lg">person_add</span>
-          <span className="font-bold text-xs uppercase tracking-widest">
-            Add User
-          </span>
-        </button>
+      ) : null}
+      {formError ? (
+        <div className="mb-6 rounded-[var(--radius-md)] border border-[var(--hc-danger)] bg-[var(--hc-danger-bg)] p-4 text-sm font-medium text-[var(--hc-danger)]" role="alert">
+          {formError}
+        </div>
+      ) : null}
+      {success ? (
+        <div className="mb-6 rounded-[var(--radius-md)] border border-[var(--hc-success)] bg-[var(--hc-success-bg)] p-4 text-sm font-medium text-[var(--hc-success)]" role="status">
+          {success}
+        </div>
+      ) : null}
+
+      <div className="hc-kpi-grid mb-8">
+        <KpiCard label="Total Staff" value={stats.total.toString()} icon={Users} tone="blue" />
+        <KpiCard label="Medical Dept" value={stats.medical.toString()} icon={HeartPulse} tone="teal" />
+        <KpiCard label="Administration" value={stats.administration.toString()} icon={Building2} tone="purple" />
+        <KpiCard label="Active Accounts" value={stats.active.toString()} icon={ShieldCheck} tone="green" />
       </div>
 
-      {/* Dashboard Stats (Editorial Style) */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-hms-surface-container mb-12">
-        <div className="bg-hms-surface p-6">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-hms-outline mb-2">
-            Total Staff
-          </p>
-          <p className="text-4xl font-light tracking-tighter">142</p>
-        </div>
-        <div className="bg-hms-surface p-6">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-hms-outline mb-2">
-            Medical Dept
-          </p>
-          <p className="text-4xl font-light tracking-tighter">84</p>
-        </div>
-        <div className="bg-hms-surface p-6">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-hms-outline mb-2">
-            Administration
-          </p>
-          <p className="text-4xl font-light tracking-tighter">32</p>
-        </div>
-        <div className="bg-hms-surface p-6">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-hms-outline mb-2">
-            Support Services
-          </p>
-          <p className="text-4xl font-light tracking-tighter">26</p>
-        </div>
-      </div>
-
-      {/* Table Filters */}
-      <div className="bg-hms-surface-container-low p-1 mb-px">
-        <div className="flex flex-col md:flex-row gap-4 items-center p-4">
-          <div className="flex-1 w-full relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-hms-outline">
-              search
-            </span>
-            <input
-              aria-label="Search users by name, email or ID"
-              className="w-full bg-hms-surface border-none border-b-2 border-hms-outline focus:border-hms-primary focus:ring-0 pl-12 py-3 text-sm placeholder:uppercase placeholder:text-[10px] placeholder:font-bold placeholder:tracking-widest outline-none"
-              placeholder="Search by name, email or ID..."
-              type="text"
-            />
-          </div>
-          <div className="flex items-center gap-4 w-full md:w-auto">
+      <DataPanel
+        title="User Accounts"
+        action={
+          <div className="flex items-center gap-4">
             <select
               aria-label="Filter users by role"
-              className="bg-hms-surface border-none border-b-2 border-hms-outline focus:border-hms-primary focus:ring-0 py-3 px-4 text-xs font-bold uppercase tracking-widest w-full md:w-48 outline-none"
+              className="hc-input py-2 text-xs w-48"
+              onChange={(event) => setRoleFilter(event.target.value as "ALL" | UserRole)}
+              value={roleFilter}
             >
-              <option>Role: All</option>
-              <option>Practitioner</option>
-              <option>Nurse</option>
-              <option>Administrator</option>
+              <option value="ALL">Role: All</option>
+              {roles.map((role) => (
+                <option key={role} value={role}>{role}</option>
+              ))}
             </select>
             <select
               aria-label="Filter users by status"
-              className="bg-hms-surface border-none border-b-2 border-hms-outline focus:border-hms-primary focus:ring-0 py-3 px-4 text-xs font-bold uppercase tracking-widest w-full md:w-48 outline-none"
+              className="hc-input py-2 text-xs w-48"
+              onChange={(event) => setStatusFilter(event.target.value as "ALL" | "ACTIVE" | "INACTIVE")}
+              value={statusFilter}
             >
-              <option>Status: Active</option>
-              <option>Inactive</option>
-              <option>On Leave</option>
+              <option value="ALL">Status: All</option>
+              <option value="ACTIVE">Active</option>
+              <option value="INACTIVE">Inactive</option>
             </select>
-            <button className="p-3 bg-hms-surface text-hms-on-background hover:bg-hms-surface-container-high transition-colors">
-              <span className="material-symbols-outlined">filter_list</span>
-            </button>
+            <div className="relative w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] w-4 h-4" />
+              <input
+                className="hc-input pl-9 py-2 text-xs w-full"
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search..."
+                type="search"
+                value={query}
+              />
+            </div>
           </div>
+        }
+      >
+        {isLoading ? (
+          <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">Loading staff users...</div>
+        ) : (
+          <UsersTable
+            isSaving={isSaving}
+            onEdit={openEditForm}
+            onToggleActive={toggleUserActive}
+            users={filteredUsers}
+          />
+        )}
+
+        <div className="flex items-center justify-between p-4 bg-[var(--hc-surface-soft)] border-t border-[var(--hc-border-soft)]">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
+            Showing {filteredUsers.length} of {users.length} staff members
+          </span>
         </div>
+      </DataPanel>
+
+      {isFormOpen ? (
+        <Dialog title={editingUser ? "Edit User" : "Add User"} onClose={() => setIsFormOpen(false)}>
+          <UserForm
+            form={form}
+            isEditing={Boolean(editingUser)}
+            isSaving={isSaving}
+            onChange={setForm}
+            onSubmit={handleSubmit}
+          />
+        </Dialog>
+      ) : null}
+    </div>
+  );
+}
+
+function UsersTable({
+  users,
+  isSaving,
+  onEdit,
+  onToggleActive,
+}: {
+  users: AdminUserResponse[];
+  isSaving: boolean;
+  onEdit: (user: AdminUserResponse) => void;
+  onToggleActive: (user: AdminUserResponse) => void;
+}) {
+  if (users.length === 0) {
+    return <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">No staff users match the current filters.</div>;
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="hc-table">
+        <thead>
+          <tr>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Department</th>
+            <th>Status</th>
+            <th className="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user.userId}>
+              <td>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-[var(--radius-sm)] bg-[var(--hc-surface-soft)] flex items-center justify-center text-[10px] font-bold border border-[var(--hc-border-soft)]">
+                    {initials(user.fullName)}
+                  </div>
+                  <span className="text-sm font-semibold text-[var(--hc-text)] tracking-tight">{user.fullName}</span>
+                </div>
+              </td>
+              <td className="text-[var(--hc-text-secondary)]">{user.email}</td>
+              <td>
+                <span className="hc-badge bg-[var(--hc-surface-soft)] text-[var(--hc-text)] border-[var(--hc-border-soft)]">
+                  {user.role}
+                </span>
+              </td>
+              <td>{user.departmentName || "Unassigned"}</td>
+              <td>
+                <div className="flex items-center gap-2">
+                  <div className={`w-1.5 h-1.5 rounded-full ${user.active ? "bg-[var(--hc-success)]" : "bg-[var(--hc-text-secondary)]"}`} />
+                  <span className={`text-[10px] font-bold uppercase tracking-widest ${user.active ? "" : "text-[var(--hc-text-secondary)]"}`}>
+                    {user.active ? "Active" : "Inactive"}
+                  </span>
+                </div>
+              </td>
+              <td className="text-right">
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    className="hc-button-secondary py-1.5 px-3 text-[11px]"
+                    disabled={isSaving}
+                    onClick={() => onEdit(user)}
+                    type="button"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className={`py-1.5 px-3 rounded-[var(--radius-md)] text-[10px] font-bold uppercase tracking-widest border transition-colors disabled:opacity-50 ${user.active ? "border-[var(--hc-border)] text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)]" : "bg-[var(--hc-success-bg)] text-[var(--hc-success)] border-[var(--hc-success-bg)] hover:bg-[var(--hc-success)] hover:text-white"}`}
+                    disabled={isSaving}
+                    onClick={() => onToggleActive(user)}
+                    type="button"
+                  >
+                    {user.active ? "Deactivate" : "Activate"}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function UserForm({
+  form,
+  isEditing,
+  isSaving,
+  onChange,
+  onSubmit,
+}: {
+  form: UserFormState;
+  isEditing: boolean;
+  isSaving: boolean;
+  onChange: (form: UserFormState) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+}) {
+  return (
+    <form className="grid grid-cols-2 gap-5" noValidate onSubmit={onSubmit}>
+      <FormInput label="Full Name" onChange={(value) => onChange({ ...form, fullName: value })} required value={form.fullName} />
+      <FormInput label="Email" onChange={(value) => onChange({ ...form, email: value })} required type="email" value={form.email} />
+      <FormInput
+        label={isEditing ? "Password (optional)" : "Password"}
+        onChange={(value) => onChange({ ...form, password: value })}
+        required={!isEditing}
+        type="password"
+        value={form.password}
+      />
+      <FormInput label="Phone" onChange={(value) => onChange({ ...form, phone: value })} value={form.phone} />
+      <div>
+        <label className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-2">Role</label>
+        <select
+          aria-label="Role"
+          className="hc-input w-full"
+          onChange={(event) => onChange({ ...form, role: event.target.value as UserRole })}
+          value={form.role}
+        >
+          {roles.map((role) => (
+            <option key={role} value={role}>{role}</option>
+          ))}
+        </select>
       </div>
-
-      {/* Staff CRUD Table */}
-      <div className="bg-hms-surface-container-low overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead className="bg-hms-surface-container-highest">
-            <tr>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
-                Full Name
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
-                Email
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
-                Role
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
-                Department
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
-                Status
-              </th>
-              <th className="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant text-right">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-hms-surface-container">
-            {/* Table Row 1 */}
-            <tr className="hover:bg-hms-surface-container-lowest transition-colors group">
-              <td className="px-6 py-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-neutral-200">
-                    <Image
-                      alt="Staff headshot"
-                      className="w-full h-full object-cover"
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMi4NtrE7cLB-Mg3cJYSCqkgwn7PaewieL2gpyct8ToDhhOv6pM9Ria7FtpDLvOljDnmj327VzsU2DS1TCzelIubv-g_6ePASDSDxceaH7R3qTkIT8oXXKC1wZZZDEr_5QtR_i6Tsl9PcWc2JzvxM2nd7i0VJUuYHag2GroqwS96PkRJpGcPDC3u2vwdCeBFMu25L7Od0LIyeHZtPpNqffSwhAD71T3XFWI7m5RUuTwHkoX2yjaajl1o3mwUv4IGr4QbiNk1f-Cg"
-                     width={1200} height={800}/>
-                  </div>
-                  <span className="text-sm font-semibold tracking-tight">
-                    Sarah Kingston
-                  </span>
-                </div>
-              </td>
-              <td className="px-6 py-6 text-sm text-hms-on-surface-variant">
-                s.kingston@medcore.com
-              </td>
-              <td className="px-6 py-6">
-                <span className="bg-hms-surface-container-highest px-3 py-1 text-[10px] font-bold uppercase tracking-tighter">
-                  Chief Surgeon
-                </span>
-              </td>
-              <td className="px-6 py-6 text-sm">Medical Services</td>
-              <td className="px-6 py-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-green-500" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">
-                    Active
-                  </span>
-                </div>
-              </td>
-              <td className="px-6 py-6 text-right">
-                <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="p-2 hover:bg-hms-primary-container hover:text-white transition-colors">
-                    <span className="material-symbols-outlined text-sm">edit</span>
-                  </button>
-                  <button className="p-2 hover:bg-hms-error hover:text-white transition-colors">
-                    <span className="material-symbols-outlined text-sm">
-                      delete
-                    </span>
-                  </button>
-                </div>
-              </td>
-            </tr>
-
-            {/* Table Row 2 */}
-            <tr className="hover:bg-hms-surface-container-lowest transition-colors group">
-              <td className="px-6 py-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-neutral-200">
-                    <Image
-                      alt="Staff headshot"
-                      className="w-full h-full object-cover"
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKAPoXyvhq28iZKMMaEZRu2d_7Gkgnx6CHbC4On3BNvF0F4TV_CVxMYN4hlj4D4tAkCYfC1LaikoDEAzwyWN2piQYW8KY2I4qi0pRFzPZqHqIu1bpKy_NKaSzurafBboD5D-dQJNdoDBa8AOZ235uLUzoo_axMyYkzt5M55RLw7_MrjhL7lGHvHxOiaO17ozBVphqu-I5XR7_LPBzuHwu9FMJG82jTI3iOE_5BHI0dglKQKu5DA0fKlear88H5PzIAgaGtQkbgzQ"
-                     width={1200} height={800}/>
-                  </div>
-                  <span className="text-sm font-semibold tracking-tight">
-                    Marcus Bennett
-                  </span>
-                </div>
-              </td>
-              <td className="px-6 py-6 text-sm text-hms-on-surface-variant">
-                m.bennett@medcore.com
-              </td>
-              <td className="px-6 py-6">
-                <span className="bg-hms-surface-container-highest px-3 py-1 text-[10px] font-bold uppercase tracking-tighter">
-                  Clinical Admin
-                </span>
-              </td>
-              <td className="px-6 py-6 text-sm">Administration</td>
-              <td className="px-6 py-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-green-500" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest">
-                    Active
-                  </span>
-                </div>
-              </td>
-              <td className="px-6 py-6 text-right">
-                <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="p-2 hover:bg-hms-primary-container hover:text-white transition-colors">
-                    <span className="material-symbols-outlined text-sm">edit</span>
-                  </button>
-                  <button className="p-2 hover:bg-hms-error hover:text-white transition-colors">
-                    <span className="material-symbols-outlined text-sm">
-                      delete
-                    </span>
-                  </button>
-                </div>
-              </td>
-            </tr>
-
-            {/* Table Row 3 */}
-            <tr className="hover:bg-hms-surface-container-lowest transition-colors group">
-              <td className="px-6 py-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-neutral-200">
-                    <Image
-                      alt="Staff headshot"
-                      className="w-full h-full object-cover"
-                      src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkuOcLIWn-PawnT9q_IZifFWMrnKPIvgQgPFs8PIkaG9iIR3KQCuDMUadNmveiyJDmCLh1wY4Vp2I5snF4aK5NtcpUDiOybCefBzw6ZpT1CA5Ujnz1up9ZL6s3fQZyP9OcgI4jFhYXccaYiEI5CRadD5XUlblPY4pzNkcN-c-99MKn2pk6o9Fh3lJck2rd9SaywTW56qDSMBQYcvfN6tc03pYd7bc-j9UKIopq45CpBNs4LP-VW3jtYwhHlkR68sGOvKIxRcsC_Q"
-                     width={1200} height={800}/>
-                  </div>
-                  <span className="text-sm font-semibold tracking-tight">
-                    Elena Lopez
-                  </span>
-                </div>
-              </td>
-              <td className="px-6 py-6 text-sm text-hms-on-surface-variant">
-                e.lopez@medcore.com
-              </td>
-              <td className="px-6 py-6">
-                <span className="bg-hms-surface-container-highest px-3 py-1 text-[10px] font-bold uppercase tracking-tighter">
-                  Head Nurse
-                </span>
-              </td>
-              <td className="px-6 py-6 text-sm">Emergency Dept</td>
-              <td className="px-6 py-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-neutral-400" />
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-hms-outline">
-                    Inactive
-                  </span>
-                </div>
-              </td>
-              <td className="px-6 py-6 text-right">
-                <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="p-2 hover:bg-hms-primary-container hover:text-white transition-colors">
-                    <span className="material-symbols-outlined text-sm">edit</span>
-                  </button>
-                  <button className="p-2 hover:bg-hms-error hover:text-white transition-colors">
-                    <span className="material-symbols-outlined text-sm">
-                      delete
-                    </span>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <FormInput label="Department ID" onChange={(value) => onChange({ ...form, departmentId: value })} value={form.departmentId} />
+      <FormInput label="Specialty" onChange={(value) => onChange({ ...form, specialty: value })} value={form.specialty} />
+      <FormInput label="Qualification" onChange={(value) => onChange({ ...form, qualification: value })} value={form.qualification} />
+      <FormInput label="Experience Years" onChange={(value) => onChange({ ...form, experienceYears: value })} type="number" value={form.experienceYears} />
+      <label className="flex items-center gap-3 pt-8 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text)]">
+        <input
+          checked={form.active}
+          className="w-4 h-4 rounded-[var(--radius-sm)] border-[var(--hc-border-soft)] text-[var(--hc-blue-600)] focus:ring-[var(--hc-blue-500)]"
+          onChange={(event) => onChange({ ...form, active: event.target.checked })}
+          type="checkbox"
+        />
+        Active
+      </label>
+      <div className="col-span-2 flex justify-end gap-3 mt-4 pt-4 border-t border-[var(--hc-border-soft)]">
+        <button className="hc-button-primary disabled:opacity-60" disabled={isSaving} type="submit">
+          {isSaving ? "Saving..." : "Save User"}
+        </button>
       </div>
+    </form>
+  );
+}
 
-      {/* Pagination */}
-      <div className="flex items-center justify-between mt-8 p-4 bg-hms-surface-container-low border-t border-hms-outline-variant/15">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-hms-outline">
-          Showing 1-10 of 142 Staff members
-        </span>
-        <div className="flex gap-1">
-          <button className="w-10 h-10 bg-hms-surface flex items-center justify-center hover:bg-hms-primary-container hover:text-white transition-colors">
-            <span className="material-symbols-outlined text-sm">
-              chevron_left
-            </span>
-          </button>
-          <button className="w-10 h-10 bg-hms-primary-container text-white flex items-center justify-center">
-            1
-          </button>
-          <button className="w-10 h-10 bg-hms-surface flex items-center justify-center hover:bg-hms-primary-container hover:text-white transition-colors">
-            2
-          </button>
-          <button className="w-10 h-10 bg-hms-surface flex items-center justify-center hover:bg-hms-primary-container hover:text-white transition-colors">
-            3
-          </button>
-          <button className="w-10 h-10 bg-hms-surface flex items-center justify-center hover:bg-hms-primary-container hover:text-white transition-colors">
-            <span className="material-symbols-outlined text-sm">
-              chevron_right
-            </span>
+function FormInput({
+  label,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  type?: string;
+  required?: boolean;
+}) {
+  return (
+    <div>
+      <label className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-2">{label}</label>
+      <input
+        aria-label={label}
+        className="hc-input w-full"
+        onChange={(event) => onChange(event.target.value)}
+        required={required}
+        type={type}
+        value={value}
+      />
+    </div>
+  );
+}
+
+function Dialog({
+  children,
+  title,
+  onClose,
+}: {
+  children: ReactNode;
+  title: string;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/40 backdrop-blur-sm p-6">
+      <div className="w-full max-w-3xl bg-white rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] p-8 border border-[var(--hc-border)]">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-[var(--hc-text)]">{title}</h2>
+          <button aria-label="Close dialog" className="p-2 text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" onClick={onClose} type="button">
+            <X className="w-5 h-5" />
           </button>
         </div>
+        {children}
       </div>
     </div>
   );
 }
+
+function toUserRequest(form: UserFormState, editingUser: AdminUserResponse | null): AdminUserUpsertRequest {
+  const experienceYears = form.experienceYears.trim();
+
+  return {
+    email: form.email.trim(),
+    password: form.password.trim() || (editingUser ? null : ""),
+    fullName: form.fullName.trim(),
+    phone: nullableTrim(form.phone),
+    role: form.role,
+    departmentId: nullableTrim(form.departmentId),
+    specialty: nullableTrim(form.specialty),
+    qualification: nullableTrim(form.qualification),
+    experienceYears: experienceYears ? Number(experienceYears) : null,
+    active: form.active,
+  };
+}
+
+function validateUserRequest(request: AdminUserUpsertRequest, isEditing: boolean) {
+  if (!request.fullName || !request.email || !request.role) {
+    return "Full name, email, and role are required.";
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(request.email)) {
+    return "Enter a valid email address.";
+  }
+  if (!isEditing && (!request.password || request.password.length < 8)) {
+    return "Password must be at least 8 characters for new users.";
+  }
+  if (request.password && request.password.length < 8) {
+    return "Password must be at least 8 characters.";
+  }
+  if (request.experienceYears != null && (Number.isNaN(request.experienceYears) || request.experienceYears < 0)) {
+    return "Experience years must be zero or greater.";
+  }
+  return null;
+}
+
+function nullableTrim(value: string) {
+  const nextValue = value.trim();
+  return nextValue ? nextValue : null;
+}
+
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+}
+
+function errorMessage(caught: unknown, fallback: string) {
+  return caught instanceof Error ? caught.message : fallback;
+}
+

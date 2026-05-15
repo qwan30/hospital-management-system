@@ -49,8 +49,9 @@ describe("PortalSideNav", () => {
     render(<PortalSideNav />);
 
     const activeLink = screen.getByRole("link", { name: /appointments/i });
+    expect(activeLink).toHaveAttribute("data-active", "true");
     expect(activeLink.className).toContain("border-l-4");
-    expect(activeLink.className).toContain("text-blue-600");
+    expect(activeLink.className).toContain("text-[var(--hc-blue-600)]");
   });
 
   it("renders portal CTA and support/logout destinations", () => {

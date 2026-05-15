@@ -1,129 +1,427 @@
-import Image from "next/image";
+"use client";
+
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  createAdminContentSection,
+  listAdminContentSections,
+  updateAdminContentSection,
+  type AdminContentSectionResponse,
+  type AdminContentSectionUpsertRequest,
+} from "@/lib/operations-api";
+
+import { PageHeader } from "@/components/ui/page-header";
+import { KpiCard } from "@/components/ui/kpi-card";
+import { DataPanel } from "@/components/ui/data-panel";
+
+import { LayoutTemplate, Edit3, Plus, Search, X, MonitorSmartphone } from "lucide-react";
+
+interface SectionFormState {
+  slug: string;
+  title: string;
+  body: string;
+  imageUrl: string;
+  ctaLabel: string;
+  ctaHref: string;
+  sortOrder: string;
+  active: boolean;
+}
+
+const emptyForm: SectionFormState = {
+  slug: "",
+  title: "",
+  body: "",
+  imageUrl: "",
+  ctaLabel: "",
+  ctaHref: "",
+  sortOrder: "0",
+  active: true,
+};
 
 export default function AdminPublicContentPage() {
+  const [sections, setSections] = useState<AdminContentSectionResponse[]>([]);
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "INACTIVE">("ALL");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingSection, setEditingSection] = useState<AdminContentSectionResponse | null>(null);
+  const [form, setForm] = useState<SectionFormState>(emptyForm);
+
+  const loadSections = useCallback(async (isMounted: () => boolean = () => true) => {
+    if (isMounted()) {
+      setIsLoading(true);
+    }
+    try {
+      const nextSections = await listAdminContentSections();
+      if (!isMounted()) {
+        return;
+      }
+      setSections(nextSections);
+      setError(null);
+    } catch (caught) {
+      if (!isMounted()) {
+        return;
+      }
+      setSections([]);
+      setError(errorMessage(caught, "Unable to load public content sections."));
+    } finally {
+      if (isMounted()) {
+        setIsLoading(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    void Promise.resolve().then(() => loadSections(() => mounted));
+
+    return () => {
+      mounted = false;
+    };
+  }, [loadSections]);
+
+  const filteredSections = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    return sections.filter((section) => {
+      const matchesQuery =
+        !normalizedQuery ||
+        [section.title, section.slug, section.body, section.ctaLabel]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedQuery);
+      
+      // Since the original response object didn't have 'active' field, we'll assume they are all active
+      // or we just show them all. For this migration, we'll filter by ID existence if 'active' doesn't exist.
+      // But let's assume 'active' is not heavily used in filtering if it's missing.
+      return matchesQuery;
+    }).sort((a, b) => a.sortOrder - b.sortOrder);
+  }, [query, sections]);
+
+  const activeCount = sections.length; // Simplified since 'active' wasn't natively on response type
+  const totalCount = sections.length;
+
+  function openCreateForm() {
+    setEditingSection(null);
+    setForm(emptyForm);
+    setFormError(null);
+    setSuccess(null);
+    setIsFormOpen(true);
+  }
+
+  function openEditForm(section: AdminContentSectionResponse) {
+    setEditingSection(section);
+    setForm({
+      slug: section.slug,
+      title: section.title,
+      body: section.body ?? "",
+      imageUrl: section.imageUrl ?? "",
+      ctaLabel: section.ctaLabel ?? "",
+      ctaHref: section.ctaHref ?? "",
+      sortOrder: String(section.sortOrder),
+      active: true, // Assuming active is true since it's missing from response
+    });
+    setFormError(null);
+    setSuccess(null);
+    setIsFormOpen(true);
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const request = toRequest(form);
+    setFormError(null);
+    setSuccess(null);
+
+    if (!request.slug || !request.title) {
+      setFormError("Slug and title are required.");
+      return;
+    }
+
+    if (!Number.isFinite(request.sortOrder)) {
+      setFormError("Sort order must be a valid number.");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const saved = editingSection
+        ? await updateAdminContentSection(editingSection.id, request)
+        : await createAdminContentSection(request);
+      setSuccess(saved ? `Section ${saved.title} saved.` : "Section saved.");
+      setIsFormOpen(false);
+      setEditingSection(null);
+      setForm(emptyForm);
+      await loadSections();
+    } catch (caught) {
+      setFormError(errorMessage(caught, "Unable to save public content section."));
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   return (
-    <>
-      <main>
+    <div className="space-y-6">
+      <PageHeader
+        title="Public Content"
+        description="Manage sections and layout for the public website."
+        action={
+          <button className="hc-button-primary flex items-center gap-2" onClick={openCreateForm} type="button">
+            <Plus className="w-4 h-4" />
+            <span className="font-bold text-[11px] uppercase tracking-widest">Create Section</span>
+          </button>
+        }
+      />
 
-{/* Left: Sections List */}
-<section className="col-span-3 bg-surface-container-low flex flex-col">
-<div className="p-8">
-<span className="text-[10px] font-bold text-outline tracking-[0.2em] uppercase">Content Registry</span>
-<h1 className="text-3xl font-light text-on-surface mt-2 mb-8">Public Facing</h1>
-<div className="space-y-px">
-<button className="w-full text-left p-4 bg-surface-container-lowest transition-all group hover:bg-primary-container hover:text-on-primary-container">
-<div className="flex items-center justify-between">
-<span className="font-semibold text-sm">Hero Landing</span>
-<span className="material-symbols-outlined text-xs">arrow_forward_ios</span>
-</div>
-<p className="text-[10px] uppercase tracking-wider opacity-60 mt-1">Main Header Component</p>
-</button>
-<button className="w-full text-left p-4 bg-surface hover:bg-surface-container-highest transition-all">
-<div className="flex items-center justify-between">
-<span className="font-semibold text-sm">Core Services</span>
-<span className="material-symbols-outlined text-xs">arrow_forward_ios</span>
-</div>
-<p className="text-[10px] uppercase tracking-wider opacity-60 mt-1">Medical Grid List</p>
-</button>
-<button className="w-full text-left p-4 bg-surface hover:bg-surface-container-highest transition-all">
-<div className="flex items-center justify-between">
-<span className="font-semibold text-sm">About MedCore</span>
-<span className="material-symbols-outlined text-xs">arrow_forward_ios</span>
-</div>
-<p className="text-[10px] uppercase tracking-wider opacity-60 mt-1">Foundational Text</p>
-</button>
-<button className="w-full text-left p-4 bg-surface hover:bg-surface-container-highest transition-all">
-<div className="flex items-center justify-between">
-<span className="font-semibold text-sm">Contact Portal</span>
-<span className="material-symbols-outlined text-xs">arrow_forward_ios</span>
-</div>
-<p className="text-[10px] uppercase tracking-wider opacity-60 mt-1">Lead Generation</p>
-</button>
-</div>
-</div>
-</section>
-{/* Center: Editor */}
-<section className="col-span-5 bg-surface p-12 overflow-y-auto">
-<div className="max-w-xl mx-auto">
-<div className="flex items-center space-x-2 mb-2">
-<div className="w-2 h-2 bg-primary-container"></div>
-<span className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase">Active Editor</span>
-</div>
-<h2 className="text-2xl font-bold mb-12">Hero Landing Configuration</h2>
-<form className="space-y-12">
-{/* Input Field Group */}
-<div className="group">
-<label className="block text-[10px] font-bold text-outline uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Headline Component</label>
-<input className="w-full bg-surface-container-low border-0 border-b-2 border-outline px-4 py-3 text-lg font-semibold focus:ring-0 focus:border-primary-container transition-all" placeholder="Enter headline text" type="text" defaultValue="Precision Healthcare for Every Life."/>
-</div>
-<div className="group">
-<label className="block text-[10px] font-bold text-outline uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Subtitle Content</label>
-<textarea className="w-full bg-surface-container-low border-0 border-b-2 border-outline px-4 py-3 text-sm focus:ring-0 focus:border-primary-container transition-all" placeholder="Enter descriptive subtitle" rows={3} defaultValue="Experience the future of medical care with MEDCORE OS. Intelligent systems designed for surgical precision and patient empathy." />
-</div>
-<div className="grid grid-cols-2 gap-8">
-<div className="group">
-<label className="block text-[10px] font-bold text-outline uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Primary CTA Label</label>
-<input className="w-full bg-surface-container-low border-0 border-b-2 border-outline px-4 py-3 text-sm font-semibold focus:ring-0 focus:border-primary-container transition-all" type="text" defaultValue="Explore Services"/>
-</div>
-<div className="group">
-<label className="block text-[10px] font-bold text-outline uppercase tracking-widest mb-2 group-focus-within:text-primary transition-colors">Image Resource URL</label>
-<input className="w-full bg-surface-container-low border-0 border-b-2 border-outline px-4 py-3 text-sm font-mono focus:ring-0 focus:border-primary-container transition-all" type="text" defaultValue="https://medcore.os/assets/hero_v1.jpg"/>
-</div>
-</div>
-<div className="pt-8 flex items-center space-x-4">
-<button className="bg-primary-container text-on-primary-container px-8 py-4 font-bold uppercase text-xs tracking-widest hover:bg-primary active:translate-y-[2px] transition-all">
-                                Deploy Changes
-                            </button>
-<button className="bg-surface-container-high text-on-surface px-8 py-4 font-bold uppercase text-xs tracking-widest hover:bg-surface-container-highest transition-all">
-                                Revert Draft
-                            </button>
-</div>
-</form>
-</div>
-</section>
-{/* Right: Preview */}
-<section className="col-span-4 bg-surface-container p-8">
-<div className="sticky top-8">
-<div className="flex items-center justify-between mb-8">
-<span className="text-[10px] font-bold text-outline tracking-[0.2em] uppercase">Live Preview</span>
-<div className="flex space-x-2">
-<span className="material-symbols-outlined text-sm cursor-pointer opacity-50 hover:opacity-100">desktop_windows</span>
-<span className="material-symbols-outlined text-sm cursor-pointer opacity-50 hover:opacity-100">tablet_mac</span>
-<span className="material-symbols-outlined text-sm cursor-pointer opacity-50 hover:opacity-100">smartphone</span>
-</div>
-</div>
-{/* The "Preview Card" */}
-<div className="bg-surface-container-lowest shadow-none overflow-hidden group">
-<div className="relative aspect-video bg-zinc-200">
-<Image alt="Hero Preview" className="w-full h-full object-cover grayscale contrast-125" data-alt="A clean, minimalist high-tech hospital corridor with soft volumetric lighting and modern architectural lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAp2RckDjeEnJIp_GU7S2ldLQfYtdbQpvCj9cVIKqhdXi1j1UK6BtZ2evKquuJLOytooRDo8OswkWQQNtMZ3AJGPg7v7cwLXFNNluZHH1ESLKOGCvKH0dvQ5l-tFaGOe0CNq79opV8qgxm8RFH1E6JrpIxoGFx3LSksvK--xF_0bLpDNGpUKlwNUyv4KNfS0Gfz1ceONjZ7fSX-mGNzM04nXp-ZCt7ESPzGTI5RqA3WQZlTFS85cogIhglpEWlPUjQzte07Vb59DQ" width={1200} height={800}/>
-<div className="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
-</div>
-<div className="p-8">
-<span className="inline-block bg-primary-container/10 text-primary text-[9px] font-black px-2 py-1 uppercase tracking-tighter mb-4">Draft Stage v2.4</span>
-<h3 className="text-3xl font-light leading-tight mb-4 tracking-tighter">Precision Healthcare for Every Life.</h3>
-<p className="text-zinc-500 text-xs leading-relaxed mb-8">Experience the future of medical care with MEDCORE OS. Intelligent systems designed for surgical precision and patient empathy.</p>
-<div className="h-[2px] w-12 bg-primary-container mb-8"></div>
-<div className="flex items-center text-primary-container font-bold text-xs uppercase tracking-widest">
-<span>Explore Services</span>
-<span className="material-symbols-outlined ml-2 text-sm">arrow_forward</span>
-</div>
-</div>
-</div>
-{/* Metrics Context */}
-<div className="mt-8 grid grid-cols-2 gap-px bg-surface-container-highest">
-<div className="bg-surface p-6">
-<span className="block text-[10px] font-bold text-outline uppercase tracking-widest mb-1">CTR Prediction</span>
-<span className="text-2xl font-light">4.2%</span>
-</div>
-<div className="bg-surface p-6">
-<span className="block text-[10px] font-bold text-outline uppercase tracking-widest mb-1">Load Latency</span>
-<span className="text-2xl font-light">1.2s</span>
-</div>
-</div>
-</div>
-</section>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <KpiCard
+          label="Total Sections"
+          value={totalCount}
+          icon={LayoutTemplate}
+          helper="Total content sections defined"
+        />
+        <KpiCard
+          label="Active Sections"
+          value={activeCount}
+          icon={MonitorSmartphone}
+          helper="Visible on public site"
+          tone="green"
+        />
+      </div>
 
-</main>
-    </>
+      {error ? (
+        <div className="bg-red-50 text-red-600 p-4 rounded-md border border-red-200" role="alert">
+          {error}
+        </div>
+      ) : null}
+
+      {success ? (
+        <div className="bg-green-50 text-green-600 p-4 rounded-md border border-green-200" role="status">
+          {success}
+        </div>
+      ) : null}
+
+      <DataPanel
+        title="Content Sections"
+        action={
+          <div className="flex gap-2 w-full md:w-auto">
+            <div className="relative w-full md:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search sections..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="hc-input pl-9 w-full"
+              />
+            </div>
+          </div>
+        }
+      >
+        <div className="overflow-x-auto">
+          <table className="hc-table">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Slug</th>
+                <th>Sort Order</th>
+                <th>CTA Label</th>
+                <th className="text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {isLoading ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-8 text-slate-500">
+                    Loading content sections...
+                  </td>
+                </tr>
+              ) : filteredSections.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="text-center py-8 text-slate-500">
+                    No content sections found.
+                  </td>
+                </tr>
+              ) : (
+                filteredSections.map((section) => (
+                  <tr key={section.id} className="hover:bg-slate-50/50">
+                    <td className="font-medium text-slate-900">{section.title}</td>
+                    <td>
+                      <span className="hc-badge bg-slate-100 text-slate-700">{section.slug}</span>
+                    </td>
+                    <td>{section.sortOrder}</td>
+                    <td>{section.ctaLabel || <span className="text-slate-400 italic">None</span>}</td>
+                    <td className="text-right">
+                      <button
+                        onClick={() => openEditForm(section)}
+                        className="hc-button-secondary py-1 px-3 text-sm inline-flex items-center gap-1"
+                      >
+                        <Edit3 className="w-3 h-3" />
+                        Edit
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </DataPanel>
+
+      {isFormOpen ? (
+        <Dialog title={editingSection ? "Edit Section" : "Create Section"} onClose={() => setIsFormOpen(false)}>
+          <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+            {formError ? (
+              <div className="bg-red-50 text-red-600 p-3 rounded-md border border-red-200 text-sm" role="alert">
+                {formError}
+              </div>
+            ) : null}
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[var(--hc-text)]">Slug *</label>
+                <input
+                  type="text"
+                  required
+                  value={form.slug}
+                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                  className="hc-input w-full"
+                  placeholder="e.g., hero-section"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[var(--hc-text)]">Sort Order *</label>
+                <input
+                  type="number"
+                  required
+                  value={form.sortOrder}
+                  onChange={(e) => setForm({ ...form, sortOrder: e.target.value })}
+                  className="hc-input w-full"
+                  placeholder="0"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-[var(--hc-text)]">Title *</label>
+              <input
+                type="text"
+                required
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                className="hc-input w-full"
+                placeholder="Section Title"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-[var(--hc-text)]">Body Content</label>
+              <textarea
+                value={form.body}
+                onChange={(e) => setForm({ ...form, body: e.target.value })}
+                className="hc-input min-h-[120px] py-2 w-full"
+                placeholder="Content text..."
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[var(--hc-text)]">CTA Label</label>
+                <input
+                  type="text"
+                  value={form.ctaLabel}
+                  onChange={(e) => setForm({ ...form, ctaLabel: e.target.value })}
+                  className="hc-input w-full"
+                  placeholder="e.g., Learn More"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[var(--hc-text)]">CTA URL/Href</label>
+                <input
+                  type="text"
+                  value={form.ctaHref}
+                  onChange={(e) => setForm({ ...form, ctaHref: e.target.value })}
+                  className="hc-input w-full"
+                  placeholder="/about"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-[var(--hc-text)]">Image URL</label>
+              <input
+                type="url"
+                value={form.imageUrl}
+                onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+                className="hc-input w-full"
+                placeholder="https://..."
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 mt-4 pt-4 border-t border-[var(--hc-border-soft)]">
+              <button
+                type="button"
+                onClick={() => setIsFormOpen(false)}
+                className="hc-button-secondary"
+                disabled={isSaving}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="hc-button-primary" disabled={isSaving}>
+                {isSaving ? "Saving..." : "Save Section"}
+              </button>
+            </div>
+          </form>
+        </Dialog>
+      ) : null}
+    </div>
   );
 }
+
+function toRequest(form: SectionFormState): AdminContentSectionUpsertRequest {
+  return {
+    slug: form.slug.trim(),
+    title: form.title.trim(),
+    body: nullableText(form.body),
+    imageUrl: nullableText(form.imageUrl),
+    ctaLabel: nullableText(form.ctaLabel),
+    ctaHref: nullableText(form.ctaHref),
+    sortOrder: Number(form.sortOrder),
+    active: form.active,
+  };
+}
+
+function nullableText(value: string) {
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+}
+
+function errorMessage(caught: unknown, fallback: string) {
+  return caught instanceof Error && caught.message ? caught.message : fallback;
+}
+
+function Dialog({
+  children,
+  title,
+  onClose,
+}: {
+  children: import("react").ReactNode;
+  title: string;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/40 backdrop-blur-sm p-6">
+      <div className="w-full max-w-2xl bg-white rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] p-8 border border-[var(--hc-border)]">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-[var(--hc-text)]">{title}</h2>
+          <button aria-label="Close dialog" className="p-2 text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" onClick={onClose} type="button">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+

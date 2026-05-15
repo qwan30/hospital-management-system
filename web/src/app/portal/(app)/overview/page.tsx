@@ -9,6 +9,7 @@ import {
   type PatientPortalOverviewResponse,
 } from "@/lib/operations-api";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function PatientPortalOverviewPage() {
   const [overview, setOverview] = useState<PatientPortalOverviewResponse | null>(null);
   const [labResults, setLabResults] = useState<PatientPortalLabResultResponse[]>([]);
@@ -210,7 +211,7 @@ function PortalMetric({
         primary ? "bg-primary-container text-on-primary" : "bg-surface-container-highest"
       }`}
     >
-      <span className="material-symbols-outlined">{icon}</span>
+      <HcIcon name={icon} />
       <div>
         <div className="text-4xl font-light">{value}</div>
         <div className="text-[11px] font-semibold uppercase tracking-widest">{label}</div>

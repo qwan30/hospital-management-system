@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function PatientAppointmentsPage() {
   return (
     <>
@@ -21,9 +22,9 @@ export default function PatientAppointmentsPage() {
 <input className="bg-surface-container-low border-0 border-b-2 border-outline px-4 py-1.5 text-sm focus:ring-0 focus:border-primary w-64 transition-all" placeholder="Search Patient ID..." type="text"/>
 </div>
 <div className="flex items-center gap-4 text-neutral-600">
-<span className="material-symbols-outlined cursor-pointer hover:text-primary transition-colors" data-icon="notifications">notifications</span>
-<span className="material-symbols-outlined cursor-pointer hover:text-primary transition-colors" data-icon="settings">settings</span>
-<span className="material-symbols-outlined cursor-pointer hover:text-primary transition-colors" data-icon="help">help</span>
+<HcIcon name="notifications" className="cursor-pointer hover:text-primary transition-colors" />
+<HcIcon name="settings" className="cursor-pointer hover:text-primary transition-colors" />
+<HcIcon name="help" className="cursor-pointer hover:text-primary transition-colors" />
 <div className="h-8 w-8 bg-neutral-200 overflow-hidden">
 <Image alt="User profile" className="h-full w-full object-cover" data-alt="professional portrait of a medical administrator in a clean modern clinical setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-vVbeWD4kwISaeRFRKlvVuqSENkHizYgzcJdOOF4FwTvt3DPCoh1zzdyLnAESMlxiwh1nkSXpAJMCwsXtuKDRPmGQ_0p6PpKYx4K8hiHJjQA_iiMxJavSoGcbsE2K-ZgTgghKayjvGuDkU2J28sAdebZYqfd4gH_jq0sLDw_jCF9r5O1fVLARLWZt7kFW6LMYwSnllk-K4pA6mbPLCiiPPsga7RxW96Hfyz6C_xLwGVKKB1mH72FN0LMA2hCpBJydGGhS9pRNgw" width={1200} height={800}/>
 </div>
@@ -64,7 +65,7 @@ export default function PatientAppointmentsPage() {
 </div>
 <div className="col-span-3 flex items-center gap-3">
 <div className="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
-<span className="material-symbols-outlined text-on-surface-variant" data-icon="person">person</span>
+<HcIcon name="person" className="text-on-surface-variant" />
 </div>
 <div>
 <p className="font-semibold text-sm">Dr. Sarah Kensington</p>
@@ -92,7 +93,7 @@ export default function PatientAppointmentsPage() {
 </div>
 <div className="col-span-3 flex items-center gap-3">
 <div className="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
-<span className="material-symbols-outlined text-on-surface-variant" data-icon="person">person</span>
+<HcIcon name="person" className="text-on-surface-variant" />
 </div>
 <div>
 <p className="font-semibold text-sm">Dr. Michael Chen</p>
@@ -120,7 +121,7 @@ export default function PatientAppointmentsPage() {
 </div>
 <div className="col-span-3 flex items-center gap-3">
 <div className="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
-<span className="material-symbols-outlined text-on-surface-variant" data-icon="person">person</span>
+<HcIcon name="person" className="text-on-surface-variant" />
 </div>
 <div>
 <p className="font-semibold text-sm">Dr. Elena Rodriguez</p>
@@ -148,7 +149,7 @@ export default function PatientAppointmentsPage() {
 </div>
 <div className="col-span-3 flex items-center gap-3">
 <div className="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
-<span className="material-symbols-outlined text-on-surface-variant" data-icon="person">person</span>
+<HcIcon name="person" className="text-on-surface-variant" />
 </div>
 <div>
 <p className="font-semibold text-sm">Dr. Arthur Vance</p>

@@ -8,6 +8,7 @@ import {
   type StaffLoginResponse,
 } from "@/lib/api-client";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function StaffLoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
@@ -47,9 +48,7 @@ export default function StaffLoginPage() {
         <header className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-primary-container flex items-center justify-center">
-              <span className="material-symbols-outlined text-white text-[20px]" data-icon="clinical_notes">
-                clinical_notes
-              </span>
+              <HcIcon name="clinical_notes" className="text-white text-[20px]" />
             </div>
             <span className="text-[12px] font-semibold tracking-[1px] text-primary uppercase">
               HOSPITAL CORE
@@ -107,9 +106,7 @@ export default function StaffLoginPage() {
                   autoComplete="current-password"
                   required
                 />
-                <span className="material-symbols-outlined text-on-surface-variant cursor-pointer text-[18px]" data-icon="visibility">
-                  visibility
-                </span>
+                <HcIcon name="visibility" className="text-on-surface-variant cursor-pointer text-[18px]" />
               </div>
             </div>
           </div>
@@ -126,9 +123,7 @@ export default function StaffLoginPage() {
               disabled={isSubmitting}
             >
               <span>{isSubmitting ? "Authenticating..." : "Log in to Clinical Suite"}</span>
-              <span className="material-symbols-outlined" data-icon="arrow_forward">
-                arrow_forward
-              </span>
+              <HcIcon name="arrow_forward" />
             </button>
             <div className="flex items-center gap-4">
               <div className="h-[1px] flex-grow bg-surface-container-high" />
@@ -142,9 +137,7 @@ export default function StaffLoginPage() {
               type="button"
             >
               <span>One-Time Emergency Code</span>
-              <span className="material-symbols-outlined" data-icon="emergency">
-                emergency
-              </span>
+              <HcIcon name="emergency" />
             </button>
           </div>
         </form>

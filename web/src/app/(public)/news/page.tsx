@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function NewsListPage() {
   return (
     <>
@@ -28,7 +29,7 @@ export default function NewsListPage() {
                         </p>
 </div>
 <a className="flex items-center gap-2 text-primary font-semibold hover:gap-4 transition-all duration-300" href="#">
-                        Read full article <span className="material-symbols-outlined">arrow_forward</span>
+                        Read full article <HcIcon name="arrow_forward" />
 </a>
 </div>
 </div>

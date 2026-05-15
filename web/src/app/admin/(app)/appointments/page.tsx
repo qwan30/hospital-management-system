@@ -1,3 +1,8 @@
+import { Calendar, CheckCircle, AlertTriangle, Users, Plus, Download } from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { KpiCard } from "@/components/ui/kpi-card";
+import { DataPanel } from "@/components/ui/data-panel";
+
 const upcomingAppointments = [
     {
         id: "APT-99214",
@@ -35,109 +40,56 @@ const upcomingAppointments = [
 
 export default function AdminAppointmentsPage() {
     return (
-        <div className="max-w-[1200px] p-10">
-            <header className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div>
-                    <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-hms-primary">
-                        Clinical Operations
-                    </p>
-                    <h1 className="text-4xl font-light tracking-tighter text-hms-on-background md:text-5xl">
-                        Appointment Management
-                    </h1>
-                    <p className="mt-3 max-w-2xl text-sm text-hms-on-surface-variant">
-                        Monitor queue health, routing status, and same-day utilization across
-                        all departments.
-                    </p>
-                </div>
-                <button className="bg-hms-primary-container px-6 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-hms-primary">
-                    New Appointment
-                </button>
-            </header>
+        <div className="p-8 pb-20">
+            <PageHeader
+                title="Appointment Management"
+                description="Clinical Operations • Monitor queue health, routing status, and same-day utilization across all departments"
+                action={
+                    <button className="hc-button-primary flex items-center gap-2">
+                        <Plus className="w-4 h-4" />
+                        <span className="font-bold text-[11px] uppercase tracking-widest">New Appointment</span>
+                    </button>
+                }
+            />
 
-            <section className="mb-8 grid grid-cols-1 gap-px bg-hms-surface-container md:grid-cols-4">
-                <div className="bg-hms-surface p-5">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-hms-outline">
-                        Today Total
-                    </p>
-                    <p className="mt-2 text-4xl font-light tracking-tight">126</p>
-                </div>
-                <div className="bg-hms-surface p-5">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-hms-outline">
-                        Checked-in
-                    </p>
-                    <p className="mt-2 text-4xl font-light tracking-tight">68</p>
-                </div>
-                <div className="bg-hms-surface p-5">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-hms-outline">
-                        Pending
-                    </p>
-                    <p className="mt-2 text-4xl font-light tracking-tight">22</p>
-                </div>
-                <div className="bg-hms-surface p-5">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-hms-outline">
-                        No-show Risk
-                    </p>
-                    <p className="mt-2 text-4xl font-light tracking-tight">9%</p>
-                </div>
-            </section>
+            <div className="hc-kpi-grid mb-8">
+                <KpiCard label="Today Total" value="126" icon={Calendar} tone="blue" />
+                <KpiCard label="Checked-in" value="68" icon={CheckCircle} tone="green" />
+                <KpiCard label="Pending" value="22" icon={Users} tone="teal" />
+                <KpiCard label="No-show Risk" value="9%" icon={AlertTriangle} tone="red" />
+            </div>
 
-            <section className="overflow-hidden border border-hms-outline-variant/25 bg-hms-surface">
-                <div className="flex items-center justify-between border-b border-hms-outline-variant/25 bg-hms-surface-container-low p-4">
-                    <p className="text-xs font-bold uppercase tracking-widest text-hms-on-surface">
-                        Upcoming Queue
-                    </p>
-                    <button className="text-xs font-bold uppercase tracking-widest text-hms-primary hover:underline">
+            <DataPanel
+                title="Upcoming Queue"
+                action={
+                    <button className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] hover:text-[var(--hc-primary)] transition-colors">
+                        <Download className="w-3.5 h-3.5" />
                         Export CSV
                     </button>
-                </div>
-
+                }
+            >
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead className="bg-hms-surface-container-highest">
+                    <table className="hc-table">
+                        <thead>
                             <tr>
-                                <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
-                                    Appointment ID
-                                </th>
-                                <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
-                                    Patient
-                                </th>
-                                <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
-                                    Doctor
-                                </th>
-                                <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
-                                    Department
-                                </th>
-                                <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
-                                    Time
-                                </th>
-                                <th className="px-5 py-3 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
-                                    Status
-                                </th>
+                                <th>Appointment ID</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Department</th>
+                                <th>Time</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-hms-outline-variant/20">
+                        <tbody>
                             {upcomingAppointments.map((appointment) => (
-                                <tr
-                                    key={appointment.id}
-                                    className="transition-colors hover:bg-hms-surface-container-low"
-                                >
-                                    <td className="px-5 py-4 text-sm font-semibold tracking-tight text-hms-on-surface">
-                                        {appointment.id}
-                                    </td>
-                                    <td className="px-5 py-4 text-sm text-hms-on-surface">
-                                        {appointment.patient}
-                                    </td>
-                                    <td className="px-5 py-4 text-sm text-hms-on-surface-variant">
-                                        {appointment.doctor}
-                                    </td>
-                                    <td className="px-5 py-4 text-sm text-hms-on-surface-variant">
-                                        {appointment.department}
-                                    </td>
-                                    <td className="px-5 py-4 text-sm text-hms-on-surface">
-                                        {appointment.time}
-                                    </td>
-                                    <td className="px-5 py-4">
-                                        <span className="bg-hms-surface-container-high px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface">
+                                <tr key={appointment.id}>
+                                    <td className="font-semibold text-[var(--hc-text)]">{appointment.id}</td>
+                                    <td>{appointment.patient}</td>
+                                    <td className="text-[var(--hc-text-secondary)]">{appointment.doctor}</td>
+                                    <td className="text-[var(--hc-text-secondary)]">{appointment.department}</td>
+                                    <td>{appointment.time}</td>
+                                    <td>
+                                        <span className="hc-badge bg-[var(--hc-surface-soft)] text-[var(--hc-text)] border-[var(--hc-border-soft)]">
                                             {appointment.status}
                                         </span>
                                     </td>
@@ -146,7 +98,7 @@ export default function AdminAppointmentsPage() {
                         </tbody>
                     </table>
                 </div>
-            </section>
+            </DataPanel>
         </div>
     );
 }

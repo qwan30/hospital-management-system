@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function BookingDoctorSlotSelectionPage() {
   return (
     <>
@@ -139,10 +140,10 @@ export default function BookingDoctorSlotSelectionPage() {
 <div className="mb-6">
 <span className="text-[10px] font-bold uppercase text-primary">Selected Slot</span>
 <div className="flex items-center gap-2 mt-2">
-<span className="material-symbols-outlined text-sm">calendar_today</span>
+<HcIcon name="calendar_today" className="text-sm" />
 <span className="text-sm font-semibold">Oct 24, 2023</span>
 <span className="mx-2 text-outline">|</span>
-<span className="material-symbols-outlined text-sm">schedule</span>
+<HcIcon name="schedule" className="text-sm" />
 <span className="text-sm font-semibold">09:15 AM</span>
 </div>
 </div>
@@ -154,14 +155,14 @@ export default function BookingDoctorSlotSelectionPage() {
 </div>
 <button className="w-full bg-primary-container text-white py-4 font-semibold text-sm hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-between px-6">
 <span>CONTINUE TO PATIENT INFO</span>
-<span className="material-symbols-outlined">arrow_forward</span>
+<HcIcon name="arrow_forward" />
 </button>
 <p className="text-[10px] text-on-surface-variant mt-4 text-center">Insurance eligibility will be verified in the next step.</p>
 </div>
 </div>
 {/* Assistance Card */}
 <div className="mt-4 p-6 bg-surface-container-low flex items-start gap-4">
-<span className="material-symbols-outlined text-primary">help_outline</span>
+<HcIcon name="help_outline" className="text-primary" />
 <div>
 <div className="text-xs font-bold uppercase mb-1">Need help?</div>
 <p className="text-[11px] text-on-surface-variant leading-relaxed">Contact the coordination desk at (555) 012-3456 for manual scheduling assistance.</p>

@@ -33,6 +33,7 @@ import {
   type QueueFilter,
 } from "@/lib/staff-queue";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 const DEFAULT_CONSULT_ROOM = "Consult Room 1";
 
 type QueueAction = "call" | "assign-room" | "skip" | "start-consultation" | "complete";
@@ -186,8 +187,8 @@ export default function QueueBoardPage() {
           onRefresh={loadQueue}
           isRefreshDisabled
         />
-        <section className="mt-8 bg-hms-surface-container-low p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.24em] text-hms-on-surface-variant">
+        <section className="mt-8 bg-hc-surface-container-low p-8">
+          <p className="text-xs font-bold uppercase tracking-[0.24em] text-hc-on-surface-variant">
             Loading today&apos;s nurse queue...
           </p>
         </section>
@@ -207,18 +208,18 @@ export default function QueueBoardPage() {
           isRefreshDisabled={isLoading}
         />
         <section
-          className="mt-8 border border-hms-error-container bg-white p-8"
+          className="mt-8 border border-hc-error-container bg-white p-8"
           data-testid={isAuthError ? "queue-unauthorized" : "queue-load-error"}
           role="alert"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.24em] text-hms-error">
+          <p className="text-xs font-bold uppercase tracking-[0.24em] text-hc-error">
             {isAuthError ? "Queue access unavailable" : "Queue load failed"}
           </p>
-          <h2 className="mt-3 text-2xl font-light text-hms-on-surface">
+          <h2 className="mt-3 text-2xl font-light text-hc-on-surface">
             {error.message}
           </h2>
           <button
-            className="mt-6 bg-hms-primary-container px-4 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-hms-primary"
+            className="mt-6 bg-hc-primary-container px-4 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-hc-primary"
             type="button"
             onClick={loadQueue}
           >
@@ -238,7 +239,7 @@ export default function QueueBoardPage() {
         isRefreshDisabled={isLoading}
       />
 
-      <section className="border-b border-hms-outline-variant/20 bg-hms-surface-container-low p-4">
+      <section className="border-b border-hc-outline-variant/20 bg-hc-surface-container-low p-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex bg-white">
             {filterOptions.map((option) => (
@@ -247,8 +248,8 @@ export default function QueueBoardPage() {
                 aria-pressed={activeFilter === option.value}
                 className={`px-6 py-2 text-xs font-bold uppercase tracking-widest transition-colors ${
                   activeFilter === option.value
-                    ? "bg-hms-primary-container text-white"
-                    : "text-hms-on-surface hover:bg-hms-surface-container-high"
+                    ? "bg-hc-primary-container text-white"
+                    : "text-hc-on-surface hover:bg-hc-surface-container-high"
                 }`}
                 type="button"
                 onClick={() => setActiveFilter(option.value)}
@@ -259,12 +260,10 @@ export default function QueueBoardPage() {
           </div>
 
           <label className="relative w-full lg:w-96">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-sm text-hms-outline">
-              search
-            </span>
+            <HcIcon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-hc-outline" />
             <span className="sr-only">Filter queue</span>
             <input
-              className="w-full border-0 border-b-2 border-hms-outline bg-hms-surface-container-lowest py-2 pl-10 text-xs font-medium uppercase tracking-widest outline-none transition-colors focus:border-hms-primary"
+              className="w-full border-0 border-b-2 border-hc-outline bg-hc-surface-container-lowest py-2 pl-10 text-xs font-medium uppercase tracking-widest outline-none transition-colors focus:border-hc-primary"
               placeholder="FILTER QUEUE..."
               type="search"
               value={query}
@@ -277,7 +276,7 @@ export default function QueueBoardPage() {
       <section className="overflow-x-auto bg-white">
         <table className="w-full border-collapse text-left">
           <thead>
-            <tr className="bg-hms-surface-container text-[10px] font-bold uppercase tracking-[0.2em] text-hms-outline">
+            <tr className="bg-hc-surface-container text-[10px] font-bold uppercase tracking-[0.2em] text-hc-outline">
               <th className="px-4 py-3">Queue #</th>
               <th className="px-4 py-3">Patient</th>
               <th className="px-4 py-3">Doctor</th>
@@ -339,7 +338,7 @@ export default function QueueBoardPage() {
             ) : (
               <tr>
                 <td
-                  className="px-4 py-12 text-center text-sm font-semibold text-hms-on-surface-variant"
+                  className="px-4 py-12 text-center text-sm font-semibold text-hc-on-surface-variant"
                   colSpan={7}
                   data-testid="queue-empty"
                 >
@@ -353,20 +352,20 @@ export default function QueueBoardPage() {
         </table>
       </section>
 
-      <footer className="mt-8 flex flex-col gap-4 text-xs font-bold uppercase tracking-widest text-hms-outline lg:flex-row lg:items-center lg:justify-between">
+      <footer className="mt-8 flex flex-col gap-4 text-xs font-bold uppercase tracking-widest text-hc-outline lg:flex-row lg:items-center lg:justify-between">
         <div>
           Displaying {filteredAppointments.length} of {displayableAppointments.length} queue
           patients
         </div>
         <div className="flex flex-wrap gap-4">
           <span className="flex items-center gap-1">
-            <span className="h-2 w-2 bg-hms-secondary" /> Within target
+            <span className="h-2 w-2 bg-hc-secondary" /> Within target
           </span>
           <span className="flex items-center gap-1">
-            <span className="h-2 w-2 bg-hms-tertiary" /> Review required
+            <span className="h-2 w-2 bg-hc-tertiary" /> Review required
           </span>
           <span className="flex items-center gap-1">
-            <span className="h-2 w-2 bg-hms-error" /> SLA breach
+            <span className="h-2 w-2 bg-hc-error" /> SLA breach
           </span>
         </div>
       </footer>
@@ -390,37 +389,37 @@ function QueueHeader({
   return (
     <header className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
       <div>
-        <h1 className="mb-2 text-4xl font-light tracking-tight text-hms-on-surface">
+        <h1 className="mb-2 text-4xl font-light tracking-tight text-hc-on-surface">
           Queue Board
         </h1>
-        <p className="text-sm font-medium uppercase tracking-widest text-hms-on-surface-variant">
+        <p className="text-sm font-medium uppercase tracking-widest text-hc-on-surface-variant">
           Live nurse queue - today
         </p>
       </div>
       <div className="flex flex-wrap gap-4">
-        <div className="flex flex-col justify-center bg-hms-surface-container-highest px-6 py-4">
-          <span className="text-xs font-bold uppercase tracking-tighter text-hms-outline">
+        <div className="flex flex-col justify-center bg-hc-surface-container-highest px-6 py-4">
+          <span className="text-xs font-bold uppercase tracking-tighter text-hc-outline">
             Average Wait
           </span>
-          <span className="text-2xl font-semibold text-hms-primary">
+          <span className="text-2xl font-semibold text-hc-primary">
             {averageWaitMinutes}m
           </span>
         </div>
-        <div className="flex flex-col justify-center bg-hms-surface-container-highest px-6 py-4">
-          <span className="text-xs font-bold uppercase tracking-tighter text-hms-outline">
+        <div className="flex flex-col justify-center bg-hc-surface-container-highest px-6 py-4">
+          <span className="text-xs font-bold uppercase tracking-tighter text-hc-outline">
             Active Patients
           </span>
-          <span className="text-2xl font-semibold text-hms-on-surface">
+          <span className="text-2xl font-semibold text-hc-on-surface">
             {activePatients}
           </span>
         </div>
         <button
-          className="flex items-center gap-2 bg-hms-primary-container px-4 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-hms-primary disabled:cursor-not-allowed disabled:opacity-60"
+          className="flex items-center gap-2 bg-hc-primary-container px-4 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-hc-primary disabled:cursor-not-allowed disabled:opacity-60"
           type="button"
           onClick={onRefresh}
           disabled={isRefreshDisabled}
         >
-          <span className="material-symbols-outlined text-base">refresh</span>
+          <HcIcon name="refresh" className="text-base" />
           Refresh
         </button>
       </div>
@@ -463,26 +462,26 @@ function QueueRow({
   return (
     <>
       <tr
-        className="group border-b border-hms-surface-container transition-colors hover:bg-hms-surface-container-low"
+        className="group border-b border-hc-surface-container transition-colors hover:bg-hc-surface-container-low"
         data-testid="queue-row"
       >
-        <td className="px-4 py-4 font-bold text-hms-primary">
+        <td className="px-4 py-4 font-bold text-hc-primary">
           #{appointment.confirmationCode || appointment.appointmentId.slice(0, 8)}
         </td>
         <td className="px-4 py-4">
           <div className="flex flex-col">
-            <span className="font-semibold text-hms-on-surface">
+            <span className="font-semibold text-hc-on-surface">
               {appointment.patientFullName}
             </span>
-            <span className="text-[10px] font-bold uppercase text-hms-outline">
+            <span className="text-[10px] font-bold uppercase text-hc-outline">
               ID: {maskIdentifier(appointment.patientCccd)}
             </span>
           </div>
         </td>
-        <td className="px-4 py-4 font-medium text-hms-on-surface-variant">
+        <td className="px-4 py-4 font-medium text-hc-on-surface-variant">
           {appointment.doctorName}
         </td>
-        <td className="px-4 py-4 text-hms-on-surface-variant">
+        <td className="px-4 py-4 text-hc-on-surface-variant">
           {appointment.checkedInAt ? formatTime(appointment.checkedInAt) : "Pending"}
         </td>
         <td className="px-4 py-4">
@@ -504,7 +503,7 @@ function QueueRow({
           {canCheckIn ? (
             <button
               aria-label={`Check in ${appointment.patientFullName}`}
-              className="bg-hms-primary-container px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-hms-primary disabled:cursor-not-allowed disabled:opacity-60"
+              className="bg-hc-primary-container px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-hc-primary disabled:cursor-not-allowed disabled:opacity-60"
               type="button"
               onClick={() => onCheckIn(appointment)}
               disabled={isCheckingIn}
@@ -514,7 +513,7 @@ function QueueRow({
           ) : null}
           {isReady ? (
             <div className="flex flex-col items-end gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-hms-on-surface-variant">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-hc-on-surface-variant">
                 Checked in
               </span>
               <div className="flex flex-wrap justify-end gap-2">
@@ -555,7 +554,7 @@ function QueueRow({
           ) : null}
           {isInProgress ? (
             <div className="flex flex-col items-end gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-hms-primary">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-hc-primary">
                 In consultation
               </span>
               <QueueActionButton
@@ -571,9 +570,9 @@ function QueueRow({
         </td>
       </tr>
       {rowError ? (
-        <tr className="border-b border-hms-error-container bg-red-50">
+        <tr className="border-b border-hc-error-container bg-red-50">
           <td
-            className="px-4 py-3 text-sm font-semibold text-hms-error"
+            className="px-4 py-3 text-sm font-semibold text-hc-error"
             colSpan={7}
             role="alert"
           >
@@ -601,7 +600,7 @@ function QueueActionButton({
   return (
     <button
       aria-label={ariaLabel}
-      className="bg-hms-surface-container-high px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-hms-on-surface transition-colors hover:bg-hms-primary-container hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+      className="bg-hc-surface-container-high px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-hc-on-surface transition-colors hover:bg-hc-primary-container hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
       type="button"
       onClick={onClick}
       disabled={disabled}
@@ -616,7 +615,7 @@ function PhysicianAllocation({ loads }: { loads: PhysicianLoad[] }) {
 
   return (
     <section className="mt-16">
-      <h2 className="mb-6 text-sm font-extrabold uppercase tracking-[0.3em] text-hms-outline">
+      <h2 className="mb-6 text-sm font-extrabold uppercase tracking-[0.3em] text-hc-outline">
         Physician Allocation
       </h2>
       <div className="grid grid-cols-12 gap-0">
@@ -624,40 +623,38 @@ function PhysicianAllocation({ loads }: { loads: PhysicianLoad[] }) {
           displayedLoads.map((load) => (
             <div
               key={load.doctorId}
-              className="col-span-12 border-b border-r border-hms-surface-container bg-white p-6 md:col-span-4"
+              className="col-span-12 border-b border-r border-hc-surface-container bg-white p-6 md:col-span-4"
             >
               <div className="mb-6 flex items-start justify-between">
                 <div>
-                  <p className="mb-1 text-[10px] font-bold uppercase text-hms-primary">
+                  <p className="mb-1 text-[10px] font-bold uppercase text-hc-primary">
                     {load.inProgress > 0 ? "In room" : "On duty"}
                   </p>
                   <h3 className="text-xl font-semibold uppercase">{load.doctorName}</h3>
                 </div>
-                <span className="material-symbols-outlined text-hms-outline">
-                  clinical_notes
-                </span>
+                <HcIcon name="clinical_notes" className="text-hc-outline" />
               </div>
               <div className="space-y-4">
                 <div className="flex justify-between text-xs">
-                  <span className="uppercase tracking-wider text-hms-outline">
+                  <span className="uppercase tracking-wider text-hc-outline">
                     Queue Load
                   </span>
                   <span className="font-bold">{load.total} Patients</span>
                 </div>
-                <div className="h-1 w-full bg-hms-surface-container">
+                <div className="h-1 w-full bg-hc-surface-container">
                   <div
-                    className="h-full bg-hms-primary"
+                    className="h-full bg-hc-primary"
                     style={{ width: `${Math.min(load.total * 12, 100)}%` }}
                   />
                 </div>
-                <p className="text-[10px] font-medium leading-relaxed text-hms-on-surface-variant">
+                <p className="text-[10px] font-medium leading-relaxed text-hc-on-surface-variant">
                   {load.waiting} waiting, {load.ready} ready, {load.inProgress} in progress.
                 </p>
               </div>
             </div>
           ))
         ) : (
-          <div className="col-span-12 border border-hms-outline-variant/30 bg-white p-6 text-sm font-semibold text-hms-on-surface-variant">
+          <div className="col-span-12 border border-hc-outline-variant/30 bg-white p-6 text-sm font-semibold text-hc-on-surface-variant">
             No physician queue load is available yet.
           </div>
         )}

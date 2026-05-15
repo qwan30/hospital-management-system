@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { HcIcon } from "@/components/ui/hc-icon";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default function LabResultDetailPage() {
   return (
@@ -6,28 +8,21 @@ export default function LabResultDetailPage() {
       <main>
 
 {/* Breadcrumb & Header Segment */}
-<div className="max-w-5xl mx-auto mb-12">
-<div className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-on-surface-variant mb-4">
-<span>Patients</span>
-<span className="material-symbols-outlined text-[12px]">chevron_right</span>
-<span>ID: 992834-X</span>
-<span className="material-symbols-outlined text-[12px]">chevron_right</span>
-<span className="text-primary">Diagnostic Detail</span>
-</div>
-<div className="flex justify-between items-end">
-<div>
-<h1 className="text-4xl font-light tracking-tight text-on-surface mb-2 uppercase">Complete Blood Count (CBC)</h1>
-<p className="text-on-surface-variant font-plex-sans">Collected: Oct 24, 2023 08:42 AM  |  Location: Central Diagnostic Lab</p>
-</div>
-<div className="flex gap-4">
-<button className="px-4 py-2 bg-surface-container-high text-on-surface font-semibold text-xs flex items-center gap-2 hover:bg-surface-container-highest transition-colors">
-<span className="material-symbols-outlined text-sm">print</span> PRINT REPORT
-                    </button>
-<button className="px-4 py-2 bg-primary-container text-white font-semibold text-xs flex items-center gap-2 hover:bg-primary transition-colors">
-<span className="material-symbols-outlined text-sm">share</span> EXPORT DATA
-                    </button>
-</div>
-</div>
+<div className="max-w-5xl mx-auto">
+<PageHeader 
+    title="Complete Blood Count (CBC)"
+    description="Collected: Oct 24, 2023 08:42 AM | Location: Central Diagnostic Lab"
+    action={
+        <div className="flex gap-4">
+            <button className="px-4 py-2 bg-surface-container-high text-on-surface font-semibold text-xs flex items-center gap-2 hover:bg-surface-container-highest transition-colors">
+            <HcIcon name="print" className="text-sm" /> PRINT REPORT
+            </button>
+            <button className="px-4 py-2 bg-primary-container text-white font-semibold text-xs flex items-center gap-2 hover:bg-primary transition-colors">
+            <HcIcon name="share" className="text-sm" /> EXPORT DATA
+            </button>
+        </div>
+    }
+/>
 </div>
 {/* Bento Grid Layout for Lab Data */}
 <div className="max-w-5xl mx-auto grid grid-cols-12 gap-8">
@@ -40,7 +35,7 @@ export default function LabResultDetailPage() {
 </div>
 {/* Status Badge */}
 <div className="flex items-center gap-2 px-3 py-1 bg-[#198038] text-white text-[11px] font-bold tracking-wider uppercase">
-<span className="material-symbols-outlined text-sm" >check_circle</span>
+<HcIcon name="check_circle" className="text-sm" />
                         NORMAL RANGE
                     </div>
 </div>
@@ -79,24 +74,24 @@ export default function LabResultDetailPage() {
 <span className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-4">Laboratory Documentation</span>
 <a className="group flex items-center justify-between py-3 border-b border-outline-variant" href="#">
 <div className="flex items-center gap-3">
-<span className="material-symbols-outlined text-primary">description</span>
+<HcIcon name="description" className="text-primary" />
 <span className="text-xs font-semibold">Full_CBC_Report.pdf</span>
 </div>
-<span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+<HcIcon name="arrow_forward" className="text-sm group-hover:translate-x-1 transition-transform" />
 </a>
 <a className="group flex items-center justify-between py-3" href="#">
 <div className="flex items-center gap-3">
-<span className="material-symbols-outlined text-primary">analytics</span>
+<HcIcon name="analytics" className="text-primary" />
 <span className="text-xs font-semibold">Raw_Spectrometry_Data.csv</span>
 </div>
-<span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+<HcIcon name="arrow_forward" className="text-sm group-hover:translate-x-1 transition-transform" />
 </a>
 </div>
 </div>
 {/* Clinician Comment Section */}
 <div className="col-span-12 bg-surface-container-low p-8">
 <div className="flex items-center gap-4 mb-6">
-<span className="material-symbols-outlined text-on-surface">comment</span>
+<HcIcon name="comment" className="text-on-surface" />
 <h3 className="text-sm font-bold uppercase tracking-widest">Clinician Insights &amp; Observations</h3>
 </div>
 <div className="bg-white p-8 border-l-4 border-primary">
@@ -134,7 +129,7 @@ export default function LabResultDetailPage() {
 <span className="block text-[10px] font-bold uppercase tracking-widest text-[#856404] mb-2">Platelet Count</span>
 <div className="text-2xl font-plex-mono text-on-surface">142 <span className="text-sm text-on-surface-variant">10^3/μL</span></div>
 <div className="flex items-center gap-1 mt-4 text-[#856404] text-[10px] font-bold">
-<span className="material-symbols-outlined text-sm">warning</span>
+<HcIcon name="warning" className="text-sm" />
                         BORDERLINE LOW
                     </div>
 </div>

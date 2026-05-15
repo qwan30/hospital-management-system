@@ -1,4 +1,5 @@
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function SessionExpiredPage() {
   return (
     <>
@@ -13,7 +14,7 @@ export default function SessionExpiredPage() {
 <div className="space-y-8 w-full">
 {/* Large Warning Icon (Yellow/Red technical tones) */}
 <div className="text-error">
-<span className="material-symbols-outlined !text-7xl" data-icon="report">report</span>
+<HcIcon name="report" className="!text-7xl" />
 </div>
 {/* Headline & Subtext */}
 <div className="space-y-4">
@@ -26,7 +27,7 @@ export default function SessionExpiredPage() {
 <div className="pt-4">
 <button className="bg-primary-container text-on-primary font-semibold px-12 py-5 rounded-none flex items-center gap-3 hover:bg-primary transition-all active:opacity-80">
 <span>Return to Login</span>
-<span className="material-symbols-outlined" data-icon="login">login</span>
+<HcIcon name="login" />
 </button>
 </div>
 </div>
@@ -37,7 +38,7 @@ export default function SessionExpiredPage() {
 <span>Error Code: 401_SEC_TIMEOUT</span>
 </div>
 <div className="flex items-center gap-2">
-<span className="material-symbols-outlined !text-sm" data-icon="shield_lock">shield_lock</span>
+<HcIcon name="shield_lock" className="!text-sm" />
 <span>Encrypted Session Management</span>
 </div>
 </div>

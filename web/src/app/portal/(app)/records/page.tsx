@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { HcIcon } from "@/components/ui/hc-icon";
 export default function PatientRecordBrowserPage() {
   return (
     <>
@@ -14,7 +15,7 @@ export default function PatientRecordBrowserPage() {
 </div>
 <div className="relative group">
 <input className="w-full bg-surface-container-low border-0 border-b-2 border-outline p-4 pr-12 focus:ring-0 focus:border-primary transition-all font-body text-sm placeholder:text-outline placeholder:uppercase placeholder:text-[10px] placeholder:tracking-widest" placeholder="Search by name, ID or DOB..." type="text"/>
-<span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary">search</span>
+<HcIcon name="search" className="absolute right-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary" />
 </div>
 <div className="flex gap-2 overflow-x-auto pb-2">
 <button className="whitespace-nowrap px-3 py-1 bg-primary-container text-white text-[10px] font-bold uppercase tracking-widest">Active</button>
@@ -103,8 +104,8 @@ export default function PatientRecordBrowserPage() {
 </div>
 </div>
 <div className="flex gap-3">
-<button className="bg-surface-container-highest p-3 hover:bg-surface-container-high transition-colors"><span className="material-symbols-outlined text-on-surface">edit</span></button>
-<button className="bg-surface-container-highest p-3 hover:bg-surface-container-high transition-colors"><span className="material-symbols-outlined text-on-surface">print</span></button>
+<button className="bg-surface-container-highest p-3 hover:bg-surface-container-high transition-colors"><HcIcon name="edit" className="text-on-surface" /></button>
+<button className="bg-surface-container-highest p-3 hover:bg-surface-container-high transition-colors"><HcIcon name="print" className="text-on-surface" /></button>
 <button className="bg-primary-container text-white px-6 py-3 font-bold uppercase text-[10px] tracking-widest">Update Record</button>
 </div>
 </div>
@@ -157,7 +158,7 @@ export default function PatientRecordBrowserPage() {
 <div className="space-y-6">
 <div className="flex gap-4">
 <div className="w-10 h-10 bg-surface-container-low flex items-center justify-center flex-shrink-0">
-<span className="material-symbols-outlined text-primary">calendar_month</span>
+<HcIcon name="calendar_month" className="text-primary" />
 </div>
 <div>
 <h4 className="text-sm font-bold">Endocrinology Check-up</h4>
@@ -166,7 +167,7 @@ export default function PatientRecordBrowserPage() {
 </div>
 <div className="flex gap-4">
 <div className="w-10 h-10 bg-surface-container-low flex items-center justify-center flex-shrink-0">
-<span className="material-symbols-outlined text-primary">biotech</span>
+<HcIcon name="biotech" className="text-primary" />
 </div>
 <div>
 <h4 className="text-sm font-bold">Comprehensive Metabolic Panel</h4>
@@ -175,7 +176,7 @@ export default function PatientRecordBrowserPage() {
 </div>
 <div className="flex gap-4">
 <div className="w-10 h-10 bg-surface-container-low flex items-center justify-center flex-shrink-0">
-<span className="material-symbols-outlined text-primary">pill</span>
+<HcIcon name="pill" className="text-primary" />
 </div>
 <div>
 <h4 className="text-sm font-bold">Insulin Prescription Refill</h4>
@@ -206,7 +207,7 @@ export default function PatientRecordBrowserPage() {
 <span className="text-xs font-medium text-outline">%</span>
 </div>
 <div className="mt-4 flex items-center gap-1 text-[10px] font-bold text-error uppercase">
-<span className="material-symbols-outlined text-[14px]">trending_up</span> Elevated
+<HcIcon name="trending_up" className="text-[14px]" /> Elevated
                             </div>
 </div>
 <div className="bg-surface-container-low p-6">
@@ -216,7 +217,7 @@ export default function PatientRecordBrowserPage() {
 <span className="text-xs font-medium text-outline">mmHg</span>
 </div>
 <div className="mt-4 flex items-center gap-1 text-[10px] font-bold text-primary uppercase">
-<span className="material-symbols-outlined text-[14px]">check_circle</span> Normal
+<HcIcon name="check_circle" className="text-[14px]" /> Normal
                             </div>
 </div>
 <div className="bg-surface-container-low p-6">

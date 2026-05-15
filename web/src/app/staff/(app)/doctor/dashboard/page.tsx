@@ -1,249 +1,357 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  listAppointments,
+  updateAppointmentStatus,
+  type AppointmentListResponse,
+  type ClinicalAppointmentStatus,
+} from "@/lib/clinical-api";
+import { getErrorMessage } from "@/lib/staff-queue";
+
+import { HcIcon } from "@/components/ui/hc-icon";
+import { PageHeader } from "@/components/ui/page-header";
+import { KpiCard } from "@/components/ui/kpi-card";
+import { DataPanel } from "@/components/ui/data-panel";
+import { Users, UserCheck, Activity, CheckCircle2 } from "lucide-react";
+
+const STATUS_FILTERS: Array<"ALL" | ClinicalAppointmentStatus> = [
+  "ALL",
+  "CONFIRMED",
+  "CHECKED_IN",
+  "IN_PROGRESS",
+  "DONE",
+  "CANCELLED",
+];
+
+function toLocalDateInputValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function formatTimeRange(appointment: AppointmentListResponse) {
+  return `${appointment.startTime.slice(0, 5)} - ${appointment.endTime.slice(0, 5)}`;
+}
+
+function statusClass(status: ClinicalAppointmentStatus) {
+  if (status === "IN_PROGRESS") {
+    return "bg-[var(--hc-blue-500)] text-white";
+  }
+  if (status === "CHECKED_IN") {
+    return "bg-[var(--hc-teal-100)] text-[var(--hc-teal-800)]";
+  }
+  if (status === "DONE") {
+    return "bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]";
+  }
+  if (status === "CANCELLED") {
+    return "bg-[#FFF5F5] text-[var(--hc-danger)] border border-[var(--hc-danger-bg)]";
+  }
+  return "bg-[var(--hc-surface-soft)] text-[var(--hc-text)] border border-[var(--hc-border-soft)]";
+}
 
 export default function DoctorDashboardPage() {
+  const [appointments, setAppointments] = useState<AppointmentListResponse[]>([]);
+  const [selectedDate, setSelectedDate] = useState(() => toLocalDateInputValue(new Date()));
+  const [statusFilter, setStatusFilter] = useState<"ALL" | ClinicalAppointmentStatus>("ALL");
+  const [query, setQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [rowErrors, setRowErrors] = useState<Record<string, string>>({});
+  const [updatingAppointmentId, setUpdatingAppointmentId] = useState<string | null>(null);
+
+  const loadAppointments = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const result = await listAppointments({
+        date: selectedDate,
+        status: statusFilter === "ALL" ? undefined : statusFilter,
+        page: 0,
+        size: 100,
+      });
+      setAppointments(result);
+    } catch (loadError) {
+      setAppointments([]);
+      setError(getErrorMessage(loadError));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [selectedDate, statusFilter]);
+
+  useEffect(() => {
+    void loadAppointments();
+  }, [loadAppointments]);
+
+  const filteredAppointments = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) {
+      return appointments;
+    }
+
+    return appointments.filter((appointment) =>
+      [
+        appointment.patientName,
+        appointment.patientPhone,
+        appointment.confirmationCode,
+        appointment.doctorName,
+        appointment.symptoms ?? "",
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(normalizedQuery),
+    );
+  }, [appointments, query]);
+
+  const summary = useMemo(
+    () => ({
+      total: appointments.length,
+      checkedIn: appointments.filter((appointment) => appointment.status === "CHECKED_IN").length,
+      inProgress: appointments.filter((appointment) => appointment.status === "IN_PROGRESS").length,
+      done: appointments.filter((appointment) => appointment.status === "DONE").length,
+    }),
+    [appointments],
+  );
+
+  const handleStartConsultation = async (appointment: AppointmentListResponse) => {
+    setUpdatingAppointmentId(appointment.appointmentId);
+    setSuccessMessage(null);
+    setRowErrors((current) => {
+      const next = { ...current };
+      delete next[appointment.appointmentId];
+      return next;
+    });
+
+    try {
+      const updatedAppointment = await updateAppointmentStatus(
+        appointment.appointmentId,
+        "IN_PROGRESS",
+      );
+      setSuccessMessage(`${updatedAppointment.patientFullName} moved to consultation.`);
+      await loadAppointments();
+    } catch (updateError) {
+      setRowErrors((current) => ({
+        ...current,
+        [appointment.appointmentId]: getErrorMessage(updateError),
+      }));
+    } finally {
+      setUpdatingAppointmentId(null);
+    }
+  };
+
+  return (
+    <div className="p-8 pb-20">
+      <PageHeader
+        title="Doctor Dashboard"
+        description={`API backed appointment schedule for ${selectedDate}`}
+      />
+
+      <div className="hc-kpi-grid mb-[30px]">
+        <KpiCard label="Appointments" value={summary.total.toString()} helper="Selected date" icon={Users} tone="blue" />
+        <KpiCard label="Checked In" value={summary.checkedIn.toString()} helper="Ready for doctor" icon={UserCheck} tone="teal" />
+        <KpiCard label="In Progress" value={summary.inProgress.toString()} helper="Active consults" icon={Activity} tone="purple" />
+        <KpiCard label="Completed" value={summary.done.toString()} helper="Finished visits" icon={CheckCircle2} tone="blue" />
+      </div>
+
+      {successMessage ? (
+        <div className="mb-4 border border-[var(--hc-success-bg)] bg-[#F0FDF4] p-4 text-[13px] font-medium text-[var(--hc-success)] rounded-[var(--radius-lg)]" role="status">
+          {successMessage}
+        </div>
+      ) : null}
+
+      <DataPanel
+        filters={
+          <>
+            <div className="flex h-10 items-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)] px-3 focus-within:border-[var(--hc-blue-500)] focus-within:ring-1 focus-within:ring-[var(--hc-blue-500)] w-64">
+              <HcIcon name="search" className="mr-2 text-sm text-[var(--hc-text-secondary)]" />
+              <input
+                aria-label="Search appointments"
+                className="w-full border-none bg-transparent text-[13px] placeholder-[var(--hc-text-secondary)] focus:outline-none focus:ring-0 text-[var(--hc-text)]"
+                placeholder="Search by name, code, phone..."
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+            </div>
+            <input
+              aria-label="Appointment date"
+              className="h-10 rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] px-3 text-[13px] font-medium focus:border-[var(--hc-blue-500)] focus:outline-none focus:ring-1 focus:ring-[var(--hc-blue-500)] text-[var(--hc-text)]"
+              type="date"
+              value={selectedDate}
+              onChange={(event) => setSelectedDate(event.target.value)}
+            />
+            <select
+              aria-label="Appointment status"
+              className="h-10 rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] px-3 text-[13px] font-medium focus:border-[var(--hc-blue-500)] focus:outline-none focus:ring-1 focus:ring-[var(--hc-blue-500)] text-[var(--hc-text)] min-w-[140px]"
+              value={statusFilter}
+              onChange={(event) =>
+                setStatusFilter(event.target.value as "ALL" | ClinicalAppointmentStatus)
+              }
+            >
+              {STATUS_FILTERS.map((status) => (
+                <option key={status} value={status}>
+                  {status === "ALL" ? "All Status" : status}
+                </option>
+              ))}
+            </select>
+            <div className="flex-1" />
+            <button
+              className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-[var(--hc-surface)] px-4 text-[12px] font-bold uppercase tracking-widest text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60"
+              type="button"
+              onClick={loadAppointments}
+              disabled={isLoading}
+            >
+              <HcIcon name="refresh" className="text-sm" />
+              Refresh
+            </button>
+          </>
+        }
+      >
+        {isLoading ? (
+          <div className="p-12 text-center" aria-busy="true">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
+              Loading doctor appointment schedule...
+            </p>
+          </div>
+        ) : error ? (
+          <div className="border-t border-[var(--hc-danger-bg)] bg-[#FFF5F5] p-12 text-center" role="alert">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--hc-danger)]">
+              Appointment schedule unavailable
+            </p>
+            <h2 className="mt-3 text-2xl font-light text-[var(--hc-text)]">{error}</h2>
+            <button
+              className="mt-6 rounded-md bg-[var(--hc-blue-600)] px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white hover:bg-[var(--hc-blue-700)] transition-colors"
+              type="button"
+              onClick={loadAppointments}
+            >
+              Retry
+            </button>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left">
+              <thead>
+                <tr className="border-b border-[var(--hc-border)] bg-[var(--hc-surface-soft)]">
+                  <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
+                    Patient / Case ID
+                  </th>
+                  <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
+                    Time
+                  </th>
+                  <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
+                    Symptoms
+                  </th>
+                  <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
+                    Status
+                  </th>
+                  <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
+                    Doctor
+                  </th>
+                  <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--hc-border-soft)]">
+                {filteredAppointments.length > 0 ? (
+                  filteredAppointments.map((appointment) => (
+                    <AppointmentRow
+                      key={appointment.appointmentId}
+                      appointment={appointment}
+                      rowError={rowErrors[appointment.appointmentId]}
+                      isUpdating={updatingAppointmentId === appointment.appointmentId}
+                      onStartConsultation={handleStartConsultation}
+                    />
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      className="p-10 text-center text-[13px] font-medium text-[var(--hc-text-secondary)]"
+                      colSpan={6}
+                    >
+                      {appointments.length === 0
+                        ? "No appointments found for this date and status."
+                        : "No appointments match this search."}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </DataPanel>
+    </div>
+  );
+}
+
+function AppointmentRow({
+  appointment,
+  isUpdating,
+  rowError,
+  onStartConsultation,
+}: {
+  appointment: AppointmentListResponse;
+  isUpdating: boolean;
+  rowError?: string;
+  onStartConsultation: (appointment: AppointmentListResponse) => void;
+}) {
+  const canStartConsultation = appointment.status === "CHECKED_IN";
+
   return (
     <>
-      <main>
-
-<div className="p-8">
-{/* Header Section */}
-<div className="mb-8">
-<h1 className="text-3xl font-light tracking-tight text-on-surface">Doctor Dashboard</h1>
-<p className="text-sm text-on-surface-variant font-mono mt-1">ID: HMS-PHYS-9942 // LAST REFRESH: 14:02:11</p>
-</div>
-{/* KPI Cards - Monolithic Data Blocks */}
-<div className="grid grid-cols-1 md:grid-cols-4 gap-0 mb-8">
-<div className="bg-surface-container-low p-6 border-r border-surface-container">
-<span className="text-[11px] font-semibold uppercase tracking-widest text-on-surface-variant">Active Rounds</span>
-<div className="text-4xl font-light mt-2 text-primary-container">12</div>
-<div className="mt-4 text-[10px] mono text-on-surface-variant">+2 FROM PREV. SHIFT</div>
-</div>
-<div className="bg-surface-container-low p-6 border-r border-surface-container">
-<span className="text-[11px] font-semibold uppercase tracking-widest text-on-surface-variant">Critical Alerts</span>
-<div className="text-4xl font-light mt-2 text-error">03</div>
-<div className="mt-4 text-[10px] mono text-error">REQUIRES IMMEDIATE ACTION</div>
-</div>
-<div className="bg-surface-container-low p-6 border-r border-surface-container">
-<span className="text-[11px] font-semibold uppercase tracking-widest text-on-surface-variant">Wait Time Avg</span>
-<div className="text-4xl font-light mt-2">18<span className="text-xl">min</span></div>
-<div className="mt-4 text-[10px] mono text-on-surface-variant">UNIT EFFICIENCY: 94%</div>
-</div>
-<div className="bg-surface-container-low p-6">
-<span className="text-[11px] font-semibold uppercase tracking-widest text-on-surface-variant">Pending Lab Reports</span>
-<div className="text-4xl font-light mt-2">24</div>
-<div className="mt-4 text-[10px] mono text-on-surface-variant">5 EXPIRING SOON</div>
-</div>
-</div>
-{/* Sticky Filters & Table Header */}
-<div className="sticky top-[48px] bg-surface z-40 py-4 border-b-2 border-primary-container mb-1">
-<div className="flex items-center justify-between">
-<div className="flex gap-4 items-center">
-<div className="flex items-center bg-surface-container-low px-3 h-10 border-b-2 border-outline focus-within:border-primary">
-<span className="material-symbols-outlined text-on-surface-variant text-sm mr-2">search</span>
-<input className="bg-transparent border-none focus:ring-0 text-sm w-64 placeholder-on-surface-variant" placeholder="Search by name or ID..." type="text"/>
-</div>
-<select className="bg-surface-container-low border-none border-b-2 border-outline focus:ring-0 h-10 text-sm px-3 w-40 font-semibold">
-<option>All Status</option>
-<option>Critical</option>
-<option>Stable</option>
-<option>Discharging</option>
-</select>
-<select className="bg-surface-container-low border-none border-b-2 border-outline focus:ring-0 h-10 text-sm px-3 w-40 font-semibold">
-<option>Ward 4-A</option>
-<option>ICU East</option>
-<option>Cardiology</option>
-</select>
-</div>
-<div className="flex gap-2">
-<button className="bg-surface-container-high px-4 h-10 text-xs font-semibold uppercase tracking-wider flex items-center gap-2 hover:bg-surface-container-highest transition-colors">
-<span className="material-symbols-outlined text-sm">filter_list</span>
-                            Advanced Filter
-                        </button>
-<button className="bg-surface-container-high px-4 h-10 text-xs font-semibold uppercase tracking-wider flex items-center gap-2 hover:bg-surface-container-highest transition-colors">
-<span className="material-symbols-outlined text-sm">download</span>
-                            Export
-                        </button>
-</div>
-</div>
-</div>
-{/* High Density Table */}
-<div className="overflow-x-auto">
-<table className="w-full text-left border-collapse">
-<thead>
-<tr className="bg-surface-container-low">
-<th className="p-4 text-[11px] font-semibold uppercase tracking-widest text-on-surface-variant">Patient / Case ID</th>
-<th className="p-4 text-[11px] font-semibold uppercase tracking-widest text-on-surface-variant">Priority</th>
-<th className="p-4 text-[11px] font-semibold uppercase tracking-widest text-on-surface-variant">Vital Stats</th>
-<th className="p-4 text-[11px] font-semibold uppercase tracking-widest text-on-surface-variant">Last Check</th>
-<th className="p-4 text-[11px] font-semibold uppercase tracking-widest text-on-surface-variant">Attending Nurse</th>
-<th className="p-4 text-[11px] font-semibold uppercase tracking-widest text-on-surface-variant">Actions</th>
-</tr>
-</thead>
-<tbody className="divide-y divide-surface-container">
-{/* Patient Row 1 */}
-<tr className="hms-row transition-colors group">
-<td className="p-4">
-<div className="font-semibold text-sm">Elena Rodriguez</div>
-<div className="mono text-[11px] text-on-surface-variant">PX-2024-8812</div>
-</td>
-<td className="p-4">
-<span className="bg-error-container text-on-error-container px-2 py-0.5 text-[10px] font-bold uppercase">Critical</span>
-</td>
-<td className="p-4">
-<div className="flex gap-4">
-<div className="text-sm"><span className="text-[10px] text-on-surface-variant mr-1">BP</span><span className="mono">145/92</span></div>
-<div className="text-sm"><span className="text-[10px] text-on-surface-variant mr-1">HR</span><span className="mono">98</span></div>
-<div className="text-sm"><span className="text-[10px] text-on-surface-variant mr-1">O2</span><span className="mono text-error">91%</span></div>
-</div>
-</td>
-<td className="p-4 mono text-sm">13:45:00</td>
-<td className="p-4 text-sm font-medium">Nurse S. Miller</td>
-<td className="p-4">
-<div className="flex gap-2">
-<button className="w-8 h-8 flex items-center justify-center hover:bg-surface-container-highest transition-colors">
-<span className="material-symbols-outlined text-[18px]">visibility</span>
-</button>
-<button className="w-8 h-8 flex items-center justify-center hover:bg-surface-container-highest transition-colors">
-<span className="material-symbols-outlined text-[18px]">edit_note</span>
-</button>
-</div>
-</td>
-</tr>
-{/* Patient Row 2 */}
-<tr className="hms-row transition-colors group">
-<td className="p-4">
-<div className="font-semibold text-sm">James T. Kendrick</div>
-<div className="mono text-[11px] text-on-surface-variant">PX-2024-8740</div>
-</td>
-<td className="p-4">
-<span className="bg-surface-container-highest text-on-surface-variant px-2 py-0.5 text-[10px] font-bold uppercase">Stable</span>
-</td>
-<td className="p-4">
-<div className="flex gap-4">
-<div className="text-sm"><span className="text-[10px] text-on-surface-variant mr-1">BP</span><span className="mono">120/80</span></div>
-<div className="text-sm"><span className="text-[10px] text-on-surface-variant mr-1">HR</span><span className="mono">72</span></div>
-<div className="text-sm"><span className="text-[10px] text-on-surface-variant mr-1">O2</span><span className="mono">98%</span></div>
-</div>
-</td>
-<td className="p-4 mono text-sm">12:10:22</td>
-<td className="p-4 text-sm font-medium">Nurse R. Chen</td>
-<td className="p-4">
-<div className="flex gap-2">
-<button className="w-8 h-8 flex items-center justify-center hover:bg-surface-container-highest transition-colors">
-<span className="material-symbols-outlined text-[18px]">visibility</span>
-</button>
-<button className="w-8 h-8 flex items-center justify-center hover:bg-surface-container-highest transition-colors">
-<span className="material-symbols-outlined text-[18px]">edit_note</span>
-</button>
-</div>
-</td>
-</tr>
-{/* Patient Row 3 */}
-<tr className="hms-row transition-colors group">
-<td className="p-4">
-<div className="font-semibold text-sm">Linda Wu</div>
-<div className="mono text-[11px] text-on-surface-variant">PX-2024-9003</div>
-</td>
-<td className="p-4">
-<span className="bg-secondary-container text-on-secondary-container px-2 py-0.5 text-[10px] font-bold uppercase">Observation</span>
-</td>
-<td className="p-4">
-<div className="flex gap-4">
-<div className="text-sm"><span className="text-[10px] text-on-surface-variant mr-1">BP</span><span className="mono">132/85</span></div>
-<div className="text-sm"><span className="text-[10px] text-on-surface-variant mr-1">HR</span><span className="mono">84</span></div>
-<div className="text-sm"><span className="text-[10px] text-on-surface-variant mr-1">O2</span><span className="mono">96%</span></div>
-</div>
-</td>
-<td className="p-4 mono text-sm">14:00:15</td>
-<td className="p-4 text-sm font-medium">Nurse S. Miller</td>
-<td className="p-4">
-<div className="flex gap-2">
-<button className="w-8 h-8 flex items-center justify-center hover:bg-surface-container-highest transition-colors">
-<span className="material-symbols-outlined text-[18px]">visibility</span>
-</button>
-<button className="w-8 h-8 flex items-center justify-center hover:bg-surface-container-highest transition-colors">
-<span className="material-symbols-outlined text-[18px]">edit_note</span>
-</button>
-</div>
-</td>
-</tr>
-{/* Patient Row 4 */}
-<tr className="hms-row transition-colors group">
-<td className="p-4">
-<div className="font-semibold text-sm">Marcus V. Aurelius</div>
-<div className="mono text-[11px] text-on-surface-variant">PX-2024-8119</div>
-</td>
-<td className="p-4">
-<span className="bg-error-container text-on-error-container px-2 py-0.5 text-[10px] font-bold uppercase">Critical</span>
-</td>
-<td className="p-4">
-<div className="flex gap-4">
-<div className="text-sm"><span className="text-[10px] text-on-surface-variant mr-1">BP</span><span className="mono text-error">90/60</span></div>
-<div className="text-sm"><span className="text-[10px] text-on-surface-variant mr-1">HR</span><span className="mono">110</span></div>
-<div className="text-sm"><span className="text-[10px] text-on-surface-variant mr-1">O2</span><span className="mono">94%</span></div>
-</div>
-</td>
-<td className="p-4 mono text-sm">13:58:10</td>
-<td className="p-4 text-sm font-medium">Nurse R. Chen</td>
-<td className="p-4">
-<div className="flex gap-2">
-<button className="w-8 h-8 flex items-center justify-center hover:bg-surface-container-highest transition-colors">
-<span className="material-symbols-outlined text-[18px]">visibility</span>
-</button>
-<button className="w-8 h-8 flex items-center justify-center hover:bg-surface-container-highest transition-colors">
-<span className="material-symbols-outlined text-[18px]">edit_note</span>
-</button>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-{/* Dashboard Bento Grid - Secondary Insights */}
-<div className="grid grid-cols-12 gap-8 mt-12">
-<div className="col-span-12 lg:col-span-8 bg-surface-container-low p-8">
-<div className="flex justify-between items-end mb-8">
-<div>
-<h3 className="text-xl font-light">Laboratory Queue Trends</h3>
-<p className="text-[11px] font-semibold uppercase tracking-widest text-on-surface-variant mt-1">Next 12 Hours Forecast</p>
-</div>
-<div className="flex gap-1">
-<div className="w-2 h-8 bg-primary-container"></div>
-<div className="w-2 h-12 bg-primary"></div>
-<div className="w-2 h-16 bg-primary-container"></div>
-<div className="w-2 h-10 bg-primary"></div>
-<div className="w-2 h-14 bg-primary-container"></div>
-</div>
-</div>
-<div className="h-48 bg-surface-container-highest flex items-center justify-center relative">
-{/* Visual placeholder for a data chart */}
-<div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_1px_1px,_#1c1b1b_1px,_transparent_0)] bg-[size:24px_24px]"></div>
-<div className="text-[10px] mono text-on-surface-variant font-bold">DATA_STREAM_VISUALIZATION_LAYER</div>
-</div>
-</div>
-<div className="col-span-12 lg:col-span-4 bg-surface-container-low p-8 flex flex-col">
-<h3 className="text-xl font-light mb-6">Staffing Overview</h3>
-<div className="space-y-6 flex-1">
-<div className="flex justify-between items-center">
-<span className="text-sm font-medium">Cardiology Team</span>
-<span className="mono text-xs bg-surface-container-highest px-2 py-1">ON-CALL</span>
-</div>
-<div className="flex justify-between items-center">
-<span className="text-sm font-medium">ER Resident Pool</span>
-<span className="mono text-xs text-error font-bold">STRETCHED (82%)</span>
-</div>
-<div className="flex justify-between items-center">
-<span className="text-sm font-medium">Surgery Prep Unit</span>
-<span className="mono text-xs text-primary font-bold">OPTIMAL</span>
-</div>
-</div>
-<button className="w-full mt-8 border border-outline px-4 py-3 text-xs font-semibold uppercase tracking-widest hover:bg-surface-container-highest transition-colors">
-                        Reassign Resources
-                    </button>
-</div>
-</div>
-</div>
-
-</main>
+      <tr className="group transition-colors hover:bg-[var(--hc-blue-50)]">
+        <td className="p-4">
+          <div className="text-[13px] font-bold text-[var(--hc-text)]">{appointment.patientName}</div>
+          <div className="font-mono text-[11px] text-[var(--hc-text-secondary)]">
+            {appointment.confirmationCode || appointment.appointmentId.slice(0, 8)}
+          </div>
+        </td>
+        <td className="p-4 font-mono text-[13px] text-[var(--hc-text)]">{formatTimeRange(appointment)}</td>
+        <td className="max-w-xs p-4 text-[13px] text-[var(--hc-text-secondary)]">
+          {appointment.symptoms || "No symptoms recorded"}
+        </td>
+        <td className="p-4">
+          <span
+            className={`inline-flex px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md ${statusClass(
+              appointment.status,
+            )}`}
+          >
+            {appointment.status.replace("_", " ")}
+          </span>
+        </td>
+        <td className="p-4 text-[13px] font-medium text-[var(--hc-text)]">{appointment.doctorName}</td>
+        <td className="p-4">
+          {canStartConsultation ? (
+            <button
+              className="rounded-md bg-[var(--hc-blue-600)] px-3.5 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-[var(--hc-blue-700)] disabled:opacity-60"
+              type="button"
+              onClick={() => onStartConsultation(appointment)}
+              disabled={isUpdating}
+            >
+              {isUpdating ? "Saving" : "Start Consultation"}
+            </button>
+          ) : (
+            <button
+              className="rounded-md border border-[var(--hc-border)] bg-[var(--hc-surface-soft)] px-3.5 py-2 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] opacity-60"
+              type="button"
+              disabled
+              title="Only checked-in appointments can move to consultation through this flow"
+            >
+              Unsupported
+            </button>
+          )}
+        </td>
+      </tr>
+      {rowError ? (
+        <tr className="bg-[#FFF5F5]">
+          <td className="p-4 text-[13px] font-medium text-[var(--hc-danger)]" colSpan={6} role="alert">
+            {rowError}
+          </td>
+        </tr>
+      ) : null}
     </>
   );
 }

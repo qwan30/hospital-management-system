@@ -2,14 +2,59 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { LucideIcon } from "lucide-react";
+import {
+  Activity,
+  BadgeCheck,
+  Building2,
+  CalendarCheck,
+  CalendarClock,
+  CalendarDays,
+  CalendarX,
+  CircleHelp,
+  ClipboardList,
+  DoorOpen,
+  Headphones,
+  History,
+  LayoutDashboard,
+  LifeBuoy,
+  ListOrdered,
+  LogOut,
+  Mail,
+  Microscope,
+  MonitorCog,
+  Package,
+  Pill,
+  Plus,
+  ReceiptText,
+  ShieldPlus,
+  Stethoscope,
+  UserRound,
+  Users,
+  WalletCards,
+} from "lucide-react";
 import { filterNavigationLinks, getRouteDecision } from "@/lib/rbac";
 import { useStoredRole } from "@/lib/use-stored-role";
 import { cn } from "@/lib/utils";
 
-interface SideNavLink {
+export interface SideNavLink {
   label: string;
   href: string;
-  icon: string;
+  icon?: string;
+}
+
+interface HcSidebarProps {
+  title?: string;
+  subtitle?: string;
+  roleScope: "staff" | "patient";
+  links?: SideNavLink[];
+  ctaLabel?: string;
+  ctaHref?: string;
+  supportHref?: string;
+  supportLabel?: string;
+  logoutHref?: string;
+  statusTitle?: string;
+  statusDescription?: string;
 }
 
 interface StaffSideNavProps {
@@ -20,7 +65,35 @@ interface StaffSideNavProps {
   ctaHref?: string;
 }
 
-const defaultLinks: SideNavLink[] = [
+const iconMap: Record<string, LucideIcon> = {
+  account_circle: UserRound,
+  activity: Activity,
+  apartment: Building2,
+  assignment: ClipboardList,
+  badge: BadgeCheck,
+  biotech: Microscope,
+  calendar_today: CalendarDays,
+  contact_support: Headphones,
+  dashboard: LayoutDashboard,
+  event_available: CalendarCheck,
+  event_busy: CalendarX,
+  event_repeat: CalendarClock,
+  format_list_numbered: ListOrdered,
+  help: CircleHelp,
+  history: History,
+  inventory_2: Package,
+  mail: Mail,
+  medical_services: Stethoscope,
+  meeting_room: DoorOpen,
+  payments: WalletCards,
+  pill: Pill,
+  receipt_long: ReceiptText,
+  support: LifeBuoy,
+  users: Users,
+  view_timeline: MonitorCog,
+};
+
+const defaultStaffLinks: SideNavLink[] = [
   { label: "Overview", href: "/staff/dashboard", icon: "dashboard" },
   { label: "Patient Records", href: "/staff/patients", icon: "assignment" },
   { label: "Queue Board", href: "/staff/queue", icon: "format_list_numbered" },
@@ -31,6 +104,150 @@ const defaultLinks: SideNavLink[] = [
   { label: "Billing", href: "/staff/invoices", icon: "payments" },
 ];
 
+const defaultPortalLinks: SideNavLink[] = [
+  { label: "Overview", href: "/portal/overview", icon: "dashboard" },
+  { label: "Electronic Records", href: "/portal/records", icon: "assignment" },
+  { label: "Appointments", href: "/portal/appointments", icon: "calendar_today" },
+  { label: "Pharmacy", href: "/portal/pharmacy", icon: "medical_services" },
+  { label: "Lab Results", href: "/portal/lab-results", icon: "biotech" },
+  { label: "Billing", href: "/portal/billing", icon: "payments" },
+  { label: "Messages", href: "/portal/messages", icon: "mail" },
+  { label: "Profile", href: "/portal/profile", icon: "account_circle" },
+];
+
+export const defaultAdminSideLinks: SideNavLink[] = [
+  { href: "/admin/dashboard", label: "Dashboard", icon: "dashboard" },
+  { href: "/admin/departments", label: "Departments", icon: "apartment" },
+  { href: "/admin/appointments", label: "Appointments", icon: "calendar_today" },
+  { href: "/admin/schedule-templates", label: "Templates", icon: "event_repeat" },
+  { href: "/admin/special-closures", label: "Closures", icon: "event_busy" },
+  { href: "/admin/slots", label: "Slots", icon: "view_timeline" },
+  { href: "/admin/rooms", label: "Rooms", icon: "meeting_room" },
+  { href: "/admin/users", label: "Staff", icon: "badge" },
+  { href: "/admin/audit-logs", label: "Audit Logs", icon: "history" },
+];
+
+function iconFor(icon?: string) {
+  if (!icon) {
+    return ClipboardList;
+  }
+
+  return iconMap[icon] || ClipboardList;
+}
+
+export function HcSidebar({
+  title = "Clinical Suite",
+  subtitle = "Standard Access",
+  roleScope,
+  links,
+  ctaLabel,
+  ctaHref,
+  supportHref,
+  supportLabel = "Support",
+  logoutHref,
+  statusTitle = "System status",
+  statusDescription = "Core services online",
+}: HcSidebarProps) {
+  const pathname = usePathname();
+  const role = useStoredRole(roleScope);
+  const navLinks = filterNavigationLinks(links || defaultStaffLinks, role);
+  const canUseCta = ctaHref ? getRouteDecision(ctaHref, role).allowed : false;
+
+  return (
+    <aside className="fixed bottom-0 left-0 top-[var(--hc-topbar-h)] z-40 hidden w-[var(--hc-sidebar-w)] flex-col border-r border-[var(--hc-border)] bg-[var(--hc-sidebar-bg)] md:flex">
+      <div className="flex min-h-0 flex-1 flex-col px-[18px] py-[22px]">
+        <div className="mb-[18px] flex items-center gap-3">
+          <div className="grid size-[54px] shrink-0 place-items-center rounded-[var(--radius-lg)] border border-[var(--hc-border)] bg-white text-[var(--hc-navy-800)] shadow-[var(--shadow-xs)]">
+            <ShieldPlus className="size-6" aria-hidden="true" />
+          </div>
+          <div className="min-w-0">
+            <div className="truncate text-sm font-bold leading-[18px] text-[var(--hc-text)]">
+              {title}
+            </div>
+            <div className="truncate text-xs font-bold uppercase leading-4 tracking-[0.02em] text-[var(--hc-blue-600)]">
+              {subtitle}
+            </div>
+          </div>
+        </div>
+
+        {canUseCta && ctaLabel && ctaHref ? (
+          <Link
+            href={ctaHref}
+            className="mb-[22px] inline-flex h-[42px] w-full items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[var(--hc-blue-600)] px-4 text-sm font-bold text-white shadow-[var(--shadow-blue)] transition hover:-translate-y-px hover:bg-[var(--hc-blue-700)]"
+          >
+            <Plus className="size-[18px]" aria-hidden="true" />
+            {ctaLabel}
+          </Link>
+        ) : null}
+
+        <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
+          {navLinks.map((link) => {
+            const isActive =
+              pathname === link.href || pathname.startsWith(link.href + "/");
+            const Icon = iconFor(link.icon);
+
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                data-active={isActive ? "true" : undefined}
+                className={cn(
+                  "group relative flex h-12 items-center gap-3 border-l-4 border-transparent px-4 text-sm font-medium text-[#1E2A44] transition-all duration-150 hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-blue-600)]",
+                  isActive &&
+                    "border-l-4 border-[var(--hc-blue-600)] bg-[var(--hc-blue-50)] pl-3 font-bold text-[var(--hc-blue-600)]",
+                )}
+              >
+                <Icon
+                  className={cn(
+                    "size-5 shrink-0 text-[#31415F] transition-colors group-hover:text-[var(--hc-blue-600)]",
+                    isActive && "text-[var(--hc-blue-600)]",
+                  )}
+                  aria-hidden="true"
+                />
+                <span className="truncate">{link.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
+      <div className="border-t border-[var(--hc-border-soft)] p-[18px]">
+        <div className="mb-3 grid gap-1">
+          {supportHref ? (
+            <Link
+              href={supportHref}
+              className="flex h-10 items-center gap-3 px-2 text-sm font-medium text-[var(--hc-text-secondary)] transition hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-blue-600)]"
+            >
+              <LifeBuoy className="size-5" aria-hidden="true" />
+              {supportLabel}
+            </Link>
+          ) : null}
+          {logoutHref ? (
+            <Link
+              href={logoutHref}
+              className="flex h-10 items-center gap-3 px-2 text-sm font-medium text-[var(--hc-text-secondary)] transition hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-danger)]"
+            >
+              <LogOut className="size-5" aria-hidden="true" />
+              Logout
+            </Link>
+          ) : null}
+        </div>
+        <div className="flex min-h-[86px] items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--hc-border)] bg-white p-4 shadow-[var(--shadow-xs)]">
+          <span className="size-2.5 rounded-full bg-[var(--hc-success)]" />
+          <span className="min-w-0">
+            <span className="block text-xs font-bold uppercase tracking-[0.08em] text-[var(--hc-text)]">
+              {statusTitle}
+            </span>
+            <span className="block text-xs leading-5 text-[var(--hc-text-secondary)]">
+              {statusDescription}
+            </span>
+          </span>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
 export function StaffSideNav({
   title = "Clinical Suite",
   subtitle = "Standard Access",
@@ -38,79 +255,17 @@ export function StaffSideNav({
   ctaLabel = "Admit Patient",
   ctaHref = "/staff/booking",
 }: StaffSideNavProps) {
-  const pathname = usePathname();
-  const role = useStoredRole("staff");
-  const navLinks = filterNavigationLinks(links || defaultLinks, role);
-  const canUseCta = getRouteDecision(ctaHref, role).allowed;
-
   return (
-    <aside className="fixed left-0 top-[48px] bottom-0 hidden md:flex flex-col w-64 bg-[#f4f4f4] border-r-0">
-      <div className="p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-hms-surface-container-high flex items-center justify-center">
-            <span className="material-symbols-outlined text-hms-on-surface-variant">
-              account_circle
-            </span>
-          </div>
-          <div>
-            <div className="text-sm font-semibold tracking-normal text-hms-on-surface">
-              {title}
-            </div>
-            <div className="text-[11px] font-semibold uppercase tracking-widest text-hms-on-surface-variant">
-              {subtitle}
-            </div>
-          </div>
-        </div>
-        {canUseCta ? (
-          <Link
-            href={ctaHref}
-            className="w-full bg-hms-primary-container text-white py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-hms-primary transition-all"
-          >
-            <span className="material-symbols-outlined text-sm">add</span>
-            {ctaLabel}
-          </Link>
-        ) : null}
-      </div>
-      <nav className="flex-1 overflow-y-auto">
-        {navLinks.map((link) => {
-          const isActive =
-            pathname === link.href || pathname.startsWith(link.href + "/");
-          return (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "flex items-center h-[48px] px-6 text-sm font-medium transition-all duration-75",
-                isActive
-                  ? "bg-white text-blue-600 border-l-4 border-blue-600"
-                  : "text-gray-700 hover:bg-gray-200"
-              )}
-            >
-              <span className="material-symbols-outlined mr-3">
-                {link.icon}
-              </span>
-              {link.label}
-            </Link>
-          );
-        })}
-      </nav>
-      <div className="mt-auto border-t border-hms-surface-container">
-        <Link
-          href="/staff/support"
-          className="text-gray-700 hover:bg-gray-200 flex items-center h-[48px] px-6 text-sm font-medium transition-all"
-        >
-          <span className="material-symbols-outlined mr-3">help</span>
-          Support
-        </Link>
-        <Link
-          href="/auth/logout"
-          className="text-gray-700 hover:bg-gray-200 flex items-center h-[48px] px-6 text-sm font-medium transition-all"
-        >
-          <span className="material-symbols-outlined mr-3">logout</span>
-          Logout
-        </Link>
-      </div>
-    </aside>
+    <HcSidebar
+      title={title}
+      subtitle={subtitle}
+      roleScope="staff"
+      links={links || defaultStaffLinks}
+      ctaLabel={ctaLabel}
+      ctaHref={ctaHref}
+      supportHref="/staff/support"
+      logoutHref="/auth/logout"
+    />
   );
 }
 
@@ -121,73 +276,18 @@ export function PortalSideNav({
   ctaLabel = "Book Appointment",
   ctaHref = "/booking",
 }: StaffSideNavProps) {
-  const pathname = usePathname();
-  const role = useStoredRole("patient");
-  const navLinks = filterNavigationLinks(links || [
-    { label: "Overview", href: "/portal/overview", icon: "dashboard" },
-    { label: "Electronic Records", href: "/portal/records", icon: "assignment" },
-    { label: "Appointments", href: "/portal/appointments", icon: "calendar_today" },
-    { label: "Pharmacy", href: "/portal/pharmacy", icon: "medical_services" },
-    { label: "Lab Results", href: "/portal/lab-results", icon: "biotech" },
-    { label: "Billing", href: "/portal/billing", icon: "payments" },
-    { label: "Messages", href: "/portal/messages", icon: "mail" },
-    { label: "Profile", href: "/portal/profile", icon: "account_circle" },
-  ], role);
-
   return (
-    <aside className="fixed left-0 top-[48px] bottom-0 hidden md:flex flex-col w-64 bg-[#f4f4f4] dark:bg-[#262626] border-r-0 rounded-none text-sm font-medium tracking-normal">
-      <div className="p-6 flex flex-col gap-1">
-        <h2 className="text-hms-on-surface font-semibold text-base">{title}</h2>
-        <p className="text-hms-on-surface-variant text-xs">{subtitle}</p>
-      </div>
-      <nav className="flex-1">
-        {navLinks.map((link) => {
-          const isActive =
-            pathname === link.href || pathname.startsWith(link.href + "/");
-          return (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "flex items-center h-[48px] px-4 transition-all duration-75",
-                isActive
-                  ? "bg-white dark:bg-[#393939] text-blue-600 border-l-4 border-blue-600"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-              )}
-            >
-              <span className="material-symbols-outlined mr-3">
-                {link.icon}
-              </span>
-              {link.label}
-            </Link>
-          );
-        })}
-      </nav>
-      <div className="px-4 py-6 border-t border-hms-outline-variant/10">
-        <Link
-          href={ctaHref}
-          className="w-full bg-hms-primary-container text-white h-12 flex items-center justify-center gap-2 font-semibold hover:bg-hms-primary transition-colors"
-        >
-          <span className="material-symbols-outlined">add</span>
-          {ctaLabel}
-        </Link>
-      </div>
-      <div className="mt-auto pb-4">
-        <Link
-          href="/portal/support"
-          className="text-gray-500 flex items-center h-[40px] px-4 hover:text-white transition-colors"
-        >
-          <span className="material-symbols-outlined mr-3">help</span>
-          Support
-        </Link>
-        <Link
-          href="/portal/login"
-          className="text-gray-500 flex items-center h-[40px] px-4 hover:text-white transition-colors"
-        >
-          <span className="material-symbols-outlined mr-3">logout</span>
-          Logout
-        </Link>
-      </div>
-    </aside>
+    <HcSidebar
+      title={title}
+      subtitle={subtitle}
+      roleScope="patient"
+      links={links || defaultPortalLinks}
+      ctaLabel={ctaLabel}
+      ctaHref={ctaHref}
+      supportHref="/portal/support"
+      logoutHref="/portal/login"
+      statusTitle="Portal status"
+      statusDescription="Secure patient access"
+    />
   );
 }

@@ -1,11 +1,15 @@
 import Image from "next/image";
+import { HcIcon } from "@/components/ui/hc-icon";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default function DoctorDetailPage() {
   return (
     <>
       <main>
-
-{/* Left: Doctor Identity & Content */}
+        <PageHeader 
+            title="Doctor Detail"
+        />
+        <div className="p-8 pt-0 grid grid-cols-1 md:grid-cols-12 gap-12">
 <div className="md:col-span-8 space-y-16">
 {/* Hero Identity */}
 <section className="flex flex-col md:flex-row gap-12 items-start">
@@ -50,15 +54,15 @@ export default function DoctorDetailPage() {
 <h4 className="text-[10px] font-semibold uppercase tracking-widest text-outline mb-6">Clinical Expertise</h4>
 <ul className="space-y-3">
 <li className="flex items-center gap-3 py-3 border-b border-outline-variant/20">
-<span className="material-symbols-outlined text-primary text-sm">check_circle</span>
+<HcIcon name="check_circle" className="text-primary text-sm" />
 <span className="text-sm font-semibold tracking-tight uppercase">Coronary Angioplasty</span>
 </li>
 <li className="flex items-center gap-3 py-3 border-b border-outline-variant/20">
-<span className="material-symbols-outlined text-primary text-sm">check_circle</span>
+<HcIcon name="check_circle" className="text-primary text-sm" />
 <span className="text-sm font-semibold tracking-tight uppercase">Valvuloplasty</span>
 </li>
 <li className="flex items-center gap-3 py-3 border-b border-outline-variant/20">
-<span className="material-symbols-outlined text-primary text-sm">check_circle</span>
+<HcIcon name="check_circle" className="text-primary text-sm" />
 <span className="text-sm font-semibold tracking-tight uppercase">TAVI/TAVR Procedures</span>
 </li>
 </ul>
@@ -67,11 +71,11 @@ export default function DoctorDetailPage() {
 <h4 className="text-[10px] font-semibold uppercase tracking-widest text-outline mb-6">Hospital Affiliations</h4>
 <ul className="space-y-3">
 <li className="flex items-center gap-3 py-3 border-b border-outline-variant/20">
-<span className="material-symbols-outlined text-primary text-sm">apartment</span>
+<HcIcon name="apartment" className="text-primary text-sm" />
 <span className="text-sm font-semibold tracking-tight uppercase">Medicore HMS Main Campus</span>
 </li>
 <li className="flex items-center gap-3 py-3 border-b border-outline-variant/20">
-<span className="material-symbols-outlined text-primary text-sm">apartment</span>
+<HcIcon name="apartment" className="text-primary text-sm" />
 <span className="text-sm font-semibold tracking-tight uppercase">Cardiac Institute of London</span>
 </li>
 </ul>
@@ -115,7 +119,7 @@ export default function DoctorDetailPage() {
 <div className="space-y-8 mb-12">
 <div>
 <div className="flex items-center gap-2 mb-4">
-<span className="material-symbols-outlined text-sm text-outline">wb_sunny</span>
+<HcIcon name="wb_sunny" className="text-sm text-outline" />
 <span className="text-[10px] font-semibold uppercase tracking-widest text-outline">Morning Sessions</span>
 </div>
 <div className="grid grid-cols-2 gap-2">
@@ -127,7 +131,7 @@ export default function DoctorDetailPage() {
 </div>
 <div>
 <div className="flex items-center gap-2 mb-4">
-<span className="material-symbols-outlined text-sm text-outline">dark_mode</span>
+<HcIcon name="dark_mode" className="text-sm text-outline" />
 <span className="text-[10px] font-semibold uppercase tracking-widest text-outline">Afternoon Sessions</span>
 </div>
 <div className="grid grid-cols-2 gap-2">
@@ -162,16 +166,16 @@ export default function DoctorDetailPage() {
 <div className="mt-8 p-8 border border-outline-variant/20">
 <h4 className="text-xs font-bold uppercase tracking-widest mb-4">Need Assistance?</h4>
 <div className="flex gap-4 items-center mb-4">
-<span className="material-symbols-outlined text-primary">call</span>
+<HcIcon name="call" className="text-primary" />
 <span className="text-sm font-semibold tracking-tight">Support: +1 (800) MED-CORE</span>
 </div>
 <div className="flex gap-4 items-center">
-<span className="material-symbols-outlined text-primary">mail</span>
+<HcIcon name="mail" className="text-primary" />
 <span className="text-sm font-semibold tracking-tight">concierge@medicore.hms</span>
 </div>
 </div>
 </aside>
-
+</div>
 </main>
     </>
   );
