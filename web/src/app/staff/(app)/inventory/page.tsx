@@ -296,7 +296,7 @@ export default function InventoryPage() {
         description="Operations Center • Monitor stock levels, lots, and movements"
         action={
           <div className="flex gap-2">
-            <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[var(--hc-blue-600)] px-4 text-[12px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-[var(--hc-blue-700)] disabled:opacity-60 shadow-sm" onClick={openCreateItem} type="button">
+            <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[var(--hc-primary)] px-4 text-[12px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-[var(--hc-blue-700)] disabled:opacity-60 shadow-sm" onClick={openCreateItem} type="button">
               <HcIcon name="add" className="text-sm" />
               Add Item
             </button>
@@ -361,7 +361,7 @@ export default function InventoryPage() {
             </thead>
             <tbody className="divide-y divide-[var(--hc-border-soft)]">
               {items.map((item) => (
-                <tr key={item.itemId} className="group transition-colors hover:bg-[var(--hc-blue-50)]">
+                <tr key={item.itemId} className="group transition-colors hover:bg-[var(--hc-primary-bg)]">
                   <td className="p-4">
                     <div className="font-bold text-[13px] text-[var(--hc-text)]">{item.sku}</div>
                     <div className="text-[11px] text-[var(--hc-text-secondary)]">{item.itemName}</div>
@@ -376,13 +376,13 @@ export default function InventoryPage() {
                   </td>
                   <td className="p-4 text-right">
                     <div className="flex justify-end gap-3 text-[10px] font-bold uppercase tracking-widest">
-                      <button className="text-[var(--hc-blue-600)] hover:underline disabled:opacity-40" disabled={isSaving} onClick={() => openEditItem(item)} type="button">
+                      <button className="text-[var(--hc-primary)] hover:underline disabled:opacity-40" disabled={isSaving} onClick={() => openEditItem(item)} type="button">
                         Edit
                       </button>
-                      <button className="text-[var(--hc-blue-600)] hover:underline disabled:opacity-40" disabled={isSaving} onClick={() => openLotForm(item)} type="button">
+                      <button className="text-[var(--hc-primary)] hover:underline disabled:opacity-40" disabled={isSaving} onClick={() => openLotForm(item)} type="button">
                         Lot
                       </button>
-                      <button className="text-[var(--hc-blue-600)] hover:underline disabled:opacity-40" disabled={isSaving} onClick={() => openMovementForm(item)} type="button">
+                      <button className="text-[var(--hc-primary)] hover:underline disabled:opacity-40" disabled={isSaving} onClick={() => openMovementForm(item)} type="button">
                         Move
                       </button>
                       <button className="text-[var(--hc-danger)] hover:underline disabled:opacity-40" disabled={isSaving} onClick={() => handleDeleteItem(item)} type="button">
@@ -509,7 +509,7 @@ function ItemForm({
       </div>
       <TextField label="Department ID" onChange={(value) => onChange({ ...form, departmentId: value })} value={form.departmentId} />
       <div className="mt-4 flex justify-end">
-        <button className="bg-[var(--hc-blue-600)] rounded-[var(--radius-md)] px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white disabled:opacity-60 transition-colors hover:bg-[var(--hc-blue-700)]" disabled={isSaving} type="submit">
+        <button className="bg-[var(--hc-primary)] rounded-[var(--radius-md)] px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white disabled:opacity-60 transition-colors hover:bg-[var(--hc-blue-700)]" disabled={isSaving} type="submit">
           {isSaving ? "Saving..." : "Save Item"}
         </button>
       </div>
@@ -538,7 +538,7 @@ function LotForm({
       <TextField label="Quantity Received" onChange={(value) => onChange({ ...form, quantityReceived: value })} required type="number" value={form.quantityReceived} />
       <TextField label="Expires On" onChange={(value) => onChange({ ...form, expiresOn: value })} type="date" value={form.expiresOn} />
       <div className="mt-4 flex justify-end">
-        <button className="bg-[var(--hc-blue-600)] rounded-[var(--radius-md)] px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white disabled:opacity-60 transition-colors hover:bg-[var(--hc-blue-700)]" disabled={isSaving || items.length === 0} type="submit">
+        <button className="bg-[var(--hc-primary)] rounded-[var(--radius-md)] px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white disabled:opacity-60 transition-colors hover:bg-[var(--hc-blue-700)]" disabled={isSaving || items.length === 0} type="submit">
           {isSaving ? "Saving..." : "Save Lot"}
         </button>
       </div>
@@ -566,7 +566,7 @@ function MovementForm({
       <TextField label="Quantity Delta" onChange={(value) => onChange({ ...form, quantityDelta: value })} required type="number" value={form.quantityDelta} />
       <TextField label="Note" onChange={(value) => onChange({ ...form, note: value })} value={form.note} />
       <div className="mt-4 flex justify-end">
-        <button className="bg-[var(--hc-blue-600)] rounded-[var(--radius-md)] px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white disabled:opacity-60 transition-colors hover:bg-[var(--hc-blue-700)]" disabled={isSaving || items.length === 0} type="submit">
+        <button className="bg-[var(--hc-primary)] rounded-[var(--radius-md)] px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white disabled:opacity-60 transition-colors hover:bg-[var(--hc-blue-700)]" disabled={isSaving || items.length === 0} type="submit">
           {isSaving ? "Saving..." : "Record Movement"}
         </button>
       </div>
@@ -687,4 +687,3 @@ function nullableText(value: string) {
 function errorMessage(caught: unknown, fallback: string) {
   return caught instanceof Error && caught.message ? caught.message : fallback;
 }
-

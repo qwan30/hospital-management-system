@@ -1,0 +1,11 @@
+﻿{
+    "command":  "npm run test:unit -- src/lib/__tests__/operations-api-fallbacks.test.ts src/lib/__tests__/clinical-api.test.ts src/lib/__tests__/public-api.test.ts \u0027src/app/(public)/booking/__tests__/page.test.tsx\u0027",
+    "cwd":  "D:\\projects\\hospital-management-system\\web",
+    "startedAt":  "2026-05-22T12:38:30.1245706+07:00",
+    "endedAt":  "2026-05-22T12:38:38.9429335+07:00",
+    "durationSeconds":  8.82,
+    "exitCode":  0,
+    "status":  "PASS",
+    "failureReason":  "",
+    "logPath":  "D:\\projects\\hospital-management-system\\docs\\06-testing\\artifacts\\production-readiness-2026-05-22\\frontend-focused-coverage-tests-pass2-2026-05-22.log"
+}

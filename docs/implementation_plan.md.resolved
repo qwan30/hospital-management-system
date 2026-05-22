@@ -1,0 +1,102 @@
+# UI Migration Implementation Plan (Remaining Screens)
+
+This plan details the strategy for migrating the remaining screens to the new `hc-` design system. We have successfully completed 11 files (Batch 1 and Batch 2). There are 68 `page.tsx` files in total. The screenshot tool captured 78 images, meaning some screens have multiple sub-states (like empty states, modals, or tab variations) that also need visual validation. Our goal is to complete all 68 source files, fulfilling the visual requirements for all 78 screenshots.
+
+## User Review Required
+
+> [!NOTE]
+> Please review this comprehensive batch schedule. Once approved, I will begin executing the next batch (Batch 3). The batches have been organized by route module (Admin, Staff, Portal, Public) to ensure consistent components are developed and reused logically.
+
+## Open Questions
+
+> [!TIP]
+> The screenshots tool captured 78 images but there are 68 `page.tsx` files. Are there any specific sub-states or interactions (like modals, nested tabs, or loading screens) you want me to pay special attention to while migrating the components?
+
+## Proposed Changes
+
+We will work systematically through the following batches. For each page, we will implement `PageHeader`, `DataPanel`, `KpiCard`, and other standardized components from our new design system while preserving existing forms, routes, and API logic.
+
+---
+
+### Batch 3: Admin Remaining Pages
+- `[MODIFY] web/src/app/admin/(app)/audit-logs/page.tsx`
+- `[MODIFY] web/src/app/admin/(app)/monitoring/page.tsx`
+- `[MODIFY] web/src/app/admin/(app)/users/[id]/page.tsx`
+
+### Batch 4: Staff Core & Dashboard
+- `[MODIFY] web/src/app/staff/(app)/dashboard/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/doctor/dashboard/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/doctor/[id]/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/patients/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/queue/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/schedule/page.tsx`
+
+### Batch 5: Staff Clinical Operations
+- `[MODIFY] web/src/app/staff/(app)/nurse-intake/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/vital-signs/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/lab-results/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/lab-results/[id]/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/prescriptions/preview/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/medical-records/[id]/edit/page.tsx`
+
+### Batch 6: Staff Booking Workflow
+- `[MODIFY] web/src/app/staff/(app)/booking/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/booking/symptoms/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/booking/slots/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/booking/review/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/booking/success/page.tsx`
+
+### Batch 7: Staff Finance & Operations
+- `[MODIFY] web/src/app/staff/(app)/invoices/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/pricing/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/revenue/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/closures/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/inventory/page.tsx`
+- `[MODIFY] web/src/app/staff/(app)/support/page.tsx`
+
+### Batch 8: Portal Core & Profile
+- `[MODIFY] web/src/app/portal/(app)/overview/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/profile/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/records/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/admit/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/messages/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/support/page.tsx`
+
+### Batch 9: Portal Clinical & Finance
+- `[MODIFY] web/src/app/portal/(app)/appointments/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/appointments/2/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/scheduling/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/diagnostics/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/lab-results/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/pharmacy/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/patients/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/billing/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/claim/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/inventory/page.tsx`
+- `[MODIFY] web/src/app/portal/(app)/staff/page.tsx`
+
+### Batch 10: Public Pages & Auth Pages
+- `[MODIFY] web/src/app/(public)/page.tsx`
+- `[MODIFY] web/src/app/(public)/booking/page.tsx`
+- `[MODIFY] web/src/app/(public)/departments/page.tsx`
+- `[MODIFY] web/src/app/(public)/departments/[id]/page.tsx`
+- `[MODIFY] web/src/app/(public)/doctors/page.tsx`
+- `[MODIFY] web/src/app/(public)/news/page.tsx`
+- `[MODIFY] web/src/app/(public)/privacy/page.tsx`
+- `[MODIFY] web/src/app/(public)/security/page.tsx`
+- `[MODIFY] web/src/app/(public)/session-expired/page.tsx`
+- `[MODIFY] web/src/app/(public)/terms/page.tsx`
+- `[MODIFY] web/src/app/admin/(auth)/login/page.tsx`
+- `[MODIFY] web/src/app/staff/(auth)/login/page.tsx`
+- `[MODIFY] web/src/app/portal/(auth)/login/page.tsx`
+- `[MODIFY] web/src/app/auth/logout/page.tsx`
+- `[MODIFY] web/src/app/forbidden/page.tsx`
+
+## Verification Plan
+
+### Automated Tests
+- Build process: Run `npm run build` locally in the `web` folder to ensure no type/syntax errors block the deployment.
+
+### Manual Verification
+- Visual consistency check: Ensure all pages employ the shared standard `hc-` tokens, specifically avoiding arbitrary padding, margins, or color hex values not part of the design system.
+- Regression check: Validate that mock data connections, states, and functionality (hooks, inputs) still work identically.

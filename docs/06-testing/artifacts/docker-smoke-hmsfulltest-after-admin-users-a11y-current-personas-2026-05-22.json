@@ -1,0 +1,10 @@
+{
+    "CheckedAt":  "2026-05-22T01:50:11",
+    "BackendHealth":  "UP",
+    "FrontendStatus":  200,
+    "DepartmentsCount":  0,
+    "DoctorsCount":  0,
+    "StaffAuthRole":  null,
+    "PatientAuthRole":  null,
+    "RateLimitPerMinute":  "300"
+}

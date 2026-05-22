@@ -45,7 +45,7 @@ jobs:
       - name: Frontend production build
         working-directory: web
         env:
-          NEXT_PUBLIC_API_BASE_URL: http://localhost:8080/api/v1
+          NEXT_PUBLIC_API_BASE_URL: http://localhost:8081/api/v1
         run: npm run build
 
       - name: Install Playwright browser
@@ -55,12 +55,12 @@ jobs:
       - name: Non-billing Playwright regression
         working-directory: web
         env:
-          NEXT_PUBLIC_API_BASE_URL: http://localhost:8080/api/v1
+          NEXT_PUBLIC_API_BASE_URL: http://localhost:8081/api/v1
         run: npm run test:e2e:ci
 
       - name: Docker build verification
         env:
-          NEXT_PUBLIC_API_BASE_URL: http://localhost:8080/api/v1
+          NEXT_PUBLIC_API_BASE_URL: http://localhost:8081/api/v1
         run: docker compose build backend frontend
 
       - name: Upload Playwright reports

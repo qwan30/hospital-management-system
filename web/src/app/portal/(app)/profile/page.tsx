@@ -112,7 +112,7 @@ export default function PatientPortalProfilePage() {
     return (
       <main>
         <div className="max-w-5xl mx-auto py-12 px-12">
-          <p className="text-sm font-medium text-on-surface-variant">Loading patient profile...</p>
+          <p className="text-sm font-medium text-[var(--hc-text-secondary)]">Loading patient profile...</p>
         </div>
       </main>
     );
@@ -122,24 +122,24 @@ export default function PatientPortalProfilePage() {
     <main>
       <form className="max-w-5xl mx-auto py-12 px-12" noValidate onSubmit={handleSubmit}>
         <div className="mb-12">
-          <h1 className="text-4xl font-light text-on-surface tracking-tight mb-2">Patient Profile</h1>
-          <p className="text-on-surface-variant text-sm font-medium">Manage your personal information and security preferences.</p>
+          <h1 className="text-4xl font-light text-[var(--hc-text)] tracking-tight mb-2">Patient Profile</h1>
+          <p className="text-[var(--hc-text-secondary)] text-sm font-medium">Manage your personal information and security preferences.</p>
         </div>
 
         {error ? (
-          <div className="mb-8 border border-error/30 bg-error/10 p-4 text-sm font-medium text-error" role="alert">
+          <div className="mb-8 border border-[var(--hc-danger)] bg-[var(--hc-danger-bg)] p-4 text-sm font-medium text-[var(--hc-danger)]" role="alert">
             {error}
           </div>
         ) : null}
 
         {success ? (
-          <div className="mb-8 border border-primary/20 bg-primary-container/20 p-4 text-sm font-medium text-primary" role="status">
+          <div className="mb-8 border border-[var(--hc-primary)]/20 bg-[var(--hc-primary)]/20 p-4 text-sm font-medium text-[var(--hc-primary)]" role="status">
             {success}
           </div>
         ) : null}
 
         {!profile && !error ? (
-          <div className="mb-8 bg-surface-container-low p-6 text-sm font-medium text-on-surface-variant">
+          <div className="mb-8 bg-[var(--hc-surface-muted)] p-6 text-sm font-medium text-[var(--hc-text-secondary)]">
             No profile is available for the current patient session.
           </div>
         ) : null}
@@ -148,7 +148,7 @@ export default function PatientPortalProfilePage() {
           <div className="col-span-12 lg:col-span-8">
             <div className="space-y-12">
               <section>
-                <h2 className="text-xs font-bold uppercase tracking-widest text-primary mb-6">Personal Information</h2>
+                <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--hc-primary)] mb-6">Personal Information</h2>
                 <div className="grid grid-cols-2 gap-x-8 gap-y-10">
                   <ProfileInput
                     label="Full Name"
@@ -206,8 +206,8 @@ export default function PatientPortalProfilePage() {
               </section>
 
               <section id="security-settings">
-                <h2 className="text-xs font-bold uppercase tracking-widest text-primary mb-6">Security Settings</h2>
-                <div className="bg-surface-container-highest p-8 space-y-6">
+                <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--hc-primary)] mb-6">Security Settings</h2>
+                <div className="bg-[var(--hc-border-strong)] p-8 space-y-6">
                   <UnsupportedSetting
                     title="Two-Factor Authentication"
                     description="Not exposed by the current patient portal API."
@@ -222,16 +222,16 @@ export default function PatientPortalProfilePage() {
           </div>
 
           <div className="col-span-12 lg:col-span-4 space-y-8">
-            <div className="bg-surface-container-lowest p-8 border-t-4 border-error">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-error mb-6 flex items-center gap-2">
+            <div className="bg-[var(--hc-content-bg)] p-8 border-t-4 border-[var(--hc-danger)]">
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-danger)] mb-6 flex items-center gap-2">
                 <HcIcon name="emergency" className="text-sm" />
                 Emergency Contact
               </h3>
-              <p className="text-sm font-medium text-on-surface-variant">
+              <p className="text-sm font-medium text-[var(--hc-text-secondary)]">
                 Emergency contact editing is not exposed by the current patient portal API.
               </p>
               <button
-                className="mt-6 w-full py-3 px-4 border border-outline text-xs font-bold uppercase tracking-widest opacity-60"
+                className="mt-6 w-full py-3 px-4 border border-[var(--hc-border-strong)] text-xs font-bold uppercase tracking-widest opacity-60"
                 disabled
                 type="button"
               >
@@ -239,8 +239,8 @@ export default function PatientPortalProfilePage() {
               </button>
             </div>
 
-            <div className="bg-surface-container-highest p-8">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-8">Medical Stats</h3>
+            <div className="bg-[var(--hc-border-strong)] p-8">
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-8">Medical Stats</h3>
               <div className="space-y-8">
                 <StatBlock label="Blood Type" value={profile?.bloodType || "Not set"} />
                 <StatBlock label="Insurance" value={profile?.insuranceNumber || "Not set"} />
@@ -250,11 +250,11 @@ export default function PatientPortalProfilePage() {
           </div>
         </div>
 
-        <div className="mt-16 flex items-center justify-between py-12 border-t-2 border-surface-container-highest">
-          <p className="text-xs text-on-surface-variant">Profile data is loaded from the patient portal API.</p>
+        <div className="mt-16 flex items-center justify-between py-12 border-t-2 border-[var(--hc-border-strong)]">
+          <p className="text-xs text-[var(--hc-text-secondary)]">Profile data is loaded from the patient portal API.</p>
           <div className="flex items-center space-x-6">
             <button
-              className="text-xs font-bold uppercase tracking-widest px-8 py-4 hover:bg-surface-container-high transition-colors"
+              className="text-xs font-bold uppercase tracking-widest px-8 py-4 hover:bg-[var(--hc-border)] transition-colors"
               disabled={isSaving}
               onClick={resetForm}
               type="button"
@@ -262,7 +262,7 @@ export default function PatientPortalProfilePage() {
               Discard changes
             </button>
             <button
-              className="bg-primary-container text-white text-xs font-bold uppercase tracking-widest px-12 py-4 shadow-[0_2px_0_0_#003da9] active:shadow-none active:translate-y-[2px] transition-all disabled:opacity-60"
+              className="bg-[var(--hc-primary)] text-white text-xs font-bold uppercase tracking-widest px-12 py-4 shadow-[0_2px_0_0_#003da9] active:shadow-none active:translate-y-[2px] transition-all disabled:opacity-60"
               disabled={isSaving}
               type="submit"
             >
@@ -296,13 +296,13 @@ function ProfileInput({
 }: ProfileInputProps) {
   return (
     <div className={fullWidth ? "col-span-2" : "col-span-2 md:col-span-1"}>
-      <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">
+      <label className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-2">
         {label}
       </label>
-      <div className="bg-surface-container-low border-b-2 border-outline focus-within:border-primary transition-colors">
+      <div className="bg-[var(--hc-surface-muted)] border-b-2 border-[var(--hc-border-strong)] focus-within:border-[var(--hc-primary)] transition-colors">
         <input
           aria-label={label}
-          className="w-full bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium disabled:text-on-surface-variant"
+          className="w-full bg-transparent border-none focus:ring-0 text-[var(--hc-text)] py-3 px-4 font-medium disabled:text-[var(--hc-text-secondary)]"
           disabled={disabled}
           onChange={(event) => onChange(event.target.value)}
           required={required}
@@ -325,13 +325,13 @@ function TextAreaInput({
 }) {
   return (
     <div className="col-span-2">
-      <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">
+      <label className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-2">
         {label}
       </label>
-      <div className="bg-surface-container-low border-b-2 border-outline focus-within:border-primary transition-colors">
+      <div className="bg-[var(--hc-surface-muted)] border-b-2 border-[var(--hc-border-strong)] focus-within:border-[var(--hc-primary)] transition-colors">
         <textarea
           aria-label={label}
-          className="min-h-28 w-full resize-y bg-transparent border-none focus:ring-0 text-on-surface py-3 px-4 font-medium"
+          className="min-h-28 w-full resize-y bg-transparent border-none focus:ring-0 text-[var(--hc-text)] py-3 px-4 font-medium"
           onChange={(event) => onChange(event.target.value)}
           value={value}
         />
@@ -351,10 +351,10 @@ function UnsupportedSetting({
     <div className="flex items-center justify-between gap-6">
       <div>
         <p className="font-bold text-sm mb-1">{title}</p>
-        <p className="text-xs text-on-surface-variant">{description}</p>
+        <p className="text-xs text-[var(--hc-text-secondary)]">{description}</p>
       </div>
-      <div className="w-12 h-6 bg-surface-container-low border-2 border-outline-variant relative opacity-60">
-        <div className="absolute left-0 top-0 w-6 h-6 bg-white border-2 border-outline-variant"></div>
+      <div className="w-12 h-6 bg-[var(--hc-surface-muted)] border-2 border-[var(--hc-border)] relative opacity-60">
+        <div className="absolute left-0 top-0 w-6 h-6 bg-white border-2 border-[var(--hc-border)]"></div>
       </div>
     </div>
   );
@@ -364,7 +364,7 @@ function StatBlock({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col">
       <span className="text-3xl font-light tracking-tight break-words">{value}</span>
-      <span className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mt-1">{label}</span>
+      <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mt-1">{label}</span>
     </div>
   );
 }

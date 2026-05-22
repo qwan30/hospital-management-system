@@ -17,7 +17,7 @@ spring:
     default-property-inclusion: non_null
 
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:8081}
 
 management:
   endpoints:
@@ -76,3 +76,10 @@ hms:
       target-appointments: ${HMS_NON_BILLING_DEMO_TARGET_APPOINTMENTS:1000}
       target-inventory-items: ${HMS_NON_BILLING_DEMO_TARGET_INVENTORY_ITEMS:200}
       target-audit-logs: ${HMS_NON_BILLING_DEMO_TARGET_AUDIT_LOGS:1000}
+    release-demo:
+      enabled: ${HMS_RELEASE_DEMO_SEED_ENABLED:false}
+      future-slot-days: ${HMS_RELEASE_DEMO_FUTURE_SLOT_DAYS:14}
+      target-patients: ${HMS_RELEASE_DEMO_TARGET_PATIENTS:8}
+      target-appointments: ${HMS_RELEASE_DEMO_TARGET_APPOINTMENTS:12}
+      target-inventory-items: ${HMS_RELEASE_DEMO_TARGET_INVENTORY_ITEMS:8}
+      target-audit-logs: ${HMS_RELEASE_DEMO_TARGET_AUDIT_LOGS:16}

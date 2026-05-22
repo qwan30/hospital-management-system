@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -6,8 +7,8 @@ type KpiTone = "blue" | "green" | "amber" | "red" | "purple" | "teal";
 
 interface KpiCardProps {
   label: string;
-  value: string | number;
-  helper?: string;
+  value: string | number | ReactNode;
+  helper?: string | ReactNode;
   icon?: LucideIcon;
   tone?: KpiTone;
   className?: string;
@@ -33,22 +34,22 @@ export function KpiCard({
   return (
     <section
       className={cn(
-        "hc-kpi-card flex min-h-[112px] items-center gap-5 rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-white p-[22px] shadow-[var(--shadow-card)] transition duration-150 hover:-translate-y-px hover:shadow-[var(--shadow-card-hover)]",
+        "hc-kpi-card flex min-h-[112px] items-center gap-4 rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-white p-5 shadow-[var(--shadow-card)] transition duration-150 hover:-translate-y-px hover:shadow-[var(--shadow-card-hover)]",
         className,
       )}
     >
-      <div className={cn("grid size-[60px] shrink-0 place-items-center rounded-[var(--radius-lg)]", toneClasses[tone])}>
-        <Icon className="size-[26px]" aria-hidden="true" />
+      <div className={cn("grid size-10 shrink-0 place-items-center rounded-full", toneClasses[tone])}>
+        <Icon className="size-[20px]" aria-hidden="true" />
       </div>
       <div className="min-w-0">
-        <p className="text-xs font-extrabold uppercase leading-4 tracking-[0.05em] text-[#334155]">
+        <p className="text-[11px] font-bold uppercase leading-none tracking-widest text-slate-500">
           {label}
         </p>
-        <p className="mt-1 text-[30px] font-bold leading-9 tracking-normal text-[var(--hc-text)]">
+        <p className="mt-1.5 text-[32px] font-semibold leading-none tracking-tight text-[var(--hc-text)]">
           {value}
         </p>
         {helper ? (
-          <p className="mt-0.5 text-xs font-medium leading-4 text-[var(--hc-text-secondary)]">
+          <p className="mt-1.5 text-[13px] font-medium leading-none text-slate-500">
             {helper}
           </p>
         ) : null}

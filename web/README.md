@@ -27,8 +27,8 @@ npm run test:e2e:ui
 The Playwright suite lives in `e2e/` and uses these environment variables:
 
 - `HMS_WEB_URL`: frontend base URL, default `http://localhost:3000`
-- `HMS_API_URL`: backend API base URL, default `http://localhost:8080/api/v1`
-- `NEXT_PUBLIC_API_BASE_URL`: client-side API base URL used by the app, default `http://localhost:8080/api/v1`
+- `HMS_API_URL`: backend API base URL, default `http://localhost:8081/api/v1`
+- `NEXT_PUBLIC_API_BASE_URL`: client-side API base URL used by the app, default `http://localhost:8081/api/v1`
 
 Available E2E commands:
 

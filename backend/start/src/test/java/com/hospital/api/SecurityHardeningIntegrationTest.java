@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.test.context.TestPropertySource;
 
 /**
  * Security hardening tests: auth errors, CORS, and audit logging.
@@ -28,6 +29,7 @@ import org.springframework.http.HttpHeaders;
  * and rate-limit-disabled test properties.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestPropertySource(properties = "security.http.allow-credentials=true")
 class SecurityHardeningIntegrationTest extends AbstractIntegrationTest {
 
   @Autowired
@@ -132,14 +134,14 @@ class SecurityHardeningIntegrationTest extends AbstractIntegrationTest {
   }
 
   @Test
-  void exposesCorsHeadersWithoutCredentialsForAllowedOrigins() throws Exception {
+  void exposesCorsHeadersWithCredentialsForAllowedOrigins() throws Exception {
     mockMvc.perform(options("/api/v1/me/schedule")
             .header(HttpHeaders.ORIGIN, "http://localhost:4173")
             .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET")
             .header(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "Authorization,Content-Type"))
         .andExpect(status().isOk())
         .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:4173"))
-        .andExpect(header().doesNotExist(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS));
+        .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"));
   }
 
   private void assertLatestSecurityDenial(int status, String method, String path) {

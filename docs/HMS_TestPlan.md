@@ -1,6 +1,6 @@
 # Hospital Management System Test Plan
 
-Status: aligned with the repository on 2026-04-26 after queue actions, inventory alerts, and operational monitoring updates.
+Status: aligned with the repository on 2026-05-13 after staff frontend auth, RBAC navigation, and queue component coverage updates.
 
 Documentation map: [README.md](README.md)
 Route inventory: [reference/frontend-route-inventory.md](reference/frontend-route-inventory.md)
@@ -44,21 +44,42 @@ Current integration and hardening suites include:
 ### 1.3 Frontend tests
 
 - API-client behavior coverage verifies optional staff bearer-token attachment without changing public calls.
+- Component coverage verifies staff route-guard redirects, role-filtered staff navigation, hidden unauthorized staff CTAs, and staff login fail-closed behavior when a backend response lacks a session payload.
 - Mocked UI coverage verifies `/staff/queue` unauthorized handling, live queue rendering, check-in row updates, and queue call/room/start/complete actions.
+- Queue page component coverage verifies loading, unauthorized, filtering, check-in, terminal appointment hiding, and row-level action error states.
 - Backend-integrated Playwright coverage verifies staff auth, patient auth/claim, logout, public booking, nurse queue access, nurse check-in when a waiting appointment exists, and forbidden non-nurse queue access.
 
 Current Playwright spec files under `web/e2e/specs`:
 
+- `a11y-integrated.spec.ts`
+- `admin-pages.spec.ts`
+- `all-routes-exhaustive.spec.ts`
 - `api-client.spec.ts`
 - `auth-integrated.spec.ts`
+- `booking-wizard.spec.ts`
 - `operations-api.spec.ts`
+- `performance.spec.ts`
+- `portal-pages.spec.ts`
 - `rbac.spec.ts`
+- `rbac-enforcement.spec.ts`
 - `responsive.spec.ts`
 - `route-audit.spec.ts`
+- `security.spec.ts`
+- `seo-audit.spec.ts`
+- `staff-clinical.spec.ts`
+- `staff-operations.spec.ts`
 - `staff-queue.spec.ts`
 - `ui-smoke.spec.ts`
 - `visual.spec.ts`
 - `workflows.spec.ts`
+
+Verification scope note:
+
+- Required CI smoke command: `npm run test:e2e:ci`. This runs the contract/API route smoke files explicitly listed in `web/package.json` on Chromium only.
+- Required UI smoke command: `npm run test:e2e:ui`. This runs `@ui` tests on Chromium only.
+- Required visual command: `npm run test:e2e:visual`. This is intentionally scoped to the maintained Chromium baseline set.
+- `performance.spec.ts` is exploratory and skipped until stable browser Web Vitals instrumentation is added.
+- WebKit, Mobile Safari, Firefox, and Mobile Chrome projects remain available for manual expansion, but they are not release gates until their browser binaries and snapshot baselines are maintained.
 
 Coverage note: 80%+ remains a quality target. Do not treat it as measured current coverage unless a fresh coverage report is generated.
 
@@ -127,9 +148,9 @@ Playwright is configured in `web/playwright.config.ts` with tests under `web/e2e
 
 Commands:
 
-- `npm run test:e2e:ui`: frontend-only route, runtime, accessibility, responsive, and workflow smoke checks.
-- `npm run test:e2e:integrated`: backend-backed auth/API checks. Requires `HMS_API_URL`, defaulting to `http://localhost:8080/api/v1`; skips if backend health is unavailable.
-- `npm run test:e2e:visual`: visual snapshot baselines for high-risk pages.
+- `npm run test:e2e:ui`: frontend-only route, runtime, accessibility, responsive, and workflow smoke checks on Chromium.
+- `npm run test:e2e:integrated`: backend-backed auth/API checks. Requires `HMS_API_URL`, defaulting to `http://localhost:8081/api/v1`; skips if backend health is unavailable.
+- `npm run test:e2e:visual`: Chromium visual snapshot baselines for high-risk pages.
 - `npm run test:e2e:headed`: headed debug mode.
 - `npm run test:e2e:report`: open the HTML report.
 
@@ -153,6 +174,7 @@ Current E2E flows:
 - patient claim calls `/api/v1/patient-auth/claim`
 - staff logout calls `/api/v1/auth/logout`
 - frontend route guards allow and deny routes according to `web/src/lib/rbac.ts`
+- staff side navigation hides links and CTA targets that the stored role cannot access
 - public booking validates required intake fields and emits an appointment request once the backend is available
 - portal/staff/admin smoke checks validate the main user-facing destinations and headings
 

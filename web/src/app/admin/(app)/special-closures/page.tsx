@@ -20,12 +20,18 @@ import {
   DoorOpen,
   Search,
   X,
-  Plus
+  Plus,
+  Calendar,
+  User,
+  MoreVertical,
+  ChevronsUpDown,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
-import { DataPanel } from "@/components/ui/data-panel";
+
 
 interface ClosureFormState {
   title: string;
@@ -165,13 +171,14 @@ export default function AdminSpecialClosuresPage() {
   }
 
   return (
-    <div className="p-8 pb-20">
+    <div className="p-8 pb-20 max-w-[1400px] mx-auto">
       <PageHeader
+        categoryLabel="SCHEDULING ADMINISTRATION"
         title="Special Closures"
-        description="Scheduling Administration • Record doctor leave, room maintenance, and hospital calendar exceptions"
+        description="Record doctor leave, room maintenance, and hospital calendar exceptions."
         action={
           <button
-            className="hc-button-primary flex items-center gap-2"
+            className="hc-button-primary flex items-center gap-2 h-10 px-5"
             onClick={openCreateForm}
             type="button"
           >
@@ -197,34 +204,49 @@ export default function AdminSpecialClosuresPage() {
         </div>
       ) : null}
 
-      <div className="hc-kpi-grid mb-8">
-        <KpiCard label="Total Closures" value={closures.length.toString()} icon={CalendarOff} tone="blue" />
-        <KpiCard label="Active" value={closures.filter((c) => c.active).length.toString()} icon={CheckCircle} tone="green" />
-        <KpiCard label="Doctors" value={doctors.length.toString()} icon={Stethoscope} tone="teal" />
-        <KpiCard label="Rooms" value={rooms.length.toString()} icon={DoorOpen} tone="purple" />
+      <div className="hc-kpi-grid mb-6">
+        <KpiCard label="CLOSURES" value={closures.length.toString()} icon={CalendarOff} tone="blue" helper="Total closures" />
+        <KpiCard label="ACTIVE" value={closures.filter((c) => c.active).length.toString()} icon={CheckCircle} tone="green" helper="Currently active" />
+        <KpiCard label="DOCTORS" value={doctors.length.toString()} icon={Stethoscope} tone="purple" helper="Affected doctors" />
+        <KpiCard label="ROOMS" value={rooms.length.toString()} icon={DoorOpen} tone="amber" helper="Affected rooms" />
       </div>
 
-      <DataPanel
-        title="Closures List"
-        action={
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] w-4 h-4" />
-            <input
-              className="hc-input pl-9 py-2 text-xs w-full"
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search closures..."
-              type="search"
-              value={query}
-            />
-          </div>
-        }
-      >
+      <div className="flex flex-wrap items-center gap-4 mb-6 bg-white p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
+        <div className="relative flex-1 min-w-[280px]">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)]" />
+          <input
+            type="search"
+            aria-label="Search special closures"
+            placeholder="Search closures..."
+            className="w-full h-9 pl-9 pr-4 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] focus:ring-1 focus:ring-[var(--hc-blue-500)]"
+            onChange={(event) => setQuery(event.target.value)}
+            value={query}
+          />
+        </div>
+
+        <div className="flex-none">
+          <select className="h-9 px-3 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] text-[var(--hc-text-secondary)]">
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
+        <button className="hc-button-secondary flex items-center gap-2 h-9 px-4 ml-auto">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10M11.3333 7.33333L8 10.6667M8 10.6667L4.66667 7.33333M8 10.6667V2" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span className="font-semibold text-xs text-[var(--hc-text-secondary)]">Export CSV</span>
+        </button>
+      </div>
+
+      <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">Loading special closures...</div>
         ) : (
           <ClosuresTable closures={filteredClosures} isSaving={isSaving} onEdit={openEditForm} />
         )}
-      </DataPanel>
+      </div>
 
       {isFormOpen ? (
         <Dialog title={editingClosure ? "Edit Closure" : "Add Closure"} onClose={() => setIsFormOpen(false)}>
@@ -253,46 +275,118 @@ function ClosuresTable({
       <table className="hc-table">
         <thead>
           <tr>
-            <th>Title</th>
-            <th>Date</th>
-            <th>Doctor</th>
-            <th>Room</th>
-            <th>Status</th>
-            <th className="text-right">Actions</th>
+            <th className="w-[30%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                TITLE <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[18%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                DATE <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[18%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                DOCTOR <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[12%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                ROOM <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[12%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                STATUS <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[10%] text-right">ACTIONS</th>
           </tr>
         </thead>
         <tbody>
           {closures.map((closure) => (
-            <tr key={closure.closureId}>
+            <tr key={closure.closureId} className="group hover:bg-[var(--hc-background)] transition-colors">
               <td>
-                <div className="text-sm font-semibold text-[var(--hc-text)] tracking-tight">{closure.title}</div>
-                <div className="mt-1 text-xs text-[var(--hc-text-secondary)]">{closure.reason ?? "No reason provided"}</div>
-              </td>
-              <td className="text-[var(--hc-text-secondary)]">{closure.closureDate}</td>
-              <td className="text-[var(--hc-text-secondary)]">{closure.doctorName ?? "All doctors"}</td>
-              <td className="text-[var(--hc-text-secondary)]">{closure.roomName ?? "All rooms"}</td>
-              <td>
-                <div className="flex items-center gap-2">
-                  <div className={`w-1.5 h-1.5 rounded-full ${closure.active ? "bg-[var(--hc-success)]" : "bg-[var(--hc-text-secondary)]"}`} />
-                  <span className={`text-[10px] font-bold uppercase tracking-widest ${closure.active ? "" : "text-[var(--hc-text-secondary)]"}`}>
-                    {closure.active ? "Active" : "Inactive"}
-                  </span>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100">
+                    <Calendar className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div className="flex-1 min-w-0 pt-0.5">
+                    <div className="text-sm font-bold text-[var(--hc-text)] truncate">{closure.title}</div>
+                    <div className="text-xs text-[var(--hc-text-secondary)] truncate mt-0.5">{closure.reason ?? "No reason provided"}</div>
+                  </div>
                 </div>
               </td>
-              <td className="text-right">
-                <button
-                  className="hc-button-secondary py-1.5 px-3 text-[11px]"
-                  disabled={isSaving}
-                  onClick={() => onEdit(closure)}
-                  type="button"
-                >
-                  Edit
-                </button>
+              <td>
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
+                  <div>
+                    <div className="text-sm font-medium text-[var(--hc-text)]">{closure.closureDate}</div>
+                    <div className="text-xs text-[var(--hc-text-secondary)] mt-0.5">(Mon)</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span className="text-sm font-medium text-[var(--hc-text)]">{closure.doctorName ?? "All doctors"}</span>
+                </div>
+              </td>
+              <td>
+                <div className="flex items-center gap-2">
+                  <DoorOpen className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span className="text-sm font-medium text-[var(--hc-text)]">{closure.roomName ?? "All rooms"}</span>
+                </div>
+              </td>
+              <td>
+                {closure.active ? (
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[var(--hc-success)] bg-[var(--hc-success-bg)] text-[var(--hc-success)]">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--hc-success)]" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Active</span>
+                  </div>
+                ) : (
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-300 bg-slate-50 text-slate-600">
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Inactive</span>
+                  </div>
+                )}
+              </td>
+              <td>
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    className="h-8 px-3 text-xs font-semibold text-[var(--hc-blue-600)] bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-slate-50 hover:border-slate-300 transition-colors"
+                    disabled={isSaving}
+                    onClick={() => onEdit(closure)}
+                    type="button"
+                  >
+                    Edit
+                  </button>
+                  <button className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-md transition-colors">
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
+                </div>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-slate-50/50">
+        <span className="text-xs text-[var(--hc-text-secondary)] font-medium">
+          Showing 1 to {closures.length} of {closures.length} closures
+        </span>
+        <div className="flex items-center gap-2">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium">
+            1
+          </button>
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -317,8 +411,10 @@ function ClosureForm({
       <TextField label="Title" onChange={(value) => onChange({ ...form, title: value })} required value={form.title} />
       <TextField label="Closure Date" onChange={(value) => onChange({ ...form, closureDate: value })} required type="date" value={form.closureDate} />
       <div>
-        <label className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-2">Doctor</label>
+        <label htmlFor="doctor-select" className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-2">Doctor</label>
         <select
+          id="doctor-select"
+          aria-label="Doctor"
           className="hc-input w-full"
           onChange={(event) => onChange({ ...form, doctorId: event.target.value })}
           value={form.doctorId}
@@ -330,8 +426,10 @@ function ClosureForm({
         </select>
       </div>
       <div>
-        <label className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-2">Room</label>
+        <label htmlFor="room-select" className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-2">Room</label>
         <select
+          id="room-select"
+          aria-label="Room"
           className="hc-input w-full"
           onChange={(event) => onChange({ ...form, roomId: event.target.value })}
           value={form.roomId}

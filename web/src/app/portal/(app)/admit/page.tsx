@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/ui/page-header";
+import { Badge } from "@/components/ui/badge";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { HcIcon } from "@/components/ui/hc-icon";
 import { CheckCircle2, FileText, Users } from "lucide-react";
@@ -8,12 +9,12 @@ export default function PatientAdmitPage() {
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-8">
       <div className="flex justify-between items-start">
-        <PageHeader 
+        <PageHeader
           title="Admission And Booking"
           description="Start a new visit request, review intake requirements, and prepare the documents needed before arrival."
           className="mb-0"
         />
-        <Link 
+        <Link
           href="/booking"
           className="hc-button-primary"
         >
@@ -74,14 +75,14 @@ export default function PatientAdmitPage() {
                   <h3 className="text-base font-bold text-[var(--hc-text)] mt-1">{step.title}</h3>
                   <p className="text-sm text-[var(--hc-text-secondary)] mt-1">{step.detail}</p>
                 </div>
-                <span className="hc-badge bg-[var(--hc-surface-soft)] border border-[var(--hc-border)] text-[var(--hc-text-secondary)] whitespace-nowrap">
+                <Badge variant="secondary">
                   {step.status}
-                </span>
+                </Badge>
               </div>
             ))}
           </div>
         </div>
-        
+
         <div className="lg:col-span-1">
           <div className="bg-white rounded-[var(--radius-lg)] p-6 border border-[var(--hc-border)] shadow-[var(--shadow-card)]">
             <span className="text-[11px] font-bold text-[var(--hc-blue-600)] uppercase tracking-widest mb-4 block">Front desk checklist</span>

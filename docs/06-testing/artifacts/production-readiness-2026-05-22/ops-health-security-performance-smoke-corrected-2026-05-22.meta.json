@@ -1,0 +1,11 @@
+﻿{
+    "command":  "health, monitoring, privacy, and local performance smoke over isolated synthetic stack",
+    "cwd":  "D:\\projects\\hospital-management-system",
+    "startedAt":  "2026-05-22T12:48:36.1084593+07:00",
+    "endedAt":  "2026-05-22T12:48:36.8791354+07:00",
+    "durationSeconds":  0.77,
+    "exitCode":  0,
+    "status":  "PASS",
+    "failureReason":  "",
+    "logPath":  "D:\\projects\\hospital-management-system\\docs\\06-testing\\artifacts\\production-readiness-2026-05-22\\ops-health-security-performance-smoke-corrected-2026-05-22.json"
+}

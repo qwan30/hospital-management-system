@@ -73,7 +73,7 @@ const portalRouteText = new Map<string, RegExp>([
   ["/portal/profile", /Profile/i],
   ["/portal/claim", /Claim|Verification/i],
   ["/portal/billing", /Billing/i],
-  ["/portal/diagnostics", /Diagnostics/i],
+  ["/portal/diagnostics", /Lab Results|Diagnostics/i],
   ["/portal/inventory", /Inventory/i],
   ["/portal/patients", /Patients|Patient/i],
   ["/portal/pharmacy", /Pharmacy/i],
@@ -90,10 +90,16 @@ const adminRouteText = new Map<string, RegExp>([
   ["/admin/departments", /Departments/i],
   ["/admin/monitoring", /0 active alerts/i],
   ["/admin/news", /News/i],
-  ["/admin/public-content", /Public Facing|Hero Landing/i],
+  ["/admin/public-content", /Public Content/i],
   ["/admin/rooms", /Rooms/i],
   ["/admin/users", /Staff Directory/i],
   ["/admin/users/1", /Staff Directory|Sarah Jenkins|Marcus Vance/i],
+  ["/admin/inventory", /Inventory/i],
+  ["/admin/pricing", /Pricing/i],
+  ["/admin/schedule-templates", /Schedule Templates/i],
+  ["/admin/slots", /Slots/i],
+  ["/admin/special-closures", /Special Closures/i],
+  ["/admin/support", /Support/i],
 ]);
 
 const apiRequestsByPath = new Map<string, RegExp[]>([
@@ -171,6 +177,33 @@ export async function installExhaustiveApiMocks(page: Page) {
     await route.fulfill({
       contentType: "application/json",
       body: JSON.stringify({ success: true, data: [] }),
+    });
+  });
+
+  await page.route("**/api/v1/departments/cardiology", async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        success: true,
+        data: {
+          id: "cardiology",
+          name: "Cardiology",
+          description: "Heart and vascular care for public discovery testing.",
+          imageUrl: null,
+          phone: "028 1234 5678",
+          activeDoctorCount: 1,
+          doctors: [
+            {
+              id: "doctor-1",
+              fullName: "Dr. Lan Tran",
+              specialty: "Cardiology",
+              qualification: "MD",
+              experienceYears: 12,
+              avatarUrl: null,
+            },
+          ],
+        },
+      }),
     });
   });
 
@@ -369,6 +402,35 @@ export async function installExhaustiveApiMocks(page: Page) {
             patientCccd: "012345678901",
           },
         ],
+      }),
+    });
+  });
+
+  await page.route("**/api/v1/appointments/1", async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        success: true,
+        data: {
+          appointmentId: "11111111-1111-1111-1111-111111111111",
+          confirmationCode: "Q-1001",
+          status: "CHECKED_IN",
+          appointmentDate: "2026-05-13",
+          startTime: "09:00:00",
+          endTime: "09:30:00",
+          checkedInAt: "2026-05-13T08:50:00Z",
+          aiDurationMinutes: 30,
+          symptoms: "Follow-up consultation",
+          doctorId: "33333333-3333-3333-3333-333333333333",
+          doctorName: "Dr. Lan Tran",
+          patientId: "44444444-4444-4444-4444-444444444444",
+          patientFullName: "Mai Nguyen",
+          patientPhone: "+84900000001",
+          patientCccd: "012345678901",
+          patientEmail: "mai.nguyen@example.test",
+          patientDateOfBirth: "1990-01-15",
+          patientGender: "FEMALE",
+        },
       }),
     });
   });

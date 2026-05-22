@@ -1,0 +1,11 @@
+﻿{
+    "command":  "docker compose -p hmsprod20260522 up --build -d",
+    "cwd":  "D:\\projects\\hospital-management-system",
+    "startedAt":  "2026-05-22T12:52:50.2747155+07:00",
+    "endedAt":  "2026-05-22T12:53:46.5816179+07:00",
+    "durationSeconds":  56.31,
+    "exitCode":  0,
+    "status":  "PASS",
+    "failureReason":  "",
+    "logPath":  "D:\\projects\\hospital-management-system\\docs\\06-testing\\artifacts\\production-readiness-2026-05-22\\final-docker-compose-up-build-2026-05-22.log"
+}

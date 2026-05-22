@@ -1,0 +1,517 @@
+{
+  "generatedAt": "2026-05-21T12:39:45.236Z",
+  "web": "http://localhost:13000",
+  "api": "http://localhost:18081/api/v1",
+  "results": {
+    "BF-01": {
+      "status": "Failed",
+      "rootCauseCategory": "Product or seed issue",
+      "steps": [
+        {
+          "step": "homepage",
+          "ok": true,
+          "url": "http://localhost:13000/",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-01-homepage.png",
+          "value": {
+            "title": "HOSPITAL CORE | Management System"
+          }
+        },
+        {
+          "step": "departments",
+          "ok": true,
+          "url": "http://localhost:13000/departments",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-01-departments.png",
+          "value": {
+            "text": "HOSPITAL CORE\nHome\nDepartments\nDoctors\nNews\nBook Appointment\nPatient Portal\nStaff Login\n\nINSTITUTIONAL FRAMEWORK\n\nCore Clinical Departments\n\nBrowse active departments from the hospital system. Department details and doctors come from the backend API, not static placeholder modules.\n\nRefresh Departments\nDepartments could not be loaded\n\nFailed to fetch\n\nTry Again\nDepartment Data Source\n\nThis page renders active departments returned by `GET /api/v1/departments`. If the API is unavailable or returns"
+          }
+        },
+        {
+          "step": "doctors",
+          "ok": true,
+          "url": "http://localhost:13000/doctors",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-01-doctors.png",
+          "value": {
+            "text": "HOSPITAL CORE\nHome\nDepartments\nDoctors\nNews\nBook Appointment\nPatient Portal\nStaff Login\nMEDICAL DIRECTORY\nExpert doctors at your service.\n\nAccess our network of specialists. Filter by specialty or search directly to find the right care for your needs.\n\n24/7\nEMERGENCY SUPPORT\nAll Specialties\nRefresh Results\nDoctors could not be loaded\n\nFailed to fetch\n\nTry Again\nStay informed about your health.\n\nReceive monthly health tips, clinic updates, and news from our specialists directly in your inbox.\n\nSu"
+          }
+        },
+        {
+          "step": "booking-submit",
+          "ok": false,
+          "url": "http://localhost:13000/booking",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-01-booking-submit-failed.png",
+          "error": "locator.selectOption: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#booking-doctor')\u001b[22m\n\u001b[2m    - locator resolved to <select id=\"booking-doctor\" class=\"hc-input w-full bg-white\">…</select>\u001b[22m\n\u001b[2m  - attempting select option action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m      - did not find some options\u001b[22m\n\u001b[2m    - retrying select option action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m      - did not find some options\u001b[22m\n\u001b[2m    - retrying select option action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible and enabled\u001b[22m\n\u001b[2m       - did not find some options\u001b[22m\n\u001b[2m     - retrying select option action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+        }
+      ],
+      "networkAndConsole": [
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Connecting to 'http://localhost:18081/api/v1/departments' violates the following Content Security Policy directive: \"connect-src 'self' http://localhost:8081 http://127.0.0.1:8081\". The action has been blocked.",
+          "url": "http://localhost:13000/departments"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Fetch API cannot load http://localhost:18081/api/v1/departments. Refused to connect because it violates the document's Content Security Policy.",
+          "url": "http://localhost:13000/departments"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Connecting to 'http://localhost:18081/api/v1/doctors' violates the following Content Security Policy directive: \"connect-src 'self' http://localhost:8081 http://127.0.0.1:8081\". The action has been blocked.",
+          "url": "http://localhost:13000/doctors"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Fetch API cannot load http://localhost:18081/api/v1/doctors. Refused to connect because it violates the document's Content Security Policy.",
+          "url": "http://localhost:13000/doctors"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Connecting to 'http://localhost:18081/api/v1/doctors' violates the following Content Security Policy directive: \"connect-src 'self' http://localhost:8081 http://127.0.0.1:8081\". The action has been blocked.",
+          "url": "http://localhost:13000/booking"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Fetch API cannot load http://localhost:18081/api/v1/doctors. Refused to connect because it violates the document's Content Security Policy.",
+          "url": "http://localhost:13000/booking"
+        }
+      ],
+      "submitResponses": []
+    },
+    "BF-02": {
+      "status": "Failed",
+      "uiLoginWorks": false,
+      "directApiLoginWorks": true,
+      "mismatch": true,
+      "suspectedCause": "browser submit/base-url/auth storage",
+      "roleResults": [
+        {
+          "roleName": "admin",
+          "login": {
+            "step": "admin-login",
+            "ok": true,
+            "url": "http://localhost:13000/staff/login",
+            "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-02-admin-login.png",
+            "value": {
+              "response": {
+                "error": "page.waitForResponse: Timeout 15000ms exceeded while waiting for event \"response\""
+              },
+              "currentUrl": "http://localhost:13000/staff/login",
+              "storedRole": null
+            }
+          },
+          "allowed": {
+            "step": "admin-allowed-route",
+            "ok": true,
+            "url": "http://localhost:13000/staff/login",
+            "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-02-admin-allowed-route.png",
+            "value": {
+              "finalUrl": "http://localhost:13000/staff/login",
+              "body": "HOSPITAL CORE\nClinical Suite\n\nEmpowering your clinical workflow.\n\nEverything you need\nfor patient care,\nall in one place.\n\nManage Schedule\n\nView and manage your daily appointments and schedule.\n\nPatient Records\n\nAccess patient medical records securely and efficiently.\n\nClinical Tasks\n\nTrack your tas"
+            }
+          },
+          "forbidden": {
+            "step": "admin-forbidden-route",
+            "ok": true,
+            "url": "http://localhost:13000/staff/login",
+            "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-02-admin-forbidden-route.png",
+            "value": {
+              "finalUrl": "http://localhost:13000/staff/login",
+              "body": "HOSPITAL CORE\nClinical Suite\n\nEmpowering your clinical workflow.\n\nEverything you need\nfor patient care,\nall in one place.\n\nManage Schedule\n\nView and manage your daily appointments and schedule.\n\nPatient Records\n\nAccess patient medical records securely and efficiently.\n\nClinical Tasks\n\nTrack your tas"
+            }
+          }
+        },
+        {
+          "roleName": "receptionist",
+          "login": {
+            "step": "receptionist-login",
+            "ok": true,
+            "url": "http://localhost:13000/staff/login",
+            "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-02-receptionist-login.png",
+            "value": {
+              "response": {
+                "error": "page.waitForResponse: Timeout 15000ms exceeded while waiting for event \"response\""
+              },
+              "currentUrl": "http://localhost:13000/staff/login",
+              "storedRole": null
+            }
+          },
+          "allowed": {
+            "step": "receptionist-allowed-route",
+            "ok": true,
+            "url": "http://localhost:13000/staff/login",
+            "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-02-receptionist-allowed-route.png",
+            "value": {
+              "finalUrl": "http://localhost:13000/staff/login",
+              "body": "HOSPITAL CORE\nClinical Suite\n\nEmpowering your clinical workflow.\n\nEverything you need\nfor patient care,\nall in one place.\n\nManage Schedule\n\nView and manage your daily appointments and schedule.\n\nPatient Records\n\nAccess patient medical records securely and efficiently.\n\nClinical Tasks\n\nTrack your tas"
+            }
+          },
+          "forbidden": {
+            "step": "receptionist-forbidden-route",
+            "ok": true,
+            "url": "http://localhost:13000/staff/login",
+            "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-02-receptionist-forbidden-route.png",
+            "value": {
+              "finalUrl": "http://localhost:13000/staff/login",
+              "body": "HOSPITAL CORE\nClinical Suite\n\nEmpowering your clinical workflow.\n\nEverything you need\nfor patient care,\nall in one place.\n\nManage Schedule\n\nView and manage your daily appointments and schedule.\n\nPatient Records\n\nAccess patient medical records securely and efficiently.\n\nClinical Tasks\n\nTrack your tas"
+            }
+          }
+        },
+        {
+          "roleName": "nurse",
+          "login": {
+            "step": "nurse-login",
+            "ok": true,
+            "url": "http://localhost:13000/staff/login",
+            "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-02-nurse-login.png",
+            "value": {
+              "response": {
+                "error": "page.waitForResponse: Timeout 15000ms exceeded while waiting for event \"response\""
+              },
+              "currentUrl": "http://localhost:13000/staff/login",
+              "storedRole": null
+            }
+          },
+          "allowed": {
+            "step": "nurse-allowed-route",
+            "ok": true,
+            "url": "http://localhost:13000/staff/login",
+            "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-02-nurse-allowed-route.png",
+            "value": {
+              "finalUrl": "http://localhost:13000/staff/login",
+              "body": "HOSPITAL CORE\nClinical Suite\n\nEmpowering your clinical workflow.\n\nEverything you need\nfor patient care,\nall in one place.\n\nManage Schedule\n\nView and manage your daily appointments and schedule.\n\nPatient Records\n\nAccess patient medical records securely and efficiently.\n\nClinical Tasks\n\nTrack your tas"
+            }
+          },
+          "forbidden": {
+            "step": "nurse-forbidden-route",
+            "ok": true,
+            "url": "http://localhost:13000/staff/login",
+            "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-02-nurse-forbidden-route.png",
+            "value": {
+              "finalUrl": "http://localhost:13000/staff/login",
+              "body": "HOSPITAL CORE\nClinical Suite\n\nEmpowering your clinical workflow.\n\nEverything you need\nfor patient care,\nall in one place.\n\nManage Schedule\n\nView and manage your daily appointments and schedule.\n\nPatient Records\n\nAccess patient medical records securely and efficiently.\n\nClinical Tasks\n\nTrack your tas"
+            }
+          }
+        },
+        {
+          "roleName": "doctor",
+          "login": {
+            "step": "doctor-login",
+            "ok": true,
+            "url": "http://localhost:13000/staff/login",
+            "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-02-doctor-login.png",
+            "value": {
+              "response": {
+                "error": "page.waitForResponse: Timeout 15000ms exceeded while waiting for event \"response\""
+              },
+              "currentUrl": "http://localhost:13000/staff/login",
+              "storedRole": null
+            }
+          },
+          "allowed": {
+            "step": "doctor-allowed-route",
+            "ok": true,
+            "url": "http://localhost:13000/staff/login",
+            "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-02-doctor-allowed-route.png",
+            "value": {
+              "finalUrl": "http://localhost:13000/staff/login",
+              "body": "HOSPITAL CORE\nClinical Suite\n\nEmpowering your clinical workflow.\n\nEverything you need\nfor patient care,\nall in one place.\n\nManage Schedule\n\nView and manage your daily appointments and schedule.\n\nPatient Records\n\nAccess patient medical records securely and efficiently.\n\nClinical Tasks\n\nTrack your tas"
+            }
+          },
+          "forbidden": {
+            "step": "doctor-forbidden-route",
+            "ok": true,
+            "url": "http://localhost:13000/staff/login",
+            "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-02-doctor-forbidden-route.png",
+            "value": {
+              "finalUrl": "http://localhost:13000/staff/login",
+              "body": "HOSPITAL CORE\nClinical Suite\n\nEmpowering your clinical workflow.\n\nEverything you need\nfor patient care,\nall in one place.\n\nManage Schedule\n\nView and manage your daily appointments and schedule.\n\nPatient Records\n\nAccess patient medical records securely and efficiently.\n\nClinical Tasks\n\nTrack your tas"
+            }
+          }
+        }
+      ],
+      "networkAndConsole": [
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Connecting to 'http://localhost:18081/api/v1/auth/login' violates the following Content Security Policy directive: \"connect-src 'self' http://localhost:8081 http://127.0.0.1:8081\". The action has been blocked.",
+          "url": "http://localhost:13000/staff/login"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Fetch API cannot load http://localhost:18081/api/v1/auth/login. Refused to connect because it violates the document's Content Security Policy.",
+          "url": "http://localhost:13000/staff/login"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Connecting to 'http://localhost:18081/api/v1/auth/login' violates the following Content Security Policy directive: \"connect-src 'self' http://localhost:8081 http://127.0.0.1:8081\". The action has been blocked.",
+          "url": "http://localhost:13000/staff/login"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Fetch API cannot load http://localhost:18081/api/v1/auth/login. Refused to connect because it violates the document's Content Security Policy.",
+          "url": "http://localhost:13000/staff/login"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Connecting to 'http://localhost:18081/api/v1/auth/login' violates the following Content Security Policy directive: \"connect-src 'self' http://localhost:8081 http://127.0.0.1:8081\". The action has been blocked.",
+          "url": "http://localhost:13000/staff/login"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Fetch API cannot load http://localhost:18081/api/v1/auth/login. Refused to connect because it violates the document's Content Security Policy.",
+          "url": "http://localhost:13000/staff/login"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Connecting to 'http://localhost:18081/api/v1/auth/login' violates the following Content Security Policy directive: \"connect-src 'self' http://localhost:8081 http://127.0.0.1:8081\". The action has been blocked.",
+          "url": "http://localhost:13000/staff/login"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Fetch API cannot load http://localhost:18081/api/v1/auth/login. Refused to connect because it violates the document's Content Security Policy.",
+          "url": "http://localhost:13000/staff/login"
+        }
+      ]
+    },
+    "BF-05": {
+      "status": "Failed",
+      "queueSeedVisible": false,
+      "checkInWorks": false,
+      "intakeWorks": false,
+      "vitalsSaveWorks": false,
+      "rootCause": "Product gap: nurse intake/vitals pages are static or have no API submit handler",
+      "steps": [
+        {
+          "step": "receptionist-login",
+          "ok": true,
+          "url": "http://localhost:13000/staff/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-05-receptionist-login.png",
+          "value": {
+            "response": {
+              "error": "page.waitForResponse: Timeout 15000ms exceeded while waiting for event \"response\""
+            },
+            "currentUrl": "http://localhost:13000/staff/login",
+            "storedRole": null
+          }
+        },
+        {
+          "step": "queue-open",
+          "ok": false,
+          "url": "http://localhost:13000/staff/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-05-queue-open-failed.png",
+          "error": "page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"queue-board\"], [data-testid=\"queue-empty\"], [data-testid=\"queue-load-error\"], [data-testid=\"queue-unauthorized\"]') to be visible\u001b[22m\n"
+        },
+        {
+          "step": "check-in",
+          "ok": true,
+          "url": "http://localhost:13000/staff/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-05-check-in.png",
+          "value": {
+            "checkInVisible": false,
+            "rows": 0
+          }
+        },
+        {
+          "step": "nurse-login",
+          "ok": true,
+          "url": "http://localhost:13000/staff/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-05-nurse-login.png",
+          "value": {
+            "response": {
+              "error": "page.waitForResponse: Timeout 15000ms exceeded while waiting for event \"response\""
+            },
+            "currentUrl": "http://localhost:13000/staff/login",
+            "storedRole": null
+          }
+        },
+        {
+          "step": "nurse-intake-open",
+          "ok": true,
+          "url": "http://localhost:13000/staff/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-05-nurse-intake-open.png",
+          "value": {
+            "body": "HOSPITAL CORE\nClinical Suite\n\nEmpowering your clinical workflow.\n\nEverything you need\nfor patient care,\nall in one place.\n\nManage Schedule\n\nView and manage your daily appointments and schedule.\n\nPatient Records\n\nAccess patient medical records securely and efficiently.\n\nClinical Tasks\n\nTrack your tasks, queues, and clinical responsibilities.\n\nSecure Messaging\n\nCommunicate with your team and patients securely.\n\nStrict access control active.\n\nAll activities in the Clinical Suite are monitored and audited for compliance.\n\n?\nSUPPORT\nHOSPITAL CORE\nStaff Login\n\nEnter your clinical credentials to access the suite.\n\nEMAIL\nPASSWORD\nForgot password?\nLog in to Clinical Suite\nEMERGENCY ACCESS\nOne-Time Em",
+            "hasMockPatient": false,
+            "completeButton": false
+          }
+        },
+        {
+          "step": "vitals-save",
+          "ok": false,
+          "url": "http://localhost:13000/staff/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-05-vitals-save-failed.png",
+          "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: /save vitals/i })\u001b[22m\n"
+        }
+      ],
+      "apiResponses": [],
+      "networkAndConsole": [
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Connecting to 'http://localhost:18081/api/v1/auth/login' violates the following Content Security Policy directive: \"connect-src 'self' http://localhost:8081 http://127.0.0.1:8081\". The action has been blocked.",
+          "url": "http://localhost:13000/staff/login"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Fetch API cannot load http://localhost:18081/api/v1/auth/login. Refused to connect because it violates the document's Content Security Policy.",
+          "url": "http://localhost:13000/staff/login"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Connecting to 'http://localhost:18081/api/v1/auth/login' violates the following Content Security Policy directive: \"connect-src 'self' http://localhost:8081 http://127.0.0.1:8081\". The action has been blocked.",
+          "url": "http://localhost:13000/staff/login"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Fetch API cannot load http://localhost:18081/api/v1/auth/login. Refused to connect because it violates the document's Content Security Policy.",
+          "url": "http://localhost:13000/staff/login"
+        }
+      ]
+    },
+    "BF-06": {
+      "status": "Partial",
+      "doctorQueueWorks": false,
+      "medicalRecordWorks": false,
+      "prescriptionPathWorks": "No",
+      "rootCause": "Product/test-data/order issue or duplicate record validation",
+      "steps": [
+        {
+          "step": "doctor-login",
+          "ok": true,
+          "url": "http://localhost:13000/staff/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-06-doctor-login.png",
+          "value": {
+            "response": {
+              "error": "page.waitForResponse: Timeout 15000ms exceeded while waiting for event \"response\""
+            },
+            "currentUrl": "http://localhost:13000/staff/login",
+            "storedRole": null
+          }
+        },
+        {
+          "step": "doctor-dashboard",
+          "ok": true,
+          "url": "http://localhost:13000/staff/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-06-doctor-dashboard.png",
+          "value": {
+            "startButtons": 0,
+            "body": "HOSPITAL CORE\nClinical Suite\n\nEmpowering your clinical workflow.\n\nEverything you need\nfor patient care,\nall in one place.\n\nManage Schedule\n\nView and manage your daily appointments and schedule.\n\nPatient Records\n\nAccess patient medical records securely and efficiently.\n\nClinical Tasks\n\nTrack your tasks, queues, and clinical responsibilities.\n\nSecure Messaging\n\nCommunicate with your team and patients securely.\n\nStrict access control active.\n\nAll activities in the Clinical Suite are monitored and audited for compliance.\n\n?\nSUPPORT\nHOSPITAL CORE\nStaff Login\n\nEnter your clinical credentials to access the suite.\n\nEMAIL\nPASSWORD\nForgot password?\nLog in to Clinical Suite\nEMERGENCY ACCESS\nOne-Time Em"
+          }
+        },
+        {
+          "step": "start-consultation",
+          "ok": true,
+          "url": "http://localhost:13000/staff/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-06-start-consultation.png",
+          "value": {
+            "startVisible": false
+          }
+        },
+        {
+          "step": "medical-record-save",
+          "ok": false,
+          "url": "http://localhost:13000/staff/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-06-medical-record-save-failed.png",
+          "error": "No checked-in/in-progress appointment available for medical-record route."
+        }
+      ],
+      "apiResponses": [],
+      "networkAndConsole": [
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Connecting to 'http://localhost:18081/api/v1/auth/login' violates the following Content Security Policy directive: \"connect-src 'self' http://localhost:8081 http://127.0.0.1:8081\". The action has been blocked.",
+          "url": "http://localhost:13000/staff/login"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Fetch API cannot load http://localhost:18081/api/v1/auth/login. Refused to connect because it violates the document's Content Security Policy.",
+          "url": "http://localhost:13000/staff/login"
+        }
+      ]
+    },
+    "BF-08": {
+      "status": "Partial",
+      "patientLoginWorks": false,
+      "portalRoutesWork": true,
+      "dataScopingVerified": "Partial",
+      "rootCause": "None",
+      "scoping": {
+        "verified": "Partial"
+      },
+      "steps": [
+        {
+          "step": "patient-login",
+          "ok": true,
+          "url": "http://localhost:13000/portal/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-08-patient-login.png",
+          "value": {
+            "response": {
+              "error": "page.waitForResponse: Timeout 15000ms exceeded while waiting for event \"response\""
+            },
+            "currentUrl": "http://localhost:13000/portal/login",
+            "storedRole": null,
+            "tokenPresent": false
+          }
+        },
+        {
+          "step": "portal-overview",
+          "ok": true,
+          "url": "http://localhost:13000/portal/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-08-portal-overview.png",
+          "value": {
+            "body": "?\nSUPPORT\nMEDCORE OS\nPatient Portal\n\nYour health. Your time. Your portal.\n\nEverything you need\nfor your health journey,\nall in one place.\n\nManage Appointments\n\nSchedule, view or cancel appointments with ease.\n\nAccess Your Health\n\nView test results, medications, immunizations and more.\n\nBilling & Payments\n\nView statements and make secure payments online.\n\nMessage Your Care Team\n\nCommunicate securely with your healthcare providers.\n\nYour privacy is our priority.\n\nWe keep your information safe and secure in compliance with HIPAA standards.\n\nWELCOME BACK\nLog in to your account\n\nAccess your health information securely\n\nEMAIL\nPASSWORD\nRemember me\nForgot password?\nLog In\nOR\nNeed access? Claim your "
+          }
+        },
+        {
+          "step": "portal-appointments",
+          "ok": true,
+          "url": "http://localhost:13000/portal/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-08-portal-appointments.png",
+          "value": {
+            "body": "?\nSUPPORT\nMEDCORE OS\nPatient Portal\n\nYour health. Your time. Your portal.\n\nEverything you need\nfor your health journey,\nall in one place.\n\nManage Appointments\n\nSchedule, view or cancel appointments with ease.\n\nAccess Your Health\n\nView test results, medications, immunizations and more.\n\nBilling & Payments\n\nView statements and make secure payments online.\n\nMessage Your Care Team\n\nCommunicate securely with your healthcare providers.\n\nYour privacy is our priority.\n\nWe keep your information safe and secure in compliance with HIPAA standards.\n\nWELCOME BACK\nLog in to your account\n\nAccess your health information securely\n\nEMAIL\nPASSWORD\nRemember me\nForgot password?\nLog In\nOR\nNeed access? Claim your "
+          }
+        },
+        {
+          "step": "portal-profile",
+          "ok": true,
+          "url": "http://localhost:13000/portal/login",
+          "screenshot": "docs/06-testing/artifacts/p0-browser-diagnostic-2026-05-21/BF-08-portal-profile.png",
+          "value": {
+            "body": "?\nSUPPORT\nMEDCORE OS\nPatient Portal\n\nYour health. Your time. Your portal.\n\nEverything you need\nfor your health journey,\nall in one place.\n\nManage Appointments\n\nSchedule, view or cancel appointments with ease.\n\nAccess Your Health\n\nView test results, medications, immunizations and more.\n\nBilling & Payments\n\nView statements and make secure payments online.\n\nMessage Your Care Team\n\nCommunicate securely with your healthcare providers.\n\nYour privacy is our priority.\n\nWe keep your information safe and secure in compliance with HIPAA standards.\n\nWELCOME BACK\nLog in to your account\n\nAccess your health information securely\n\nEMAIL\nPASSWORD\nRemember me\nForgot password?\nLog In\nOR\nNeed access? Claim your "
+          }
+        }
+      ],
+      "networkAndConsole": [
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Connecting to 'http://localhost:18081/api/v1/patient-auth/login' violates the following Content Security Policy directive: \"connect-src 'self' http://localhost:8081 http://127.0.0.1:8081\". The action has been blocked.",
+          "url": "http://localhost:13000/portal/login"
+        },
+        {
+          "kind": "console",
+          "type": "error",
+          "text": "Fetch API cannot load http://localhost:18081/api/v1/patient-auth/login. Refused to connect because it violates the document's Content Security Policy.",
+          "url": "http://localhost:13000/portal/login"
+        }
+      ]
+    }
+  }
+}

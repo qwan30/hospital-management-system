@@ -1,17 +1,19 @@
 # Frontend Route Inventory
 
-**Status:** current route inventory for `web/src/app` on April 26, 2026.
+**Status:** current route inventory for `web/src/app` on May 13, 2026.
 **Canonical frontend:** `web/`
 **Reference-only frontend prototypes:** `frontend/`
 
 This inventory is based on the current Next.js App Router files under `web/src/app` and the route audit helper in `web/e2e/helpers/routes.ts`.
+
+Use [current-system-flows.md](current-system-flows.md) for the cross-role workflow map that connects these routes to backend API families and current integration limits.
 
 ## 1. Summary
 
 | Area | Status | Current source |
 | --- | --- | --- |
 | Public routes | Implemented route files | `web/src/app/(public)` |
-| Staff routes | Implemented route files, selected backend integration | `web/src/app/staff` |
+| Staff routes | Implemented route files, selected backend integration, staff auth/RBAC/queue unit coverage | `web/src/app/staff` |
 | Admin routes | Implemented route files, route-guarded | `web/src/app/admin` |
 | Patient portal routes | Implemented route files, partial backend integration | `web/src/app/portal` |
 | Auth/system routes | Implemented route files | `web/src/app/auth`, `web/src/app/forbidden`, public session pages |
@@ -38,11 +40,11 @@ Current file count: 65 `page.tsx` files and 71 total route/layout files under `w
 
 | Route | Source file | Status | Notes |
 | --- | --- | --- | --- |
-| `/staff/login` | `staff/(auth)/login/page.tsx` | Implemented | staff login |
+| `/staff/login` | `staff/(auth)/login/page.tsx` | Implemented | staff login; fails closed if the backend response does not include a session payload |
 | `/staff/dashboard` | `staff/(app)/dashboard/page.tsx` | Implemented | staff landing |
 | `/staff/closures` | `staff/(app)/closures/page.tsx` | Implemented | admin scheduling support |
 | `/staff/patients` | `staff/(app)/patients/page.tsx` | Implemented | patient list/workspace |
-| `/staff/queue` | `staff/(app)/queue/page.tsx` | Implemented | backend-integrated queue, check-in, call, room assignment, consultation, and completion actions |
+| `/staff/queue` | `staff/(app)/queue/page.tsx` | Implemented | backend-integrated queue, check-in, call, room assignment, consultation, completion actions, unauthorized state, retry, filtering, and row-level action errors |
 | `/staff/schedule` | `staff/(app)/schedule/page.tsx` | Implemented route file | doctor schedule |
 | `/staff/booking` | `staff/(app)/booking/page.tsx` | Implemented route file | staff booking shell |
 | `/staff/booking/symptoms` | `staff/(app)/booking/symptoms/page.tsx` | Implemented route file | intake step |
@@ -122,3 +124,4 @@ When adding, removing, or renaming frontend routes:
 - update `docs/design_brief.md`
 - update `web/e2e/helpers/routes.ts`
 - update `docs/HMS_TestPlan.md` if test coverage changes
+- classify each affected route as contract-backed or reference-only; do not use route-file existence alone as completion evidence

@@ -1,216 +1,388 @@
-import Image from "next/image";
+"use client";
 
-import { HcIcon } from "@/components/ui/hc-icon";
+import type { ComponentType, HTMLAttributes } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Activity,
+  AlertTriangle,
+  Clock,
+  Heart,
+  RefreshCw,
+  Save,
+  Thermometer,
+  UserCheck,
+  Wind,
+} from "lucide-react";
+import {
+  getTodayAppointments,
+  getTodayQueue,
+  saveAppointmentVitalSigns,
+  type AppointmentVitalSignsResponse,
+  type ClinicalAppointmentResponse,
+} from "@/lib/clinical-api";
+import { getErrorMessage } from "@/lib/staff-queue";
+import { PageHeader } from "@/components/ui/page-header";
+import { KpiCard } from "@/components/ui/kpi-card";
+
+const ELIGIBLE_STATUSES = ["CHECKED_IN", "IN_PROGRESS"];
+
 export default function VitalSignsEditorPage() {
-  return (
-    <>
-      <main>
+  const [appointments, setAppointments] = useState<ClinicalAppointmentResponse[]>([]);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState("");
+  const [bloodPressure, setBloodPressure] = useState("");
+  const [heartRate, setHeartRate] = useState("");
+  const [oxygenSaturation, setOxygenSaturation] = useState("");
+  const [temperature, setTemperature] = useState("");
+  const [respiratoryRate, setRespiratoryRate] = useState("");
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [savedRecord, setSavedRecord] = useState<AppointmentVitalSignsResponse | null>(null);
 
-{/* TopAppBar (Authority: Shared Components JSON) */}
-<header className="flex justify-between items-center w-full px-8 h-16 sticky top-0 z-50 bg-white dark:bg-neutral-900 border-b-2 border-neutral-900 dark:border-neutral-800">
-<div className="flex items-center gap-4">
-<span className="text-xl font-bold tracking-widest text-neutral-900 dark:text-white uppercase">HOSPITAL CORE</span>
-</div>
-<div className="flex-1 max-w-md ml-12">
-<div className="relative group">
-<HcIcon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
-<input className="w-full bg-neutral-100 border-none px-10 py-2 focus:ring-2 focus:ring-blue-600 outline-none text-sm" placeholder="Search patient or record..." type="text"/>
-</div>
-</div>
-<div className="flex items-center gap-2">
-<button className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-75 active:bg-neutral-200">
-<HcIcon name="notifications" className="text-neutral-600" />
-</button>
-<button className="p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-75 active:bg-neutral-200">
-<HcIcon name="help" className="text-neutral-600" />
-</button>
-<div className="h-8 w-8 bg-blue-600 flex items-center justify-center ml-2">
-<HcIcon name="account_circle" className="text-white text-sm" />
-</div>
-</div>
-</header>
-{/* Canvas Area */}
-<div className="p-12 max-w-6xl w-full mx-auto">
-{/* Patient Header / Data Monolith */}
-<section className="mb-12 flex flex-col md:flex-row gap-0.5 bg-neutral-900">
-<div className="bg-surface-container-lowest p-8 flex-1">
-<div className="flex items-center gap-4 mb-4">
-<Image alt="Patient Avatar" className="w-16 h-16 grayscale border border-neutral-200" data-alt="professional headshot of an elderly man with kind eyes and short grey hair, monochromatic studio lighting, clean background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_DN6oozxQXNYh74iq__-BrfwcMwbt3ibtXjNtH73O_cScjRfEU03XP22nZbRj68KjSDehAxb2PKdz4Fd3o8TQ3nisTK0oK_Mh7GMmyKGj0aoAXeZXU6dptbN2OhKuxDcfAXxrHqSijtZoMLx7y6c75ltdfy8QRPrAldAtbUouVndleAz2TxhPhJ4HS3Ri1LV9XM9OSHquxxIsWX9KUaORUlg2ZKPCEVs0uAx0qVZWsPr5mn99zWNFBXtjyyTJWEAlKIAJjODwwg" width={1200} height={800}/>
-<div>
-<p className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-600 mb-1">Current Patient</p>
-<h2 className="text-3xl font-light tracking-tight text-on-surface">DRS. HARRISON WELLS</h2>
-</div>
-</div>
-<div className="grid grid-cols-3 gap-8 pt-6 border-t border-neutral-100">
-<div>
-<p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">DOB</p>
-<p className="text-sm font-semibold">12 SEP 1954 (69Y)</p>
-</div>
-<div>
-<p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">ID</p>
-<p className="text-sm font-semibold">#MC-9021-X</p>
-</div>
-<div>
-<p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Status</p>
-<div className="flex items-center gap-2">
-<div className="w-2 h-2 bg-blue-600"></div>
-<p className="text-sm font-semibold">IN-PATIENT (WARD 4B)</p>
-</div>
-</div>
-</div>
-</div>
-<div className="bg-surface-container-highest p-8 w-full md:w-80 flex flex-col justify-center">
-<p className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-2">Last Updated</p>
-<p className="text-xl font-light tracking-tight">Today, 08:42 AM</p>
-<p className="text-xs text-neutral-500 mt-1">by Dr. Sarah Chen</p>
-</div>
-</section>
-{/* Editor Title */}
-<div className="mb-8">
-<h3 className="text-xl font-semibold tracking-tight">Vital Signs Recording</h3>
-<p className="text-sm text-neutral-500 mt-1">Input mandatory clinical telemetry for nursing rounds.</p>
-</div>
-{/* Editor Form Grid */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-{/* Left Column */}
-<div className="space-y-12">
-{/* Blood Pressure */}
-<div className="group">
-<label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1 group-focus-within:text-blue-600 transition-colors">Blood Pressure (Systolic/Diastolic)</label>
-<div className="relative bg-surface-container-low p-4">
-<input className="w-full bg-transparent border-none border-b-2 border-outline p-0 text-2xl font-light focus:ring-0 focus:border-primary transition-all placeholder:text-neutral-300" placeholder="120/80" type="text"/>
-<span className="absolute right-4 bottom-4 text-xs font-bold text-neutral-400 uppercase">mmHg</span>
-</div>
-<p className="text-[10px] text-neutral-400 mt-2 italic">Standard range: 90/60 to 120/80 mmHg</p>
-</div>
-{/* Heart Rate */}
-<div className="group">
-<label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1 group-focus-within:text-blue-600 transition-colors">Heart Rate</label>
-<div className="relative bg-surface-container-low p-4">
-<input className="w-full bg-transparent border-none border-b-2 border-outline p-0 text-2xl font-light focus:ring-0 focus:border-primary transition-all placeholder:text-neutral-300" placeholder="72" type="number"/>
-<span className="absolute right-4 bottom-4 text-xs font-bold text-neutral-400 uppercase">BPM</span>
-</div>
-<p className="text-[10px] text-neutral-400 mt-2 italic">Standard range: 60 to 100 BPM (At rest)</p>
-</div>
-{/* SpO2 */}
-<div className="group">
-<label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1 group-focus-within:text-blue-600 transition-colors">Oxygen Saturation (SpO2)</label>
-<div className="relative bg-surface-container-low p-4">
-<input className="w-full bg-transparent border-none border-b-2 border-outline p-0 text-2xl font-light focus:ring-0 focus:border-primary transition-all placeholder:text-neutral-300" placeholder="98" type="number"/>
-<span className="absolute right-4 bottom-4 text-xs font-bold text-neutral-400 uppercase">%</span>
-</div>
-<p className="text-[10px] text-neutral-400 mt-2 italic">Notify staff if saturation drops below 94%</p>
-</div>
-</div>
-{/* Right Column */}
-<div className="space-y-12">
-{/* Temperature */}
-<div className="group">
-<label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1 group-focus-within:text-blue-600 transition-colors">Body Temperature</label>
-<div className="relative bg-surface-container-low p-4">
-<input className="w-full bg-transparent border-none border-b-2 border-outline p-0 text-2xl font-light focus:ring-0 focus:border-primary transition-all placeholder:text-neutral-300" placeholder="36.6" step="0.1" type="number"/>
-<span className="absolute right-4 bottom-4 text-xs font-bold text-neutral-400 uppercase">°C</span>
-</div>
-<p className="text-[10px] text-neutral-400 mt-2 italic">Standard oral range: 36.5°C to 37.2°C</p>
-</div>
-{/* Respiratory Rate */}
-<div className="group">
-<label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1 group-focus-within:text-blue-600 transition-colors">Respiratory Rate</label>
-<div className="relative bg-surface-container-low p-4">
-<input className="w-full bg-transparent border-none border-b-2 border-outline p-0 text-2xl font-light focus:ring-0 focus:border-primary transition-all placeholder:text-neutral-300" placeholder="16" type="number"/>
-<span className="absolute right-4 bottom-4 text-xs font-bold text-neutral-400 uppercase">Breaths/min</span>
-</div>
-<p className="text-[10px] text-neutral-400 mt-2 italic">Adult standard: 12 to 16 breaths per minute</p>
-</div>
-{/* Clinical Observation Note */}
-<div className="group">
-<label className="block text-[10px] font-bold uppercase tracking-widest text-neutral-500 mb-1 group-focus-within:text-blue-600 transition-colors">Clinical Observations</label>
-<div className="bg-surface-container-low p-4">
-<textarea className="w-full bg-transparent border-none border-b-2 border-outline p-0 text-sm focus:ring-0 focus:border-primary transition-all placeholder:text-neutral-300 resize-none" placeholder="e.g. Patient reporting slight dizziness..." rows={2}></textarea>
-</div>
-<p className="text-[10px] text-neutral-400 mt-2 italic">Note any physical anomalies or patient feedback.</p>
-</div>
-</div>
-</div>
-{/* Action Bar */}
-<footer className="mt-24 border-t-2 border-neutral-900 pt-8 flex items-center justify-between">
-<div className="flex items-center gap-6">
-<div className="flex items-center gap-2 text-neutral-500">
-<HcIcon name="schedule" className="text-sm" />
-<span className="text-[10px] font-bold uppercase tracking-widest">Entry Time: 14:22:05 EST</span>
-</div>
-<div className="flex items-center gap-2 text-neutral-500">
-<HcIcon name="lock" className="text-sm" />
-<span className="text-[10px] font-bold uppercase tracking-widest">Secure Ledger Protocol V2</span>
-</div>
-</div>
-<div className="flex gap-4">
-<button className="bg-surface-container-high px-8 py-3 text-xs font-bold uppercase tracking-widest text-on-surface hover:brightness-95 active:translate-y-0.5 transition-all">
-                        Discard Changes
-                    </button>
-<button className="bg-primary-container text-white px-12 py-3 text-xs font-bold uppercase tracking-widest flex items-center gap-3 hover:bg-primary active:translate-y-0.5 transition-all">
-                        Save Vitals <HcIcon name="send" className="text-sm" />
-</button>
-</div>
-</footer>
-</div>
-{/* System Drawer / Telemetry Logs (Right Side) */}
-<div className="fixed right-0 top-16 h-[calc(100vh-64px)] w-96 bg-white border-l-2 border-neutral-900 z-30 flex flex-col">
-<div className="p-8 border-b border-neutral-100 bg-surface-container-low">
-<h4 className="text-xs font-black tracking-[0.2em] uppercase text-neutral-900">Historical Telemetry</h4>
-<p className="text-[10px] text-neutral-500 mt-1 uppercase tracking-wider">Comparison to last 24h average</p>
-</div>
-<div className="flex-1 overflow-y-auto p-8 space-y-8">
-{/* Trend Card 1 */}
-<div className="group border-b border-neutral-100 pb-4">
-<div className="flex justify-between items-end mb-2">
-<span className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Heart Rate Avg</span>
-<span className="text-2xl font-light">68 <span className="text-xs uppercase font-bold text-neutral-400">bpm</span></span>
-</div>
-<div className="w-full bg-neutral-100 h-1 mt-2">
-<div className="bg-blue-600 h-full w-[68%]"></div>
-</div>
-<p className="text-[10px] text-blue-600 mt-2 font-bold tracking-widest uppercase">Normal Variance (-4%)</p>
-</div>
-{/* Trend Card 2 */}
-<div className="group border-b border-neutral-100 pb-4">
-<div className="flex justify-between items-end mb-2">
-<span className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">BP Systolic Avg</span>
-<span className="text-2xl font-light">124 <span className="text-xs uppercase font-bold text-neutral-400">mmHg</span></span>
-</div>
-<div className="w-full bg-neutral-100 h-1 mt-2">
-<div className="bg-neutral-900 h-full w-[82%]"></div>
-</div>
-<p className="text-[10px] text-neutral-500 mt-2 font-bold tracking-widest uppercase">Stable Profile</p>
-</div>
-{/* History List */}
-<div className="pt-4">
-<p className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-4">Recent Submissions</p>
-<div className="space-y-6">
-<div className="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:bg-blue-600">
-<p className="text-xs font-semibold">120/80, 72bpm, 36.6C</p>
-<p className="text-[10px] text-neutral-400 uppercase tracking-tighter">08:42 AM · Sarah Chen, RN</p>
-</div>
-<div className="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:bg-neutral-300">
-<p className="text-xs font-semibold">118/79, 70bpm, 36.5C</p>
-<p className="text-[10px] text-neutral-400 uppercase tracking-tighter">04:15 AM · Automated (MC-A4)</p>
-</div>
-<div className="relative pl-6 before:content-[''] before:absolute before:left-0 before:top-2 before:w-1.5 before:h-1.5 before:bg-neutral-300">
-<p className="text-xs font-semibold">122/82, 75bpm, 36.8C</p>
-<p className="text-[10px] text-neutral-400 uppercase tracking-tighter">Yesterday, 10:30 PM · Mike Ross, RN</p>
-</div>
-</div>
-</div>
-</div>
-<div className="p-8 bg-neutral-950 text-white">
-<button className="w-full flex justify-between items-center group">
-<span className="text-[10px] font-black uppercase tracking-[0.2em]">View Full Patient History</span>
-<HcIcon name="arrow_forward" className="text-sm group-hover:translate-x-1 transition-transform" />
-</button>
-</div>
-</div>
+  const loadAppointments = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
 
-</main>
-    </>
+    try {
+      const [queueAppointments, todayAppointments] = await Promise.all([
+        getTodayQueue(),
+        getTodayAppointments(),
+      ]);
+      const nextAppointments = mergeAppointments(todayAppointments, queueAppointments)
+        .filter((appointment) => ELIGIBLE_STATUSES.includes(appointment.status));
+
+      setAppointments(nextAppointments);
+      setSelectedAppointmentId((current) =>
+        current && nextAppointments.some((appointment) => appointment.appointmentId === current)
+          ? current
+          : nextAppointments[0]?.appointmentId ?? "",
+      );
+    } catch (loadError) {
+      setAppointments([]);
+      setSelectedAppointmentId("");
+      setError(getErrorMessage(loadError));
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void Promise.resolve().then(loadAppointments);
+  }, [loadAppointments]);
+
+  const selectedAppointment = useMemo(
+    () =>
+      appointments.find((appointment) => appointment.appointmentId === selectedAppointmentId)
+      ?? null,
+    [appointments, selectedAppointmentId],
   );
+
+  const summary = useMemo(
+    () => ({
+      ready: appointments.filter((appointment) => appointment.status === "CHECKED_IN").length,
+      inProgress: appointments.filter((appointment) => appointment.status === "IN_PROGRESS").length,
+      total: appointments.length,
+    }),
+    [appointments],
+  );
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError(null);
+    setSavedRecord(null);
+
+    if (!selectedAppointment) {
+      setError("Select a checked-in or in-progress appointment before saving vitals.");
+      return;
+    }
+
+    if (!hasAnyVitalValue([bloodPressure, heartRate, oxygenSaturation, temperature, respiratoryRate, weight, height])) {
+      setError("Enter at least one vital sign before saving.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const record = await saveAppointmentVitalSigns(selectedAppointment.appointmentId, {
+        bloodPressure: emptyToUndefined(bloodPressure),
+        heartRate: optionalInteger(heartRate),
+        oxygenSaturation: optionalNumber(oxygenSaturation),
+        temperature: optionalNumber(temperature),
+        respiratoryRate: optionalInteger(respiratoryRate),
+        weight: optionalNumber(weight),
+        height: optionalNumber(height),
+      });
+      setSavedRecord(record);
+      await loadAppointments();
+    } catch (submitError) {
+      setError(getErrorMessage(submitError));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <main className="mx-auto max-w-[1200px] p-8 pb-20">
+      <PageHeader
+        categoryLabel="NURSING"
+        title="Vital Signs Recording"
+        description="Record clinical telemetry for checked-in or in-progress appointments."
+        action={
+          <button
+            className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-white px-4 py-2 text-sm font-bold text-[var(--hc-text)] transition-colors hover:bg-slate-50 disabled:opacity-60"
+            type="button"
+            onClick={loadAppointments}
+            disabled={isLoading}
+          >
+            <RefreshCw className="size-4" aria-hidden="true" />
+            Refresh
+          </button>
+        }
+      />
+
+      <section className="mt-8 grid gap-4 md:grid-cols-3">
+        <KpiCard label="Eligible Patients" value={String(summary.total)} helper="Checked-in or active" icon={UserCheck} tone="blue" />
+        <KpiCard label="Ready For Vitals" value={String(summary.ready)} helper="Checked-in" icon={Clock} tone="teal" />
+        <KpiCard label="In Consultation" value={String(summary.inProgress)} helper="Active consults" icon={Activity} tone="purple" />
+      </section>
+
+      {error ? (
+        <section className="mt-6 rounded-[var(--radius-lg)] border border-[var(--hc-danger)] bg-[var(--hc-danger-bg)] p-4 text-sm font-semibold text-[var(--hc-danger)]" role="alert">
+          {error}
+        </section>
+      ) : null}
+
+      {savedRecord ? (
+        <section className="mt-6 rounded-[var(--radius-lg)] border border-[var(--hc-success-bg)] bg-[#F0FDF4] p-4 text-sm font-semibold text-[var(--hc-success)]" role="status">
+          Vital signs saved for {selectedAppointment?.patientFullName ?? "selected patient"} at {new Date(savedRecord.recordedAt).toLocaleString()}.
+        </section>
+      ) : null}
+
+      <form className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px]" onSubmit={handleSubmit}>
+        <section className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-white shadow-sm">
+          <div className="border-b border-[var(--hc-border-soft)] px-6 py-4">
+            <h2 className="text-sm font-bold text-[var(--hc-text)]">Record Vitals</h2>
+          </div>
+
+          <div className="grid gap-6 p-6 md:grid-cols-2">
+            <VitalField
+              id="vitals-blood-pressure"
+              icon={Heart}
+              label="Blood Pressure"
+              unit="mmHg"
+              placeholder="120/80"
+              value={bloodPressure}
+              onChange={setBloodPressure}
+            />
+            <VitalField
+              id="vitals-temperature"
+              icon={Thermometer}
+              label="Body Temperature"
+              unit="C"
+              placeholder="36.6"
+              value={temperature}
+              onChange={setTemperature}
+              inputMode="decimal"
+            />
+            <VitalField
+              id="vitals-heart-rate"
+              icon={Activity}
+              label="Heart Rate"
+              unit="BPM"
+              placeholder="72"
+              value={heartRate}
+              onChange={setHeartRate}
+              inputMode="numeric"
+            />
+            <VitalField
+              id="vitals-respiratory-rate"
+              icon={Wind}
+              label="Respiratory Rate"
+              unit="breaths/min"
+              placeholder="16"
+              value={respiratoryRate}
+              onChange={setRespiratoryRate}
+              inputMode="numeric"
+            />
+            <VitalField
+              id="vitals-oxygen-saturation"
+              icon={Activity}
+              label="Oxygen Saturation"
+              unit="%"
+              placeholder="98"
+              value={oxygenSaturation}
+              onChange={setOxygenSaturation}
+              inputMode="decimal"
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <VitalField
+                id="vitals-weight"
+                icon={Activity}
+                label="Weight"
+                unit="kg"
+                placeholder="65"
+                value={weight}
+                onChange={setWeight}
+                inputMode="decimal"
+              />
+              <VitalField
+                id="vitals-height"
+                icon={Activity}
+                label="Height"
+                unit="cm"
+                placeholder="170"
+                value={height}
+                onChange={setHeight}
+                inputMode="decimal"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4 border-t border-[var(--hc-border-soft)] bg-slate-50/50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+              <Clock className="size-4" aria-hidden="true" />
+              {selectedAppointment ? `Appointment ${selectedAppointment.confirmationCode}` : "No eligible appointment selected"}
+            </p>
+            <button
+              className="hc-button-primary inline-flex items-center justify-center gap-2"
+              type="submit"
+              disabled={isSubmitting || isLoading || !selectedAppointment}
+            >
+              <Save className="size-4" aria-hidden="true" />
+              {isSubmitting ? "Saving Vitals..." : "Save Vitals"}
+            </button>
+          </div>
+        </section>
+
+        <aside className="space-y-6">
+          <section className="rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-white p-6 shadow-sm">
+            <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-slate-400" htmlFor="vitals-appointment">
+              Current Patient
+            </label>
+            <select
+              className="hc-input w-full"
+              id="vitals-appointment"
+              value={selectedAppointmentId}
+              onChange={(event) => setSelectedAppointmentId(event.target.value)}
+              disabled={isLoading || appointments.length === 0}
+            >
+              {appointments.length === 0 ? (
+                <option value="">No eligible appointments</option>
+              ) : (
+                appointments.map((appointment) => (
+                  <option key={appointment.appointmentId} value={appointment.appointmentId}>
+                    {appointment.patientFullName} - {appointment.status}
+                  </option>
+                ))
+              )}
+            </select>
+
+            {selectedAppointment ? (
+              <div className="mt-6 space-y-4 text-sm">
+                <Info label="Patient" value={selectedAppointment.patientFullName} />
+                <Info label="Doctor" value={selectedAppointment.doctorName} />
+                <Info label="Time" value={`${selectedAppointment.startTime.slice(0, 5)} - ${selectedAppointment.endTime.slice(0, 5)}`} />
+                <Info label="Status" value={selectedAppointment.status} />
+              </div>
+            ) : (
+              <div className="mt-6 flex items-start gap-3 rounded-[var(--radius-md)] bg-[var(--hc-warning-bg)] p-4 text-sm font-semibold text-[var(--hc-warning)]">
+                <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
+                Check in a patient from the queue before recording vitals.
+              </div>
+            )}
+          </section>
+        </aside>
+      </form>
+    </main>
+  );
+}
+
+function VitalField({
+  icon: Icon,
+  id,
+  inputMode,
+  label,
+  onChange,
+  placeholder,
+  unit,
+  value,
+}: {
+  icon: ComponentType<{ className?: string }>;
+  id: string;
+  inputMode?: HTMLAttributes<HTMLInputElement>["inputMode"];
+  label: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  unit: string;
+  value: string;
+}) {
+  return (
+    <div>
+      <label className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400" htmlFor={id}>
+        <Icon className="size-4" aria-hidden="true" />
+        {label}
+      </label>
+      <div className="relative">
+        <input
+          className="hc-input w-full pr-20 text-xl font-light"
+          id={id}
+          inputMode={inputMode}
+          placeholder={placeholder}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+        />
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold uppercase text-slate-400">
+          {unit}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function Info({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+        {label}
+      </p>
+      <p className="break-words text-sm font-bold text-[var(--hc-text)]">
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function mergeAppointments(...appointmentLists: ClinicalAppointmentResponse[][]) {
+  return Array.from(
+    appointmentLists.flat().reduce((byId, appointment) => {
+      byId.set(appointment.appointmentId, appointment);
+      return byId;
+    }, new Map<string, ClinicalAppointmentResponse>()).values(),
+  );
+}
+
+function emptyToUndefined(value: string) {
+  const trimmed = value.trim();
+  return trimmed ? trimmed : undefined;
+}
+
+function optionalNumber(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return undefined;
+  }
+
+  const parsed = Number(trimmed);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function optionalInteger(value: string) {
+  const parsed = optionalNumber(value);
+  return parsed === undefined ? undefined : Math.trunc(parsed);
+}
+
+function hasAnyVitalValue(values: string[]) {
+  return values.some((value) => value.trim().length > 0);
 }

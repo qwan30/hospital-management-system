@@ -1,0 +1,11 @@
+﻿{
+    "command":  "npm run build",
+    "cwd":  "D:\\projects\\hospital-management-system\\web",
+    "startedAt":  "2026-05-22T12:27:02.3432273+07:00",
+    "endedAt":  "2026-05-22T12:27:25.5666836+07:00",
+    "durationSeconds":  23.22,
+    "exitCode":  0,
+    "status":  "PASS",
+    "failureReason":  "",
+    "logPath":  "D:\\projects\\hospital-management-system\\docs\\06-testing\\artifacts\\production-readiness-2026-05-22\\frontend-build-after-security-2026-05-22.log"
+}

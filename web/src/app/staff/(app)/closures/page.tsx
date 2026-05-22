@@ -1,208 +1,184 @@
+import {
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Edit2,
+  MapPin,
+  Plus,
+  Trash2,
+} from "lucide-react";
+import { PageHeader } from "@/components/ui/page-header";
+import { KpiCard } from "@/components/ui/kpi-card";
 
-import { HcIcon } from "@/components/ui/hc-icon";
+const CLOSURES = [
+  {
+    id: 1,
+    title: "National Health Observance Day",
+    description: "All clinics and laboratories closed. Emergency ER services remain at 50% capacity.",
+    date: "Oct 11",
+    duration: "Full Day",
+    location: "Campus-wide",
+    type: "holiday" as const,
+  },
+  {
+    id: 2,
+    title: "System Infrastructure Upgrade",
+    description: "Electronic Medical Records (EMR) system offline for periodic DB migration.",
+    date: "Oct 17",
+    duration: "22:00 – 04:00",
+    location: "Radiology Dept",
+    type: "maintenance" as const,
+  },
+  {
+    id: 3,
+    title: "Staff Professional Development",
+    description: "Internal training session. OPD closed for the afternoon session.",
+    date: "Oct 02",
+    duration: "13:00 – 18:00",
+    location: "OPD Unit B",
+    type: "maintenance" as const,
+  },
+];
+
+const CALENDAR_DAYS = [
+  { day: 24, prev: true }, { day: 25, prev: true }, { day: 26, prev: true }, { day: 27, prev: true }, { day: 28, prev: true }, { day: 29, prev: true }, { day: 30, prev: true },
+  { day: 1 }, { day: 2, marker: "maintenance" as const }, { day: 3 }, { day: 4 }, { day: 5 }, { day: 6 }, { day: 7 },
+  { day: 8 }, { day: 9 }, { day: 10 }, { day: 11, marker: "holiday" as const, label: "HOLIDAY" }, { day: 12 }, { day: 13 }, { day: 14 },
+  { day: 15 }, { day: 16 }, { day: 17, marker: "maintenance" as const }, { day: 18 }, { day: 19 }, { day: 20 }, { day: 21 },
+  { day: 22 }, { day: 23 }, { day: 24 }, { day: 25 }, { day: 26 }, { day: 27 }, { day: 28 },
+];
+
+const DAY_HEADERS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
 export default function SpecialClosuresPage() {
   return (
-    <>
-      <main>
+    <main className="p-8 pb-20 max-w-[1400px] mx-auto">
+      <PageHeader
+        categoryLabel="OPERATIONS"
+        title="Special Closures"
+        description="Administration & lab suspension schedules."
+        action={
+          <button type="button" className="hc-button-primary flex items-center gap-2" aria-label="CREATE_NEW_CLOSURE">
+            <Plus className="w-4 h-4" /> Create Closure
+          </button>
+        }
+      />
 
-{/* TopAppBar */}
-<header className="flex justify-between items-center w-full px-6 h-16 bg-white dark:bg-[#171717] sticky top-0 z-30">
-<div className="flex items-center gap-8">
-<div className="text-xl font-semibold tracking-tighter text-[#1c1b1b] dark:text-white">MED_CORE / ADMIN</div>
-<nav className="hidden md:flex gap-6">
-<a className="font-['Public_Sans'] text-sm tracking-tight transition-colors duration-150 ease-in-out text-[#1c1b1b] dark:text-[#e5e2e1]" href="#">Overview</a>
-<a className="font-['Public_Sans'] text-sm tracking-tight transition-colors duration-150 ease-in-out text-[#0f62fe] font-semibold border-b-2 border-[#0f62fe]" href="#">Closures</a>
-<a className="font-['Public_Sans'] text-sm tracking-tight transition-colors duration-150 ease-in-out text-[#1c1b1b] dark:text-[#e5e2e1]" href="#">Staffing</a>
-</nav>
-</div>
-<div className="flex items-center gap-4">
-<div className="relative group">
-<input className="bg-surface-container-low border-none focus:ring-1 focus:ring-primary px-4 py-1.5 text-sm w-64 font-['Public_Sans']" placeholder="Search operations..." type="text"/>
-</div>
-<div className="flex items-center gap-2">
-<button className="p-2 hover:bg-[#f6f3f2] dark:hover:bg-[#262626] transition-colors"><HcIcon name="notifications" className="text-on-surface" /></button>
-<button className="p-2 hover:bg-[#f6f3f2] dark:hover:bg-[#262626] transition-colors"><HcIcon name="settings" className="text-on-surface" /></button>
-<div className="h-8 w-8 bg-surface-container-high flex items-center justify-center">
-<HcIcon name="account_circle" className="text-primary" />
-</div>
-</div>
-</div>
-</header>
-<div className="bg-[#f6f3f2] dark:bg-[#262626] h-px w-full"></div>
-{/* Page Header */}
-<div className="px-8 py-10 bg-surface">
-<div className="flex justify-between items-end">
-<div>
-<h1 className="text-4xl font-light tracking-tight text-on-background mb-2">Special Closures</h1>
-<p className="text-sm text-outline font-medium uppercase tracking-[0.2em]">Administration &amp; Lab Suspension Schedules</p>
-</div>
-<button className="bg-primary-container text-white px-6 py-3 font-semibold text-sm flex items-center gap-3 active:bg-[#004ccd] transition-all">
-<HcIcon name="add_circle" />
-                    CREATE_NEW_CLOSURE
-                </button>
-</div>
-</div>
-{/* Content Grid */}
-<div className="flex-1 grid grid-cols-12 gap-0">
-{/* Left Panel: Calendar Monolith */}
-<div className="col-span-12 lg:col-span-5 bg-surface-container-low p-8 border-r-0 lg:border-r border-outline-variant/15">
-<div className="mb-8 flex justify-between items-center">
-<h2 className="text-xl font-semibold tracking-tight">Closure Calendar</h2>
-<div className="flex gap-1">
-<button className="p-2 hover:bg-surface-container-highest transition-colors"><HcIcon name="chevron_left" /></button>
-<button className="px-4 text-sm font-bold uppercase tracking-widest">October 2023</button>
-<button className="p-2 hover:bg-surface-container-highest transition-colors"><HcIcon name="chevron_right" /></button>
-</div>
-</div>
-{/* Utility-First Calendar */}
-<div className="grid grid-cols-7 gap-px bg-outline-variant/20">
-{/* Days Header */}
-<div className="bg-surface-container-low py-4 text-center text-[10px] font-black uppercase tracking-widest opacity-50">Sun</div>
-<div className="bg-surface-container-low py-4 text-center text-[10px] font-black uppercase tracking-widest opacity-50">Mon</div>
-<div className="bg-surface-container-low py-4 text-center text-[10px] font-black uppercase tracking-widest opacity-50">Tue</div>
-<div className="bg-surface-container-low py-4 text-center text-[10px] font-black uppercase tracking-widest opacity-50">Wed</div>
-<div className="bg-surface-container-low py-4 text-center text-[10px] font-black uppercase tracking-widest opacity-50">Thu</div>
-<div className="bg-surface-container-low py-4 text-center text-[10px] font-black uppercase tracking-widest opacity-50">Fri</div>
-<div className="bg-surface-container-low py-4 text-center text-[10px] font-black uppercase tracking-widest opacity-50">Sat</div>
-{/* Calendar Cells */}
-{/* Row 1 */}
-<div className="bg-surface-container-lowest p-4 aspect-square text-outline opacity-30">24</div>
-<div className="bg-surface-container-lowest p-4 aspect-square text-outline opacity-30">25</div>
-<div className="bg-surface-container-lowest p-4 aspect-square text-outline opacity-30">26</div>
-<div className="bg-surface-container-lowest p-4 aspect-square text-outline opacity-30">27</div>
-<div className="bg-surface-container-lowest p-4 aspect-square text-outline opacity-30">28</div>
-<div className="bg-surface-container-lowest p-4 aspect-square text-outline opacity-30">29</div>
-<div className="bg-surface-container-lowest p-4 aspect-square text-outline opacity-30">30</div>
-{/* Row 2 */}
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">1</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold flex flex-col justify-between">
-<span>2</span>
-<div className="w-1.5 h-1.5 bg-primary-container"></div>
-</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">3</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">4</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">5</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">6</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">7</div>
-{/* Row 3 */}
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">8</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">9</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">10</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold flex flex-col justify-between bg-primary-container text-white">
-<span>11</span>
-<span className="text-[8px] font-bold uppercase">HOLIDAY</span>
-</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">12</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">13</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">14</div>
-{/* Row 4 */}
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">15</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">16</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold flex flex-col justify-between">
-<span>17</span>
-<div className="w-1.5 h-1.5 bg-primary-container"></div>
-</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">18</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">19</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">20</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">21</div>
-{/* Row 5 */}
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">22</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">23</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">24</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">25</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">26</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">27</div>
-<div className="bg-surface-container-lowest p-4 aspect-square font-semibold">28</div>
-</div>
-<div className="mt-8 flex gap-6">
-<div className="flex items-center gap-2">
-<div className="w-2 h-2 bg-primary-container"></div>
-<span className="text-[10px] font-bold uppercase tracking-widest text-outline">Maintenance</span>
-</div>
-<div className="flex items-center gap-2">
-<div className="w-2 h-2 bg-on-surface"></div>
-<span className="text-[10px] font-bold uppercase tracking-widest text-outline">Public Holiday</span>
-</div>
-</div>
-</div>
-{/* Right Panel: Upcoming Closures */}
-<div className="col-span-12 lg:col-span-7 p-8">
-<div className="flex justify-between items-center mb-8">
-<h2 className="text-xl font-semibold tracking-tight">Active &amp; Upcoming Schedule</h2>
-<div className="flex items-center gap-2 px-3 py-1 bg-surface-container-high text-[10px] font-bold uppercase tracking-widest">
-                        Total 08 Entries
+      {/* KPI Cards */}
+      <section className="mt-8 hc-kpi-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+        <KpiCard label="Total Entries" value="8" helper="Active & upcoming" icon={Calendar} tone="blue" />
+        <KpiCard label="Next Closure" value="Oct 11" helper="National Health Observance" icon={Clock} tone="amber" />
+        <KpiCard label="Affected Sites" value="3" helper="Departments impacted" icon={MapPin} tone="teal" />
+      </section>
+
+      {/* Calendar + Closure List */}
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6">
+        {/* Calendar */}
+        <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-sm font-bold text-[var(--hc-text)]">Closure Calendar</h2>
+            <div className="flex items-center gap-1">
+              <button type="button" className="p-1.5 rounded-[var(--radius-md)] hover:bg-slate-100 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+              <span className="px-3 text-xs font-bold text-[var(--hc-text)] uppercase">October 2023</span>
+              <button type="button" className="p-1.5 rounded-[var(--radius-md)] hover:bg-slate-100 transition-colors"><ChevronRight className="w-4 h-4" /></button>
+            </div>
+          </div>
+
+          {/* Day Headers */}
+          <div className="grid grid-cols-7 gap-px mb-1">
+            {DAY_HEADERS.map((d) => (
+              <div key={d} className="py-2 text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">{d}</div>
+            ))}
+          </div>
+
+          {/* Calendar Grid */}
+          <div className="grid grid-cols-7 gap-px bg-slate-100 rounded-[var(--radius-md)] overflow-hidden">
+            {CALENDAR_DAYS.map((cell, i) => (
+              <div
+                key={i}
+                className={`aspect-square p-2 flex flex-col justify-between text-xs font-medium transition-colors ${
+                  cell.marker === "holiday"
+                    ? "bg-[var(--hc-primary)] text-white"
+                    : "bg-white hover:bg-slate-50"
+                } ${cell.prev ? "text-slate-300" : "text-[var(--hc-text)]"}`}
+              >
+                <span>{cell.day}</span>
+                {cell.marker === "maintenance" && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--hc-primary)]" />
+                )}
+                {cell.label && (
+                  <span className="text-[7px] font-bold uppercase tracking-wider">{cell.label}</span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Legend */}
+          <div className="mt-4 flex gap-4">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[var(--hc-primary)]" />
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Maintenance</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-slate-800" />
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Holiday</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Closure List */}
+        <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+          <div className="px-6 py-4 flex justify-between items-center border-b border-[var(--hc-border-soft)]">
+            <h2 className="text-sm font-bold text-[var(--hc-text)]">Active & Upcoming Schedule</h2>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-100 px-2.5 py-1 rounded-full">
+              {CLOSURES.length} Entries
+            </span>
+          </div>
+
+          <div className="divide-y divide-[var(--hc-border-soft)]">
+            {CLOSURES.map((closure) => (
+              <div key={closure.id} className="group p-6 flex items-start justify-between hover:bg-slate-50/50 transition-colors">
+                <div className="flex gap-4">
+                  {/* Date Indicator */}
+                  <div className={`w-14 h-14 shrink-0 rounded-[var(--radius-md)] flex flex-col items-center justify-center text-sm ${
+                    closure.type === "holiday"
+                      ? "bg-[var(--hc-primary)] text-white"
+                      : "bg-[#E8F0FF] text-[var(--hc-primary)]"
+                  }`}>
+                    <span className="text-[9px] font-bold uppercase">{closure.date.split(" ")[0]}</span>
+                    <span className="text-lg font-black leading-none">{closure.date.split(" ")[1]}</span>
+                  </div>
+
+                  {/* Details */}
+                  <div>
+                    <h3 className="text-sm font-bold text-[var(--hc-text)] mb-1">{closure.title}</h3>
+                    <p className="text-xs text-slate-500 mb-2 max-w-md">{closure.description}</p>
+                    <div className="flex gap-4">
+                      <span className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase">
+                        <Clock className="w-3 h-3" /> {closure.duration}
+                      </span>
+                      <span className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase">
+                        <MapPin className="w-3 h-3" /> {closure.location}
+                      </span>
                     </div>
-</div>
-<div className="space-y-4">
-{/* Closure Card 1 */}
-<div className="p-6 bg-surface-container-low group hover:bg-surface-container-lowest transition-colors flex items-start justify-between">
-<div className="flex gap-6">
-<div className="w-16 h-16 bg-primary-container/10 flex flex-col items-center justify-center text-primary-container shrink-0">
-<span className="text-xs font-bold uppercase">Oct</span>
-<span className="text-2xl font-black">11</span>
-</div>
-<div>
-<h3 className="font-semibold text-lg leading-tight mb-1 uppercase tracking-tight">National Health Observance Day</h3>
-<p className="text-sm text-on-surface-variant mb-3">All clinics and laboratories closed. Emergency ER services remain at 50% capacity.</p>
-<div className="flex gap-4">
-<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><HcIcon name="timer" className="text-[14px]" /> FULL DAY</span>
-<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><HcIcon name="location_on" className="text-[14px]" /> CAMPUS_WIDE</span>
-</div>
-</div>
-</div>
-<div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button className="p-2 hover:bg-surface-container-high"><HcIcon name="edit" className="text-outline" /></button>
-<button className="p-2 hover:bg-error-container text-error"><HcIcon name="delete" /></button>
-</div>
-</div>
-{/* Closure Card 2 */}
-<div className="p-6 bg-surface-container-low group hover:bg-surface-container-lowest transition-colors flex items-start justify-between">
-<div className="flex gap-6">
-<div className="w-16 h-16 bg-primary-container/10 flex flex-col items-center justify-center text-primary-container shrink-0">
-<span className="text-xs font-bold uppercase">Oct</span>
-<span className="text-2xl font-black">17</span>
-</div>
-<div>
-<h3 className="font-semibold text-lg leading-tight mb-1 uppercase tracking-tight">System Infrastructure Upgrade</h3>
-<p className="text-sm text-on-surface-variant mb-3">Electronic Medical Records (EMR) system offline for periodic DB migration.</p>
-<div className="flex gap-4">
-<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><HcIcon name="timer" className="text-[14px]" /> 22:00 - 04:00</span>
-<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><HcIcon name="biotech" className="text-[14px]" /> RADIOLOGY_DEPT</span>
-</div>
-</div>
-</div>
-<div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button className="p-2 hover:bg-surface-container-high"><HcIcon name="edit" className="text-outline" /></button>
-<button className="p-2 hover:bg-error-container text-error"><HcIcon name="delete" /></button>
-</div>
-</div>
-{/* Closure Card 3 */}
-<div className="p-6 bg-surface-container-low group hover:bg-surface-container-lowest transition-colors flex items-start justify-between">
-<div className="flex gap-6">
-<div className="w-16 h-16 bg-primary-container/10 flex flex-col items-center justify-center text-primary-container shrink-0">
-<span className="text-xs font-bold uppercase">Oct</span>
-<span className="text-2xl font-black">02</span>
-</div>
-<div>
-<h3 className="font-semibold text-lg leading-tight mb-1 uppercase tracking-tight">Staff Professional Development</h3>
-<p className="text-sm text-on-surface-variant mb-3">Internal training session. OPD closed for the afternoon session.</p>
-<div className="flex gap-4">
-<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><HcIcon name="timer" className="text-[14px]" /> 13:00 - 18:00</span>
-<span className="text-[10px] font-bold uppercase text-outline flex items-center gap-1"><HcIcon name="medical_services" className="text-[14px]" /> OPD_UNIT_B</span>
-</div>
-</div>
-</div>
-<div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button className="p-2 hover:bg-surface-container-high"><HcIcon name="edit" className="text-outline" /></button>
-<button className="p-2 hover:bg-error-container text-error"><HcIcon name="delete" /></button>
-</div>
-</div>
-</div>
-</div>
-</div>
+                  </div>
+                </div>
 
-</main>
-    </>
+                {/* Actions (visible on hover) */}
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button type="button" className="p-2 rounded-[var(--radius-md)] hover:bg-slate-100 transition-colors text-slate-400 hover:text-[var(--hc-primary)]">
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button type="button" className="p-2 rounded-[var(--radius-md)] hover:bg-[var(--hc-danger-bg)] transition-colors text-slate-400 hover:text-[var(--hc-danger)]">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }

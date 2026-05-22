@@ -1,78 +1,97 @@
 # Demo Accounts And Seed Data
 
-**Status:** current seed-data reference for the April 26, 2026 repository baseline.
-**Verification source:** `backend/application/src/main/java/com/hospital/core/seed/SeedDataService.java`
+**Status:** current seed-data reference for the May 15, 2026 repository baseline.
+**Verification sources:** `SeedDataService`, `ReleaseDemoSeedService`, `ReleaseDemoSeedCatalog`, and `ReleaseDemoSeedProperties`.
 
-On first startup with an empty database, the backend seeds demo data if both department and user data are empty.
+The backend has two seed layers:
 
-## 1. Persisted Staff Demo Accounts
+- Baseline seed: always runs on first startup if the core department/user tables are empty.
+- Release demo seed: optional synthetic UAT top-up, controlled by `HMS_RELEASE_DEMO_SEED_ENABLED=false` by default.
 
-| Email | Password | Role | Display name | Notes |
-| --- | --- | --- | --- | --- |
-| `doctor1@hospital.vn` | `Doctor@1234` | `DOCTOR` | Dr. Nguyen Van An | Internal Medicine |
-| `doctor2@hospital.vn` | `Doctor@1234` | `DOCTOR` | Dr. Tran Thi Binh | Cardiology |
-| `nurse@hospital.vn` | `Nurse@1234` | `NURSE` | Le Thi Cuc | Internal Medicine |
-| `accountant@hospital.vn` | `Acc@1234` | `ACCOUNTANT` | Pham Van Dung | finance workflows |
-| `admin@hospital.vn` | `Admin@1234` | `ADMIN` | System Admin | admin workflows |
+No production or real patient data is used by either seed layer.
 
-## 2. Patient Portal Demo Account
+## 1. Baseline Staff Accounts
+
+| Email | Password | Role | Notes |
+| --- | --- | --- | --- |
+| `doctor1@hospital.vn` | `Doctor@1234` | `DOCTOR` | Internal Medicine |
+| `doctor2@hospital.vn` | `Doctor@1234` | `DOCTOR` | Cardiology |
+| `nurse@hospital.vn` | `Nurse@1234` | `NURSE` | Queue and vitals workflows |
+| `receptionist@hospital.vn` | `Reception@1234` | `RECEPTIONIST` | Booking and queue workflows |
+| `pharmacist@hospital.vn` | `Pharma@1234` | `PHARMACIST` | Inventory and prescription preview workflows |
+| `accountant@hospital.vn` | `Acc@1234` | `ACCOUNTANT` | Finance and audit-log workflows |
+| `admin@hospital.vn` | `Admin@1234` | `ADMIN` | Full admin workflows |
+
+## 2. Baseline Patient Portal Account
 
 | Email | Password | Patient | CCCD source value | Notes |
 | --- | --- | --- | --- | --- |
-| `patient@example.com` | `Patient@1234` | Nguyen Thi Hoa | `012345678901` | seeded with appointments, medical record, lab result, and message thread |
+| `patient@example.com` | `Patient@1234` | Nguyen Thi Hoa | `012345678901` | Appointments, medical record, lab result, and portal message thread |
 
-## 3. Role Notes
+## 3. Release Demo Seed
 
-`RECEPTIONIST` and `PHARMACIST` are current enum/RBAC roles, but the current seed routine does not persist demo accounts for those roles. If those accounts are needed for manual QA, they must be created through admin user management or a future seed-data change.
+Enable with:
 
-## 4. Seeded Departments
+```powershell
+$env:HMS_RELEASE_DEMO_SEED_ENABLED = "true"
+```
 
-| Department | Description | Phone |
+Docker Compose forwards the same variable to the backend service. Keep it disabled for production imports and enable it only for synthetic UAT or release demos.
+
+Default release-demo targets:
+
+| Variable | Default | Purpose |
 | --- | --- | --- |
-| Internal Medicine | General consultation and chronic care | `028 1000 0001` |
-| Pediatrics | Children and adolescent care | `028 1000 0002` |
-| Cardiology | Heart and vascular specialty | `028 1000 0003` |
+| `HMS_RELEASE_DEMO_FUTURE_SLOT_DAYS` | `14` | Available public booking slots per release doctor |
+| `HMS_RELEASE_DEMO_TARGET_PATIENTS` | `8` | Synthetic patient records |
+| `HMS_RELEASE_DEMO_TARGET_APPOINTMENTS` | `12` | Cross-status appointment and queue records |
+| `HMS_RELEASE_DEMO_TARGET_INVENTORY_ITEMS` | `8` | Inventory item, lot, movement, and alert records |
+| `HMS_RELEASE_DEMO_TARGET_AUDIT_LOGS` | `16` | Admin/audit-monitoring records |
 
-## 5. Seeded Pricing
+The release seed is idempotent by natural keys: account email, department name, room name, content/news slug, patient email/CCCD hash, appointment confirmation code, SKU/lot code, and audit metadata key.
 
-| Department | Service | Amount |
-| --- | --- | --- |
-| Internal Medicine | `CONSULTATION` | `220000` |
-| Pediatrics | `CONSULTATION` | `180000` |
-| Cardiology | `CONSULTATION` | `300000` |
+## 4. Release Demo Coverage
 
-## 6. Seeded Scheduling
+| Flow area | Seeded records |
+| --- | --- |
+| Public discovery | Departments, doctors, homepage sections, news articles, available doctor slots |
+| Public booking | Real doctors and future available slots |
+| Staff queue | Today appointments in `CONFIRMED`, `CHECKED_IN`, and `IN_PROGRESS` states |
+| Doctor clinical work | Completed appointments, vitals, medical records, prescriptions, and follow-ups |
+| Patient portal | `nguyen.van.clinical@example.com` plus baseline patient account, appointments, labs, profile data, and messages |
+| Admin operations | Rooms, schedule templates, special closures, content/news records, audit logs |
+| Inventory | Medication, consumable, equipment, and lab supply records with low-stock examples |
+| Finance | Paid and unpaid invoices tied to completed synthetic appointments |
 
-- `doctor1@hospital.vn` receives generated 30-minute slots for the next 14 days from 08:00 through 16:30.
-- `doctor2@hospital.vn` receives generated 30-minute slots for the next 14 days from 08:00 through 16:30.
-- The patient portal demo account also receives one upcoming booked slot and one completed historical slot.
+Release demo patient account:
 
-## 7. Seeded Inventory
+| Email | Password | Patient | CCCD source value |
+| --- | --- | --- | --- |
+| `nguyen.van.clinical@example.com` | `Patient@1234` | Nguyen Van Clinical | `098765432109` |
 
-| SKU | Item | Category | Unit | Quantity | Status |
-| --- | --- | --- | --- | --- | --- |
-| `MED-CET-010` | Cetirizine 10mg | Medication | box | 72 | `IN_STOCK` |
-| `SUP-SAL-500` | Normal Saline 500ml | Consumable | bag | 22 | `LOW_STOCK` |
-| `EQP-ECG-001` | ECG Electrode Pads | Equipment | pack | 58 | `IN_STOCK` |
+## 5. Verification
 
-The seed data also creates one lot per item and starter movement history for restock or dispense events.
+Backend:
 
-## 8. Seeded Patient Portal Data
+```powershell
+cd D:\projects\hospital-management-system\backend
+mvn.cmd -pl application -Dtest=ReleaseDemoSeedPropertiesTest,ReleaseDemoSeedCatalogTest test
+```
 
-The demo patient has:
+Release smoke test against a running seeded backend:
 
-- one upcoming confirmed appointment
-- one completed appointment
-- one medical record for the completed appointment
-- one lab result with a sample attachment URL
-- one portal message thread
-- one staff message and one patient reply in that thread
+```powershell
+cd D:\projects\hospital-management-system\web
+$env:HMS_EXPECT_RELEASE_DEMO_SEED = "true"
+npm.cmd run test:e2e:release-data
+```
 
-## 9. Maintenance
+## 6. Maintenance
 
 When seed data changes, update:
 
 - this file
 - `README.md`
 - `docs/HMS_DeploymentGuide.md`
-- `docs/HMS_TestPlan.md` if test personas or assumptions change
+- `web/e2e/helpers/personas.ts`
+- release smoke tests under `web/e2e/specs`

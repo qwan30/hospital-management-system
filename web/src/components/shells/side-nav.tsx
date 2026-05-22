@@ -13,6 +13,7 @@ import {
   CalendarX,
   CircleHelp,
   ClipboardList,
+  DollarSign,
   DoorOpen,
   Headphones,
   History,
@@ -23,6 +24,7 @@ import {
   Mail,
   Microscope,
   MonitorCog,
+  Newspaper,
   Package,
   Pill,
   Plus,
@@ -75,6 +77,7 @@ const iconMap: Record<string, LucideIcon> = {
   calendar_today: CalendarDays,
   contact_support: Headphones,
   dashboard: LayoutDashboard,
+  dollar_sign: DollarSign,
   event_available: CalendarCheck,
   event_busy: CalendarX,
   event_repeat: CalendarClock,
@@ -85,6 +88,7 @@ const iconMap: Record<string, LucideIcon> = {
   mail: Mail,
   medical_services: Stethoscope,
   meeting_room: DoorOpen,
+  newspaper: Newspaper,
   payments: WalletCards,
   pill: Pill,
   receipt_long: ReceiptText,
@@ -124,6 +128,12 @@ export const defaultAdminSideLinks: SideNavLink[] = [
   { href: "/admin/slots", label: "Slots", icon: "view_timeline" },
   { href: "/admin/rooms", label: "Rooms", icon: "meeting_room" },
   { href: "/admin/users", label: "Staff", icon: "badge" },
+  { href: "/admin/inventory", label: "Inventory", icon: "inventory_2" },
+  { href: "/admin/pricing", label: "Pricing", icon: "dollar_sign" },
+  { href: "/admin/monitoring", label: "Monitoring", icon: "activity" },
+  { href: "/admin/support", label: "Support", icon: "contact_support" },
+  { href: "/admin/news", label: "News", icon: "newspaper" },
+  { href: "/admin/public-content", label: "Content", icon: "receipt_long" },
   { href: "/admin/audit-logs", label: "Audit Logs", icon: "history" },
 ];
 
@@ -154,8 +164,21 @@ export function HcSidebar({
   const canUseCta = ctaHref ? getRouteDecision(ctaHref, role).allowed : false;
 
   return (
-    <aside className="fixed bottom-0 left-0 top-[var(--hc-topbar-h)] z-40 hidden w-[var(--hc-sidebar-w)] flex-col border-r border-[var(--hc-border)] bg-[var(--hc-sidebar-bg)] md:flex">
-      <div className="flex min-h-0 flex-1 flex-col px-[18px] py-[22px]">
+    <aside className="fixed bottom-0 left-0 top-0 z-50 hidden w-[var(--hc-sidebar-w)] flex-col border-r border-[var(--hc-border)] bg-[var(--hc-sidebar-bg)] md:flex">
+      <div className="flex h-[var(--hc-topbar-h)] items-center px-6">
+        <Link
+          href="/"
+          className="flex min-w-0 items-center gap-3 text-[18px] font-bold leading-6 tracking-normal text-[var(--hc-text)]"
+          aria-label="Hospital Core home"
+        >
+          <span className="grid size-9 shrink-0 place-items-center rounded-[10px] border border-[var(--hc-border)] bg-[var(--hc-surface-soft)] text-[var(--hc-blue-600)]">
+            <ShieldPlus className="size-5" aria-hidden="true" />
+          </span>
+          <span className="shrink-0 whitespace-nowrap">HOSPITAL CORE</span>
+        </Link>
+      </div>
+
+      <div className="flex min-h-0 flex-1 flex-col px-[18px] pb-[22px]">
         <div className="mb-[18px] flex items-center gap-3">
           <div className="grid size-[54px] shrink-0 place-items-center rounded-[var(--radius-lg)] border border-[var(--hc-border)] bg-white text-[var(--hc-navy-800)] shadow-[var(--shadow-xs)]">
             <ShieldPlus className="size-6" aria-hidden="true" />
@@ -192,15 +215,15 @@ export function HcSidebar({
                 href={link.href}
                 data-active={isActive ? "true" : undefined}
                 className={cn(
-                  "group relative flex h-12 items-center gap-3 border-l-4 border-transparent px-4 text-sm font-medium text-[#1E2A44] transition-all duration-150 hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-blue-600)]",
+                  "group relative flex h-12 items-center gap-[14px] px-4 text-sm font-medium text-[#1E2A44] transition-colors duration-150 hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-blue-600)]",
                   isActive &&
-                    "border-l-4 border-[var(--hc-blue-600)] bg-[var(--hc-blue-50)] pl-3 font-bold text-[var(--hc-blue-600)]",
+                    "bg-[var(--hc-blue-50)] font-bold text-[var(--hc-blue-600)] hover:bg-[var(--hc-blue-50)] hover:text-[var(--hc-blue-600)] border-l-4 border-l-[var(--hc-blue-600)]",
                 )}
               >
                 <Icon
                   className={cn(
                     "size-5 shrink-0 text-[#31415F] transition-colors group-hover:text-[var(--hc-blue-600)]",
-                    isActive && "text-[var(--hc-blue-600)]",
+                    isActive && "text-[var(--hc-blue-600)] group-hover:text-[var(--hc-blue-600)]",
                   )}
                   aria-hidden="true"
                 />

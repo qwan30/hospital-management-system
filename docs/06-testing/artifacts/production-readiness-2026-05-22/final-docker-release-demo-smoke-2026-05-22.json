@@ -1,0 +1,60 @@
+﻿{
+    "generatedAt":  "2026-05-22T12:54:08.1749613+07:00",
+    "frontendUrl":  "http://localhost:13002",
+    "backendUrl":  "http://127.0.0.1:18083",
+    "apiBaseUrl":  "http://127.0.0.1:18083/api/v1",
+    "syntheticOnly":  true,
+    "results":  [
+                    {
+                        "name":  "backend health UP",
+                        "status":  "PASS",
+                        "durationMs":  317.79,
+                        "details":  "UP"
+                    },
+                    {
+                        "name":  "frontend HTTP 200",
+                        "status":  "PASS",
+                        "durationMs":  159.83,
+                        "details":  {
+                                        "status":  200,
+                                        "length":  138595
+                                    }
+                    },
+                    {
+                        "name":  "public departments API",
+                        "status":  "PASS",
+                        "durationMs":  71.97,
+                        "details":  {
+                                        "count":  8,
+                                        "containsEmergency":  true
+                                    }
+                    },
+                    {
+                        "name":  "public doctors API",
+                        "status":  "PASS",
+                        "durationMs":  77.25,
+                        "details":  {
+                                        "count":  4,
+                                        "containsReleaseDoctor":  true
+                                    }
+                    },
+                    {
+                        "name":  "staff auth API",
+                        "status":  "PASS",
+                        "durationMs":  326.69,
+                        "details":  {
+                                        "role":  "ADMIN",
+                                        "hasAccessToken":  true
+                                    }
+                    },
+                    {
+                        "name":  "patient auth API",
+                        "status":  "PASS",
+                        "durationMs":  124.42,
+                        "details":  {
+                                        "role":  "PATIENT",
+                                        "hasAccessToken":  true
+                                    }
+                    }
+                ]
+}

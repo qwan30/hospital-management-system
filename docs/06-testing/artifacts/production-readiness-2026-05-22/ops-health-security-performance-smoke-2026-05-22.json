@@ -1,0 +1,75 @@
+﻿{
+    "generatedAt":  "2026-05-22T12:48:10.7349679+07:00",
+    "frontendUrl":  "http://localhost:13002",
+    "apiBaseUrl":  "http://127.0.0.1:18083/api/v1",
+    "results":  [
+                    {
+                        "name":  "backend health endpoint",
+                        "status":  "FAIL",
+                        "durationMs":  454.18,
+                        "details":  "The remote server returned an error: (401) Unauthorized."
+                    },
+                    {
+                        "name":  "frontend home HTTP 200",
+                        "status":  "PASS",
+                        "durationMs":  352.66,
+                        "details":  {
+                                        "status":  200,
+                                        "length":  138595
+                                    }
+                    },
+                    {
+                        "name":  "public departments API under 1000ms",
+                        "status":  "PASS",
+                        "durationMs":  109.12,
+                        "details":  {
+                                        "count":  8
+                                    }
+                    },
+                    {
+                        "name":  "admin login for monitoring check",
+                        "status":  "PASS",
+                        "durationMs":  158.82,
+                        "details":  {
+                                        "role":  "ADMIN",
+                                        "hasToken":  true
+                                    }
+                    },
+                    {
+                        "name":  "patient login for privacy check",
+                        "status":  "PASS",
+                        "durationMs":  114.7,
+                        "details":  {
+                                        "role":  "PATIENT",
+                                        "hasToken":  true
+                                    }
+                    },
+                    {
+                        "name":  "admin monitoring endpoint",
+                        "status":  "PASS",
+                        "durationMs":  90.67,
+                        "details":  {
+                                        "healthy":  false,
+                                        "databaseStatus":  "UP",
+                                        "queueStatus":  "UP"
+                                    }
+                    },
+                    {
+                        "name":  "patient profile scoped endpoint",
+                        "status":  "PASS",
+                        "durationMs":  41.8,
+                        "details":  {
+                                        "patientId":  "ee22c18e-83b4-4703-bc39-6e2c95363740",
+                                        "email":  "nguyen.van.clinical@example.com"
+                                    }
+                    },
+                    {
+                        "name":  "patient token denied from admin users",
+                        "status":  "PASS",
+                        "durationMs":  70.33,
+                        "details":  {
+                                        "status":  403
+                                    }
+                    }
+                ]
+}

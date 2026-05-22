@@ -26,7 +26,7 @@ function getStatusBadge(status: string) {
   if (normalized.includes("PENDING") || normalized.includes("PROCESS")) {
     return "bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)] border-[var(--hc-border)]";
   }
-  return "bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] border-[var(--hc-blue-200)]";
+  return "bg-[var(--hc-primary-bg)] text-[var(--hc-primary)] border-[var(--hc-primary)]";
 }
 
 export default function PatientLabResultsPage() {
@@ -80,7 +80,7 @@ export default function PatientLabResultsPage() {
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-8">
       <div className="flex justify-between items-start">
-        <PageHeader 
+        <PageHeader
           title="Patient Lab Results"
           description={latestResult ? `Latest result collected ${formatDateTime(latestResult.collectedAt)}` : "No laboratory results are available yet."}
           className="mb-0"
@@ -112,39 +112,39 @@ export default function PatientLabResultsPage() {
       ) : null}
 
       <div className="hc-kpi-grid">
-        <KpiCard 
-          label="Needs Review" 
-          value={summary.needsReview.toString()} 
+        <KpiCard
+          label="Needs Review"
+          value={summary.needsReview.toString()}
           tone={summary.needsReview > 0 ? "red" : "teal"}
-          icon={AlertTriangle} 
+          icon={AlertTriangle}
         />
-        <KpiCard 
-          label="Pending Tests" 
-          value={summary.pending.toString()} 
+        <KpiCard
+          label="Pending Tests"
+          value={summary.pending.toString()}
           tone="teal"
-          icon={Hourglass} 
+          icon={Hourglass}
         />
-        <KpiCard 
-          label="Attachments" 
-          value={summary.withAttachments.toString()} 
+        <KpiCard
+          label="Attachments"
+          value={summary.withAttachments.toString()}
           tone="blue"
-          icon={Paperclip} 
+          icon={Paperclip}
         />
-        <KpiCard 
-          label="Total Results" 
-          value={summary.total.toString()} 
+        <KpiCard
+          label="Total Results"
+          value={summary.total.toString()}
           tone="purple"
-          icon={FlaskConical} 
+          icon={FlaskConical}
         />
       </div>
 
-      <div className="bg-white rounded-[var(--radius-xl)] border border-[var(--hc-border)] shadow-[var(--shadow-card)] overflow-hidden">
+      <div className="bg-[var(--hc-surface)] rounded-[var(--radius-xl)] border border-[var(--hc-border)] shadow-[var(--shadow-card)] overflow-hidden">
         <div className="px-6 py-4 border-b border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)]">
           <h2 className="text-sm font-bold text-[var(--hc-text)]">
             Laboratory Results
           </h2>
         </div>
-        
+
         {isLoading ? (
           <div className="p-8 text-center text-sm text-[var(--hc-text-secondary)]">
             Loading patient lab results...
@@ -195,7 +195,7 @@ function LabResultRow({ result }: { result: PatientPortalLabResultResponse }) {
         </span>
         {result.attachmentUrl ? (
           <a
-            className="text-[11px] font-bold uppercase tracking-widest text-[var(--hc-blue-600)] hover:text-[var(--hc-blue-700)] hover:underline flex items-center gap-1"
+            className="text-[11px] font-bold uppercase tracking-widest text-[var(--hc-primary)] hover:opacity-80 hover:underline flex items-center gap-1"
             href={result.attachmentUrl}
           >
             <HcIcon name="download" className="text-sm" />

@@ -8,7 +8,7 @@ FROM node:22-alpine AS build
 WORKDIR /app
 
 ENV NEXT_TELEMETRY_DISABLED=1
-ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api/v1
+ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:8081/api/v1
 ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
 
 COPY --from=deps /app/node_modules ./node_modules
@@ -23,7 +23,7 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV HOSTNAME=0.0.0.0
 ENV PORT=3000
-ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api/v1
+ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:8081/api/v1
 ENV NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
 
 COPY --from=build /app/package.json ./package.json

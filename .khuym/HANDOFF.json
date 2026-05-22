@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "feature": "hms-production-readiness-hardening-2026-05-22",
+  "skill": "verification-loop",
+  "phase": "production-readiness-report-complete",
+  "next_action": "Review and approve/reject waivers W-01, W-02, and W-03 in docs/06-testing/full-hms-production-readiness-report-2026-05-22.md. Do not label HMS Production Ready until those waiver decisions are explicit or the flows are fully implemented and verified.",
+  "context_pct": "medium",
+  "blockers": [
+    "GKG CLI unavailable; GitNexus/source fallback used.",
+    "GitNexus detect_changes unavailable in installed CLI; gitnexus status used.",
+    "Global git diff --check fails on pre-existing user-owned whitespace outside this pass.",
+    "Production Ready requires explicit waiver approval for BF-07, BF-09, and BF-11."
+  ],
+  "completed": [
+    "Reviewed route-by-route visual diffs and accepted current UI snapshots after live-stack evidence.",
+    "Remediated npm audit from 7 vulnerabilities to 0 using Next 16.2.6 and PostCSS 8.5.10 override.",
+    "Raised frontend branch coverage from 73.59% to 80.08%.",
+    "Passed backend mvn verify with 145 tests.",
+    "Passed frontend lint, unit, coverage, and build.",
+    "Passed Docker release-demo rebuild and smoke on hmsprod20260522.",
+    "Passed Playwright release-data, CI, integrated, UI, and visual suites.",
+    "Completed env, CORS/CSP, Flyway, secret scan, backup/restore, health/monitoring, performance, and privacy checks.",
+    "Created docs/06-testing/full-hms-production-readiness-report-2026-05-22.md."
+  ],
+  "verification": [
+    "mvn.cmd verify: PASS, 145 tests",
+    "npm run lint: PASS",
+    "npm run test:unit: PASS",
+    "npm run test:unit:coverage: PASS, branch coverage 80.08%",
+    "npm run build: PASS",
+    "docker compose -p hmsprod20260522 up --build -d: PASS",
+    "Docker release-demo smoke: PASS",
+    "npm run test:e2e:release-data: PASS",
+    "npm run test:e2e:ci: PASS, 180 passed, 1 skipped",
+    "npm run test:e2e:integrated: PASS, 90 passed",
+    "npm run test:e2e:ui: PASS, 319 passed, 1 skipped",
+    "npm run test:e2e:visual: PASS, 14 passed"
+  ]
+}

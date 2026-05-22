@@ -28,16 +28,16 @@ describe('api-client', () => {
       expect(getApiBaseUrl()).toBe('http://custom-url/api/v1');
     });
 
-    it('8. falls back to localhost:8080', () => {
+    it('8. falls back to localhost:8081', () => {
       delete process.env.NEXT_PUBLIC_API_BASE_URL;
-      expect(getApiBaseUrl()).toBe('http://localhost:8080/api/v1');
+      expect(getApiBaseUrl()).toBe('http://localhost:8081/api/v1');
     });
   });
 
   describe('persistSession', () => {
     it('9. stores token, expiry, and role in sessionStorage', () => {
       persistSession('staff', { accessToken: 'token123', expiresInSeconds: 3600 }, 'DOCTOR');
-      
+
       expect(sessionStorage.getItem('hms_staff_access_token')).toBe('token123');
       expect(sessionStorage.getItem('hms_staff_access_token_expires_in')).toBe('3600');
       expect(sessionStorage.getItem('hms_staff_role')).toBe('DOCTOR');
@@ -45,7 +45,7 @@ describe('api-client', () => {
 
     it('10. is no-op when accessToken is missing', () => {
       persistSession('staff', { accessToken: '', expiresInSeconds: 3600 }, 'DOCTOR');
-      
+
       expect(sessionStorage.getItem('hms_staff_access_token')).toBeNull();
       expect(sessionStorage.getItem('hms_staff_role')).toBeNull();
     });
@@ -59,9 +59,9 @@ describe('api-client', () => {
       sessionStorage.setItem('hms_patient_access_token', 'token');
       sessionStorage.setItem('hms_patient_access_token_expires_in', '3600');
       sessionStorage.setItem('hms_patient_role', 'PATIENT');
-      
+
       clearSessions();
-      
+
       expect(sessionStorage.getItem('hms_staff_access_token')).toBeNull();
       expect(sessionStorage.getItem('hms_staff_access_token_expires_in')).toBeNull();
       expect(sessionStorage.getItem('hms_staff_role')).toBeNull();
@@ -108,23 +108,23 @@ describe('api-client', () => {
     it('1. GET request builds correct URL', async () => {
       delete process.env.NEXT_PUBLIC_API_BASE_URL; // Force default
       mockSuccessResponse({ data: 'ok' });
-      
+
       await apiRequest('/test-path');
-      
-      expect(global.fetch).toHaveBeenCalledWith('http://localhost:8080/api/v1/test-path', expect.objectContaining({
+
+      expect(global.fetch).toHaveBeenCalledWith('http://localhost:8081/api/v1/test-path', expect.objectContaining({
         credentials: 'include',
       }));
     });
 
     it('2. POST sends JSON body + Content-Type header', async () => {
       mockSuccessResponse({ success: true });
-      
+
       const body = JSON.stringify({ name: 'test' });
       await apiRequest('/submit', {
         method: 'POST',
         body,
       });
-      
+
       expect(global.fetch).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({
         method: 'POST',
         body,
@@ -138,9 +138,9 @@ describe('api-client', () => {
     it('3. attaches patient bearer token for authScope: "patient"', async () => {
       sessionStorage.setItem('hms_patient_access_token', 'pat-token-123');
       mockSuccessResponse();
-      
+
       await apiRequest('/secure', {}, { authScope: 'patient' });
-      
+
       const calledInit = fetchMock().mock.calls[0][1] as RequestInit;
       const headers = calledInit.headers as Headers;
       expect(headers.get('Authorization')).toBe('Bearer pat-token-123');
@@ -153,7 +153,7 @@ describe('api-client', () => {
           message: 'Invalid input',
         }
       });
-      
+
       await expect(apiRequest('/bad-request')).rejects.toMatchObject({
         name: 'ApiClientError',
         message: 'Invalid input',
@@ -164,7 +164,7 @@ describe('api-client', () => {
 
     it('5. throws ApiClientError on 5xx with fallback message', async () => {
       mockErrorResponse(500, {}); // Empty body
-      
+
       await expect(apiRequest('/server-error')).rejects.toMatchObject({
         name: 'ApiClientError',
         message: 'Request failed',
@@ -179,7 +179,7 @@ describe('api-client', () => {
         status: 204,
         text: () => Promise.resolve(''),
       } as Response);
-      
+
       const response = await apiRequest('/empty');
       expect(response).toEqual({});
     });

@@ -10,9 +10,9 @@ export class DashboardPage {
   constructor(page: Page) {
     this.page = page;
     this.heading = page.getByRole("heading");
-    this.kpiCards = page.locator(".bg-hms-surface-container-low").filter({ hasText: "Active" }).first(); // generic matcher for cards
+    this.kpiCards = page.locator(".bg-hc-surface-container-low").filter({ hasText: "Active" }).first(); // generic matcher for cards
     this.searchInput = page.getByPlaceholder(/Search/i);
-    this.tableRows = page.locator("tr.hms-row, tr.hover\\:bg-hms-surface-container-lowest").filter({ hasText: /.*/ });
+    this.tableRows = page.locator("tr.hc-row, tr.hover\\:bg-hc-surface-container-lowest").filter({ hasText: /.*/ });
   }
 
   async gotoStaffDashboard() {
@@ -28,6 +28,6 @@ export class DashboardPage {
   }
 
   async getKpiCount() {
-    return await this.page.locator(".bg-hms-surface-container-low .text-4xl").count();
+    return await this.page.locator(".bg-hc-surface-container-low .text-4xl").count();
   }
 }

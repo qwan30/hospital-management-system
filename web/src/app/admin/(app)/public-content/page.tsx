@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   createAdminContentSection,
   listAdminContentSections,
@@ -11,9 +12,8 @@ import {
 
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
-import { DataPanel } from "@/components/ui/data-panel";
 
-import { LayoutTemplate, Edit3, Plus, Search, X, MonitorSmartphone } from "lucide-react";
+import { LayoutTemplate, Edit3, Plus, Search, X, MonitorSmartphone, ChevronsUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface SectionFormState {
   slug: string;
@@ -92,7 +92,7 @@ export default function AdminPublicContentPage() {
           .join(" ")
           .toLowerCase()
           .includes(normalizedQuery);
-      
+
       // Since the original response object didn't have 'active' field, we'll assume they are all active
       // or we just show them all. For this migration, we'll filter by ID existence if 'active' doesn't exist.
       // But let's assume 'active' is not heavily used in filtering if it's missing.
@@ -162,28 +162,30 @@ export default function AdminPublicContentPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="p-8 pb-20 max-w-[1400px] mx-auto">
       <PageHeader
+        categoryLabel="WEB PORTAL"
         title="Public Content"
         description="Manage sections and layout for the public website."
         action={
-          <button className="hc-button-primary flex items-center gap-2" onClick={openCreateForm} type="button">
+          <button className="hc-button-primary flex items-center gap-2 h-10 px-5" onClick={openCreateForm} type="button">
             <Plus className="w-4 h-4" />
             <span className="font-bold text-[11px] uppercase tracking-widest">Create Section</span>
           </button>
         }
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="hc-kpi-grid mb-6">
         <KpiCard
-          label="Total Sections"
-          value={totalCount}
+          label="TOTAL SECTIONS"
+          value={totalCount.toString()}
           icon={LayoutTemplate}
           helper="Total content sections defined"
+          tone="blue"
         />
         <KpiCard
-          label="Active Sections"
-          value={activeCount}
+          label="ACTIVE SECTIONS"
+          value={activeCount.toString()}
           icon={MonitorSmartphone}
           helper="Visible on public site"
           tone="green"
@@ -202,72 +204,120 @@ export default function AdminPublicContentPage() {
         </div>
       ) : null}
 
-      <DataPanel
-        title="Content Sections"
-        action={
-          <div className="flex gap-2 w-full md:w-auto">
-            <div className="relative w-full md:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search sections..."
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                className="hc-input pl-9 w-full"
-              />
-            </div>
-          </div>
-        }
-      >
+      <div className="flex flex-wrap items-center gap-4 mb-6 bg-white p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
+        <div className="relative flex-1 min-w-[280px]">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)]" />
+          <input
+            type="search"
+            aria-label="Search public content sections"
+            placeholder="Search sections..."
+            className="w-full h-9 pl-9 pr-4 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] focus:ring-1 focus:ring-[var(--hc-blue-500)]"
+            onChange={(e) => setQuery(e.target.value)}
+            value={query}
+          />
+        </div>
+      </div>
+
+      <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="hc-table">
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Slug</th>
-                <th>Sort Order</th>
-                <th>CTA Label</th>
-                <th className="text-right">Actions</th>
+                <th className="w-[30%]">
+                  <div className="flex items-center gap-2 cursor-pointer group">
+                    TITLE & CONTENT <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                  </div>
+                </th>
+                <th className="w-[20%]">
+                  <div className="flex items-center gap-2 cursor-pointer group">
+                    SLUG <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                  </div>
+                </th>
+                <th className="w-[15%]">
+                  <div className="flex items-center gap-2 cursor-pointer group">
+                    SORT ORDER <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                  </div>
+                </th>
+                <th className="w-[20%]">
+                  <div className="flex items-center gap-2 cursor-pointer group">
+                    CTA LABEL <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                  </div>
+                </th>
+                <th className="w-[15%] text-right">ACTIONS</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-8 text-slate-500">
+                  <td colSpan={5} className="text-center p-8 text-sm font-medium text-[var(--hc-text-secondary)]">
                     Loading content sections...
                   </td>
                 </tr>
               ) : filteredSections.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-8 text-slate-500">
-                    No content sections found.
+                  <td colSpan={5} className="text-center p-8 text-sm font-medium text-[var(--hc-text-secondary)]">
+                    No content sections match the current filters.
                   </td>
                 </tr>
               ) : (
                 filteredSections.map((section) => (
-                  <tr key={section.id} className="hover:bg-slate-50/50">
-                    <td className="font-medium text-slate-900">{section.title}</td>
+                  <tr key={section.id} className="group hover:bg-[var(--hc-background)] transition-colors">
                     <td>
-                      <span className="hc-badge bg-slate-100 text-slate-700">{section.slug}</span>
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center shrink-0 border border-slate-200">
+                          <LayoutTemplate className="w-5 h-5 text-slate-400" />
+                        </div>
+                        <div className="flex-1 min-w-0 pt-0.5">
+                          <div className="text-sm font-bold text-[var(--hc-text)] truncate">{section.title}</div>
+                          <div className="text-xs text-[var(--hc-text-secondary)] line-clamp-1 mt-0.5">{section.body || "No content"}</div>
+                        </div>
+                      </div>
                     </td>
-                    <td>{section.sortOrder}</td>
-                    <td>{section.ctaLabel || <span className="text-slate-400 italic">None</span>}</td>
-                    <td className="text-right">
-                      <button
-                        onClick={() => openEditForm(section)}
-                        className="hc-button-secondary py-1 px-3 text-sm inline-flex items-center gap-1"
-                      >
-                        <Edit3 className="w-3 h-3" />
-                        Edit
-                      </button>
+                    <td>
+                      <div className="text-sm font-medium text-[var(--hc-text-secondary)] font-mono">{section.slug}</div>
+                    </td>
+                    <td>
+                      <div className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 rounded-md bg-slate-100 text-slate-600 text-xs font-medium font-mono border border-slate-200">
+                        {section.sortOrder}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="text-sm text-[var(--hc-text)]">{section.ctaLabel || <span className="text-slate-400 italic">None</span>}</div>
+                    </td>
+                    <td>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => openEditForm(section)}
+                          aria-label={`Edit ${section.title}`}
+                          className="h-8 px-3 text-xs font-semibold text-[var(--hc-blue-600)] bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-slate-50 hover:border-slate-300 transition-colors disabled:opacity-50"
+                        >
+                          Edit
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
               )}
             </tbody>
           </table>
+          <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-slate-50/50">
+            <span className="text-xs text-[var(--hc-text-secondary)] font-medium">
+              Showing 1 to {sections.length} of {sections.length} sections
+            </span>
+            <div className="flex items-center gap-2">
+              <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium">
+                1
+              </button>
+              <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
         </div>
-      </DataPanel>
+      </div>
 
       {isFormOpen ? (
         <Dialog title={editingSection ? "Edit Section" : "Create Section"} onClose={() => setIsFormOpen(false)}>
@@ -280,8 +330,10 @@ export default function AdminPublicContentPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-[var(--hc-text)]">Slug *</label>
+                <label htmlFor="slug-input" className="text-sm font-medium text-[var(--hc-text)]">Slug *</label>
                 <input
+                  id="slug-input"
+                  aria-label="Slug"
                   type="text"
                   required
                   value={form.slug}
@@ -291,8 +343,10 @@ export default function AdminPublicContentPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-[var(--hc-text)]">Sort Order *</label>
+                <label htmlFor="sort-order-input" className="text-sm font-medium text-[var(--hc-text)]">Sort Order *</label>
                 <input
+                  id="sort-order-input"
+                  aria-label="Sort Order"
                   type="number"
                   required
                   value={form.sortOrder}
@@ -304,8 +358,10 @@ export default function AdminPublicContentPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[var(--hc-text)]">Title *</label>
+              <label htmlFor="title-input" className="text-sm font-medium text-[var(--hc-text)]">Title *</label>
               <input
+                id="title-input"
+                aria-label="Title"
                 type="text"
                 required
                 value={form.title}
@@ -316,8 +372,10 @@ export default function AdminPublicContentPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[var(--hc-text)]">Body Content</label>
+              <label htmlFor="body-input" className="text-sm font-medium text-[var(--hc-text)]">Body</label>
               <textarea
+                id="body-input"
+                aria-label="Body"
                 value={form.body}
                 onChange={(e) => setForm({ ...form, body: e.target.value })}
                 className="hc-input min-h-[120px] py-2 w-full"
@@ -327,8 +385,10 @@ export default function AdminPublicContentPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-[var(--hc-text)]">CTA Label</label>
+                <label htmlFor="cta-label-input" className="text-sm font-medium text-[var(--hc-text)]">CTA Label</label>
                 <input
+                  id="cta-label-input"
+                  aria-label="CTA Label"
                   type="text"
                   value={form.ctaLabel}
                   onChange={(e) => setForm({ ...form, ctaLabel: e.target.value })}
@@ -337,8 +397,10 @@ export default function AdminPublicContentPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-[var(--hc-text)]">CTA URL/Href</label>
+                <label htmlFor="cta-href-input" className="text-sm font-medium text-[var(--hc-text)]">CTA URL/Href</label>
                 <input
+                  id="cta-href-input"
+                  aria-label="CTA URL/Href"
                   type="text"
                   value={form.ctaHref}
                   onChange={(e) => setForm({ ...form, ctaHref: e.target.value })}
@@ -349,8 +411,10 @@ export default function AdminPublicContentPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[var(--hc-text)]">Image URL</label>
+              <label htmlFor="image-url-input" className="text-sm font-medium text-[var(--hc-text)]">Image URL</label>
               <input
+                id="image-url-input"
+                aria-label="Image URL"
                 type="url"
                 value={form.imageUrl}
                 onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
@@ -369,7 +433,7 @@ export default function AdminPublicContentPage() {
                 Cancel
               </button>
               <button type="submit" className="hc-button-primary" disabled={isSaving}>
-                {isSaving ? "Saving..." : "Save Section"}
+                {isSaving ? "Saving..." : "Deploy changes"}
               </button>
             </div>
           </form>
@@ -424,4 +488,3 @@ function Dialog({
     </div>
   );
 }
-

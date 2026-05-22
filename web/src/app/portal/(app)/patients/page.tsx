@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/ui/page-header";
+import { Badge } from "@/components/ui/badge";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { DataPanel } from "@/components/ui/data-panel";
 import { HcIcon } from "@/components/ui/hc-icon";
@@ -9,12 +10,12 @@ export default function PortalPatientsPage() {
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-8">
       <div className="flex justify-between items-start">
-        <PageHeader 
+        <PageHeader
           title="Patient Profile Access"
           description="Review the patient record connected to this portal session and the household contacts authorized for care coordination."
           className="mb-0"
         />
-        <Link 
+        <Link
           href="/portal/profile"
           className="hc-button-primary"
         >
@@ -75,14 +76,14 @@ export default function PortalPatientsPage() {
                   <h3 className="text-base font-bold text-[var(--hc-text)] mt-1">{step.title}</h3>
                   <p className="text-sm text-[var(--hc-text-secondary)] mt-1">{step.detail}</p>
                 </div>
-                <span className="hc-badge bg-[var(--hc-surface-soft)] border border-[var(--hc-border)] text-[var(--hc-text-secondary)] whitespace-nowrap">
+                <Badge variant="secondary">
                   {step.status}
-                </span>
+                </Badge>
               </div>
             ))}
           </DataPanel>
         </div>
-        
+
         <div className="lg:col-span-1">
           <DataPanel className="bg-white">
             <span className="text-[11px] font-bold text-[var(--hc-blue-600)] uppercase tracking-widest mb-4 block">Privacy controls</span>

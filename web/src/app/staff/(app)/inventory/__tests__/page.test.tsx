@@ -146,7 +146,7 @@ describe("InventoryPage", () => {
     await userEvent.click(screen.getByRole("button", { name: "Move" }));
     fireEvent.change(screen.getByLabelText("Quantity Delta"), { target: { value: "-2" } });
     fireEvent.change(screen.getByLabelText("Note"), { target: { value: "Damaged" } });
-    await userEvent.click(screen.getAllByRole("button", { name: /record movement/i })[1]);
+    await userEvent.click(screen.getByRole("button", { name: "Record Movement" }));
 
     await waitFor(() => {
       expect(recordInventoryMovement).toHaveBeenCalledWith({

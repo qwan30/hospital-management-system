@@ -2,6 +2,16 @@
 
 import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Banknote,
+  ChevronLeft,
+  ChevronRight,
+  CreditCard,
+  DollarSign,
+  FileText,
+  RefreshCw,
+  XCircle,
+} from "lucide-react";
+import {
   createInvoice,
   listInvoices,
   recordInvoicePayment,
@@ -9,8 +19,9 @@ import {
   type InvoiceStatus,
   voidInvoice,
 } from "@/lib/operations-api";
+import { PageHeader } from "@/components/ui/page-header";
+import { KpiCard } from "@/components/ui/kpi-card";
 
-import { HcIcon } from "@/components/ui/hc-icon";
 type InvoiceStatusFilter = "ALL" | InvoiceStatus;
 
 const statusOptions: { label: string; value: InvoiceStatusFilter }[] = [
@@ -33,29 +44,23 @@ export default function InvoicesPage() {
   const [appointmentId, setAppointmentId] = useState("");
   const [paymentInvoice, setPaymentInvoice] = useState<InvoiceResponse | null>(null);
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   const loadInvoices = useCallback(
     async (isMounted: () => boolean = () => true) => {
-      if (isMounted()) {
-        setIsLoading(true);
-      }
+      if (isMounted()) setIsLoading(true);
       try {
         const nextInvoices = await listInvoices(statusFilter === "ALL" ? undefined : statusFilter);
-        if (!isMounted()) {
-          return;
-        }
+        if (!isMounted()) return;
         setInvoices(nextInvoices);
         setError(null);
       } catch (caught) {
-        if (!isMounted()) {
-          return;
-        }
+        if (!isMounted()) return;
         setError(errorMessage(caught, "Unable to load invoices."));
         setInvoices([]);
       } finally {
-        if (isMounted()) {
-          setIsLoading(false);
-        }
+        if (isMounted()) setIsLoading(false);
       }
     },
     [statusFilter],
@@ -64,22 +69,14 @@ export default function InvoicesPage() {
   useEffect(() => {
     let mounted = true;
     void Promise.resolve().then(() => loadInvoices(() => mounted));
-
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [loadInvoices]);
 
   async function handleCreateInvoice(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMutationError(null);
     setSuccess(null);
-
-    if (!appointmentId.trim()) {
-      setMutationError("Appointment ID is required.");
-      return;
-    }
-
+    if (!appointmentId.trim()) { setMutationError("Appointment ID is required."); return; }
     setIsMutating(true);
     try {
       const created = await createInvoice({ appointmentId: appointmentId.trim() });
@@ -96,22 +93,13 @@ export default function InvoicesPage() {
 
   async function handleRecordPayment(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!paymentInvoice) {
-      return;
-    }
-
+    if (!paymentInvoice) return;
     setMutationError(null);
     setSuccess(null);
-    if (!paymentMethod.trim()) {
-      setMutationError("Payment method is required.");
-      return;
-    }
-
+    if (!paymentMethod.trim()) { setMutationError("Payment method is required."); return; }
     setIsMutating(true);
     try {
-      const paid = await recordInvoicePayment(paymentInvoice.invoiceId, {
-        paymentMethod: paymentMethod.trim(),
-      });
+      const paid = await recordInvoicePayment(paymentInvoice.invoiceId, { paymentMethod: paymentMethod.trim() });
       setSuccess(paid ? `Invoice ${paid.invoiceId} paid.` : "Payment captured.");
       setPaymentInvoice(null);
       setPaymentMethod("");
@@ -139,339 +127,237 @@ export default function InvoicesPage() {
   }
 
   const filteredInvoices = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) {
-      return invoices;
-    }
-
-    return invoices.filter((invoice) => {
-      const haystack = [
-        invoice.invoiceId,
-        invoice.patientFullName,
-        invoice.patientId,
-        invoice.doctorName,
-        invoice.departmentName,
-        invoice.status,
-      ]
-        .join(" ")
-        .toLowerCase();
-      return haystack.includes(normalizedQuery);
-    });
+    const q = query.trim().toLowerCase();
+    if (!q) return invoices;
+    return invoices.filter((inv) =>
+      [inv.invoiceId, inv.patientFullName, inv.patientId, inv.doctorName, inv.departmentName, inv.status]
+        .join(" ").toLowerCase().includes(q),
+    );
   }, [invoices, query]);
 
   const totals = useMemo(() => invoiceTotals(invoices), [invoices]);
+  const totalPages = Math.max(1, Math.ceil(filteredInvoices.length / PAGE_SIZE));
+  const paged = filteredInvoices.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
-    <main>
-      <header className="flex justify-between items-center px-8 h-16 w-full sticky top-0 z-50 bg-[#fcf9f8] dark:bg-[#171717]">
-        <div className="flex items-center flex-1">
-          <div className="relative w-full max-w-md">
-            <HcIcon name="search" className="absolute left-0 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg" />
-            <input
-              aria-label="Search patients or invoices"
-              className="w-full bg-transparent border-none focus:ring-0 pl-8 font-['Public_Sans'] font-semibold uppercase text-[10px] tracking-widest placeholder:text-outline-variant"
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="SEARCH PATIENTS OR INVOICES..."
-              type="search"
-              value={query}
-            />
-          </div>
-        </div>
-        <div className="flex items-center gap-6">
-          <button className="hover:bg-[#f6f3f2] dark:hover:bg-[#262626] p-2 transition-all" disabled type="button">
-            <HcIcon name="notifications" className="text-lg" />
-          </button>
-          <button className="hover:bg-[#f6f3f2] dark:hover:bg-[#262626] p-2 transition-all" disabled type="button">
-            <HcIcon name="history" className="text-lg" />
-          </button>
-          <div className="flex items-center gap-3 pl-4 border-l border-outline-variant/20">
-            <span className="font-['Public_Sans'] font-semibold uppercase text-[10px] tracking-widest">FINANCE</span>
-            <HcIcon name="account_circle" className="text-3xl text-primary" />
-          </div>
-        </div>
-      </header>
-
-      <div className="flex-1 p-8 space-y-8">
-        <div className="flex justify-between items-end">
-          <div>
-            <h2 className="text-4xl font-light tracking-tight text-on-surface">Financial Ledger</h2>
-            <p className="font-semibold uppercase text-[10px] tracking-[0.2em] text-primary mt-2">Centralized Billing &amp; Invoice Control</p>
-          </div>
-          <div className="flex gap-1">
-            <button className="bg-surface-container-high text-on-surface px-6 py-3 font-semibold text-[10px] tracking-widest uppercase opacity-60" disabled type="button">Export CSV</button>
+    <main className="p-8 pb-20 max-w-[1400px] mx-auto">
+      <PageHeader
+        categoryLabel="FINANCE"
+        title="Financial Ledger"
+        description="Centralized billing & invoice control."
+        action={
+          <div className="flex gap-2">
             <button
-              className="bg-primary-container text-white px-6 py-3 font-semibold text-[10px] tracking-widest uppercase hover:bg-primary transition-colors flex items-center disabled:opacity-60"
-              disabled={isMutating}
-              onClick={() => {
-                setIsCreateOpen(true);
-                setMutationError(null);
-                setSuccess(null);
-              }}
               type="button"
+              onClick={loadInvoices as () => void}
+              disabled={isLoading}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors disabled:opacity-50"
             >
-              <HcIcon name="receipt_long" className="mr-2 text-sm" />
-              Create Invoice
+              <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} /> Refresh
+            </button>
+            <button
+              type="button"
+              className="hc-button-primary flex items-center gap-2"
+              disabled={isMutating}
+              onClick={() => { setIsCreateOpen(true); setMutationError(null); setSuccess(null); }}
+            >
+              <FileText className="w-4 h-4" /> Create Invoice
             </button>
           </div>
-        </div>
+        }
+      />
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-0">
-          <KpiCard label="Total Issued" value={formatCurrency(totals.totalIssued)} note={`${invoices.length} API invoices`} />
-          <KpiCard label="Pending Payment" value={formatCurrency(totals.unpaid)} note={`${totals.unpaidCount} unpaid`} accent="text-tertiary" />
-          <KpiCard label="Paid In Full" value={formatCurrency(totals.paid)} note={`${totals.paidCount} paid`} accent="text-green-600" />
-          <KpiCard label="Voided/Canceled" value={formatCurrency(totals.cancelled)} note={`${totals.cancelledCount} cancelled`} accent="text-error" />
-        </div>
+      {/* KPI Cards */}
+      <section className="mt-8 hc-kpi-grid">
+        <KpiCard label="Total Issued" value={formatCurrency(totals.totalIssued)} helper={`${invoices.length} invoices`} icon={DollarSign} tone="blue" />
+        <KpiCard label="Pending Payment" value={formatCurrency(totals.unpaid)} helper={`${totals.unpaidCount} unpaid`} icon={CreditCard} tone="amber" />
+        <KpiCard label="Paid In Full" value={formatCurrency(totals.paid)} helper={`${totals.paidCount} paid`} icon={Banknote} tone="teal" />
+        <KpiCard label="Voided/Cancelled" value={formatCurrency(totals.cancelled)} helper={`${totals.cancelledCount} cancelled`} icon={XCircle} tone="red" />
+      </section>
 
-        <div className="bg-surface-container-low p-4 flex flex-wrap items-center gap-6">
-          <div className="flex items-center gap-3">
-            <HcIcon name="filter_list" className="text-lg opacity-40" />
-            <span className="font-semibold uppercase text-[10px] tracking-widest">Filter By:</span>
-          </div>
-          <div className="relative group">
-            <select
-              aria-label="Filter invoices by status"
-              className="appearance-none bg-transparent border-b-2 border-outline-variant pr-8 py-1 font-semibold uppercase text-[10px] tracking-widest focus:border-primary focus:ring-0 cursor-pointer"
-              onChange={(event) => setStatusFilter(event.target.value as InvoiceStatusFilter)}
-              value={statusFilter}
-            >
-              {statusOptions.map((option) => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
-            <HcIcon name="expand_more" className="absolute right-0 top-1 text-sm pointer-events-none" />
-          </div>
-          <div className="relative group">
-            <input
-              aria-label="Date range filter"
-              className="bg-transparent border-b-2 border-outline-variant pr-8 py-1 font-semibold uppercase text-[10px] tracking-widest focus:ring-0"
-              disabled
-              type="text"
-              value="Date range unsupported by API"
-            />
-            <HcIcon name="calendar_today" className="absolute right-0 top-1 text-sm pointer-events-none" />
-          </div>
-          <div className="ml-auto flex items-center gap-4">
-            <p className="font-semibold uppercase text-[10px] tracking-widest opacity-40">Showing {filteredInvoices.length} Results</p>
-          </div>
-        </div>
-
-        {error ? (
-          <div className="border border-error/30 bg-error/10 p-4 text-sm font-medium text-error" role="alert">
-            {error}
-          </div>
-        ) : null}
-
-        {mutationError ? (
-          <div className="border border-error/30 bg-error/10 p-4 text-sm font-medium text-error" role="alert">
-            {mutationError}
-          </div>
-        ) : null}
-
-        {success ? (
-          <div className="border border-primary/20 bg-primary-container/20 p-4 text-sm font-medium text-primary" role="status">
-            {success}
-          </div>
-        ) : null}
-
-        {isLoading ? (
-          <div className="bg-surface-container-lowest p-8 text-sm font-medium text-on-surface-variant">
-            Loading invoices...
-          </div>
-        ) : (
-          <InvoiceTable
-            invoices={filteredInvoices}
-            isMutating={isMutating}
-            onPay={(invoice) => {
-              setPaymentInvoice(invoice);
-              setPaymentMethod("");
-              setMutationError(null);
-              setSuccess(null);
-            }}
-            onVoid={handleVoidInvoice}
+      {/* Filter Bar */}
+      <section className="mt-6 flex flex-wrap items-center gap-3">
+        <div className="relative flex-1 min-w-[200px] max-w-md">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+          <input
+            aria-label="Search patients or invoices"
+            className="hc-input w-full pl-10"
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search patients or invoices…"
+            type="search"
+            value={query}
           />
-        )}
+        </div>
+        <select
+          aria-label="Filter invoices by status"
+          className="hc-input min-w-[160px]"
+          onChange={(e) => setStatusFilter(e.target.value as InvoiceStatusFilter)}
+          value={statusFilter}
+        >
+          {statusOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+      </section>
 
-        <div className="grid grid-cols-12 gap-8">
-          <div className="col-span-12 lg:col-span-8 bg-surface-container-low p-8">
-            <h3 className="font-semibold uppercase text-[10px] tracking-[0.2em] mb-6">Financial Audit Log</h3>
-            <p className="text-sm font-medium text-on-surface-variant">
-              Invoice audit events are not exposed by the current invoice API. Use the admin audit log flow for global audit history.
-            </p>
+      {/* Alerts */}
+      {error && <div className="mt-4 border border-[var(--hc-danger)] bg-[var(--hc-danger-bg)] p-4 rounded-[var(--radius-md)] text-sm font-semibold text-[var(--hc-danger)]" role="alert">{error}</div>}
+      {mutationError && <div className="mt-4 border border-[var(--hc-danger)] bg-[var(--hc-danger-bg)] p-4 rounded-[var(--radius-md)] text-sm font-semibold text-[var(--hc-danger)]" role="alert">{mutationError}</div>}
+      {success && <div className="mt-4 border border-[var(--hc-primary)]/20 bg-[var(--hc-success-bg)] p-4 rounded-[var(--radius-md)] text-sm font-semibold text-[var(--hc-success)]" role="status">{success}</div>}
+
+      {/* Table */}
+      <section className="mt-4 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+        {isLoading ? (
+          <div className="p-12 text-center" aria-busy="true">
+            <div className="inline-block w-6 h-6 border-2 border-slate-200 border-t-[var(--hc-primary)] rounded-full animate-spin" />
+            <p className="mt-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Loading invoices…</p>
           </div>
-          <div className="col-span-12 lg:col-span-4 space-y-8">
-            <div className="bg-primary text-white p-8">
-              <h3 className="font-bold uppercase text-[10px] tracking-[0.2em] mb-4 opacity-80">Collection Target</h3>
-              <p className="text-[10px] font-semibold opacity-70 leading-relaxed uppercase tracking-widest">
-                Collection target reporting belongs to the revenue reports slice.
-              </p>
+        ) : filteredInvoices.length === 0 ? (
+          <div className="p-12 text-center text-sm font-semibold text-slate-400">No invoices match the current filters.</div>
+        ) : (
+          <>
+            <div className="overflow-x-auto">
+              <table className="hc-table w-full">
+                <thead>
+                  <tr>
+                    <th className="hc-th">INVOICE ID</th>
+                    <th className="hc-th">PATIENT</th>
+                    <th className="hc-th">DATE ISSUED</th>
+                    <th className="hc-th">AMOUNT</th>
+                    <th className="hc-th">STATUS</th>
+                    <th className="hc-th text-right">ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {paged.map((invoice) => (
+                    <tr key={invoice.invoiceId} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="hc-td font-mono font-bold text-[var(--hc-primary)]">{invoice.invoiceId}</td>
+                      <td className="hc-td">
+                        <div className="flex items-center gap-3">
+                          <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#E8F0FF] text-[var(--hc-primary)] text-[10px] font-bold">
+                            {initials(invoice.patientFullName)}
+                          </div>
+                          <div>
+                            <span className="font-semibold text-[var(--hc-text)]">{invoice.patientFullName}</span>
+                            <span className="block text-[10px] font-bold text-slate-400">ID: {invoice.patientId}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="hc-td text-sm text-slate-500">{formatDate(invoice.appointmentDate)}</td>
+                      <td className="hc-td text-sm font-bold text-[var(--hc-text)]">{formatCurrency(invoice.totalAmount)}</td>
+                      <td className="hc-td">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-full ${statusClass(invoice.status)}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${statusDot(invoice.status)}`} />
+                          {statusLabel(invoice.status)}
+                        </span>
+                      </td>
+                      <td className="hc-td text-right">
+                        {invoice.status === "UNPAID" ? (
+                          <div className="flex justify-end gap-1.5">
+                            <button
+                              type="button"
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-bold uppercase rounded-[var(--radius-md)] bg-[var(--hc-success-bg)] text-[var(--hc-success)] hover:bg-[var(--hc-success)] hover:text-white transition-colors disabled:opacity-50"
+                              disabled={isMutating}
+                              onClick={() => { setPaymentInvoice(invoice); setPaymentMethod(""); setMutationError(null); setSuccess(null); }}
+                            >
+                              <Banknote className="w-3.5 h-3.5" /> Pay
+                            </button>
+                            <button
+                              type="button"
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-bold uppercase rounded-[var(--radius-md)] bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors disabled:opacity-50"
+                              disabled={isMutating}
+                              onClick={() => handleVoidInvoice(invoice)}
+                            >
+                              <XCircle className="w-3.5 h-3.5" /> Void
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-[10px] font-bold text-slate-400 uppercase">No action</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <div className="bg-surface-container-highest p-8">
-              <h3 className="font-semibold uppercase text-[10px] tracking-[0.2em] mb-4">Automated Billing</h3>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-on-surface-variant leading-normal">
-                Batch billing controls are not exposed by the current backend API.
-              </p>
+
+            {/* Pagination */}
+            <div className="px-6 py-3 flex items-center justify-between border-t border-[var(--hc-border-soft)] text-sm">
+              <span className="text-slate-500">
+                Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filteredInvoices.length)} of {filteredInvoices.length}
+              </span>
+              <div className="flex items-center gap-1">
+                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30">
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
+                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-slate-100"}`}>
+                    {p}
+                  </button>
+                ))}
+                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30">
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
+          </>
+        )}
+      </section>
+
+      {/* Audit Log + Sidebar */}
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
+        <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8">
+          <h3 className="text-sm font-bold text-[var(--hc-text)] mb-2">Financial Audit Log</h3>
+          <p className="text-sm text-slate-500">Invoice audit events are not exposed by the current invoice API. Use the admin audit log flow for global audit history.</p>
+        </div>
+        <div className="space-y-4">
+          <div className="bg-slate-900 rounded-[var(--radius-xl)] p-6">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/70 mb-2">Collection Target</h3>
+            <p className="text-xs text-slate-400 leading-relaxed">Collection target reporting belongs to the revenue reports slice.</p>
+          </div>
+          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Automated Billing</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">Batch billing controls are not exposed by the current backend API.</p>
           </div>
         </div>
       </div>
 
-      {isCreateOpen ? (
+      {/* Create Invoice Dialog */}
+      {isCreateOpen && (
         <Dialog title="Create Invoice" onClose={() => setIsCreateOpen(false)}>
           <form className="space-y-6" onSubmit={handleCreateInvoice}>
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">
-                Completed Appointment ID
-              </label>
-              <input
-                aria-label="Completed Appointment ID"
-                className="w-full bg-surface-container-low border-b-2 border-outline focus:border-primary focus:ring-0 py-3 px-4 font-medium"
-                onChange={(event) => setAppointmentId(event.target.value)}
-                value={appointmentId}
-              />
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Completed Appointment ID</label>
+              <input aria-label="Completed Appointment ID" className="hc-input w-full" onChange={(e) => setAppointmentId(e.target.value)} value={appointmentId} />
             </div>
-            <ModalActions
-              cancelLabel="Cancel"
-              confirmLabel={isMutating ? "Creating..." : "Create Invoice"}
-              disabled={isMutating}
-              onCancel={() => setIsCreateOpen(false)}
-            />
+            <ModalActions cancelLabel="Cancel" confirmLabel={isMutating ? "Creating…" : "Create Invoice"} disabled={isMutating} onCancel={() => setIsCreateOpen(false)} />
           </form>
         </Dialog>
-      ) : null}
+      )}
 
-      {paymentInvoice ? (
-        <Dialog title={`Record Payment ${paymentInvoice.invoiceId}`} onClose={() => setPaymentInvoice(null)}>
+      {/* Payment Dialog */}
+      {paymentInvoice && (
+        <Dialog title={`Record Payment — ${paymentInvoice.invoiceId}`} onClose={() => setPaymentInvoice(null)}>
           <form className="space-y-6" onSubmit={handleRecordPayment}>
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2">
-                Payment Method
-              </label>
-              <input
-                aria-label="Payment Method"
-                className="w-full bg-surface-container-low border-b-2 border-outline focus:border-primary focus:ring-0 py-3 px-4 font-medium"
-                onChange={(event) => setPaymentMethod(event.target.value)}
-                value={paymentMethod}
-              />
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Payment Method</label>
+              <input aria-label="Payment Method" className="hc-input w-full" onChange={(e) => setPaymentMethod(e.target.value)} value={paymentMethod} />
             </div>
-            <ModalActions
-              cancelLabel="Cancel"
-              confirmLabel={isMutating ? "Saving..." : "Record Payment"}
-              disabled={isMutating}
-              onCancel={() => setPaymentInvoice(null)}
-            />
+            <ModalActions cancelLabel="Cancel" confirmLabel={isMutating ? "Saving…" : "Record Payment"} disabled={isMutating} onCancel={() => setPaymentInvoice(null)} />
           </form>
         </Dialog>
-      ) : null}
+      )}
     </main>
   );
 }
 
-function InvoiceTable({
-  invoices,
-  isMutating,
-  onPay,
-  onVoid,
-}: {
-  invoices: InvoiceResponse[];
-  isMutating: boolean;
-  onPay: (invoice: InvoiceResponse) => void;
-  onVoid: (invoice: InvoiceResponse) => void;
-}) {
-  if (invoices.length === 0) {
-    return (
-      <div className="bg-surface-container-lowest p-8 text-sm font-medium text-on-surface-variant">
-        No invoices match the current filters.
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-surface-container-lowest overflow-hidden">
-      <table className="w-full text-left border-collapse">
-        <thead className="bg-surface-container-high">
-          <tr>
-            <HeaderCell>Invoice ID</HeaderCell>
-            <HeaderCell>Patient Details</HeaderCell>
-            <HeaderCell>Date Issued</HeaderCell>
-            <HeaderCell>Total Amount</HeaderCell>
-            <HeaderCell>Status</HeaderCell>
-            <HeaderCell alignRight>Actions</HeaderCell>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-surface-container-low">
-          {invoices.map((invoice) => (
-            <tr className="hover:bg-surface-container transition-colors group" key={invoice.invoiceId}>
-              <td className="px-6 py-5 font-mono text-[11px] font-bold text-primary">{invoice.invoiceId}</td>
-              <td className="px-6 py-5">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-surface-container-highest flex items-center justify-center font-bold text-[10px]">
-                    {initials(invoice.patientFullName)}
-                  </div>
-                  <div>
-                    <p className="font-bold text-xs uppercase tracking-wider">{invoice.patientFullName}</p>
-                    <p className="text-[10px] opacity-60">ID: {invoice.patientId}</p>
-                  </div>
-                </div>
-              </td>
-              <td className="px-6 py-5 font-semibold text-[11px] opacity-70 uppercase tracking-tighter">{formatDate(invoice.appointmentDate)}</td>
-              <td className="px-6 py-5 font-bold text-xs">{formatCurrency(invoice.totalAmount)}</td>
-              <td className="px-6 py-5">
-                <span className={`px-3 py-1 font-bold text-[9px] uppercase tracking-widest ${statusClass(invoice.status)}`}>
-                  {statusLabel(invoice.status)}
-                </span>
-              </td>
-              <td className="px-6 py-5 text-right">
-                {invoice.status === "UNPAID" ? (
-                  <div className="flex justify-end gap-2">
-                    <button
-                      className="px-3 py-2 bg-primary-container text-white text-[9px] font-bold uppercase tracking-widest disabled:opacity-60"
-                      disabled={isMutating}
-                      onClick={() => onPay(invoice)}
-                      type="button"
-                    >
-                      Pay
-                    </button>
-                    <button
-                      className="px-3 py-2 border border-outline text-[9px] font-bold uppercase tracking-widest disabled:opacity-60"
-                      disabled={isMutating}
-                      onClick={() => onVoid(invoice)}
-                      type="button"
-                    >
-                      Void
-                    </button>
-                  </div>
-                ) : (
-                  <span className="text-[10px] font-semibold uppercase tracking-widest opacity-50">No action</span>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="bg-surface-container-low px-6 py-4 flex items-center justify-between">
-        <p className="font-semibold uppercase text-[10px] tracking-widest">{invoices.length} API-backed items</p>
-        <p className="font-semibold uppercase text-[10px] tracking-widest">Pagination is not exposed by the current invoice API</p>
-      </div>
-    </div>
-  );
-}
-
-function Dialog({
-  children,
-  title,
-  onClose,
-}: {
-  children: ReactNode;
-  title: string;
-  onClose: () => void;
-}) {
+/* ─── Dialog ─── */
+function Dialog({ children, title, onClose }: { children: ReactNode; title: string; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/30 p-6">
-      <div className="w-full max-w-lg bg-surface-container-lowest p-8 shadow-xl">
-        <div className="mb-8 flex items-center justify-between">
-          <h3 className="text-lg font-bold uppercase tracking-widest">{title}</h3>
-          <button aria-label="Close dialog" className="p-2 hover:bg-surface-container-low" onClick={onClose} type="button">
-            <HcIcon name="close" className="text-lg" />
+      <div className="w-full max-w-lg bg-white rounded-[var(--radius-xl)] p-8 shadow-xl">
+        <div className="mb-6 flex items-center justify-between">
+          <h3 className="text-lg font-bold text-[var(--hc-text)]">{title}</h3>
+          <button aria-label="Close dialog" className="p-2 rounded-[var(--radius-md)] hover:bg-slate-100" onClick={onClose} type="button">
+            <XCircle className="w-5 h-5 text-slate-400" />
           </button>
         </div>
         {children}
@@ -480,141 +366,73 @@ function Dialog({
   );
 }
 
-function ModalActions({
-  cancelLabel,
-  confirmLabel,
-  disabled,
-  onCancel,
-}: {
-  cancelLabel: string;
-  confirmLabel: string;
-  disabled: boolean;
-  onCancel: () => void;
-}) {
+function ModalActions({ cancelLabel, confirmLabel, disabled, onCancel }: { cancelLabel: string; confirmLabel: string; disabled: boolean; onCancel: () => void }) {
   return (
     <div className="flex justify-end gap-3">
-      <button
-        className="px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-surface-container-high"
-        disabled={disabled}
-        onClick={onCancel}
-        type="button"
-      >
+      <button type="button" disabled={disabled} onClick={onCancel} className="px-5 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-100 transition-colors">
         {cancelLabel}
       </button>
-      <button
-        className="bg-primary-container text-white px-6 py-3 text-xs font-bold uppercase tracking-widest disabled:opacity-60"
-        disabled={disabled}
-        type="submit"
-      >
+      <button type="submit" disabled={disabled} className="hc-button-primary px-5 py-2.5 text-sm disabled:opacity-60">
         {confirmLabel}
       </button>
     </div>
   );
 }
 
-function HeaderCell({ children, alignRight = false }: { children: string; alignRight?: boolean }) {
-  return (
-    <th className={`px-6 py-4 font-semibold uppercase text-[10px] tracking-[0.2em] border-b border-surface ${alignRight ? "text-right" : ""}`}>
-      {children}
-    </th>
-  );
-}
-
-function KpiCard({
-  label,
-  value,
-  note,
-  accent = "text-primary",
-}: {
-  label: string;
-  value: string;
-  note: string;
-  accent?: string;
-}) {
-  return (
-    <div className="bg-surface-container-highest p-6 border-r border-surface">
-      <p className="font-semibold uppercase text-[10px] tracking-[0.15em] text-on-surface-variant mb-2">{label}</p>
-      <p className="text-3xl font-light tracking-tighter">{value}</p>
-      <p className={`text-[10px] font-bold mt-1 uppercase ${accent}`}>{note}</p>
-    </div>
-  );
-}
-
+/* ─── Helpers ─── */
 function invoiceTotals(invoices: InvoiceResponse[]) {
   return invoices.reduce(
-    (totals, invoice) => {
-      const amount = Number(invoice.totalAmount) || 0;
+    (t, inv) => {
+      const a = Number(inv.totalAmount) || 0;
       return {
-        totalIssued: totals.totalIssued + amount,
-        unpaid: totals.unpaid + (invoice.status === "UNPAID" ? amount : 0),
-        unpaidCount: totals.unpaidCount + (invoice.status === "UNPAID" ? 1 : 0),
-        paid: totals.paid + (invoice.status === "PAID" ? amount : 0),
-        paidCount: totals.paidCount + (invoice.status === "PAID" ? 1 : 0),
-        cancelled: totals.cancelled + (invoice.status === "CANCELLED" ? amount : 0),
-        cancelledCount: totals.cancelledCount + (invoice.status === "CANCELLED" ? 1 : 0),
+        totalIssued: t.totalIssued + a,
+        unpaid: t.unpaid + (inv.status === "UNPAID" ? a : 0),
+        unpaidCount: t.unpaidCount + (inv.status === "UNPAID" ? 1 : 0),
+        paid: t.paid + (inv.status === "PAID" ? a : 0),
+        paidCount: t.paidCount + (inv.status === "PAID" ? 1 : 0),
+        cancelled: t.cancelled + (inv.status === "CANCELLED" ? a : 0),
+        cancelledCount: t.cancelledCount + (inv.status === "CANCELLED" ? 1 : 0),
       };
     },
-    {
-      totalIssued: 0,
-      unpaid: 0,
-      unpaidCount: 0,
-      paid: 0,
-      paidCount: 0,
-      cancelled: 0,
-      cancelledCount: 0,
-    },
+    { totalIssued: 0, unpaid: 0, unpaidCount: 0, paid: 0, paidCount: 0, cancelled: 0, cancelledCount: 0 },
   );
 }
 
 function formatCurrency(value: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(value);
 }
 
 function formatDate(value: string) {
   const date = new Date(`${value}T00:00:00`);
-  if (Number.isNaN(date.getTime())) {
-    return value;
-  }
-
-  return new Intl.DateTimeFormat("en", {
-    year: "numeric",
-    month: "short",
-    day: "2-digit",
-  }).format(date);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("en", { year: "numeric", month: "short", day: "2-digit" }).format(date);
 }
 
 function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("");
+  return name.split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]?.toUpperCase()).join("");
 }
 
 function statusLabel(status: InvoiceStatus) {
-  switch (status) {
-    case "PAID":
-      return "Paid";
-    case "UNPAID":
-      return "Unpaid";
-    case "CANCELLED":
-      return "Cancelled";
-  }
+  const map: Record<InvoiceStatus, string> = { PAID: "Paid", UNPAID: "Unpaid", CANCELLED: "Cancelled" };
+  return map[status];
 }
 
 function statusClass(status: InvoiceStatus) {
-  switch (status) {
-    case "PAID":
-      return "bg-green-100 text-green-800";
-    case "UNPAID":
-      return "bg-tertiary-fixed text-on-tertiary-fixed-variant";
-    case "CANCELLED":
-      return "bg-surface-variant text-on-surface-variant";
-  }
+  const map: Record<InvoiceStatus, string> = {
+    PAID: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
+    UNPAID: "bg-amber-50 text-amber-700",
+    CANCELLED: "bg-slate-100 text-slate-500",
+  };
+  return map[status];
+}
+
+function statusDot(status: InvoiceStatus) {
+  const map: Record<InvoiceStatus, string> = {
+    PAID: "bg-[var(--hc-success)]",
+    UNPAID: "bg-amber-500",
+    CANCELLED: "bg-slate-400",
+  };
+  return map[status];
 }
 
 function errorMessage(caught: unknown, fallback: string) {

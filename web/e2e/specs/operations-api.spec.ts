@@ -169,11 +169,34 @@ test.describe("@ui live operations API screens", () => {
         }),
       });
     });
+    await page.route("**/api/v1/inventory/alerts", async (route) => {
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({
+          success: true,
+          data: [
+            {
+              alertType: "LOW_STOCK",
+              severity: "WARNING",
+              itemId: "item-1",
+              itemName: "Normal Saline 500ml",
+              lotId: null,
+              lotCode: null,
+              quantityOnHand: 18,
+              reorderLevel: 40,
+              expiresOn: null,
+              daysUntilExpiry: null,
+              message: "Normal Saline 500ml is at or below reorder level",
+            },
+          ],
+        }),
+      });
+    });
 
     await page.goto("/admin/monitoring");
     await expect(page.getByTestId("monitoring-snapshot")).toContainText("DEGRADED");
     await expect(page.getByText("2 active alerts")).toBeVisible();
-    await expect(page.getByText("Inventory Alerts")).toBeVisible();
+    await expect(page.getByTestId("monitoring-snapshot")).toContainText("Inventory Alerts");
 
     await page.goto("/admin/audit-logs");
     await expect(page.getByTestId("audit-log-table")).toContainText("QUEUE_CALL_PATIENT");

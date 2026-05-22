@@ -102,4 +102,128 @@ describe("PatientsPage", () => {
     expect(await screen.findByText(/no patients found/i)).toBeInTheDocument();
     expect(screen.queryByText("Sarah J. Miller")).not.toBeInTheDocument();
   });
+
+  it("shows search API errors and non-error fallback copy", async () => {
+    vi.mocked(searchPatientRecords).mockRejectedValueOnce(new Error("Search denied"));
+
+    const { unmount } = render(<PatientsPage />);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Search denied");
+
+    unmount();
+    vi.mocked(searchPatientRecords).mockRejectedValueOnce("network down");
+
+    render(<PatientsPage />);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Unable to search patients");
+  });
+
+  it("shows detail loading and error states for selected patients", async () => {
+    let rejectDetail!: (error: Error) => void;
+    vi.mocked(getPatientRecordDetail).mockImplementationOnce(
+      () => new Promise((_resolve, reject) => {
+        rejectDetail = reject;
+      }),
+    );
+
+    render(<PatientsPage />);
+
+    await userEvent.click(await screen.findByRole("button", { name: /nguyen van a/i }));
+    expect(await screen.findByText(/loading patient detail/i)).toBeInTheDocument();
+
+    rejectDetail(new Error("Detail denied"));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Detail denied");
+  });
+
+  it("shows fallback detail error copy for non-error failures", async () => {
+    vi.mocked(getPatientRecordDetail).mockRejectedValueOnce("network down");
+
+    render(<PatientsPage />);
+
+    await userEvent.click(await screen.findByRole("button", { name: /nguyen van a/i }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Unable to load patient detail");
+  });
+
+  it("renders unknown demographics and empty appointment history honestly", async () => {
+    vi.mocked(searchPatientRecords).mockResolvedValueOnce([
+      {
+        ...patientSummary,
+        patientId: "patient-unknown",
+        fullName: "Unknown Patient",
+        dateOfBirth: "not-a-date",
+        latestAppointmentDate: null,
+        totalAppointments: 0,
+      },
+    ]);
+    vi.mocked(getPatientRecordDetail).mockResolvedValueOnce({
+      ...patientDetail,
+      patientId: "patient-unknown",
+      fullName: "Unknown Patient",
+      phone: "",
+      dateOfBirth: null,
+      bloodType: null,
+      medicalHistory: null,
+      drugAllergies: null,
+      insuranceNumber: null,
+      appointments: [],
+    });
+
+    render(<PatientsPage />);
+
+    await userEvent.click(await screen.findByRole("button", { name: /unknown patient/i }));
+
+    expect(await screen.findByText(/no appointments are recorded/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/not recorded/i).length).toBeGreaterThanOrEqual(3);
+    expect(screen.getByText(/no medical history recorded/i)).toBeInTheDocument();
+    expect(screen.getByText(/no drug allergies recorded/i)).toBeInTheDocument();
+    expect(screen.getByText("Unknown")).toBeInTheDocument();
+  });
+
+  it("keeps detail retry copy when selected detail is unavailable but summary remains", async () => {
+    vi.mocked(searchPatientRecords).mockResolvedValueOnce([patientSummary]);
+    vi.mocked(getPatientRecordDetail).mockResolvedValueOnce(null as unknown as PatientRecordDetailResponse);
+
+    render(<PatientsPage />);
+
+    await userEvent.click(await screen.findByRole("button", { name: /nguyen van a/i }));
+
+    expect(await screen.findByText(/select nguyen van a again/i)).toBeInTheDocument();
+  });
+
+  it("renders age and appointment status variants for clinical history", async () => {
+    vi.mocked(searchPatientRecords).mockResolvedValueOnce([
+      {
+        ...patientSummary,
+        dateOfBirth: null,
+      },
+    ]);
+    vi.mocked(getPatientRecordDetail).mockResolvedValueOnce({
+      ...patientDetail,
+      appointments: [
+        {
+          ...patientDetail.appointments[0],
+          appointmentId: "appointment-active",
+          status: "CHECKED_IN",
+          medicalRecord: null,
+        },
+        {
+          ...patientDetail.appointments[0],
+          appointmentId: "appointment-pending",
+          status: "PENDING",
+          medicalRecord: null,
+        },
+      ],
+    });
+
+    render(<PatientsPage />);
+
+    await userEvent.click(await screen.findByRole("button", { name: /nguyen van a/i }));
+
+    expect(await screen.findByText("CHECKED_IN")).toBeInTheDocument();
+    expect(screen.getByText("PENDING")).toBeInTheDocument();
+    expect(screen.getByText("Unknown")).toBeInTheDocument();
+    expect(screen.queryByText(/diagnosis:/i)).not.toBeInTheDocument();
+  });
 });

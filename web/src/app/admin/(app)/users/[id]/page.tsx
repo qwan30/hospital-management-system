@@ -13,7 +13,7 @@ import {
 } from "@/lib/operations-api";
 
 import { PageHeader } from "@/components/ui/page-header";
-import { DataPanel } from "@/components/ui/data-panel";
+
 import { HcIcon } from "@/components/ui/hc-icon";
 
 type StaffRole = Exclude<UserRole, "PATIENT">;
@@ -137,7 +137,7 @@ export default function AdminUserDetailEditPage() {
 
   return (
     <main>
-      <PageHeader 
+      <PageHeader
         title="Staff Directory"
       />
 
@@ -155,13 +155,13 @@ export default function AdminUserDetailEditPage() {
         ) : null}
 
         {!user ? (
-          <DataPanel className="p-8 text-sm font-medium text-[var(--hc-text-secondary)]">
+          <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl shadow-sm p-8 text-sm font-medium text-[var(--hc-text-secondary)]">
             No user detail was returned for this ID.
-          </DataPanel>
+          </div>
         ) : (
           <div className="grid grid-cols-12 gap-8">
             <form className="col-span-12 lg:col-span-8" noValidate onSubmit={handleSubmit}>
-              <DataPanel className="p-8 grid grid-cols-2 gap-5">
+              <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl shadow-sm p-8 grid grid-cols-2 gap-5">
                 <FormInput label="Full Name" onChange={(value) => setForm({ ...form, fullName: value })} required value={form.fullName} />
                 <FormInput label="Email" onChange={(value) => setForm({ ...form, email: value })} required type="email" value={form.email} />
                 <FormInput label="Phone" onChange={(value) => setForm({ ...form, phone: value })} value={form.phone} />
@@ -191,18 +191,18 @@ export default function AdminUserDetailEditPage() {
                     {isSaving ? "Saving..." : "Save User"}
                   </button>
                 </div>
-              </DataPanel>
+              </div>
             </form>
 
             <aside className="col-span-12 lg:col-span-4 space-y-4">
-              <DataPanel className="p-6">
+              <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl shadow-sm p-6">
                 <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">User ID</div>
                 <div className="text-sm font-mono break-all text-[var(--hc-text)]">{user.userId}</div>
-              </DataPanel>
-              <DataPanel className="p-6">
+              </div>
+              <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl shadow-sm p-6">
                 <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">Department</div>
                 <div className="text-2xl font-light text-[var(--hc-text)]">{user.departmentName || "Unassigned"}</div>
-              </DataPanel>
+              </div>
               <button
                 className="w-full hc-button-secondary disabled:opacity-60"
                 disabled={isSaving}

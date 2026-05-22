@@ -8,12 +8,12 @@ export default function PatientBillingPage() {
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-8">
       <div className="flex justify-between items-start">
-        <PageHeader 
+        <PageHeader
           title="Billing"
           description="Track recent invoices, insurance processing, and patient balances from one patient-facing workspace."
           className="mb-0"
         />
-        <Link 
+        <Link
           href="/portal/support"
           className="hc-button-secondary"
         >
@@ -74,19 +74,19 @@ export default function PatientBillingPage() {
                   <h3 className="text-base font-bold text-[var(--hc-text)] mt-1">{row.title}</h3>
                   <p className="text-sm text-[var(--hc-text-secondary)] mt-1">{row.detail}</p>
                 </div>
-                <span className={`hc-badge ${row.status === 'Open' ? 'bg-[var(--hc-danger-bg)] text-[var(--hc-danger)] border-[var(--hc-danger)]' : row.status === 'Pending' ? 'bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] border-[var(--hc-blue-200)]' : 'bg-[var(--hc-surface-soft)] border-[var(--hc-border)] text-[var(--hc-text-secondary)]'} whitespace-nowrap`}>
+                <span className={`hc-badge ${row.status === 'Open' ? 'bg-[var(--hc-danger-bg)] text-[var(--hc-danger)] border-[var(--hc-danger)]' : row.status === 'Pending' ? 'bg-[var(--hc-primary-bg)] text-[var(--hc-primary)] border-[var(--hc-primary)]' : 'bg-[var(--hc-surface-soft)] border-[var(--hc-border)] text-[var(--hc-text-secondary)]'} whitespace-nowrap`}>
                   {row.status}
                 </span>
               </div>
             ))}
           </div>
         </div>
-        
+
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-[var(--radius-lg)] p-6 border border-[var(--hc-border)] shadow-[var(--shadow-card)]">
-            <span className="text-[11px] font-bold text-[var(--hc-blue-600)] uppercase tracking-widest mb-4 block">Revenue cycle desk</span>
+          <div className="bg-[var(--hc-surface)] rounded-[var(--radius-lg)] p-6 border border-[var(--hc-border)] shadow-[var(--shadow-card)]">
+            <span className="text-[11px] font-bold text-[var(--hc-primary)] uppercase tracking-widest mb-4 block">Revenue cycle desk</span>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-full bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-[var(--hc-primary-bg)] text-[var(--hc-primary)] flex items-center justify-center">
                 <HcIcon name="support_agent" className="text-lg" />
               </div>
               <h3 className="text-base font-bold text-[var(--hc-text)]">Billing support hours</h3>

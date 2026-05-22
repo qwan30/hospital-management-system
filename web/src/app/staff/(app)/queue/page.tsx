@@ -2,6 +2,17 @@
 
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
+  AlertTriangle,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  PlayCircle,
+  RefreshCw,
+  SkipForward,
+  UserCheck,
+  Users,
+} from "lucide-react";
+import {
   assignQueueRoom,
   callQueuePatient,
   checkInAppointment,
@@ -32,8 +43,9 @@ import {
   type QueueError,
   type QueueFilter,
 } from "@/lib/staff-queue";
+import { PageHeader } from "@/components/ui/page-header";
+import { KpiCard } from "@/components/ui/kpi-card";
 
-import { HcIcon } from "@/components/ui/hc-icon";
 const DEFAULT_CONSULT_ROOM = "Consult Room 1";
 
 type QueueAction = "call" | "assign-room" | "skip" | "start-consultation" | "complete";
@@ -61,7 +73,6 @@ export default function QueueBoardPage() {
         getTodayQueue(),
         getTodayAppointments(),
       ]);
-
       setAppointments(mergeAppointments(todayAppointments, queueAppointments));
     } catch (loadError) {
       setAppointments([]);
@@ -71,86 +82,54 @@ export default function QueueBoardPage() {
     }
   }, []);
 
-  useEffect(() => {
-    void loadQueue();
-  }, [loadQueue]);
+  useEffect(() => { void loadQueue(); }, [loadQueue]);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      setNow(new Date());
-    }, 30_000);
-
+    const timer = window.setInterval(() => setNow(new Date()), 30_000);
     return () => window.clearInterval(timer);
   }, []);
 
   const displayableAppointments = useMemo(
-    () => appointments.filter((appointment) => getQueueFilter(appointment)),
+    () => appointments.filter((a) => getQueueFilter(a)),
     [appointments],
   );
 
   const filteredAppointments = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-
-    return displayableAppointments.filter((appointment) => {
-      const matchesTab = getQueueFilter(appointment) === activeFilter;
+    return displayableAppointments.filter((a) => {
+      const matchesTab = getQueueFilter(a) === activeFilter;
       const matchesQuery =
         !normalizedQuery ||
-        [
-          appointment.patientFullName,
-          appointment.patientPhone,
-          appointment.patientCccd,
-          appointment.confirmationCode,
-          appointment.doctorName,
-        ]
+        [a.patientFullName, a.patientPhone, a.patientCccd, a.confirmationCode, a.doctorName]
           .join(" ")
           .toLowerCase()
           .includes(normalizedQuery);
-
       return matchesTab && matchesQuery;
     });
   }, [activeFilter, displayableAppointments, query]);
 
-  const summary = useMemo(
-    () => ({
-      activePatients: displayableAppointments.length,
-      averageWaitMinutes: calculateAverageWaitMinutes(displayableAppointments, now),
-      physicianLoads: calculatePhysicianLoads(displayableAppointments),
-    }),
-    [displayableAppointments, now],
-  );
+  const summary = useMemo(() => ({
+    activePatients: displayableAppointments.length,
+    averageWaitMinutes: calculateAverageWaitMinutes(displayableAppointments, now),
+    physicianLoads: calculatePhysicianLoads(displayableAppointments),
+  }), [displayableAppointments, now]);
 
   const handleCheckIn = async (appointment: ClinicalAppointmentResponse) => {
     setCheckingInId(appointment.appointmentId);
-    setRowErrors((current) => removeRecordKey(current, appointment.appointmentId));
-
+    setRowErrors((c) => removeRecordKey(c, appointment.appointmentId));
     try {
-      const updatedAppointment = await checkInAppointment(appointment.appointmentId, {
+      const updated = await checkInAppointment(appointment.appointmentId, {
         checkedInAt: toLocalIsoDateTime(new Date()),
       });
-
-      setAppointments((current) =>
-        mergeAppointments(
-          current.map((currentAppointment) =>
-            currentAppointment.appointmentId === updatedAppointment.appointmentId
-              ? updatedAppointment
-              : currentAppointment,
-          ),
-          [updatedAppointment],
-        ),
+      setAppointments((c) =>
+        mergeAppointments(c.map((a) => (a.appointmentId === updated.appointmentId ? updated : a)), [updated]),
       );
       setActiveFilter("ready");
-    } catch (checkInError) {
-      setRowErrors((current) => ({
-        ...current,
-        [appointment.appointmentId]: getErrorMessage(checkInError),
-      }));
+    } catch (e) {
+      setRowErrors((c) => ({ ...c, [appointment.appointmentId]: getErrorMessage(e) }));
     } finally {
       setCheckingInId(null);
     }
-  };
-
-  const applyAppointmentUpdate = (updatedAppointment: ClinicalAppointmentResponse) => {
-    setAppointments((current) => mergeAppointments(current, [updatedAppointment]));
   };
 
   const handleQueueAction = async (
@@ -160,505 +139,351 @@ export default function QueueBoardPage() {
     nextFilter?: QueueFilter,
   ) => {
     setPendingAction({ appointmentId: appointment.appointmentId, action });
-    setRowErrors((current) => removeRecordKey(current, appointment.appointmentId));
-
+    setRowErrors((c) => removeRecordKey(c, appointment.appointmentId));
     try {
-      const updatedAppointment = await execute();
-      applyAppointmentUpdate(updatedAppointment);
-      if (nextFilter) {
-        setActiveFilter(nextFilter);
-      }
-    } catch (queueActionError) {
-      setRowErrors((current) => ({
-        ...current,
-        [appointment.appointmentId]: getErrorMessage(queueActionError),
-      }));
+      const updated = await execute();
+      setAppointments((c) => mergeAppointments(c, [updated]));
+      if (nextFilter) setActiveFilter(nextFilter);
+    } catch (e) {
+      setRowErrors((c) => ({ ...c, [appointment.appointmentId]: getErrorMessage(e) }));
     } finally {
       setPendingAction(null);
     }
   };
 
+  /* ─── Loading ─── */
   if (isLoading) {
     return (
-      <main className="p-8" aria-busy="true">
-        <QueueHeader
-          activePatients={0}
-          averageWaitMinutes={0}
-          onRefresh={loadQueue}
-          isRefreshDisabled
-        />
-        <section className="mt-8 bg-hc-surface-container-low p-8">
-          <p className="text-xs font-bold uppercase tracking-[0.24em] text-hc-on-surface-variant">
-            Loading today&apos;s nurse queue...
-          </p>
-        </section>
+      <main className="p-8 pb-20 max-w-[1400px] mx-auto" aria-busy="true">
+        <PageHeader categoryLabel="QUEUE" title="Queue Board" description="Live nurse queue — today" />
+        <div className="mt-8 p-12 text-center bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm">
+          <div className="inline-block w-6 h-6 border-2 border-slate-200 border-t-[var(--hc-primary)] rounded-full animate-spin" />
+          <p className="mt-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Loading today&apos;s nurse queue…</p>
+        </div>
       </main>
     );
   }
 
+  /* ─── Error ─── */
   if (error) {
     const isAuthError = error.status === 401 || error.status === 403;
-
     return (
-      <main className="p-8">
-        <QueueHeader
-          activePatients={0}
-          averageWaitMinutes={0}
-          onRefresh={loadQueue}
-          isRefreshDisabled={isLoading}
-        />
+      <main className="p-8 pb-20 max-w-[1400px] mx-auto">
+        <PageHeader categoryLabel="QUEUE" title="Queue Board" description="Live nurse queue — today" />
         <section
-          className="mt-8 border border-hc-error-container bg-white p-8"
+          className="mt-8 border border-[var(--hc-danger)] bg-[var(--hc-danger-bg)] p-8 rounded-[var(--radius-xl)]"
           data-testid={isAuthError ? "queue-unauthorized" : "queue-load-error"}
           role="alert"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.24em] text-hc-error">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-danger)] mb-2">
             {isAuthError ? "Queue access unavailable" : "Queue load failed"}
           </p>
-          <h2 className="mt-3 text-2xl font-light text-hc-on-surface">
-            {error.message}
-          </h2>
+          <h2 className="text-xl font-bold text-[var(--hc-text)]">{error.message}</h2>
           <button
-            className="mt-6 bg-hc-primary-container px-4 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-hc-primary"
+            className="mt-4 hc-button-primary flex items-center gap-2"
             type="button"
             onClick={loadQueue}
           >
-            Retry
+            <RefreshCw className="w-4 h-4" /> Retry
           </button>
         </section>
       </main>
     );
   }
 
+  /* ─── Main Render ─── */
   return (
-    <main className="p-8" data-testid="queue-board">
-      <QueueHeader
-        activePatients={summary.activePatients}
-        averageWaitMinutes={summary.averageWaitMinutes}
-        onRefresh={loadQueue}
-        isRefreshDisabled={isLoading}
+    <main className="p-8 pb-20 max-w-[1400px] mx-auto" data-testid="queue-board">
+      <PageHeader
+        categoryLabel="QUEUE"
+        title="Queue Board"
+        description="Live nurse queue — today"
+        action={
+          <button
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors disabled:opacity-50"
+            type="button"
+            onClick={loadQueue}
+            disabled={isLoading}
+          >
+            <RefreshCw className="w-4 h-4" /> Refresh
+          </button>
+        }
       />
 
-      <section className="border-b border-hc-outline-variant/20 bg-hc-surface-container-low p-4">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex bg-white">
-            {filterOptions.map((option) => (
-              <button
-                key={option.value}
-                aria-pressed={activeFilter === option.value}
-                className={`px-6 py-2 text-xs font-bold uppercase tracking-widest transition-colors ${
-                  activeFilter === option.value
-                    ? "bg-hc-primary-container text-white"
-                    : "text-hc-on-surface hover:bg-hc-surface-container-high"
-                }`}
-                type="button"
-                onClick={() => setActiveFilter(option.value)}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
+      {/* KPI Row */}
+      <section className="mt-8 hc-kpi-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+        <KpiCard label="Active Patients" value={String(summary.activePatients)} icon={Users} tone="blue" />
+        <KpiCard label="Average Wait" value={`${summary.averageWaitMinutes}m`} icon={Clock} tone="teal" />
+        <KpiCard label="Physician Coverage" value={String(summary.physicianLoads.length)} helper="Active physicians" icon={UserCheck} tone="purple" />
+      </section>
 
-          <label className="relative w-full lg:w-96">
-            <HcIcon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-hc-outline" />
-            <span className="sr-only">Filter queue</span>
-            <input
-              className="w-full border-0 border-b-2 border-hc-outline bg-hc-surface-container-lowest py-2 pl-10 text-xs font-medium uppercase tracking-widest outline-none transition-colors focus:border-hc-primary"
-              placeholder="FILTER QUEUE..."
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-            />
-          </label>
+      {/* Filter Bar */}
+      <section className="mt-6 flex flex-wrap items-center gap-3">
+        <div className="flex items-center p-1 bg-slate-100 rounded-[var(--radius-md)]">
+          {filterOptions.map((option) => (
+            <button
+              key={option.value}
+              aria-pressed={activeFilter === option.value}
+              className={`px-5 py-2 text-xs font-bold uppercase tracking-wider rounded-[var(--radius-sm)] transition-colors ${
+                activeFilter === option.value
+                  ? "bg-[var(--hc-primary)] text-white shadow-sm"
+                  : "text-slate-500 hover:bg-white/70"
+              }`}
+              type="button"
+              onClick={() => setActiveFilter(option.value)}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+        <div className="relative flex-1 min-w-[200px] max-w-sm">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+          <input
+            aria-label="Filter queue"
+            className="hc-input w-full pl-10"
+            placeholder="Filter queue…"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
         </div>
       </section>
 
-      <section className="overflow-x-auto bg-white">
-        <table className="w-full border-collapse text-left">
-          <thead>
-            <tr className="bg-hc-surface-container text-[10px] font-bold uppercase tracking-[0.2em] text-hc-outline">
-              <th className="px-4 py-3">Queue #</th>
-              <th className="px-4 py-3">Patient</th>
-              <th className="px-4 py-3">Doctor</th>
-              <th className="px-4 py-3">Checked-in at</th>
-              <th className="px-4 py-3">Wait Duration</th>
-              <th className="px-4 py-3">State</th>
-              <th className="px-4 py-3 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="text-sm">
-            {filteredAppointments.length > 0 ? (
-              filteredAppointments.map((appointment) => (
-                <QueueRow
-                  key={appointment.appointmentId}
-                  appointment={appointment}
-                  now={now}
-                  isCheckingIn={checkingInId === appointment.appointmentId}
-                  pendingAction={
-                    pendingAction?.appointmentId === appointment.appointmentId
-                      ? pendingAction.action
-                      : null
-                  }
-                  rowError={rowErrors[appointment.appointmentId]}
-                  onCheckIn={handleCheckIn}
-                  onCall={(selectedAppointment) =>
-                    handleQueueAction(selectedAppointment, "call", () =>
-                      callQueuePatient(selectedAppointment.appointmentId),
-                    )
-                  }
-                  onAssignRoom={(selectedAppointment) =>
-                    handleQueueAction(selectedAppointment, "assign-room", () =>
-                      assignQueueRoom(selectedAppointment.appointmentId, {
-                        roomName: DEFAULT_CONSULT_ROOM,
-                      }),
-                    )
-                  }
-                  onSkip={(selectedAppointment) =>
-                    handleQueueAction(selectedAppointment, "skip", () =>
-                      skipQueuePatient(selectedAppointment.appointmentId),
-                    )
-                  }
-                  onStartConsultation={(selectedAppointment) =>
-                    handleQueueAction(
-                      selectedAppointment,
-                      "start-consultation",
-                      () => startQueueConsultation(selectedAppointment.appointmentId),
-                      "in_progress",
-                    )
-                  }
-                  onCompleteVisit={(selectedAppointment) =>
-                    handleQueueAction(
-                      selectedAppointment,
-                      "complete",
-                      () => completeQueueVisit(selectedAppointment.appointmentId),
-                    )
-                  }
-                />
-              ))
-            ) : (
+      {/* Table */}
+      <section className="mt-4 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="hc-table w-full">
+            <thead>
               <tr>
-                <td
-                  className="px-4 py-12 text-center text-sm font-semibold text-hc-on-surface-variant"
-                  colSpan={7}
-                  data-testid="queue-empty"
-                >
-                  {displayableAppointments.length === 0
-                    ? "No appointments are currently in the staff queue."
-                    : "No appointments match this queue filter."}
-                </td>
+                <th className="hc-th">QUEUE #</th>
+                <th className="hc-th">PATIENT</th>
+                <th className="hc-th">DOCTOR</th>
+                <th className="hc-th">CHECKED-IN AT</th>
+                <th className="hc-th">WAIT DURATION</th>
+                <th className="hc-th">STATE</th>
+                <th className="hc-th text-right">ACTIONS</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredAppointments.length > 0 ? (
+                filteredAppointments.map((appointment) => (
+                  <QueueRow
+                    key={appointment.appointmentId}
+                    appointment={appointment}
+                    now={now}
+                    isCheckingIn={checkingInId === appointment.appointmentId}
+                    pendingAction={
+                      pendingAction?.appointmentId === appointment.appointmentId
+                        ? pendingAction.action
+                        : null
+                    }
+                    rowError={rowErrors[appointment.appointmentId]}
+                    onCheckIn={handleCheckIn}
+                    onCall={(a) => handleQueueAction(a, "call", () => callQueuePatient(a.appointmentId))}
+                    onAssignRoom={(a) => handleQueueAction(a, "assign-room", () => assignQueueRoom(a.appointmentId, { roomName: DEFAULT_CONSULT_ROOM }))}
+                    onSkip={(a) => handleQueueAction(a, "skip", () => skipQueuePatient(a.appointmentId))}
+                    onStartConsultation={(a) => handleQueueAction(a, "start-consultation", () => startQueueConsultation(a.appointmentId), "in_progress")}
+                    onCompleteVisit={(a) => handleQueueAction(a, "complete", () => completeQueueVisit(a.appointmentId))}
+                  />
+                ))
+              ) : (
+                <tr>
+                  <td className="hc-td text-center py-12 text-slate-400" colSpan={7} data-testid="queue-empty">
+                    {displayableAppointments.length === 0
+                      ? "No appointments are currently in the staff queue."
+                      : "No appointments match this queue filter."}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-3 border-t border-[var(--hc-border-soft)] flex flex-wrap items-center justify-between text-sm text-slate-500">
+          <span>Displaying {filteredAppointments.length} of {displayableAppointments.length} queue patients</span>
+          <div className="flex gap-4">
+            <span className="flex items-center gap-1.5 text-xs"><span className="w-2 h-2 rounded-full bg-[var(--hc-success)]" /> Within target</span>
+            <span className="flex items-center gap-1.5 text-xs"><span className="w-2 h-2 rounded-full bg-amber-500" /> Review required</span>
+            <span className="flex items-center gap-1.5 text-xs"><span className="w-2 h-2 rounded-full bg-[var(--hc-danger)]" /> SLA breach</span>
+          </div>
+        </div>
       </section>
 
-      <footer className="mt-8 flex flex-col gap-4 text-xs font-bold uppercase tracking-widest text-hc-outline lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          Displaying {filteredAppointments.length} of {displayableAppointments.length} queue
-          patients
-        </div>
-        <div className="flex flex-wrap gap-4">
-          <span className="flex items-center gap-1">
-            <span className="h-2 w-2 bg-hc-secondary" /> Within target
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="h-2 w-2 bg-hc-tertiary" /> Review required
-          </span>
-          <span className="flex items-center gap-1">
-            <span className="h-2 w-2 bg-hc-error" /> SLA breach
-          </span>
-        </div>
-      </footer>
-
+      {/* Physician Allocation */}
       <PhysicianAllocation loads={summary.physicianLoads} />
     </main>
   );
 }
 
-function QueueHeader({
-  activePatients,
-  averageWaitMinutes,
-  isRefreshDisabled,
-  onRefresh,
-}: {
-  activePatients: number;
-  averageWaitMinutes: number;
-  isRefreshDisabled: boolean;
-  onRefresh: () => void;
-}) {
-  return (
-    <header className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-      <div>
-        <h1 className="mb-2 text-4xl font-light tracking-tight text-hc-on-surface">
-          Queue Board
-        </h1>
-        <p className="text-sm font-medium uppercase tracking-widest text-hc-on-surface-variant">
-          Live nurse queue - today
-        </p>
-      </div>
-      <div className="flex flex-wrap gap-4">
-        <div className="flex flex-col justify-center bg-hc-surface-container-highest px-6 py-4">
-          <span className="text-xs font-bold uppercase tracking-tighter text-hc-outline">
-            Average Wait
-          </span>
-          <span className="text-2xl font-semibold text-hc-primary">
-            {averageWaitMinutes}m
-          </span>
-        </div>
-        <div className="flex flex-col justify-center bg-hc-surface-container-highest px-6 py-4">
-          <span className="text-xs font-bold uppercase tracking-tighter text-hc-outline">
-            Active Patients
-          </span>
-          <span className="text-2xl font-semibold text-hc-on-surface">
-            {activePatients}
-          </span>
-        </div>
-        <button
-          className="flex items-center gap-2 bg-hc-primary-container px-4 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-hc-primary disabled:cursor-not-allowed disabled:opacity-60"
-          type="button"
-          onClick={onRefresh}
-          disabled={isRefreshDisabled}
-        >
-          <HcIcon name="refresh" className="text-base" />
-          Refresh
-        </button>
-      </div>
-    </header>
-  );
-}
-
+/* ─── Queue Row ─── */
 function QueueRow({
-  appointment,
-  isCheckingIn,
-  pendingAction,
-  now,
-  rowError,
-  onCheckIn,
-  onCall,
-  onAssignRoom,
-  onSkip,
-  onStartConsultation,
-  onCompleteVisit,
+  appointment, isCheckingIn, pendingAction, now, rowError,
+  onCheckIn, onCall, onAssignRoom, onSkip, onStartConsultation, onCompleteVisit,
 }: {
   appointment: ClinicalAppointmentResponse;
   isCheckingIn: boolean;
   pendingAction: QueueAction | null;
   now: Date;
   rowError?: string;
-  onCheckIn: (appointment: ClinicalAppointmentResponse) => void;
-  onCall: (appointment: ClinicalAppointmentResponse) => void;
-  onAssignRoom: (appointment: ClinicalAppointmentResponse) => void;
-  onSkip: (appointment: ClinicalAppointmentResponse) => void;
-  onStartConsultation: (appointment: ClinicalAppointmentResponse) => void;
-  onCompleteVisit: (appointment: ClinicalAppointmentResponse) => void;
+  onCheckIn: (a: ClinicalAppointmentResponse) => void;
+  onCall: (a: ClinicalAppointmentResponse) => void;
+  onAssignRoom: (a: ClinicalAppointmentResponse) => void;
+  onSkip: (a: ClinicalAppointmentResponse) => void;
+  onStartConsultation: (a: ClinicalAppointmentResponse) => void;
+  onCompleteVisit: (a: ClinicalAppointmentResponse) => void;
 }) {
   const waitMinutes = calculateWaitMinutes(appointment, now);
   const state = getQueueState(appointment);
-  const canCheckIn = !appointment.checkedInAt;
+  const canCheckIn = appointment.status === "CONFIRMED" && !appointment.checkedInAt;
   const isActionPending = pendingAction !== null;
   const isReady = appointment.status === "CHECKED_IN";
   const isInProgress = appointment.status === "IN_PROGRESS";
 
   return (
     <>
-      <tr
-        className="group border-b border-hc-surface-container transition-colors hover:bg-hc-surface-container-low"
-        data-testid="queue-row"
-      >
-        <td className="px-4 py-4 font-bold text-hc-primary">
+      <tr className="hover:bg-slate-50/50 transition-colors" data-testid="queue-row">
+        <td className="hc-td font-mono font-bold text-[var(--hc-primary)]">
           #{appointment.confirmationCode || appointment.appointmentId.slice(0, 8)}
         </td>
-        <td className="px-4 py-4">
-          <div className="flex flex-col">
-            <span className="font-semibold text-hc-on-surface">
-              {appointment.patientFullName}
-            </span>
-            <span className="text-[10px] font-bold uppercase text-hc-outline">
-              ID: {maskIdentifier(appointment.patientCccd)}
-            </span>
+        <td className="hc-td">
+          <div className="flex items-center gap-3">
+            <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#E8F0FF] text-[var(--hc-primary)] text-[10px] font-bold">
+              {appointment.patientFullName.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+            </div>
+            <div>
+              <span className="font-semibold text-[var(--hc-text)]">{appointment.patientFullName}</span>
+              <span className="block text-[10px] font-bold text-slate-400 uppercase">{maskIdentifier(appointment.patientCccd)}</span>
+            </div>
           </div>
         </td>
-        <td className="px-4 py-4 font-medium text-hc-on-surface-variant">
-          {appointment.doctorName}
-        </td>
-        <td className="px-4 py-4 text-hc-on-surface-variant">
-          {appointment.checkedInAt ? formatTime(appointment.checkedInAt) : "Pending"}
-        </td>
-        <td className="px-4 py-4">
-          <span
-            className={`px-2 py-0.5 text-[10px] font-bold uppercase ${getWaitBadgeClass(
-              waitMinutes,
-            )}`}
-          >
+        <td className="hc-td text-sm font-medium text-[var(--hc-text)]">{appointment.doctorName}</td>
+        <td className="hc-td text-sm text-slate-500">{appointment.checkedInAt ? formatTime(appointment.checkedInAt) : "Pending"}</td>
+        <td className="hc-td">
+          <span className={`inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase rounded-full ${getWaitBadgeClass(waitMinutes)}`}>
             {formatWait(waitMinutes)}
           </span>
         </td>
-        <td className="px-4 py-4">
-          <span className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest">
-            <span className={`h-1.5 w-1.5 ${state.dotClass}`} />
+        <td className="hc-td">
+          <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider">
+            <span className={`h-2 w-2 rounded-full ${state.dotClass}`} />
             {state.label}
           </span>
         </td>
-        <td className="px-4 py-4 text-right">
-          {canCheckIn ? (
+        <td className="hc-td text-right">
+          {canCheckIn && (
             <button
               aria-label={`Check in ${appointment.patientFullName}`}
-              className="bg-hc-primary-container px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-hc-primary disabled:cursor-not-allowed disabled:opacity-60"
+              className="hc-button-primary text-xs px-3 py-2"
               type="button"
               onClick={() => onCheckIn(appointment)}
               disabled={isCheckingIn}
             >
-              {isCheckingIn ? "Checking in" : "Check in"}
+              {isCheckingIn ? "Checking in…" : "Check in"}
             </button>
-          ) : null}
-          {isReady ? (
-            <div className="flex flex-col items-end gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-hc-on-surface-variant">
-                Checked in
-              </span>
-              <div className="flex flex-wrap justify-end gap-2">
-                <QueueActionButton
-                  ariaLabel={`Call ${appointment.patientFullName}`}
-                  disabled={isActionPending}
-                  isPending={pendingAction === "call"}
-                  onClick={() => onCall(appointment)}
-                >
-                  Call
-                </QueueActionButton>
-                <QueueActionButton
-                  ariaLabel={`Assign room ${appointment.patientFullName}`}
-                  disabled={isActionPending}
-                  isPending={pendingAction === "assign-room"}
-                  onClick={() => onAssignRoom(appointment)}
-                >
-                  Room
-                </QueueActionButton>
-                <QueueActionButton
-                  ariaLabel={`Start consultation ${appointment.patientFullName}`}
-                  disabled={isActionPending}
-                  isPending={pendingAction === "start-consultation"}
-                  onClick={() => onStartConsultation(appointment)}
-                >
-                  Start
-                </QueueActionButton>
-                <QueueActionButton
-                  ariaLabel={`Skip ${appointment.patientFullName}`}
-                  disabled={isActionPending}
-                  isPending={pendingAction === "skip"}
-                  onClick={() => onSkip(appointment)}
-                >
-                  Skip
-                </QueueActionButton>
-              </div>
+          )}
+          {isReady && (
+            <div className="flex flex-wrap justify-end gap-1.5">
+              <ActionBtn icon={<ChevronRight className="w-3.5 h-3.5" />} label="Call" aria={`Call ${appointment.patientFullName}`} disabled={isActionPending} pending={pendingAction === "call"} onClick={() => onCall(appointment)} />
+              <ActionBtn icon={<UserCheck className="w-3.5 h-3.5" />} label="Room" aria={`Assign room ${appointment.patientFullName}`} disabled={isActionPending} pending={pendingAction === "assign-room"} onClick={() => onAssignRoom(appointment)} />
+              <ActionBtn icon={<PlayCircle className="w-3.5 h-3.5" />} label="Start" aria={`Start consultation ${appointment.patientFullName}`} disabled={isActionPending} pending={pendingAction === "start-consultation"} onClick={() => onStartConsultation(appointment)} />
+              <ActionBtn icon={<SkipForward className="w-3.5 h-3.5" />} label="Skip" aria={`Skip ${appointment.patientFullName}`} disabled={isActionPending} pending={pendingAction === "skip"} onClick={() => onSkip(appointment)} tone="muted" />
             </div>
-          ) : null}
-          {isInProgress ? (
-            <div className="flex flex-col items-end gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-hc-primary">
-                In consultation
-              </span>
-              <QueueActionButton
-                ariaLabel={`Complete visit ${appointment.patientFullName}`}
-                disabled={isActionPending}
-                isPending={pendingAction === "complete"}
-                onClick={() => onCompleteVisit(appointment)}
-              >
-                Complete
-              </QueueActionButton>
-            </div>
-          ) : null}
+          )}
+          {isInProgress && (
+            <ActionBtn icon={<CheckCircle2 className="w-3.5 h-3.5" />} label="Complete" aria={`Complete visit ${appointment.patientFullName}`} disabled={isActionPending} pending={pendingAction === "complete"} onClick={() => onCompleteVisit(appointment)} tone="success" />
+          )}
         </td>
       </tr>
-      {rowError ? (
-        <tr className="border-b border-hc-error-container bg-red-50">
-          <td
-            className="px-4 py-3 text-sm font-semibold text-hc-error"
-            colSpan={7}
-            role="alert"
-          >
+      {rowError && (
+        <tr className="border-b border-[var(--hc-danger-bg)]">
+          <td className="hc-td text-sm font-semibold text-[var(--hc-danger)] bg-[var(--hc-danger-bg)]" colSpan={7} role="alert">
             {rowError}
           </td>
         </tr>
-      ) : null}
+      )}
     </>
   );
 }
 
-function QueueActionButton({
-  ariaLabel,
-  children,
-  disabled,
-  isPending,
-  onClick,
+/* ─── Action Button ─── */
+function ActionBtn({
+  icon, label, aria, disabled, pending, onClick, tone = "primary",
 }: {
-  ariaLabel: string;
-  children: ReactNode;
+  icon: ReactNode;
+  label: string;
+  aria: string;
   disabled: boolean;
-  isPending: boolean;
+  pending: boolean;
   onClick: () => void;
+  tone?: "primary" | "muted" | "success";
 }) {
+  const base = "inline-flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-bold uppercase rounded-[var(--radius-md)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
+  const tones: Record<string, string> = {
+    primary: "bg-slate-100 text-[var(--hc-text)] hover:bg-[var(--hc-primary)] hover:text-white",
+    muted: "bg-slate-100 text-slate-500 hover:bg-slate-200",
+    success: "bg-[var(--hc-success-bg)] text-[var(--hc-success)] hover:bg-[var(--hc-success)] hover:text-white",
+  };
+
   return (
     <button
-      aria-label={ariaLabel}
-      className="bg-hc-surface-container-high px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-hc-on-surface transition-colors hover:bg-hc-primary-container hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
+      aria-label={aria}
+      className={`${base} ${tones[tone]}`}
       type="button"
       onClick={onClick}
       disabled={disabled}
     >
-      {isPending ? "Saving" : children}
+      {icon} {pending ? "Saving…" : label}
     </button>
   );
 }
 
+/* ─── Physician Allocation ─── */
 function PhysicianAllocation({ loads }: { loads: PhysicianLoad[] }) {
-  const displayedLoads = loads.slice(0, 3);
+  if (loads.length === 0) return null;
 
   return (
-    <section className="mt-16">
-      <h2 className="mb-6 text-sm font-extrabold uppercase tracking-[0.3em] text-hc-outline">
-        Physician Allocation
-      </h2>
-      <div className="grid grid-cols-12 gap-0">
-        {displayedLoads.length > 0 ? (
-          displayedLoads.map((load) => (
-            <div
-              key={load.doctorId}
-              className="col-span-12 border-b border-r border-hc-surface-container bg-white p-6 md:col-span-4"
-            >
-              <div className="mb-6 flex items-start justify-between">
-                <div>
-                  <p className="mb-1 text-[10px] font-bold uppercase text-hc-primary">
-                    {load.inProgress > 0 ? "In room" : "On duty"}
-                  </p>
-                  <h3 className="text-xl font-semibold uppercase">{load.doctorName}</h3>
-                </div>
-                <HcIcon name="clinical_notes" className="text-hc-outline" />
-              </div>
-              <div className="space-y-4">
-                <div className="flex justify-between text-xs">
-                  <span className="uppercase tracking-wider text-hc-outline">
-                    Queue Load
-                  </span>
-                  <span className="font-bold">{load.total} Patients</span>
-                </div>
-                <div className="h-1 w-full bg-hc-surface-container">
-                  <div
-                    className="h-full bg-hc-primary"
-                    style={{ width: `${Math.min(load.total * 12, 100)}%` }}
-                  />
-                </div>
-                <p className="text-[10px] font-medium leading-relaxed text-hc-on-surface-variant">
-                  {load.waiting} waiting, {load.ready} ready, {load.inProgress} in progress.
+    <section className="mt-8">
+      <h2 className="text-sm font-bold text-[var(--hc-text)] mb-4">Physician Allocation</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {loads.slice(0, 3).map((load) => (
+          <div
+            key={load.doctorId}
+            className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6"
+          >
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-[10px] font-bold uppercase text-[var(--hc-primary)] mb-1">
+                  {load.inProgress > 0 ? "In room" : "On duty"}
                 </p>
+                <h3 className="text-lg font-bold text-[var(--hc-text)]">{load.doctorName}</h3>
               </div>
+              <Activity className="w-5 h-5 text-slate-300" />
             </div>
-          ))
-        ) : (
-          <div className="col-span-12 border border-hc-outline-variant/30 bg-white p-6 text-sm font-semibold text-hc-on-surface-variant">
-            No physician queue load is available yet.
+            <div className="space-y-3">
+              <div className="flex justify-between text-xs">
+                <span className="uppercase tracking-wider text-slate-400">Queue Load</span>
+                <span className="font-bold text-[var(--hc-text)]">{load.total} Patients</span>
+              </div>
+              <div className="h-1.5 w-full bg-slate-100 rounded-full">
+                <div className="h-full bg-[var(--hc-primary)] rounded-full" style={{ width: `${Math.min(load.total * 12, 100)}%` }} />
+              </div>
+              <p className="text-[10px] text-slate-500 leading-relaxed">
+                {load.waiting} waiting, {load.ready} ready, {load.inProgress} in progress.
+              </p>
+            </div>
           </div>
-        )}
+        ))}
       </div>
     </section>
+  );
+}
+
+/* ─── Needed import for PhysicianAllocation ─── */
+function Activity({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+    </svg>
   );
 }

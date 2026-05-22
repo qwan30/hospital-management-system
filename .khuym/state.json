@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.1",
+  "feature_slug": "hms-production-readiness-hardening-2026-05-22",
+  "mode": "degraded-direct-execution",
+  "active_skill": "verification-loop",
+  "phase": "production-readiness-report-complete",
+  "phase_number": 8,
+  "epic_id": "",
+  "approved_gates": {
+    "context": true,
+    "work_shape": true,
+    "phase_plan": true,
+    "execution": true,
+    "review": true
+  },
+  "active_beads": [],
+  "active_workers": [],
+  "blockers": [
+    "GKG CLI is missing from PATH and the GKG server is not reachable/indexed; GitNexus CLI and direct source inspection were used.",
+    "GitNexus detect_changes is unavailable in the installed CLI surface; gitnexus status and git diff checks were used.",
+    "Global git diff --check still fails on pre-existing dirty-tree whitespace outside this production-readiness slice; scoped check over touched files passed.",
+    "Production Ready cannot be claimed until release-owner waivers are approved for BF-07 lab creation depth, BF-09 pharmacy dispensing depth, and BF-11 external notification delivery."
+  ],
+  "focus": "production-readiness-hardening",
+  "summary": "Completed HMS production-readiness hardening pass with synthetic release-demo data. Visual diffs were reviewed route-by-route, snapshots updated after acceptance, npm vulnerabilities remediated to zero, branch coverage raised to 80.08%, production ops smoke/backup-restore/privacy checks passed, and final backend/frontend/Docker/Playwright verification passed. Final report decision is Demo Ready Only pending release-owner waiver approval.",
+  "next_action": "Release owner should approve or reject waivers W-01, W-02, and W-03 in docs/06-testing/full-hms-production-readiness-report-2026-05-22.md before any Production Ready claim.",
+  "deferred_beads": [],
+  "last_compounding_run": {
+    "feature": "hms-production-readiness-hardening-2026-05-22",
+    "date": "2026-05-22",
+    "learnings_file": "",
+    "critical_promotions": 0
+  },
+  "last_updated": "2026-05-22T12:59:00+07:00"
+}

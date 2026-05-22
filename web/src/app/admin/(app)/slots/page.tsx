@@ -13,9 +13,9 @@ import {
 } from "@/lib/operations-api";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
-import { DataPanel } from "@/components/ui/data-panel";
+
 import { Dialog } from "@/components/ui/dialog";
-import { Plus, Ban, Trash2, CalendarDays, CheckCircle2, XCircle, Lock } from "lucide-react";
+import { Plus, Ban, Trash2, CalendarDays, CheckCircle2, XCircle, Lock, Search } from "lucide-react";
 
 interface GenerateFormState {
   doctorId: string;
@@ -187,46 +187,47 @@ export default function AdminSlotsPage() {
         <KpiCard label="Blocked" value={slots.filter((slot) => slot.status === "BLOCKED").length.toString()} icon={Lock} tone="red" />
       </div>
 
-      <DataPanel
-        title="Time Slots Directory"
-        action={
-          <div className="flex items-center gap-4">
-            <select
-              aria-label="Filter slots by status"
-              className="hc-input py-2 text-xs w-48"
-              onChange={(event) => setStatusFilter(event.target.value as "ALL" | AdminSlotStatus)}
-              value={statusFilter}
-            >
-              <option value="ALL">All statuses</option>
-              <option value="AVAILABLE">Available</option>
-              <option value="BOOKED">Booked</option>
-              <option value="BLOCKED">Blocked</option>
-            </select>
-            <div className="relative w-64">
-              <input
-                aria-label="Search time slots"
-                className="hc-input py-2 text-xs w-full"
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search by doctor, date, or time..."
-                type="search"
-                value={query}
-              />
-            </div>
-          </div>
-        }
-      >
+      <div className="flex flex-wrap items-center gap-4 mb-6 bg-white p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
+        <div className="relative flex-1 min-w-[280px]">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)]" />
+          <input
+            aria-label="Search time slots"
+            className="w-full h-9 pl-9 pr-4 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] focus:ring-1 focus:ring-[var(--hc-blue-500)]"
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search by doctor, date, or time..."
+            type="search"
+            value={query}
+          />
+        </div>
+
+        <div className="flex-none">
+          <select
+            aria-label="Status"
+            className="h-9 px-3 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] text-[var(--hc-text-secondary)]"
+            onChange={(event) => setStatusFilter(event.target.value as "ALL" | AdminSlotStatus)}
+            value={statusFilter}
+          >
+            <option value="ALL">All statuses</option>
+            <option value="AVAILABLE">Available</option>
+            <option value="BOOKED">Booked</option>
+            <option value="BLOCKED">Blocked</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">Loading time slots...</div>
         ) : (
           <SlotsTable isSaving={isSaving} onBlock={handleBlock} onDelete={handleDelete} slots={filteredSlots} />
         )}
 
-        <div className="flex items-center justify-between p-4 bg-[var(--hc-surface-soft)] border-t border-[var(--hc-border-soft)]">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
+        <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-slate-50/50">
+          <span className="text-xs text-[var(--hc-text-secondary)] font-medium">
             Showing {filteredSlots.length} of {slots.length} time slots
           </span>
         </div>
-      </DataPanel>
+      </div>
 
       <Dialog
         isOpen={isGenerateModalOpen}
@@ -325,7 +326,9 @@ function SlotsTable({
             <tr key={slot.id}>
               <td className="font-semibold text-[var(--hc-text)]">{slot.doctorName}</td>
               <td className="text-[var(--hc-text-secondary)]">{slot.slotDate}</td>
-              <td className="text-[var(--hc-text-secondary)]">{slot.startTime} - {slot.endTime}</td>
+              <td className="text-[var(--hc-text-secondary)]">
+                <span>{slot.startTime}</span> - <span>{slot.endTime}</span>
+              </td>
               <td>
                 <span className={`hc-badge ${
                   slot.status === "AVAILABLE" ? "bg-[var(--hc-success-bg)] text-[var(--hc-success)]" :

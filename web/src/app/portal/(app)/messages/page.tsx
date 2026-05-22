@@ -77,19 +77,19 @@ export default function PatientMessagesPage() {
   return (
     <main>
       <div className="flex min-h-[calc(100vh-48px)] overflow-hidden">
-        <section className="flex w-1/3 min-w-[320px] flex-col border-r border-transparent bg-surface-container-low">
-          <div className="border-b border-surface-container-high bg-surface-container-low p-6">
+        <section className="flex w-1/3 min-w-[320px] flex-col border-r border-transparent bg-[var(--hc-surface-muted)]">
+          <div className="border-b border-[var(--hc-border)] bg-[var(--hc-surface-muted)] p-6">
             <div className="mb-4 flex items-center justify-between">
               <h1 className="font-headline text-lg font-bold tracking-tight">Inbox</h1>
-              <span className="bg-primary-fixed px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-primary">
+              <span className="bg-[var(--hc-primary-bg)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-primary)]">
                 {unreadCount} Unread
               </span>
             </div>
             <label className="relative block">
-              <HcIcon name="filter_list" className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-neutral-400" />
+              <HcIcon name="filter_list" className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[var(--hc-text-placeholder)]" />
               <span className="sr-only">Filter messages</span>
               <input
-                className="w-full border-b-2 border-outline bg-white py-2 pl-10 text-xs transition-colors focus:border-primary focus:ring-0"
+                className="w-full border-b-2 border-[var(--hc-border-strong)] bg-white py-2 pl-10 text-xs transition-colors focus:border-[var(--hc-primary)] focus:ring-0"
                 placeholder="Filter by channel or subject"
                 type="search"
                 value={query}
@@ -100,11 +100,11 @@ export default function PatientMessagesPage() {
 
           <div className="flex-1 overflow-y-auto">
             {isLoading ? (
-              <div className="p-6 text-xs font-bold uppercase tracking-widest text-neutral-500">
+              <div className="p-6 text-xs font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
                 Loading patient messages...
               </div>
             ) : error ? (
-              <div className="m-6 border border-error-container bg-white p-4 text-sm font-semibold text-error" role="alert">
+              <div className="m-6 border border-[var(--hc-danger-bg)] bg-white p-4 text-sm font-semibold text-[var(--hc-danger)]" role="alert">
                 {error}
               </div>
             ) : filteredThreads.length > 0 ? (
@@ -113,33 +113,33 @@ export default function PatientMessagesPage() {
                   key={thread.threadId}
                   className={`w-full cursor-pointer p-6 text-left transition-colors ${
                     selectedThread?.threadId === thread.threadId
-                      ? "border-l-4 border-primary bg-surface-container-lowest"
-                      : "border-t border-surface-container-high/50 hover:bg-surface-container"
+                      ? "border-l-4 border-[var(--hc-primary)] bg-[var(--hc-content-bg)]"
+                      : "border-t border-[var(--hc-border)]/50 hover:bg-[var(--hc-surface-soft)]"
                   }`}
                   type="button"
                   onClick={() => setSelectedThreadId(thread.threadId)}
                 >
                   <div className="mb-2 flex items-start justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-tighter text-primary">
+                    <span className="text-[10px] font-bold uppercase tracking-tighter text-[var(--hc-primary)]">
                       {thread.channel}
                     </span>
-                    <span className="text-[10px] text-neutral-500">
+                    <span className="text-[10px] text-[var(--hc-text-secondary)]">
                       {formatDateTime(thread.updatedAt)}
                     </span>
                   </div>
                   <h2 className="mb-1 text-sm font-semibold">{thread.subject}</h2>
-                  <p className="line-clamp-2 text-xs leading-relaxed text-neutral-600">
+                  <p className="line-clamp-2 text-xs leading-relaxed text-[var(--hc-text-muted)]">
                     {thread.lastMessagePreview}
                   </p>
                   {thread.unreadCount > 0 ? (
-                    <span className="mt-3 inline-block bg-primary px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-white">
+                    <span className="mt-3 inline-block bg-[var(--hc-primary)] px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-white">
                       {thread.unreadCount} unread
                     </span>
                   ) : null}
                 </button>
               ))
             ) : (
-              <div className="p-6 text-sm font-semibold text-neutral-500">
+              <div className="p-6 text-sm font-semibold text-[var(--hc-text-secondary)]">
                 {threads.length === 0 ? "No messages are available." : "No messages match this filter."}
               </div>
             )}
@@ -149,22 +149,22 @@ export default function PatientMessagesPage() {
         <section className="flex flex-1 flex-col bg-surface">
           {selectedThread ? (
             <>
-              <div className="border-b border-surface-container-high bg-white p-10">
+              <div className="border-b border-[var(--hc-border)] bg-white p-10">
                 <div className="max-w-4xl">
                   <div className="mb-6 flex items-center gap-2">
-                    <span className="bg-neutral-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-neutral-600">
+                    <span className="bg-[var(--hc-surface-soft)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">
                       {selectedThread.channel}
                     </span>
                     {selectedThread.unreadCount > 0 ? (
-                      <span className="bg-surface-container-highest px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-primary">
+                      <span className="bg-[var(--hc-border-strong)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-primary)]">
                         Unread
                       </span>
                     ) : null}
                   </div>
-                  <h2 className="mb-8 font-headline text-[3.5rem] font-light leading-tight tracking-tighter text-on-background">
+                  <h2 className="mb-8 font-headline text-[3.5rem] font-light leading-tight tracking-tighter text-[var(--hc-text)]">
                     {selectedThread.subject}
                   </h2>
-                  <p className="text-xs text-neutral-500">
+                  <p className="text-xs text-[var(--hc-text-secondary)]">
                     Last updated {formatDateTime(selectedThread.updatedAt)}
                   </p>
                 </div>
@@ -177,27 +177,27 @@ export default function PatientMessagesPage() {
                       <MessageBlock key={message.messageId} message={message} />
                     ))
                   ) : (
-                    <p className="text-sm font-semibold text-neutral-500">
+                    <p className="text-sm font-semibold text-[var(--hc-text-secondary)]">
                       No message bodies were returned for this thread.
                     </p>
                   )}
                 </div>
               </div>
 
-              <footer className="flex items-center justify-between border-t border-surface-container-high bg-surface-container-low p-6">
-                <div className="flex items-center gap-3 text-neutral-500">
+              <footer className="flex items-center justify-between border-t border-[var(--hc-border)] bg-[var(--hc-surface-muted)] p-6">
+                <div className="flex items-center gap-3 text-[var(--hc-text-secondary)]">
                   <HcIcon name="info" className="text-sm" />
                   <span className="text-[10px] font-bold uppercase tracking-widest">
                     Messages are read-only
                   </span>
                 </div>
-                <div className="text-[10px] italic text-neutral-400">
+                <div className="text-[10px] italic text-[var(--hc-text-placeholder)]">
                   Reply/archive/flag actions are not supported by the current patient portal API.
                 </div>
               </footer>
             </>
           ) : (
-            <div className="flex flex-1 items-center justify-center bg-white p-10 text-sm font-semibold text-neutral-500">
+            <div className="flex flex-1 items-center justify-center bg-white p-10 text-sm font-semibold text-[var(--hc-text-secondary)]">
               Select a message thread to view details.
             </div>
           )}
@@ -209,14 +209,14 @@ export default function PatientMessagesPage() {
 
 function MessageBlock({ message }: { message: PatientPortalMessageResponse }) {
   return (
-    <article className="space-y-3 border-b border-surface-container-high pb-6">
+    <article className="space-y-3 border-b border-[var(--hc-border)] pb-6">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-primary)]">
           {message.senderRole}
         </span>
-        <span className="text-[10px] text-neutral-500">{formatDateTime(message.createdAt)}</span>
+        <span className="text-[10px] text-[var(--hc-text-secondary)]">{formatDateTime(message.createdAt)}</span>
       </div>
-      <p className="whitespace-pre-wrap text-base leading-[1.8] text-neutral-800">
+      <p className="whitespace-pre-wrap text-base leading-[1.8] text-[var(--hc-text)]">
         {message.body}
       </p>
     </article>

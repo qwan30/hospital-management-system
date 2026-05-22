@@ -26,9 +26,17 @@ export const staffPersonas = {
 };
 
 export const patientPersona = {
+  fullName: "Nguyen Thi Hoa",
+  email: "patient@example.com",
+  citizenId: "012345678901",
+  dateOfBirth: "1992-04-15",
+  password: "Patient@1234",
+};
+
+export const releasePatientPersona = {
   fullName: "Nguyen Van Clinical",
   email: "nguyen.van.clinical@example.com",
-  citizenId: "012345678901",
+  citizenId: "098765432109",
   dateOfBirth: "1990-05-15",
   password: "Patient@1234",
 };

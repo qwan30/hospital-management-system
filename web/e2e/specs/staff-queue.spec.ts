@@ -159,7 +159,7 @@ test.describe("@ui staff queue board", () => {
     await expect(page.getByText("Mai Nguyen", { exact: true })).toBeVisible();
     await expect(
       page.getByTestId("queue-row").filter({ hasText: "Mai Nguyen" }),
-    ).toContainText("Checked in");
+    ).toContainText("Ready");
   });
 
   test("supports queue call, room assignment, consultation, and completion actions", async ({

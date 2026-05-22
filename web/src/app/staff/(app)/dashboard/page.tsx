@@ -1,26 +1,58 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Activity, AlertTriangle, Clock, FlaskConical, Filter, Download, Stethoscope } from "lucide-react";
-import { HcIcon } from "@/components/ui/hc-icon";
+import {
+  Activity,
+  AlertTriangle,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Download,
+  Eye,
+  Filter,
+  FlaskConical,
+  MoreVertical,
+  RefreshCw,
+  Stethoscope,
+  Users,
+} from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
-import { DataPanel } from "@/components/ui/data-panel";
 
-const MOCK_PATIENTS = [
-  { id: "PX-2024-8812", name: "Elena Rodriguez", initials: "ER", status: "Critical", ward: "ER", bp: "145/92", hr: 98, o2: 91, lastCheck: "13:45:00", nurse: "Nurse S. Miller", avatarColor: "bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)]" },
-  { id: "PX-2024-8740", name: "James T. Kendrick", initials: "JK", status: "Stable", ward: "Ward 4-A", bp: "120/80", hr: 72, o2: 98, lastCheck: "12:10:22", nurse: "Nurse R. Chen", avatarColor: "bg-[#ECFCCB] text-[#4D7C0F]" },
-  { id: "PX-2024-9003", name: "Linda Wu", initials: "LW", status: "Observation", ward: "Observation", bp: "132/85", hr: 84, o2: 96, lastCheck: "14:00:15", nurse: "Nurse S. Miller", avatarColor: "bg-[var(--hc-info-bg)] text-[var(--hc-info)]" },
-  { id: "PX-2024-8119", name: "Marcus V. Aurelius", initials: "MA", status: "Critical", ward: "ICU East", bp: "90/60", hr: 110, o2: 94, lastCheck: "13:58:10", nurse: "Nurse R. Chen", avatarColor: "bg-[var(--hc-purple-bg)] text-[var(--hc-purple)]" },
+/* ─────────────────── Types ─────────────────── */
+
+interface PatientRow {
+  id: string;
+  name: string;
+  initials: string;
+  status: "Critical" | "Stable" | "Observation";
+  ward: string;
+  bp: string;
+  hr: number;
+  o2: number;
+  lastCheck: string;
+  nurse: string;
+}
+
+const PAGE_SIZE = 10;
+
+const MOCK_PATIENTS: PatientRow[] = [
+  { id: "PX-2024-8812", name: "Elena Rodriguez", initials: "ER", status: "Critical", ward: "ER", bp: "145/92", hr: 98, o2: 91, lastCheck: "13:45:00", nurse: "Nurse S. Miller" },
+  { id: "PX-2024-8740", name: "James T. Kendrick", initials: "JK", status: "Stable", ward: "Ward 4-A", bp: "120/80", hr: 72, o2: 98, lastCheck: "12:10:22", nurse: "Nurse R. Chen" },
+  { id: "PX-2024-9003", name: "Linda Wu", initials: "LW", status: "Observation", ward: "Observation", bp: "132/85", hr: 84, o2: 96, lastCheck: "14:00:15", nurse: "Nurse S. Miller" },
+  { id: "PX-2024-8119", name: "Marcus V. Aurelius", initials: "MA", status: "Critical", ward: "ICU East", bp: "90/60", hr: 110, o2: 94, lastCheck: "13:58:10", nurse: "Nurse R. Chen" },
 ];
+
+/* ─────────────────── Component ─────────────────── */
 
 export default function DoctorDashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [wardFilter, setWardFilter] = useState("All Wards");
+  const [page, setPage] = useState(1);
 
   const filteredPatients = useMemo(() => {
-    return MOCK_PATIENTS.filter(p => {
+    return MOCK_PATIENTS.filter((p) => {
       const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.id.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = statusFilter === "All Status" || p.status === statusFilter;
       const matchesWard = wardFilter === "All Wards" || p.ward === wardFilter;
@@ -28,187 +60,143 @@ export default function DoctorDashboardPage() {
     });
   }, [searchQuery, statusFilter, wardFilter]);
 
+  const totalPages = Math.max(1, Math.ceil(filteredPatients.length / PAGE_SIZE));
+  const paged = filteredPatients.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  /* ─── Status badge ─── */
+  function StatusBadge({ status }: { status: string }) {
+    const c: Record<string, string> = {
+      Critical: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
+      Stable: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
+      Observation: "bg-[#E8F0FF] text-[var(--hc-primary)]",
+    };
+    return (
+      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-bold rounded-full ${c[status] ?? "bg-slate-100 text-slate-600"}`}>
+        <span className={`w-1.5 h-1.5 rounded-full ${status === "Critical" ? "bg-[var(--hc-danger)]" : status === "Stable" ? "bg-[var(--hc-success)]" : "bg-[var(--hc-primary)]"}`} />
+        {status}
+      </span>
+    );
+  }
+
   return (
-    <div className="p-8">
-      {/* Header Section */}
-      <PageHeader 
+    <main className="p-8 pb-20 max-w-[1400px] mx-auto">
+      <PageHeader
+        categoryLabel="CLINICAL OVERVIEW"
         title="Doctor Dashboard"
         description="ID: HMS-PHYS-9942 • LAST REFRESH: 14:02:11"
         action={
-          <button className="flex items-center gap-2 text-sm font-semibold text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] transition-colors">
-            <HcIcon name="refresh" className="text-lg" />
+          <button type="button" className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors">
+            <RefreshCw className="w-4 h-4 text-slate-400" /> Refresh
           </button>
         }
       />
 
       {/* KPI Cards */}
-      <div className="hc-kpi-grid">
-        <KpiCard
-          label="Active Rounds"
-          value="12"
-          helper="↑ 2 from previous shift"
-          icon={Stethoscope}
-          tone="blue"
-        />
-        <KpiCard
-          label="Critical Alerts"
-          value="03"
-          helper="Requires immediate action"
-          icon={AlertTriangle}
-          tone="red"
-        />
-        <KpiCard
-          label="Wait Time Avg"
-          value="18m"
-          helper="Unit efficiency: 94%"
-          icon={Clock}
-          tone="teal"
-        />
-        <KpiCard
-          label="Pending Lab Reports"
-          value="24"
-          helper="5 expiring soon"
-          icon={FlaskConical}
-          tone="purple"
-        />
-      </div>
+      <section className="mt-8 hc-kpi-grid">
+        <KpiCard label="Active Rounds" value="12" helper={<span className="text-[var(--hc-success)]">↑ 2 from previous shift</span>} icon={Stethoscope} tone="blue" />
+        <KpiCard label="Critical Alerts" value="03" helper={<span className="text-[var(--hc-danger)]">Requires immediate action</span>} icon={AlertTriangle} tone="red" />
+        <KpiCard label="Wait Time Avg" value="18m" helper="Unit efficiency: 94%" icon={Clock} tone="teal" />
+        <KpiCard label="Pending Lab Reports" value="24" helper={<span className="text-[var(--hc-warning)]">5 expiring soon</span>} icon={FlaskConical} tone="purple" />
+      </section>
 
-      {/* Data Panel */}
-      <DataPanel
-        className="mb-8"
-        filters={
-          <div className="flex flex-1 items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="hc-search">
-                <HcIcon name="search" className="text-[var(--hc-text-placeholder)]" />
-                <input
-                  aria-label="Search patients by name or ID"
-                  placeholder="Search by name or ID..."
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <select
-                aria-label="Filter patients by status"
-                className="hc-select"
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-              >
-                <option value="All Status">All Status</option>
-                <option value="Critical">Critical</option>
-                <option value="Stable">Stable</option>
-                <option value="Observation">Observation</option>
-              </select>
-              <select
-                aria-label="Filter patients by ward"
-                className="hc-select"
-                value={wardFilter}
-                onChange={(e) => setWardFilter(e.target.value)}
-              >
-                <option value="All Wards">All Wards</option>
-                <option value="Ward 4-A">Ward 4-A</option>
-                <option value="ICU East">ICU East</option>
-                <option value="Cardiology">Cardiology</option>
-                <option value="ER">ER</option>
-                <option value="Observation">Observation</option>
-              </select>
-            </div>
-            <div className="flex gap-2">
-              <button className="flex items-center gap-2 px-4 h-10 border border-[var(--hc-border)] rounded-[var(--radius-md)] text-[13px] font-semibold text-[var(--hc-text)] hover:bg-[var(--hc-surface-soft)] transition-colors bg-[var(--hc-surface)] shadow-[var(--shadow-xs)]">
-                <Filter className="w-4 h-4 text-[var(--hc-text-secondary)]" />
-                More Filters
-              </button>
-              <button className="flex items-center gap-2 px-4 h-10 border border-[var(--hc-border)] rounded-[var(--radius-md)] text-[13px] font-semibold text-[var(--hc-text)] hover:bg-[var(--hc-surface-soft)] transition-colors bg-[var(--hc-surface)] shadow-[var(--shadow-xs)]">
-                <Download className="w-4 h-4 text-[var(--hc-text-secondary)]" />
-                Export
-              </button>
-            </div>
-          </div>
-        }
-        footer={
-          <>
-            <span className="text-[13px] font-medium text-[var(--hc-text-secondary)]">Showing {filteredPatients.length > 0 ? 1 : 0}-{filteredPatients.length} of {filteredPatients.length} patients</span>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <button className="w-8 h-8 rounded-[var(--radius-sm)] border border-[var(--hc-border)] flex items-center justify-center text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50" disabled>
-                  {"<"}
-                </button>
-                <button className="w-8 h-8 rounded-[var(--radius-sm)] border border-[var(--hc-blue-600)] bg-[var(--hc-blue-600)] flex items-center justify-center text-white font-medium text-sm">
-                  1
-                </button>
-                <button className="w-8 h-8 rounded-[var(--radius-sm)] border border-[var(--hc-border)] flex items-center justify-center text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50" disabled>
-                  {">"}
-                </button>
-              </div>
-              <div className="flex items-center gap-2 ml-4">
-                <span className="text-[13px] text-[var(--hc-text-secondary)]">Show</span>
-                <select className="border border-[var(--hc-border)] rounded-[var(--radius-sm)] h-8 px-2 text-[13px] text-[var(--hc-text)] font-medium bg-[var(--hc-surface)] outline-none">
-                  <option>10</option>
-                  <option>20</option>
-                  <option>50</option>
-                </select>
-              </div>
-            </div>
-          </>
-        }
-      >
+      {/* Filter Bar */}
+      <section className="mt-6 flex flex-wrap items-center gap-3">
+        <div className="relative flex-1 min-w-[200px] max-w-md">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+          <input
+            aria-label="Search patients by name or ID"
+            type="search"
+            placeholder="Search by name or ID…"
+            value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+            className="hc-input w-full pl-10"
+          />
+        </div>
+        <select
+          aria-label="Filter patients by status"
+          value={statusFilter}
+          onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+          className="hc-input min-w-[140px]"
+        >
+          <option value="All Status">All Status</option>
+          <option value="Critical">Critical</option>
+          <option value="Stable">Stable</option>
+          <option value="Observation">Observation</option>
+        </select>
+        <select
+          aria-label="Filter patients by ward"
+          value={wardFilter}
+          onChange={(e) => { setWardFilter(e.target.value); setPage(1); }}
+          className="hc-input min-w-[140px]"
+        >
+          <option value="All Wards">All Wards</option>
+          <option value="Ward 4-A">Ward 4-A</option>
+          <option value="ICU East">ICU East</option>
+          <option value="ER">ER</option>
+          <option value="Observation">Observation</option>
+        </select>
+        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-colors">
+          <Filter className="w-4 h-4" /> More Filters
+        </button>
+        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-colors">
+          <Download className="w-4 h-4" /> Export
+        </button>
+      </section>
+
+      {/* Table */}
+      <section className="mt-4 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="hc-table w-full text-left">
+          <table className="hc-table w-full">
             <thead>
               <tr>
-                <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] bg-[var(--hc-surface-soft)]">Patient / Case ID</th>
-                <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] bg-[var(--hc-surface-soft)]">Priority</th>
-                <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] bg-[var(--hc-surface-soft)]">Vital Stats</th>
-                <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] bg-[var(--hc-surface-soft)]">Last Check</th>
-                <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] bg-[var(--hc-surface-soft)]">Attending Nurse</th>
-                <th className="p-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] bg-[var(--hc-surface-soft)]">Actions</th>
+                <th className="hc-th">PATIENT / CASE ID</th>
+                <th className="hc-th">PRIORITY</th>
+                <th className="hc-th">VITAL STATS</th>
+                <th className="hc-th">LAST CHECK</th>
+                <th className="hc-th">ATTENDING NURSE</th>
+                <th className="hc-th text-right">ACTIONS</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--hc-border-soft)]">
-              {filteredPatients.length > 0 ? (
-                filteredPatients.map(patient => (
-                  <tr key={patient.id} className="group transition-colors hover:bg-[var(--hc-blue-50)]">
-                    <td className="p-4">
+            <tbody>
+              {paged.length > 0 ? (
+                paged.map((patient) => (
+                  <tr key={patient.id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="hc-td">
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${patient.avatarColor}`}>
+                        <div className={`grid size-8 shrink-0 place-items-center rounded-full text-[10px] font-bold ${patient.status === "Critical" ? "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]" : patient.status === "Stable" ? "bg-[var(--hc-success-bg)] text-[var(--hc-success)]" : "bg-[#E8F0FF] text-[var(--hc-primary)]"}`}>
                           {patient.initials}
                         </div>
                         <div>
-                          <div className="font-semibold text-[var(--hc-text)] text-[13px]">{patient.name}</div>
-                          <div className="text-[11px] text-[var(--hc-text-secondary)] mt-0.5">{patient.id}</div>
+                          <p className="text-sm font-semibold text-[var(--hc-text)]">{patient.name}</p>
+                          <p className="text-xs text-slate-400">{patient.id}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="p-4">
-                      <span className={`hc-badge ${
-                        patient.status === 'Critical' ? 'bg-[var(--hc-critical-bg)] text-[var(--hc-critical)]' :
-                        patient.status === 'Stable' ? 'bg-[var(--hc-success-bg)] text-[var(--hc-success)]' :
-                        'bg-[var(--hc-info-bg)] text-[var(--hc-info)]'
-                      }`}>
-                        {patient.status}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-4">
-                        <span><span className="text-[10px] text-[var(--hc-text-placeholder)] mr-1 uppercase font-bold">BP</span><span className={`font-mono text-[13px] ${patient.bp.startsWith('90/') ? 'text-[var(--hc-danger)]' : ''}`}>{patient.bp}</span></span>
-                        <span><span className="text-[10px] text-[var(--hc-text-placeholder)] mr-1 uppercase font-bold">HR</span><span className="font-mono text-[13px]">{patient.hr}</span></span>
-                        <span><span className="text-[10px] text-[var(--hc-text-placeholder)] mr-1 uppercase font-bold">O₂</span><span className={`font-mono text-[13px] ${patient.o2 < 95 ? 'text-[var(--hc-danger)]' : 'text-[var(--hc-success)]'}`}>{patient.o2}%</span></span>
+                    <td className="hc-td"><StatusBadge status={patient.status} /></td>
+                    <td className="hc-td">
+                      <div className="flex items-center gap-4 text-sm">
+                        <span><span className="text-[10px] text-slate-400 mr-1 uppercase font-bold">BP</span><span className={`font-mono tabular-nums ${patient.bp.startsWith("90/") ? "text-[var(--hc-danger)]" : ""}`}>{patient.bp}</span></span>
+                        <span><span className="text-[10px] text-slate-400 mr-1 uppercase font-bold">HR</span><span className="font-mono tabular-nums">{patient.hr}</span></span>
+                        <span><span className="text-[10px] text-slate-400 mr-1 uppercase font-bold">O₂</span><span className={`font-mono tabular-nums ${patient.o2 < 95 ? "text-[var(--hc-danger)]" : "text-[var(--hc-success)]"}`}>{patient.o2}%</span></span>
                       </div>
                     </td>
-                    <td className="p-4 text-[13px] text-[var(--hc-text)] font-mono">{patient.lastCheck}</td>
-                    <td className="p-4 text-[13px] text-[var(--hc-text)] font-medium">{patient.nurse}</td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-1">
-                        <button className="hc-icon-btn text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] hover:bg-[var(--hc-surface-soft)] p-1.5 rounded-md transition-colors"><HcIcon name="visibility" className="text-[18px]" /></button>
-                        <button className="hc-icon-btn text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] hover:bg-[var(--hc-surface-soft)] p-1.5 rounded-md transition-colors"><HcIcon name="more_vert" className="text-[18px]" /></button>
+                    <td className="hc-td text-sm font-mono tabular-nums text-[var(--hc-text)]">{patient.lastCheck}</td>
+                    <td className="hc-td text-sm font-medium text-[var(--hc-text)]">{patient.nurse}</td>
+                    <td className="hc-td text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button type="button" aria-label={`View ${patient.name}`} className="p-1.5 hover:bg-slate-100 rounded-[var(--radius-md)] transition-colors" title="View">
+                          <Eye className="w-4 h-4 text-slate-500" />
+                        </button>
+                        <button type="button" aria-label={`More actions for ${patient.name}`} className="p-1.5 hover:bg-slate-100 rounded-[var(--radius-md)] transition-colors" title="More">
+                          <MoreVertical className="w-4 h-4 text-slate-400" />
+                        </button>
                       </div>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="p-10 text-center text-[13px] font-medium text-[var(--hc-text-secondary)]">
+                  <td colSpan={6} className="hc-td text-center py-12 text-slate-400">
                     No patients match your search criteria.
                   </td>
                 </tr>
@@ -216,97 +204,98 @@ export default function DoctorDashboardPage() {
             </tbody>
           </table>
         </div>
-      </DataPanel>
+
+        {/* Pagination */}
+        <div className="px-6 py-3 flex items-center justify-between border-t border-[var(--hc-border-soft)] text-sm">
+          <span className="text-slate-500">
+            Showing {filteredPatients.length > 0 ? (page - 1) * PAGE_SIZE + 1 : 0}–{Math.min(page * PAGE_SIZE, filteredPatients.length)} of {filteredPatients.length} patients
+          </span>
+          <div className="flex items-center gap-1">
+            <button type="button" aria-label="Previous patient page" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 transition-colors">
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
+              <button key={p} type="button" aria-label={`Patient page ${p}`} onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-slate-100"}`}>
+                {p}
+              </button>
+            ))}
+            <button type="button" aria-label="Next patient page" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 transition-colors">
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </section>
 
       {/* Dashboard Secondary Insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <section className="lg:col-span-2 rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-[var(--hc-surface)] p-[24px] shadow-[var(--shadow-card)] flex flex-col h-full">
-          <div className="flex items-center justify-between mb-8">
+      <div className="mt-6 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
+        {/* Laboratory Queue Trends */}
+        <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-[var(--hc-border-soft)] flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--hc-surface-soft)] flex items-center justify-center text-[var(--hc-text-secondary)]">
-                <HcIcon name="science" className="text-[20px]" />
+              <div className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] bg-purple-50 text-purple-600">
+                <FlaskConical className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-lg font-bold text-[var(--hc-text)] leading-tight">Laboratory Queue Trends</h2>
-                <p className="text-sm text-[var(--hc-text-secondary)] mt-0.5">Next 12 hours forecast</p>
+                <h3 className="text-sm font-bold text-[var(--hc-text)]">Laboratory Queue Trends</h3>
+                <p className="text-xs text-slate-500">Next 12 hours forecast</p>
               </div>
             </div>
-            <select className="border border-[var(--hc-border)] rounded-md px-3 h-9 text-sm text-[var(--hc-text)] bg-[var(--hc-surface)] font-medium outline-none">
+            <select aria-label="Laboratory queue trend range" className="text-xs border border-[var(--hc-border)] rounded-[var(--radius-md)] px-3 py-1.5 bg-white">
               <option>Next 12 Hours</option>
               <option>Next 24 Hours</option>
             </select>
           </div>
-          <div className="bg-[var(--hc-surface-soft)] rounded-[var(--radius-lg)] h-[220px] w-full flex items-end px-8 pb-8 pt-8 gap-4 border border-[var(--hc-border-soft)]">
-            {/* CSS-Based Bar Chart */}
-            <div className="flex-1 bg-[var(--hc-purple-300)] rounded-t-sm h-[30%] transition-all hover:bg-[var(--hc-purple-600)] relative group">
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">12</div>
-            </div>
-            <div className="flex-1 bg-[var(--hc-purple-400)] rounded-t-sm h-[45%] transition-all hover:bg-[var(--hc-purple-600)] relative group">
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">18</div>
-            </div>
-            <div className="flex-1 bg-[var(--hc-purple-500)] rounded-t-sm h-[75%] transition-all hover:bg-[var(--hc-purple-600)] relative group">
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">32</div>
-            </div>
-            <div className="flex-1 bg-[var(--hc-purple-600)] rounded-t-sm h-[95%] transition-all hover:bg-[var(--hc-purple-700)] relative group">
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">45</div>
-            </div>
-            <div className="flex-1 bg-[var(--hc-purple-500)] rounded-t-sm h-[60%] transition-all hover:bg-[var(--hc-purple-600)] relative group">
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">28</div>
-            </div>
-            <div className="flex-1 bg-[var(--hc-purple-400)] rounded-t-sm h-[50%] transition-all hover:bg-[var(--hc-purple-600)] relative group">
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">22</div>
-            </div>
-            <div className="flex-1 bg-[var(--hc-purple-300)] rounded-t-sm h-[20%] transition-all hover:bg-[var(--hc-purple-600)] relative group">
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded">8</div>
+          <div className="p-6">
+            <div className="flex items-end gap-4 h-[220px] px-4 pb-4">
+              {[30, 45, 75, 95, 60, 50, 20].map((height, i) => (
+                <div key={i} className="flex-1 group relative">
+                  <div
+                    className="bg-purple-300 rounded-t-sm transition-all hover:bg-purple-600 w-full"
+                    style={{ height: `${height}%` }}
+                  >
+                    <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white text-[10px] font-bold px-2 py-1 rounded whitespace-nowrap">
+                      {Math.round(height * 0.5)}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </section>
+        </div>
 
-        <section className="rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-[var(--hc-surface)] p-[24px] shadow-[var(--shadow-card)] flex flex-col h-full">
-          <div className="flex items-center gap-3 mb-6">
-             <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--hc-surface-soft)] flex items-center justify-center text-[var(--hc-text-secondary)]">
-                <HcIcon name="groups" className="text-[20px]" />
-             </div>
-             <h2 className="text-lg font-bold text-[var(--hc-text)]">Staffing Overview</h2>
+        {/* Staffing Overview */}
+        <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+          <div className="px-5 py-4 border-b border-[var(--hc-border-soft)] flex items-center gap-3">
+            <div className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] bg-slate-100 text-slate-600">
+              <Users className="w-5 h-5" />
+            </div>
+            <h3 className="text-sm font-bold text-[var(--hc-text)]">Staffing Overview</h3>
           </div>
-          
-          <div className="flex flex-col gap-0 flex-1">
-            <div className="flex items-center justify-between py-4 border-b border-[var(--hc-border-soft)]">
-              <div className="flex items-center gap-3">
-                 <div className="w-8 h-8 rounded-full bg-[var(--hc-success-bg)] text-[var(--hc-success)] flex items-center justify-center">
-                    <HcIcon name="favorite" className="text-[16px]" />
-                 </div>
-                 <span className="text-[13px] font-semibold text-[var(--hc-text)]">Cardiology Team</span>
-              </div>
-              <span className="hc-badge bg-[var(--hc-success-bg)] text-[var(--hc-success)]">ON-CALL</span>
-            </div>
-            <div className="flex items-center justify-between py-4 border-b border-[var(--hc-border-soft)]">
-              <div className="flex items-center gap-3">
-                 <div className="w-8 h-8 rounded-full bg-[var(--hc-purple-bg)] text-[var(--hc-purple)] flex items-center justify-center">
-                    <HcIcon name="stethoscope" className="text-[16px]" />
-                 </div>
-                 <span className="text-[13px] font-semibold text-[var(--hc-text)]">ER Resident Pool</span>
-              </div>
-              <span className="hc-badge bg-[var(--hc-danger-bg)] text-[var(--hc-danger)] border border-[var(--hc-danger-bg)]">STRETCHED (82%)</span>
-            </div>
-            <div className="flex items-center justify-between py-4">
-              <div className="flex items-center gap-3">
-                 <div className="w-8 h-8 rounded-full bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] flex items-center justify-center">
-                    <HcIcon name="content_cut" className="text-[16px]" />
-                 </div>
-                 <span className="text-[13px] font-semibold text-[var(--hc-text)]">Surgery Prep Unit</span>
-              </div>
-              <span className="hc-badge bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)]">OPTIMAL</span>
-            </div>
+          <div className="divide-y divide-[var(--hc-border-soft)]">
+            <StaffRow label="Cardiology Team" badge="ON-CALL" badgeClass="bg-[var(--hc-success-bg)] text-[var(--hc-success)]" />
+            <StaffRow label="ER Resident Pool" badge="STRETCHED (82%)" badgeClass="bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]" />
+            <StaffRow label="Surgery Prep Unit" badge="OPTIMAL" badgeClass="bg-slate-100 text-slate-600" />
           </div>
-          
-          <button className="mt-auto flex items-center justify-center gap-2 w-full h-[42px] border border-[var(--hc-border)] bg-[var(--hc-surface)] text-[var(--hc-blue-600)] rounded-[var(--radius-md)] text-sm font-bold hover:bg-[var(--hc-blue-50)] hover:border-[var(--hc-blue-600)] transition-all shadow-[var(--shadow-xs)]">
-            <HcIcon name="manage_accounts" className="text-[18px]" />
-            Reassign Resources
-          </button>
-        </section>
+          <div className="p-4">
+            <button type="button" className="w-full flex items-center justify-center gap-2 h-[42px] border border-[var(--hc-primary)] text-[var(--hc-primary)] rounded-[var(--radius-md)] text-sm font-bold hover:bg-[#E8F0FF] transition-all">
+              <Users className="w-4 h-4" /> Reassign Resources
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
 
+/* ─────────────────── Sub-components ─────────────────── */
+
+function StaffRow({ label, badge, badgeClass }: { label: string; badge: string; badgeClass: string }) {
+  return (
+    <div className="flex items-center justify-between px-5 py-4">
+      <span className="text-sm font-semibold text-[var(--hc-text)]">{label}</span>
+      <span className={`inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-full ${badgeClass}`}>
+        {badge}
+      </span>
+    </div>
+  );
+}

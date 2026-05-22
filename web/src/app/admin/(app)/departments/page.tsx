@@ -12,8 +12,20 @@ import {
 
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
-import { DataPanel } from "@/components/ui/data-panel";
-import { Building2, CheckCircle2, XCircle, Network, Plus, Search, X } from "lucide-react";
+import {
+  Building2,
+  CheckCircle2,
+  XCircle,
+  Network,
+  Plus,
+  Search,
+  X,
+  MoreVertical,
+  ChevronsUpDown,
+  ChevronLeft,
+  ChevronRight,
+  Image as ImageIcon
+} from "lucide-react";
 
 interface DepartmentFormState {
   name: string;
@@ -158,12 +170,13 @@ export default function AdminDepartmentsPage() {
   }
 
   return (
-    <div className="p-8 pb-20">
+    <div className="p-8 pb-20 max-w-[1400px] mx-auto">
       <PageHeader
+        categoryLabel="FACILITY ADMINISTRATION"
         title="Manage Departments"
-        description="Hospital Administration • Configure and manage hospital departments"
+        description="Configure and manage hospital departments, their statuses, and directory information."
         action={
-          <button className="hc-button-primary flex items-center gap-2" onClick={openCreateForm} type="button">
+          <button className="hc-button-primary flex items-center gap-2 h-10 px-5" onClick={openCreateForm} type="button">
             <Plus className="w-4 h-4" />
             <span className="font-bold text-[11px] uppercase tracking-widest">Add Department</span>
           </button>
@@ -186,28 +199,43 @@ export default function AdminDepartmentsPage() {
         </div>
       ) : null}
 
-      <div className="hc-kpi-grid mb-8">
-        <KpiCard label="Total Departments" value={departments.length.toString()} icon={Building2} tone="blue" />
-        <KpiCard label="Active Units" value={activeCount.toString()} icon={CheckCircle2} tone="green" />
-        <KpiCard label="Inactive Units" value={(departments.length - activeCount).toString()} icon={XCircle} tone="red" />
-        <KpiCard label="API Backed" value={filteredDepartments.length.toString()} icon={Network} tone="teal" />
+      <div className="hc-kpi-grid mb-6">
+        <KpiCard label="DEPARTMENTS" value={departments.length.toString()} icon={Building2} tone="blue" helper="Total departments" />
+        <KpiCard label="ACTIVE" value={activeCount.toString()} icon={CheckCircle2} tone="green" helper="Currently active" />
+        <KpiCard label="INACTIVE" value={(departments.length - activeCount).toString()} icon={XCircle} tone="red" helper="Currently inactive" />
+        <KpiCard label="API BACKED" value={filteredDepartments.length.toString()} icon={Network} tone="teal" helper="Filtered results" />
       </div>
 
-      <DataPanel
-        title="Department Directory"
-        action={
-          <div className="relative w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] w-4 h-4" />
-            <input
-              className="hc-input pl-9 py-2 text-xs w-full"
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search by name..."
-              type="search"
-              value={query}
-            />
-          </div>
-        }
-      >
+      <div className="flex flex-wrap items-center gap-4 mb-6 bg-white p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
+        <div className="relative flex-1 min-w-[280px]">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)]" />
+          <input
+            type="search"
+            aria-label="Search departments"
+            placeholder="Search by name, description, or phone..."
+            className="w-full h-9 pl-9 pr-4 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] focus:ring-1 focus:ring-[var(--hc-blue-500)]"
+            onChange={(event) => setQuery(event.target.value)}
+            value={query}
+          />
+        </div>
+
+        <div className="flex-none">
+          <select className="h-9 px-3 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] text-[var(--hc-text-secondary)]">
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
+        <button className="hc-button-secondary flex items-center gap-2 h-9 px-4 ml-auto">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10M11.3333 7.33333L8 10.6667M8 10.6667L4.66667 7.33333M8 10.6667V2" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <span className="font-semibold text-xs text-[var(--hc-text-secondary)]">Export CSV</span>
+        </button>
+      </div>
+
+      <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">Loading departments...</div>
         ) : (
@@ -218,15 +246,7 @@ export default function AdminDepartmentsPage() {
             onEdit={openEditForm}
           />
         )}
-        <div className="flex items-center justify-between p-4 bg-[var(--hc-surface-soft)] border-t border-[var(--hc-border-soft)]">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
-            Showing {filteredDepartments.length} of {departments.length} departments
-          </span>
-          <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
-            Pagination is not exposed by the current admin departments API
-          </span>
-        </div>
-      </DataPanel>
+      </div>
 
       {isFormOpen ? (
         <Dialog title={editingDepartment ? "Edit Department" : "Add Department"} onClose={() => setIsFormOpen(false)}>
@@ -257,35 +277,71 @@ function DepartmentsTable({
       <table className="hc-table">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Phone</th>
-            <th>Image URL</th>
-            <th>Status</th>
-            <th className="text-right">Actions</th>
+            <th className="w-[30%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                DEPARTMENT <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[20%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                CONTACT <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[25%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                IMAGE <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[15%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                STATUS <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[10%] text-right">ACTIONS</th>
           </tr>
         </thead>
         <tbody>
           {departments.map((department) => (
-            <tr key={department.departmentId}>
-              <td className="font-semibold text-[var(--hc-text)]">{department.name}</td>
-              <td className="text-[var(--hc-text-secondary)]">{department.description || "No description"}</td>
-              <td className="font-mono text-[var(--hc-text-secondary)] text-xs">{department.phone || "No phone"}</td>
-              <td className="max-w-xs truncate text-[var(--hc-text-secondary)]" title={department.imageUrl || ""}>
-                {department.imageUrl || "No image"}
+            <tr key={department.departmentId} className="group hover:bg-[var(--hc-background)] transition-colors">
+              <td>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100">
+                    <Building2 className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div className="flex-1 min-w-0 pt-0.5">
+                    <div className="text-sm font-bold text-[var(--hc-text)] truncate">{department.name}</div>
+                    <div className="text-xs text-[var(--hc-text-secondary)] line-clamp-1 mt-0.5" title={department.description || "No description"}>{department.description || "No description"}</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div className="text-sm font-medium text-[var(--hc-text)]">{department.phone || "No phone"}</div>
               </td>
               <td>
                 <div className="flex items-center gap-2">
-                  <div className={`w-1.5 h-1.5 rounded-full ${department.active ? "bg-[var(--hc-success)]" : "bg-[var(--hc-text-secondary)]"}`} />
-                  <span className={`text-[10px] font-bold uppercase tracking-widest ${department.active ? "" : "text-[var(--hc-text-secondary)]"}`}>
-                    {department.active ? "Active" : "Inactive"}
+                  <ImageIcon className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span className="text-xs text-[var(--hc-text-secondary)] truncate" title={department.imageUrl || ""}>
+                    {department.imageUrl || "No image"}
                   </span>
                 </div>
               </td>
-              <td className="text-right">
+              <td>
+                {department.active ? (
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[var(--hc-success)] bg-[var(--hc-success-bg)] text-[var(--hc-success)]">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--hc-success)]" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Active</span>
+                  </div>
+                ) : (
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-300 bg-slate-50 text-slate-600">
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Inactive</span>
+                  </div>
+                )}
+              </td>
+              <td>
                 <div className="flex items-center justify-end gap-2">
                   <button
-                    className="hc-button-secondary py-1.5 px-3 text-[11px]"
+                    className="h-8 px-3 text-xs font-semibold text-[var(--hc-blue-600)] bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-slate-50 hover:border-slate-300 transition-colors disabled:opacity-50"
                     disabled={isSaving}
                     onClick={() => onEdit(department)}
                     type="button"
@@ -293,12 +349,13 @@ function DepartmentsTable({
                     Edit
                   </button>
                   <button
-                    className={`py-1.5 px-3 rounded-[var(--radius-md)] text-[10px] font-bold uppercase tracking-widest border transition-colors disabled:opacity-50 ${department.active ? "border-[var(--hc-danger)] text-[var(--hc-danger)] hover:bg-[var(--hc-danger-bg)]" : "border-[var(--hc-border)] text-[var(--hc-text-secondary)]"}`}
+                    className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-[var(--hc-danger)] hover:bg-[var(--hc-danger-bg)] rounded-md transition-colors disabled:opacity-50"
                     disabled={isSaving || !department.active}
                     onClick={() => onDeactivate(department)}
+                    title={department.active ? "Deactivate" : "Already inactive"}
                     type="button"
                   >
-                    Deactivate
+                    <XCircle className="w-4 h-4" />
                   </button>
                 </div>
               </td>
@@ -306,6 +363,23 @@ function DepartmentsTable({
           ))}
         </tbody>
       </table>
+
+      <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-slate-50/50">
+        <span className="text-xs text-[var(--hc-text-secondary)] font-medium">
+          Showing 1 to {departments.length} of {departments.length} departments
+        </span>
+        <div className="flex items-center gap-2">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium">
+            1
+          </button>
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

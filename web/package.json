@@ -7,10 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:e2e:ui": "playwright test --grep @ui",
+    "test:e2e:ui": "playwright test --grep @ui --project=chromium",
     "test:e2e:integrated": "playwright test --grep @integrated",
-    "test:e2e:visual": "playwright test --grep @visual",
-    "test:e2e:ci": "playwright test e2e/specs/api-client.spec.ts e2e/specs/rbac.spec.ts e2e/specs/operations-api.spec.ts e2e/specs/staff-queue.spec.ts e2e/specs/all-routes-exhaustive.spec.ts --project=chromium",
+    "test:e2e:visual": "playwright test --grep @visual --project=chromium",
+    "test:e2e:release-data": "playwright test e2e/specs/release-demo-data.spec.ts --project=chromium",
+    "test:e2e:ci": "playwright test e2e/specs/api-client.spec.ts e2e/specs/rbac.spec.ts e2e/specs/operations-api.spec.ts e2e/specs/staff-queue.spec.ts e2e/specs/all-routes-exhaustive.spec.ts e2e/specs/admin-pages.spec.ts e2e/specs/portal-pages.spec.ts e2e/specs/booking-wizard.spec.ts e2e/specs/staff-operations.spec.ts e2e/specs/security.spec.ts e2e/specs/seo-audit.spec.ts --project=chromium",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
     "test:unit": "vitest run",
@@ -18,10 +19,11 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
+    "@google/generative-ai": "^0.24.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.8.0",
-    "next": "16.2.4",
+    "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "shadcn": "^4.3.0",
@@ -42,10 +44,15 @@
     "@vitejs/plugin-react": "^6.0.1",
     "@vitest/coverage-v8": "^4.1.5",
     "eslint": "^9",
-    "eslint-config-next": "16.2.4",
+    "eslint-config-next": "16.2.6",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.5"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "8.5.10"
+    }
   }
 }

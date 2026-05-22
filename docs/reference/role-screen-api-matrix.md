@@ -1,6 +1,6 @@
 # Role To Screen And API Matrix
 
-**Status:** current role map for the April 26, 2026 repository baseline.
+**Status:** current role map for the May 13, 2026 repository baseline.
 **Verification sources:** `backend/domain/src/main/java/com/hospital/shared/enums/UserRole.java`, `backend/application/src/main/java/com/hospital/core/security/RbacAuthorizationService.java`, `backend/controller/src/main/java`, and `web/src/lib/rbac.ts`.
 
 ## 1. Role Summary
@@ -11,8 +11,8 @@
 | Patient | `/portal/login`, `/portal/claim`, `/portal/overview`, `/portal/appointments`, `/portal/lab-results`, `/portal/messages`, `/portal/profile`, related portal pages | `/patient-auth`, `/patient-portal` | Portal messages are read-only from the patient side |
 | Doctor | `/staff/dashboard`, `/staff/doctor/dashboard`, `/staff/doctor/[id]`, `/staff/schedule`, `/staff/patients`, `/staff/medical-records/[id]/edit`, `/staff/prescriptions/preview`, clinical read pages | `/appointments`, `/me/schedule`, `/patient-records`, `/patients`, `/medical-records`, `/lab-results`, `/vital-signs` | Own clinical workflow emphasis |
 | Nurse | `/staff/dashboard`, `/staff/queue`, `/staff/nurse-intake`, `/staff/vital-signs`, `/staff/lab-results`, selected booking/support pages | `/queue`, `/appointments/today`, `/appointments/{id}/checkin`, queue manage actions, `/vital-signs`, lab-result read | Queue assign-room is implemented; no separate live room-board API |
-| Receptionist | `/staff/dashboard`, `/staff/booking`, `/staff/queue`, `/staff/support` | appointment read/write/cancel, queue read/check-in/manage | RBAC role exists; no receptionist demo account is currently persisted by seed data |
-| Pharmacist | `/staff/dashboard`, `/staff/inventory`, `/staff/prescriptions/preview`, `/staff/support` | inventory read/manage including alerts, prescription PDF read | RBAC role exists; no pharmacist demo account is currently persisted by seed data |
+| Receptionist | `/staff/dashboard`, `/staff/booking`, `/staff/queue`, `/staff/support` | appointment read/write/cancel, queue read/check-in/manage | Seeded demo account exists |
+| Pharmacist | `/staff/dashboard`, `/staff/inventory`, `/staff/prescriptions/preview`, `/staff/support` | inventory read/manage including alerts, prescription PDF read | Seeded demo account exists |
 | Accountant | `/staff/dashboard`, `/staff/invoices`, `/staff/pricing`, `/staff/revenue`, `/admin/audit-logs`, support pages | `/invoices`, `/pricing`, `/reports/revenue`, `/admin/audit-logs` | Seeded demo account exists |
 | Admin | `/admin/*`, `/staff/*` where policy permits, `/forbidden` for denial states | all admin families, audit, finance, inventory, protected clinical support | Seeded demo account exists |
 
@@ -53,10 +53,13 @@
 | `/staff/support`, `/staff/dashboard` | all staff roles |
 | `/portal` | `PATIENT` except public login/claim routes |
 
+Staff shell navigation uses this same route policy for visible links. The primary staff CTA is hidden when the current role cannot access the CTA target.
+
 ## 4. Current Limitations
 
 - Patient portal message send/reply is not implemented.
 - Patient self-cancel and reschedule APIs are not implemented.
 - A separate live nurse room-board system is not implemented; queue assign-room exists as an audited queue workflow action.
-- Receptionist and pharmacist roles exist in RBAC, but seeded demo accounts for those roles are not currently persisted.
+- Receptionist and pharmacist seeded demo accounts exist; release-demo data adds cross-role UAT records when enabled.
 - Frontend route files exist for many surfaces, but only selected workflows are backend-integrated today.
+- Frontend route guards are UX/navigation protection only; backend authorization and 401/403 responses remain the source of truth.

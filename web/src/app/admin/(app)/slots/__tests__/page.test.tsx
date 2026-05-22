@@ -111,6 +111,9 @@ describe("AdminSlotsPage", () => {
     render(<AdminSlotsPage />);
 
     await screen.findByText("08:00");
+    // Open the modal first
+    await userEvent.click(screen.getByRole("button", { name: "Generate Slots" }));
+
     fireEvent.change(screen.getByLabelText("Doctor"), {
       target: { value: "doctor-1" },
     });
@@ -120,7 +123,9 @@ describe("AdminSlotsPage", () => {
     fireEvent.change(screen.getByLabelText("To Date"), {
       target: { value: "2026-05-21" },
     });
-    await userEvent.click(screen.getByRole("button", { name: /generate slots/i }));
+
+    // Click the submit button inside the modal
+    await userEvent.click(screen.getAllByRole("button", { name: "Generate Slots" })[1]);
 
     await waitFor(() => {
       expect(generateAdminSlots).toHaveBeenCalledWith({

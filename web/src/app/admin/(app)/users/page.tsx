@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   activateAdminUser,
   createAdminUser,
@@ -14,8 +15,11 @@ import {
 
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
-import { DataPanel } from "@/components/ui/data-panel";
-import { Users, UserPlus, HeartPulse, Building2, ShieldCheck, Search, X } from "lucide-react";
+import {
+  Users, UserPlus, HeartPulse, Building2, ShieldCheck,
+  Search, X, Filter, ChevronDown, Download, Pencil,
+  ChevronLeft, ChevronRight, ChevronsUpDown, Lock, Mail, LayoutGrid
+} from "lucide-react";
 
 const roles: UserRole[] = [
   "ADMIN",
@@ -205,19 +209,25 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="p-8 pb-20">
+    <div className="p-8 pb-20 max-w-[1400px] mx-auto">
       <PageHeader
         title="Staff Directory"
         description="System Administration • Manage user roles and access"
         action={
-          <button
-            className="hc-button-primary flex items-center gap-2"
-            onClick={openCreateForm}
-            type="button"
-          >
-            <UserPlus className="w-4 h-4" />
-            <span className="font-bold text-[11px] uppercase tracking-widest">Add User</span>
-          </button>
+          <div className="flex gap-3">
+            <button className="flex items-center justify-center gap-2 h-10 px-4 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] bg-white text-[var(--hc-text)] hover:bg-slate-50 transition-colors shadow-sm">
+              <Download className="w-4 h-4" />
+              <span className="font-bold text-[11px] uppercase tracking-widest">Export CSV</span>
+            </button>
+            <button
+              className="hc-button-primary flex items-center gap-2 h-10 px-5"
+              onClick={openCreateForm}
+              type="button"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span className="font-bold text-[11px] uppercase tracking-widest">Add User</span>
+            </button>
+          </div>
         }
       />
 
@@ -240,65 +250,122 @@ export default function AdminUsersPage() {
       <div className="hc-kpi-grid mb-8">
         <KpiCard label="Total Staff" value={stats.total.toString()} icon={Users} tone="blue" />
         <KpiCard label="Medical Dept" value={stats.medical.toString()} icon={HeartPulse} tone="teal" />
-        <KpiCard label="Administration" value={stats.administration.toString()} icon={Building2} tone="purple" />
+        <KpiCard label="Admin Stations" value={stats.administration.toString()} icon={Building2} tone="purple" />
         <KpiCard label="Active Accounts" value={stats.active.toString()} icon={ShieldCheck} tone="green" />
       </div>
 
-      <DataPanel
-        title="User Accounts"
-        action={
-          <div className="flex items-center gap-4">
-            <select
-              aria-label="Filter users by role"
-              className="hc-input py-2 text-xs w-48"
-              onChange={(event) => setRoleFilter(event.target.value as "ALL" | UserRole)}
-              value={roleFilter}
-            >
-              <option value="ALL">Role: All</option>
-              {roles.map((role) => (
-                <option key={role} value={role}>{role}</option>
-              ))}
-            </select>
-            <select
-              aria-label="Filter users by status"
-              className="hc-input py-2 text-xs w-48"
-              onChange={(event) => setStatusFilter(event.target.value as "ALL" | "ACTIVE" | "INACTIVE")}
-              value={statusFilter}
-            >
-              <option value="ALL">Status: All</option>
-              <option value="ACTIVE">Active</option>
-              <option value="INACTIVE">Inactive</option>
-            </select>
-            <div className="relative w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] w-4 h-4" />
-              <input
-                className="hc-input pl-9 py-2 text-xs w-full"
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search..."
-                type="search"
-                value={query}
-              />
-            </div>
+      <div className="bg-white p-5 rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] shadow-sm mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="relative w-full md:w-96">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] w-4 h-4 pointer-events-none" />
+            <input
+              aria-label="Search users"
+              className="h-10 pl-9 pr-4 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] focus:outline-none focus:border-[var(--hc-blue-500)] focus:ring-1 focus:ring-[var(--hc-blue-500)] w-full transition-colors"
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search by name, email, or ID..."
+              type="search"
+              value={query}
+            />
           </div>
-        }
-      >
-        {isLoading ? (
-          <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">Loading staff users...</div>
-        ) : (
-          <UsersTable
-            isSaving={isSaving}
-            onEdit={openEditForm}
-            onToggleActive={toggleUserActive}
-            users={filteredUsers}
-          />
-        )}
 
-        <div className="flex items-center justify-between p-4 bg-[var(--hc-surface-soft)] border-t border-[var(--hc-border-soft)]">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
-            Showing {filteredUsers.length} of {users.length} staff members
-          </span>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="relative">
+              <select
+                aria-label="Filter users by role"
+                className="h-10 pl-4 pr-10 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] focus:outline-none focus:border-[var(--hc-blue-500)] focus:ring-1 focus:ring-[var(--hc-blue-500)] appearance-none font-medium min-w-[160px] transition-colors"
+                onChange={(event) => setRoleFilter(event.target.value as "ALL" | UserRole)}
+                value={roleFilter}
+              >
+                <option value="ALL">Role: All</option>
+                {roles.map((role) => (
+                  <option key={role} value={role}>{role}</option>
+                ))}
+              </select>
+              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] pointer-events-none" />
+            </div>
+
+            <div className="relative">
+              <select
+                aria-label="Filter users by status"
+                className="h-10 pl-4 pr-10 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] focus:outline-none focus:border-[var(--hc-blue-500)] focus:ring-1 focus:ring-[var(--hc-blue-500)] appearance-none font-medium min-w-[160px] transition-colors"
+                onChange={(event) => setStatusFilter(event.target.value as "ALL" | "ACTIVE" | "INACTIVE")}
+                value={statusFilter}
+              >
+                <option value="ALL">Status: All</option>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+              <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] pointer-events-none" />
+            </div>
+
+            <button
+              aria-label="Clear user filters"
+              className="flex items-center justify-center w-10 h-10 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] text-[var(--hc-text-secondary)] hover:bg-slate-50 transition-colors bg-white shadow-sm"
+              onClick={() => {
+                setQuery("");
+                setRoleFilter("ALL");
+                setStatusFilter("ALL");
+              }}
+              title="Clear Filters"
+              type="button"
+            >
+              <Filter className="w-4 h-4" />
+            </button>
+          </div>
         </div>
-      </DataPanel>
+      </div>
+
+      <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm flex flex-col min-h-[400px]">
+        {isLoading ? (
+          <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)] m-auto">Loading staff users...</div>
+        ) : (
+          <>
+            <UsersTable
+              isSaving={isSaving}
+              onEdit={openEditForm}
+              onToggleActive={toggleUserActive}
+              users={filteredUsers}
+            />
+
+            <div className="px-6 py-4 flex flex-wrap items-center justify-between border-t border-[var(--hc-border-soft)] bg-slate-50/50 mt-auto gap-4">
+              <span className="text-xs text-[var(--hc-text-secondary)] font-medium">
+                Showing 1 to {filteredUsers.length} of {users.length} staff members
+              </span>
+
+              <div className="flex flex-wrap items-center gap-4 md:gap-8">
+                <div className="flex items-center gap-2 text-[11px] text-[var(--hc-text-secondary)]">
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>Passwords are not exposed by the current API and access service.</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    aria-label="Previous staff page"
+                    className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                    type="button"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    aria-label="Staff page 1"
+                    className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium shadow-sm transition-colors"
+                    type="button"
+                  >
+                    1
+                  </button>
+                  <button
+                    aria-label="Next staff page"
+                    className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                    type="button"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
 
       {isFormOpen ? (
         <Dialog title={editingUser ? "Edit User" : "Add User"} onClose={() => setIsFormOpen(false)}>
@@ -327,65 +394,111 @@ function UsersTable({
   onToggleActive: (user: AdminUserResponse) => void;
 }) {
   if (users.length === 0) {
-    return <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">No staff users match the current filters.</div>;
+    return <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)] m-auto">No staff users match the current filters.</div>;
   }
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto flex-1">
       <table className="hc-table">
         <thead>
           <tr>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Department</th>
-            <th>Status</th>
-            <th className="text-right">Actions</th>
+            <th className="w-[30%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                Full Name <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[25%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                Email <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[15%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                Role <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[15%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                Department <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[10%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                Status <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[5%] text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.userId}>
+            <tr key={user.userId} className="hover:bg-[var(--hc-background)] transition-colors group">
               <td>
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-[var(--radius-sm)] bg-[var(--hc-surface-soft)] flex items-center justify-center text-[10px] font-bold border border-[var(--hc-border-soft)]">
+                  <div className="w-9 h-9 rounded-full bg-blue-50 text-[var(--hc-blue-600)] flex items-center justify-center text-xs font-bold border border-blue-100 shrink-0">
                     {initials(user.fullName)}
                   </div>
-                  <span className="text-sm font-semibold text-[var(--hc-text)] tracking-tight">{user.fullName}</span>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-sm font-semibold text-[var(--hc-text)] tracking-tight truncate">{user.fullName}</span>
+                    <span className="text-xs text-[var(--hc-text-secondary)] font-medium truncate">{user.userId}</span>
+                  </div>
                 </div>
               </td>
-              <td className="text-[var(--hc-text-secondary)]">{user.email}</td>
               <td>
-                <span className="hc-badge bg-[var(--hc-surface-soft)] text-[var(--hc-text)] border-[var(--hc-border-soft)]">
-                  {user.role}
-                </span>
+                <div className="flex items-center gap-2 text-sm text-[var(--hc-text-secondary)]">
+                  <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span className="truncate">{user.email}</span>
+                </div>
               </td>
-              <td>{user.departmentName || "Unassigned"}</td>
+              <td>
+                <div className={`inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${
+                  user.role === 'ADMIN' ? 'bg-purple-50 text-purple-600 border border-purple-200' :
+                  user.role === 'DOCTOR' ? 'bg-blue-50 text-blue-600 border border-blue-200' :
+                  user.role === 'NURSE' ? 'bg-teal-50 text-teal-600 border border-teal-200' :
+                  user.role === 'PHARMACIST' ? 'bg-orange-50 text-orange-600 border border-orange-200' :
+                  'bg-slate-100 text-slate-600 border border-slate-200'
+                }`}>
+                  {user.role}
+                </div>
+              </td>
+              <td>
+                <div className="text-sm font-medium text-[var(--hc-text)] truncate">
+                  {user.departmentName || "Unassigned"}
+                </div>
+              </td>
               <td>
                 <div className="flex items-center gap-2">
-                  <div className={`w-1.5 h-1.5 rounded-full ${user.active ? "bg-[var(--hc-success)]" : "bg-[var(--hc-text-secondary)]"}`} />
-                  <span className={`text-[10px] font-bold uppercase tracking-widest ${user.active ? "" : "text-[var(--hc-text-secondary)]"}`}>
+                  <div className={`w-2 h-2 rounded-full ${user.active ? "bg-[var(--hc-success)]" : "bg-slate-400"}`} />
+                  <span className={`text-sm font-medium ${user.active ? "text-[var(--hc-text)]" : "text-[var(--hc-text-secondary)]"}`}>
                     {user.active ? "Active" : "Inactive"}
                   </span>
                 </div>
               </td>
-              <td className="text-right">
+              <td>
                 <div className="flex items-center justify-end gap-2">
                   <button
-                    className="hc-button-secondary py-1.5 px-3 text-[11px]"
+                    className="w-8 h-8 flex items-center justify-center text-[var(--hc-text-secondary)] hover:bg-slate-100 rounded-md transition-colors border border-transparent hover:border-slate-200"
                     disabled={isSaving}
                     onClick={() => onEdit(user)}
+                    title="Edit User"
                     type="button"
                   >
-                    Edit
+                    <Pencil className="w-4 h-4" />
+                    <span className="sr-only">edit</span>
                   </button>
                   <button
-                    className={`py-1.5 px-3 rounded-[var(--radius-md)] text-[10px] font-bold uppercase tracking-widest border transition-colors disabled:opacity-50 ${user.active ? "border-[var(--hc-border)] text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)]" : "bg-[var(--hc-success-bg)] text-[var(--hc-success)] border-[var(--hc-success-bg)] hover:bg-[var(--hc-success)] hover:text-white"}`}
+                    className={`flex items-center justify-center w-8 h-8 rounded-md transition-colors disabled:opacity-50 border ${
+                      user.active
+                      ? "border-blue-200 text-blue-600 bg-blue-50 hover:bg-blue-600 hover:text-white"
+                      : "border-slate-200 text-slate-400 bg-slate-50 hover:bg-slate-500 hover:text-white"
+                    }`}
                     disabled={isSaving}
                     onClick={() => onToggleActive(user)}
+                    title={user.active ? "Deactivate User" : "Activate User"}
+                    aria-label={user.active ? "Deactivate" : "Activate"}
                     type="button"
                   >
-                    {user.active ? "Deactivate" : "Activate"}
+                    <LayoutGrid className="w-4 h-4" />
                   </button>
                 </div>
               </td>
@@ -424,16 +537,19 @@ function UserForm({
       <FormInput label="Phone" onChange={(value) => onChange({ ...form, phone: value })} value={form.phone} />
       <div>
         <label className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-2">Role</label>
-        <select
-          aria-label="Role"
-          className="hc-input w-full"
-          onChange={(event) => onChange({ ...form, role: event.target.value as UserRole })}
-          value={form.role}
-        >
-          {roles.map((role) => (
-            <option key={role} value={role}>{role}</option>
-          ))}
-        </select>
+        <div className="relative">
+          <select
+            aria-label="Role"
+            className="hc-input w-full pl-4 pr-10 appearance-none"
+            onChange={(event) => onChange({ ...form, role: event.target.value as UserRole })}
+            value={form.role}
+          >
+            {roles.map((role) => (
+              <option key={role} value={role}>{role}</option>
+            ))}
+          </select>
+          <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] pointer-events-none" />
+        </div>
       </div>
       <FormInput label="Department ID" onChange={(value) => onChange({ ...form, departmentId: value })} value={form.departmentId} />
       <FormInput label="Specialty" onChange={(value) => onChange({ ...form, specialty: value })} value={form.specialty} />
@@ -562,4 +678,3 @@ function initials(name: string) {
 function errorMessage(caught: unknown, fallback: string) {
   return caught instanceof Error ? caught.message : fallback;
 }
-

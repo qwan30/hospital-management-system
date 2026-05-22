@@ -1,6 +1,6 @@
 # Hospital Management System Deployment Guide
 
-Status: aligned with the repository on 2026-04-26 after Dockerized `web/` frontend support.
+Status: aligned with the repository on 2026-05-13.
 
 Architecture diagrams: [HMS_ArchitectureDiagrams.html](HMS_ArchitectureDiagrams.html)
 Documentation map: [README.md](README.md)
@@ -54,20 +54,20 @@ The authoritative backend config currently lives in `backend/start/src/main/reso
 | `POSTGRES_PORT` | `5432` |
 | `POSTGRES_DB` | `hospital_db` |
 | `POSTGRES_USER` | `hospital_user` |
-| `POSTGRES_PASSWORD` | `hospital_password` |
+| `POSTGRES_PASSWORD` | required, no default |
 
 ### 4.2 Security
 
 | Variable | Default |
 | --- | --- |
-| `JWT_SECRET` | `replace-with-a-random-32-character-secret` |
+| `JWT_SECRET` | required, no default |
 | `HMS_ALLOWED_ORIGIN_PRIMARY` | `http://localhost:3000` |
 | `HMS_ALLOWED_ORIGIN_SECONDARY` | `http://localhost:4173` |
 | `HMS_ALLOW_CREDENTIALS` | `true` |
 | `HMS_SECURE_COOKIES` | `false` |
 | `HMS_REFRESH_COOKIE_SAME_SITE` | `Lax` |
 | `HMS_PUBLIC_RATE_LIMIT_PER_MINUTE` | `30` |
-| `PATIENT_IDENTIFIER_SECRET` | falls back to `JWT_SECRET` |
+| `PATIENT_IDENTIFIER_SECRET` | required, no default; must be distinct from `JWT_SECRET` |
 
 ### 4.3 Integrations
 
@@ -79,7 +79,20 @@ The authoritative backend config currently lives in `backend/start/src/main/reso
 | `GMAIL_REFRESH_TOKEN` | empty |
 | `GMAIL_SENDER_EMAIL` | `demo@hospital.vn` |
 
-### 4.4 Hospital profile
+### 4.4 Synthetic UAT seed data
+
+| Variable | Default |
+| --- | --- |
+| `HMS_RELEASE_DEMO_SEED_ENABLED` | `false` |
+| `HMS_RELEASE_DEMO_FUTURE_SLOT_DAYS` | `14` |
+| `HMS_RELEASE_DEMO_TARGET_PATIENTS` | `8` |
+| `HMS_RELEASE_DEMO_TARGET_APPOINTMENTS` | `12` |
+| `HMS_RELEASE_DEMO_TARGET_INVENTORY_ITEMS` | `8` |
+| `HMS_RELEASE_DEMO_TARGET_AUDIT_LOGS` | `16` |
+
+Set `HMS_RELEASE_DEMO_SEED_ENABLED=true` only for synthetic UAT or release-demo environments. Do not use this toggle for production data import.
+
+### 4.5 Hospital profile
 
 | Variable | Default |
 | --- | --- |
@@ -95,9 +108,19 @@ The authoritative backend config currently lives in `backend/start/src/main/reso
 
 | Variable | Default / local value |
 | --- | --- |
-| `NEXT_PUBLIC_API_BASE_URL` | `http://localhost:8080/api/v1` |
-| `API_BASE_URL_SERVER` | `http://localhost:8080/api/v1` |
-| Compose `NEXT_PUBLIC_API_BASE_URL` | `/api/v1` |
+| `NEXT_PUBLIC_API_BASE_URL` | `http://localhost:8081/api/v1` when using the current backend default port |
+| `API_BASE_URL_SERVER` | `http://localhost:8081/api/v1` when using the current backend default port |
+| Compose `NEXT_PUBLIC_API_BASE_URL` | `http://localhost:8081/api/v1` |
+
+### 4.6 Docker Compose host ports
+
+| Variable | Default |
+| --- | --- |
+| `HMS_BACKEND_HOST_PORT` | `8081` |
+| `HMS_FRONTEND_HOST_PORT` | `3000` |
+| `HMS_POSTGRES_HOST_PORT` | `5432` |
+
+When changing `HMS_BACKEND_HOST_PORT`, also set `NEXT_PUBLIC_API_BASE_URL` to the same host port before building the frontend image.
 
 ## 5. Quick Start
 
@@ -116,9 +139,9 @@ mvn spring-boot:run -pl start
 
 Backend endpoints:
 
-- API root: `http://localhost:8080/api/v1`
-- Swagger UI: `http://localhost:8080/swagger-ui`
-- Health: `http://localhost:8080/actuator/health`
+- API root: `http://localhost:8081/api/v1`
+- Swagger UI: `http://localhost:8081/swagger-ui`
+- Health: `http://localhost:8081/actuator/health`
 
 ### 5.3 Start the frontend app in development
 
@@ -134,10 +157,10 @@ This starts the canonical Next.js frontend app from `web/`.
 
 The active compose file currently:
 
-- exposes PostgreSQL on `5432`
-- exposes the backend on `8080`
+- exposes PostgreSQL on `${HMS_POSTGRES_HOST_PORT:-5432}`
+- exposes the backend on `${HMS_BACKEND_HOST_PORT:-8081}`
 - builds the canonical frontend from `web/Dockerfile`
-- exposes the frontend on `3000`
+- exposes the frontend on `${HMS_FRONTEND_HOST_PORT:-3000}`
 - injects backend database, JWT, and frontend API URL settings
 
 ## 7. Seed Data
@@ -146,6 +169,8 @@ On first backend startup with an empty database, the app seeds demo data automat
 
 Canonical seed-data reference: [reference/demo-accounts-and-seed-data.md](reference/demo-accounts-and-seed-data.md).
 
+For a Docker/VPS UAT release demo, set `HMS_RELEASE_DEMO_SEED_ENABLED=true` before starting the backend. The release demo seed safely tops up existing rows by natural keys and covers public, staff, patient portal, admin, inventory, finance, and audit flows.
+
 ### 7.1 Staff accounts
 
 | Email | Password | Role |
@@ -153,6 +178,8 @@ Canonical seed-data reference: [reference/demo-accounts-and-seed-data.md](refere
 | `doctor1@hospital.vn` | `Doctor@1234` | DOCTOR |
 | `doctor2@hospital.vn` | `Doctor@1234` | DOCTOR |
 | `nurse@hospital.vn` | `Nurse@1234` | NURSE |
+| `receptionist@hospital.vn` | `Reception@1234` | RECEPTIONIST |
+| `pharmacist@hospital.vn` | `Pharma@1234` | PHARMACIST |
 | `accountant@hospital.vn` | `Acc@1234` | ACCOUNTANT |
 | `admin@hospital.vn` | `Admin@1234` | ADMIN |
 
@@ -161,8 +188,9 @@ Canonical seed-data reference: [reference/demo-accounts-and-seed-data.md](refere
 | Email | Password |
 | --- | --- |
 | `patient@example.com` | `Patient@1234` |
+| `nguyen.van.clinical@example.com` | `Patient@1234` |
 
-Receptionist and pharmacist are active RBAC roles, but the current seed routine does not persist demo accounts for those roles.
+The second patient account is created only when `HMS_RELEASE_DEMO_SEED_ENABLED=true`.
 
 ## 8. Operational Warnings
 
@@ -179,13 +207,13 @@ Receptionist and pharmacist are active RBAC roles, but the current seed routine 
 
 ### Frontend screens do not show live backend data
 
-- confirm the backend is running on `http://localhost:8080`
+- confirm the backend is running on `http://localhost:8081`
 - confirm the screen has backend data-access integration; some current screens are static or locally composed
 
 ### Swagger UI is empty or unavailable
 
 - confirm the backend started successfully
-- confirm the app is reachable on `http://localhost:8080`
+- confirm the app is reachable on `http://localhost:8081`
 - confirm `springdoc` is not blocked by local proxy or custom security settings
 
 ### Gmail does not send

@@ -1,0 +1,37 @@
+[
+    {
+        "Suite":  "release-data",
+        "ExitCode":  1,
+        "DurationSeconds":  3.73,
+        "Log":  "..\\docs\\06-testing\\artifacts\\playwright-release-data-final-2026-05-22.log",
+        "Tail":  "    Error Context: test-results\\specs-release-demo-data--i-64c86-expose-release-demo-records-chromium\\error-context.md |  |   1 failed |     [chromium] › e2e\\specs\\release-demo-data.spec.ts:19:7 › @integrated @release synthetic UAT seed data › public and staff operations expose release-demo records  |   1 passed (1.7s) |  | EXIT_CODE=1 | DURATION_SECONDS=3.73"
+    },
+    {
+        "Suite":  "ci",
+        "ExitCode":  0,
+        "DurationSeconds":  53.01,
+        "Log":  "..\\docs\\06-testing\\artifacts\\playwright-ci-final-2026-05-22.log",
+        "Tail":  "  ok 179 [chromium] › e2e\\specs\\staff-queue.spec.ts:85:7 › @ui staff queue board › renders live queue data and checks in a waiting appointment (1.8s) |   ok 180 [chromium] › e2e\\specs\\staff-queue.spec.ts:165:7 › @ui staff queue board › supports queue call, room assignment, consultation, and completion actions (1.8s) |  |   1 skipped |   180 passed (51.3s) |  | EXIT_CODE=0 | DURATION_SECONDS=53.01"
+    },
+    {
+        "Suite":  "integrated",
+        "ExitCode":  1,
+        "DurationSeconds":  85.1,
+        "Log":  "..\\docs\\06-testing\\artifacts\\playwright-integrated-final-2026-05-22.log",
+        "Tail":  "    [firefox] › e2e\\specs\\release-demo-data.spec.ts:19:7 › @integrated @release synthetic UAT seed data › public and staff operations expose release-demo records  |     [webkit] › e2e\\specs\\release-demo-data.spec.ts:19:7 › @integrated @release synthetic UAT seed data › public and staff operations expose release-demo records  |     [Mobile Chrome] › e2e\\specs\\release-demo-data.spec.ts:19:7 › @integrated @release synthetic UAT seed data › public and staff operations expose release-demo records  |     [Mobile Safari] › e2e\\specs\\release-demo-data.spec.ts:19:7 › @integrated @release synthetic UAT seed data › public and staff operations expose release-demo records  |   85 passed (1.4m) |  | EXIT_CODE=1 | DURATION_SECONDS=85.1"
+    },
+    {
+        "Suite":  "ui",
+        "ExitCode":  0,
+        "DurationSeconds":  103.01,
+        "Log":  "..\\docs\\06-testing\\artifacts\\playwright-ui-final-rerun-2026-05-22.log",
+        "Tail":  "  ok 319 [chromium] › e2e\\specs\\workflows.spec.ts:41:7 › @ui critical workflow smoke › staff clinical pages expose expected clinical headings (2.9s) |   ok 320 [chromium] › e2e\\specs\\workflows.spec.ts:64:7 › @ui critical workflow smoke › admin pages expose expected operations headings (3.0s) |  |   1 skipped |   319 passed (1.7m) |  | EXIT_CODE=0 | DURATION_SECONDS=103.01"
+    },
+    {
+        "Suite":  "visual",
+        "ExitCode":  1,
+        "DurationSeconds":  18.52,
+        "Log":  "..\\docs\\06-testing\\artifacts\\playwright-visual-final-2026-05-22.log",
+        "Tail":  "    [chromium] › e2e\\specs\\visual.spec.ts:13:9 › @visual visual baselines › portal login visual baseline  |     [chromium] › e2e\\specs\\visual.spec.ts:13:9 › @visual visual baselines › staff queue visual baseline  |     [chromium] › e2e\\specs\\visual.spec.ts:13:9 › @visual visual baselines › staff inventory visual baseline  |     [chromium] › e2e\\specs\\visual.spec.ts:13:9 › @visual visual baselines › portal appointments visual baseline  |     [chromium] › e2e\\specs\\visual.spec.ts:13:9 › @visual visual baselines › admin dashboard visual baseline  |  | EXIT_CODE=1 | DURATION_SECONDS=18.52"
+    }
+]

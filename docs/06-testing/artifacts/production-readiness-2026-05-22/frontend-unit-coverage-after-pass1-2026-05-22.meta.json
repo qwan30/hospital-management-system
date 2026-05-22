@@ -1,0 +1,11 @@
+﻿{
+    "command":  "npm run test:unit:coverage",
+    "cwd":  "D:\\projects\\hospital-management-system\\web",
+    "startedAt":  "2026-05-22T12:38:52.5196671+07:00",
+    "endedAt":  "2026-05-22T12:39:29.8277739+07:00",
+    "durationSeconds":  37.31,
+    "exitCode":  0,
+    "status":  "PASS",
+    "failureReason":  "",
+    "logPath":  "D:\\projects\\hospital-management-system\\docs\\06-testing\\artifacts\\production-readiness-2026-05-22\\frontend-unit-coverage-after-pass1-2026-05-22.log"
+}

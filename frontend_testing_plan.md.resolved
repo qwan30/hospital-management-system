@@ -1,0 +1,535 @@
+# Hospital Management System — Frontend Testing Plan
+
+> **Scope**: `web/` directory (Next.js 16 + React 19 + Tailwind v4 + shadcn/ui)
+> **Goal**: Full frontend coverage across unit, component, E2E, visual, accessibility, responsive, and performance layers.
+
+---
+
+## 1. Current State Assessment
+
+### What Exists Today
+
+| Layer | File | Tests | Tag | Coverage |
+|-------|------|-------|-----|----------|
+| **Unit (pure logic)** | `api-client.spec.ts` | 2 | — | `apiRequest` auth header injection |
+| **Unit (pure logic)** | `rbac.spec.ts` | 4 | — | `getRouteDecision`, `filterNavigationLinks`, `persistSession` |
+| **E2E Smoke** | `ui-smoke.spec.ts` | 67 | `@ui` | All 56 routes: HTTP status, `<main>` visible, no overlay, no console errors |
+| **E2E Smoke** | `route-audit.spec.ts` | 2 | `@ui` | Route inventory sync between App Router, route metadata, and shell nav |
+| **E2E Smoke** | `workflows.spec.ts` | 3 | `@ui` | Booking validation, portal overview links, staff/admin headings |
+| **E2E Integrated** | `auth-integrated.spec.ts` | 7 | `@integrated` | Staff login/invalid, patient login/claim, logout, nurse queue check-in, RBAC redirect |
+| **E2E Data-driven** | `staff-queue.spec.ts` | 4 | `@ui` | Queue board unauthorized, render+check-in, call/assign/start/complete, hide terminal |
+| **E2E Data-driven** | `operations-api.spec.ts` | 3 | `@ui` | Inventory full render, monitoring+audit-logs, patient portal overview |
+| **Responsive** | `responsive.spec.ts` | 24 | `@ui` | 8 routes × 3 viewports: stable layout, no overflow |
+| **Visual** | `visual.spec.ts` | 8 | `@visual` | 8 routes: full-page screenshot baselines |
+
+**Total existing: ~124 test cases** (many auto-generated from route lists)
+
+### Infrastructure Available
+
+- [x] Playwright 1.59 configured (chromium only)
+- [x] `@axe-core/playwright` installed (accessibility)
+- [x] Page Object Models: `LoginPage`, `BookingPage`
+- [x] Helpers: `a11y`, `backend`, `console`, `layout`, `personas`, `routes`
+- [x] Test tags: `@ui`, `@integrated`, `@visual`
+- [x] JSON + HTML reporters
+- [ ] ❌ No unit test runner (no Vitest/Jest)
+- [ ] ❌ No `@testing-library/react`
+- [ ] ❌ No component-level tests
+
+---
+
+## 2. Testing Architecture
+
+```mermaid
+graph TD
+    subgraph "Layer 1 — Unit (Vitest)"
+        U1[api-client.ts]
+        U2[rbac.ts]
+        U3[staff-queue.ts]
+        U4[operations-api.ts]
+        U5[clinical-api.ts]
+        U6[use-stored-role.ts]
+    end
+
+    subgraph "Layer 2 — E2E Smoke (Playwright @ui)"
+        S1[Route health]
+        S2[Route inventory sync]
+        S3[Responsive layouts]
+        S4[Accessibility]
+    end
+
+    subgraph "Layer 3 — E2E Integrated (Playwright @integrated)"
+        I1[Auth flows]
+        I2[RBAC enforcement]
+        I3[Booking end-to-end]
+        I4[Queue workflow]
+    end
+
+    subgraph "Layer 4 — E2E Data-driven (Playwright @ui)"
+        D1[Staff clinical pages]
+        D2[Admin operations pages]
+        D3[Patient portal pages]
+        D4[Finance/billing pages]
+    end
+
+    subgraph "Layer 5 — Specialized"
+        V1["Visual regression (@visual)"]
+        P1["Performance (Lighthouse)"]
+        SEC1["Security (CSP, headers)"]
+    end
+
+    U1 --> S1
+    S1 --> I1
+    I1 --> D1
+    D1 --> V1
+```
+
+---
+
+## 3. Gap Analysis & New Tests Required
+
+### 3.1 Unit Tests (NEW — requires Vitest setup)
+
+> [!IMPORTANT]
+> No unit test framework exists. Must add Vitest + `@testing-library/react` + `jsdom`.
+
+#### 3.1.1 `lib/api-client.ts` — 12 new tests
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | `apiRequest` — GET request builds correct URL | P1 |
+| 2 | `apiRequest` — POST sends JSON body + Content-Type header | P1 |
+| 3 | `apiRequest` — attaches patient bearer token for `authScope: "patient"` | P1 |
+| 4 | `apiRequest` — throws `ApiClientError` on 4xx with error envelope | P1 |
+| 5 | `apiRequest` — throws `ApiClientError` on 5xx with fallback message | P1 |
+| 6 | `apiRequest` — handles empty response body gracefully | P2 |
+| 7 | `getApiBaseUrl` — returns env variable when set | P2 |
+| 8 | `getApiBaseUrl` — falls back to `localhost:8080` | P2 |
+| 9 | `persistSession` — stores token, expiry, and role in sessionStorage | P1 |
+| 10 | `persistSession` — is no-op when accessToken is missing | P2 |
+| 11 | `clearSessions` — removes all 6 session keys | P1 |
+| 12 | `getStoredRole` — returns null in SSR (no window) | P2 |
+
+#### 3.1.2 `lib/rbac.ts` — 18 new tests
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | `getRouteDecision` — public routes always allowed (home, departments, doctors, news) | P1 |
+| 2 | `getRouteDecision` — `/staff/login` and `/portal/login` bypass auth | P1 |
+| 3 | `getRouteDecision` — `/portal/claim` bypasses auth | P1 |
+| 4 | `getRouteDecision` — DOCTOR can access `/staff/medical-records/*` | P1 |
+| 5 | `getRouteDecision` — NURSE cannot access `/staff/medical-records/*` | P1 |
+| 6 | `getRouteDecision` — PHARMACIST can access `/staff/inventory` | P1 |
+| 7 | `getRouteDecision` — RECEPTIONIST cannot access `/staff/inventory` | P1 |
+| 8 | `getRouteDecision` — ACCOUNTANT can access `/admin/audit-logs` | P1 |
+| 9 | `getRouteDecision` — ACCOUNTANT cannot access `/admin/users` | P1 |
+| 10 | `getRouteDecision` — DOCTOR can access `/staff/schedule` | P1 |
+| 11 | `getRouteDecision` — all staff roles can access `/staff/dashboard` | P1 |
+| 12 | `getRouteDecision` — all staff roles can access `/staff/support` | P2 |
+| 13 | `getRouteDecision` — PATIENT cannot access any `/staff/*` route | P1 |
+| 14 | `getRouteDecision` — trailing slash normalization | P2 |
+| 15 | `toAppRole` — maps valid string to AppRole | P2 |
+| 16 | `toAppRole` — returns null for invalid string | P2 |
+| 17 | `toAppRole` — returns null for null/undefined | P2 |
+| 18 | `filterNavigationLinks` — returns empty for null role | P2 |
+
+#### 3.1.3 `lib/staff-queue.ts` — 10 new tests
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | Fetch today's queue — calls correct endpoint with auth | P1 |
+| 2 | Check-in — sends POST with ISO timestamp | P1 |
+| 3 | Call patient — sends POST to `/queue/{id}/call` | P1 |
+| 4 | Assign room — sends room name in body | P1 |
+| 5 | Start consultation — POST to correct endpoint | P1 |
+| 6 | Complete visit — POST to correct endpoint | P1 |
+| 7 | Error handling — throws on non-2xx | P2 |
+| 8 | Empty queue — handles empty data array | P2 |
+| 9 | Queue filtering — separates waiting/ready/in-progress | P2 |
+| 10 | Status badge derivation — maps statuses correctly | P3 |
+
+#### 3.1.4 `lib/operations-api.ts` — 8 new tests
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | Fetch inventory items — correct URL and auth scope | P1 |
+| 2 | Fetch inventory lots — correct URL | P1 |
+| 3 | Fetch inventory movements — correct URL | P2 |
+| 4 | Fetch inventory alerts — correct URL | P2 |
+| 5 | Fetch monitoring snapshot — admin auth | P1 |
+| 6 | Fetch audit logs — supports pagination params | P2 |
+| 7 | Error mapping — wraps API errors in typed error | P2 |
+| 8 | Null/empty data — returns sensible defaults | P3 |
+
+#### 3.1.5 `lib/clinical-api.ts` — 8 new tests
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | Fetch patient record — correct endpoint | P1 |
+| 2 | Save medical record — POST with body | P1 |
+| 3 | Fetch lab results — staff vs. patient scope | P1 |
+| 4 | Fetch prescriptions — correct auth | P2 |
+| 5 | Fetch vital signs — correct auth | P2 |
+| 6 | Create prescription — POST body validation | P2 |
+| 7 | Patient portal overview — patient auth | P1 |
+| 8 | Patient messages — patient auth | P2 |
+
+#### 3.1.6 `lib/use-stored-role.ts` — 4 new tests
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | Returns role from sessionStorage for staff scope | P1 |
+| 2 | Returns role from sessionStorage for patient scope | P1 |
+| 3 | Returns null when no role stored | P2 |
+| 4 | Returns null in SSR environment | P2 |
+
+**Unit test subtotal: ~60 new tests**
+
+---
+
+### 3.2 E2E Smoke Tests — Extensions (Playwright `@ui`)
+
+#### 3.2.1 Accessibility — Extend to All Routes (currently public only)
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | All staff routes — no critical/serious a11y violations | P1 |
+| 2 | All portal routes — no critical/serious a11y violations | P1 |
+| 3 | All admin routes — no critical/serious a11y violations | P1 |
+
+> [!NOTE]
+> This adds ~45 new a11y checks (staff: 25, portal: 18, admin: 10). Currently only 11 public routes are checked.
+
+#### 3.2.2 Console Error Audit — Already covered for all routes ✅
+
+#### 3.2.3 SEO & Meta Tags (new spec: `seo-audit.spec.ts`)
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | Every public page has a unique `<title>` tag | P2 |
+| 2 | Every public page has a `<meta name="description">` | P2 |
+| 3 | Only one `<h1>` per page across all routes | P2 |
+| 4 | No broken internal links (crawl all `<a href>` on public pages) | P2 |
+| 5 | `robots.txt` is accessible | P3 |
+| 6 | `sitemap.xml` returns 200 (if implemented) | P3 |
+
+---
+
+### 3.3 E2E Integrated Tests — Gaps (Playwright `@integrated`)
+
+> Require live backend at `HMS_API_URL`.
+
+#### 3.3.1 Staff Auth — Extensions
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | Doctor login → redirect to `/staff/dashboard` | P1 |
+| 2 | Nurse login → redirect to `/staff/dashboard` | P1 |
+| 3 | Receptionist login → access `/staff/queue` | P1 |
+| 4 | Pharmacist login → access `/staff/inventory` | P1 |
+| 5 | Accountant login → access `/staff/invoices` | P1 |
+| 6 | Session expiry → redirect to `/session-expired` | P1 |
+| 7 | Concurrent tabs — session shared via sessionStorage | P3 |
+
+#### 3.3.2 RBAC Enforcement (browser-level)
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | NURSE navigating to `/admin/users` → redirected to `/forbidden` | P1 |
+| 2 | DOCTOR navigating to `/staff/inventory` → redirected to `/forbidden` | P1 |
+| 3 | PHARMACIST navigating to `/staff/medical-records/1/edit` → forbidden | P1 |
+| 4 | ACCOUNTANT navigating to `/admin/departments` → forbidden | P1 |
+| 5 | Unauthenticated user navigating to `/staff/dashboard` → `/staff/login` | P1 |
+| 6 | Unauthenticated user navigating to `/portal/overview` → `/portal/login` | P1 |
+| 7 | PATIENT accessing `/staff/*` → forbidden | P1 |
+| 8 | Route guard renders forbidden page with "Access denied" heading | P2 |
+
+#### 3.3.3 Booking End-to-End
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | Public booking: select department → doctors load | P1 |
+| 2 | Public booking: select doctor → available slots load | P1 |
+| 3 | Public booking: fill symptoms → proceed to review | P1 |
+| 4 | Public booking: confirm booking → success page | P1 |
+| 5 | Booking: invalid phone number → validation error | P2 |
+| 6 | Booking: past date selection → validation error | P2 |
+
+#### 3.3.4 Patient Portal Workflows
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | Patient login → view overview → correct name displayed | P1 |
+| 2 | Patient → view appointments list | P1 |
+| 3 | Patient → view lab results | P1 |
+| 4 | Patient → view messages | P2 |
+| 5 | Patient → view billing | P2 |
+| 6 | Patient → update profile | P2 |
+| 7 | Patient → view electronic records | P2 |
+
+---
+
+### 3.4 E2E Data-Driven UI Tests — Gaps (Playwright `@ui` with route mocking)
+
+#### 3.4.1 Staff Pages Not Yet Covered
+
+| Page | # Tests | Priority | What to Verify |
+|------|---------|----------|----------------|
+| `/staff/dashboard` | 3 | P1 | Stats cards render, chart loads, recent activity list |
+| `/staff/closures` | 3 | P1 | Calendar renders, closure entries, add closure form |
+| `/staff/schedule` | 3 | P1 | Weekly view renders, slot blocks visible, template selector |
+| `/staff/slots` | 3 | P1 | Slot generation form, bulk generate action |
+| `/staff/patients` | 3 | P1 | Patient list table, search/filter, pagination |
+| `/staff/booking/*` (wizard) | 5 | P1 | Steps: symptoms → doctor/slot → review → confirm → success |
+| `/staff/doctor/dashboard` | 3 | P1 | Today's appointments, consultation panel, stats |
+| `/staff/doctor/[id]` | 2 | P2 | Doctor detail card, schedule display |
+| `/staff/medical-records/[id]/edit` | 4 | P1 | Record editor loads, save action, vitals section, diagnosis |
+| `/staff/prescriptions/preview` | 2 | P2 | Prescription renders, print button |
+| `/staff/lab-results` | 2 | P2 | Lab results list, filter by status |
+| `/staff/lab-results/[id]` | 2 | P2 | Detail view, result values, doctor comment |
+| `/staff/nurse-intake` | 3 | P1 | Intake board renders, patient queue, triage form |
+| `/staff/vital-signs` | 3 | P1 | Vital signs editor, form inputs, save action |
+| `/staff/pricing` | 2 | P2 | Pricing table, edit action |
+| `/staff/revenue` | 2 | P2 | Revenue dashboard, charts, date filter |
+| `/staff/invoices` | 3 | P2 | Invoice list, status filter, detail view |
+| `/staff/support` | 2 | P3 | Assistant chat, FAQ section |
+
+**Staff subtotal: ~50 new tests**
+
+#### 3.4.2 Admin Pages Not Yet Covered
+
+| Page | # Tests | Priority | What to Verify |
+|------|---------|----------|----------------|
+| `/admin/dashboard` | 3 | P1 | Stats summary, charts, performance metrics |
+| `/admin/users` | 4 | P1 | User table, search, role filter, create button |
+| `/admin/users/[id]` | 3 | P1 | User detail, edit form, role assignment |
+| `/admin/departments` | 3 | P1 | Department list, add/edit department, doctor count |
+| `/admin/rooms` | 3 | P1 | Room list, availability status, create room |
+| `/admin/appointments` | 3 | P1 | Appointment table, date filter, status filter |
+| `/admin/news` | 3 | P2 | News list, create/edit article, publish toggle |
+| `/admin/public-content` | 2 | P2 | Hero editor, preview mode |
+| `/admin/knowledge` | 2 | P3 | Knowledge documents list |
+
+**Admin subtotal: ~26 new tests**
+
+#### 3.4.3 Patient Portal Pages Not Yet Covered
+
+| Page | # Tests | Priority | What to Verify |
+|------|---------|----------|----------------|
+| `/portal/records` | 3 | P1 | Medical records list, detail view |
+| `/portal/appointments` | 3 | P1 | Appointment list, upcoming badge, detail link |
+| `/portal/appointments/[id]` | 2 | P1 | Appointment detail, doctor info, status |
+| `/portal/lab-results` | 2 | P1 | Lab results list, status indicators |
+| `/portal/messages` | 3 | P2 | Message list, unread badge, compose action |
+| `/portal/profile` | 3 | P2 | Profile form, edit, save |
+| `/portal/billing` | 3 | P2 | Invoice list, payment status, total |
+| `/portal/claim` | 2 | P1 | Claim form validation, submit |
+| `/portal/diagnostics` | 2 | P3 | Diagnostics view |
+| `/portal/pharmacy` | 2 | P3 | Prescription history |
+| `/portal/scheduling` | 2 | P3 | Schedule view |
+| `/portal/staff` | 1 | P3 | Staff directory |
+| `/portal/support` | 1 | P3 | Support chat |
+| `/portal/inventory` | 1 | P3 | Patient-facing inventory |
+| `/portal/admit` | 1 | P3 | Admission info |
+
+**Portal subtotal: ~31 new tests**
+
+---
+
+### 3.5 Specialized Tests
+
+#### 3.5.1 Visual Regression — Extend Coverage
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | Add staff login page baseline | P2 |
+| 2 | Add portal login page baseline | P2 |
+| 3 | Add admin dashboard baseline | P2 |
+| 4 | Add portal overview baseline | P2 |
+| 5 | Add staff queue baseline (with mocked data) | P2 |
+| 6 | Add inventory page baseline (with mocked data) | P3 |
+| 7 | Mobile viewport baselines for top 5 public pages | P2 |
+
+#### 3.5.2 Responsive Layout — Extend Coverage
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | Staff login — all 3 viewports | P2 |
+| 2 | Portal login — all 3 viewports | P2 |
+| 3 | Staff queue — all 3 viewports | P2 |
+| 4 | Staff inventory — all 3 viewports | P2 |
+| 5 | Admin users table — all 3 viewports | P2 |
+| 6 | Portal appointments — all 3 viewports | P3 |
+
+#### 3.5.3 Performance (new spec: `performance.spec.ts`)
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | Public home — Lighthouse score ≥ 80 | P2 |
+| 2 | Staff dashboard — LCP < 3s | P2 |
+| 3 | Portal overview — LCP < 3s | P2 |
+| 4 | No layout shift on public home (CLS < 0.1) | P3 |
+| 5 | Staff queue — no memory leak after 50 tab renders | P3 |
+
+#### 3.5.4 Security Smoke (new spec: `security.spec.ts`)
+
+| # | Test Case | Priority |
+|---|-----------|----------|
+| 1 | Session tokens not in URL (query params) | P1 |
+| 2 | `sessionStorage` cleared after logout | P1 |
+| 3 | No sensitive data in HTML source for public pages | P2 |
+| 4 | CSP headers present (if configured) | P3 |
+| 5 | HTTPS redirect works in production | P3 |
+
+---
+
+## 4. Implementation Roadmap
+
+### Phase 1 — Foundation (Days 1–2)
+
+- [x] **Install Vitest** + `@testing-library/react` + `jsdom`
+- [x] Configure `vitest.config.ts` with Next.js path aliases
+- [x] Add `test:unit` and `test:unit:coverage` scripts to `package.json`
+- [x] Write unit tests for `lib/rbac.ts` (18 tests) — highest value, pure logic
+- [x] Write unit tests for `lib/api-client.ts` (12 tests)
+- [x] Write unit tests for `lib/use-stored-role.ts` (4 tests)
+
+### Phase 2 — Core E2E Coverage (Days 3–5)
+
+- [x] Extend a11y audit to staff, portal, and admin routes (45 tests)
+- [x] Add RBAC enforcement E2E tests (8 tests)
+- [x] Add data-driven tests for `/staff/dashboard` (3 tests)
+- [x] Add data-driven tests for `/staff/medical-records/[id]/edit` (4 tests)
+- [x] Add data-driven tests for `/staff/nurse-intake` (3 tests)
+- [x] Add data-driven tests for `/staff/vital-signs` (3 tests)
+- [x] Add data-driven tests for `/admin/dashboard` (3 tests)
+- [x] Add data-driven tests for `/admin/users` + `users/[id]` (7 tests)
+- [x] Add data-driven tests for `/portal/records` (3 tests)
+- [x] Add data-driven tests for `/portal/appointments` (5 tests)
+- [x] Create Page Object Models for: `DashboardPage`, `AdminUsersPage`, `QueuePage`
+
+### Phase 3 — Complete Page Coverage (Days 6–8)
+
+- [x] Unit tests for `lib/staff-queue.ts` (10 tests)
+- [x] Unit tests for `lib/operations-api.ts` (8 tests)
+- [x] Unit tests for `lib/clinical-api.ts` (8 tests)
+- [x] Data-driven tests for remaining staff pages (closures, schedule, slots, booking wizard, pricing, revenue, invoices)
+- [x] Data-driven tests for remaining admin pages (departments, rooms, appointments, news, public-content)
+- [x] Data-driven tests for remaining portal pages (messages, profile, billing, lab-results)
+
+### Phase 4 — Specialized & Polish (Days 9–10)
+
+- [ ] Visual regression baselines for new routes (7 tests)
+- [ ] Extended responsive tests (18 tests)
+- [ ] SEO audit spec (6 tests)
+- [ ] Performance/Lighthouse spec (5 tests)
+- [ ] Security smoke spec (5 tests)
+- [ ] Multi-browser support: add Firefox and WebKit projects to Playwright config
+
+---
+
+## 5. File Structure (Target)
+
+```
+web/
+├── vitest.config.ts                      ← NEW
+├── src/
+│   └── lib/
+│       ├── __tests__/                    ← NEW
+│       │   ├── api-client.test.ts
+│       │   ├── rbac.test.ts
+│       │   ├── staff-queue.test.ts
+│       │   ├── operations-api.test.ts
+│       │   ├── clinical-api.test.ts
+│       │   └── use-stored-role.test.ts
+│       └── ...
+├── e2e/
+│   ├── helpers/
+│   │   ├── a11y.ts
+│   │   ├── backend.ts
+│   │   ├── console.ts
+│   │   ├── layout.ts
+│   │   ├── personas.ts
+│   │   ├── routes.ts
+│   │   └── mock-data.ts                  ← NEW (shared mock fixtures)
+│   ├── pages/
+│   │   ├── booking-page.ts
+│   │   ├── login-page.ts
+│   │   ├── dashboard-page.ts             ← NEW
+│   │   ├── admin-users-page.ts           ← NEW
+│   │   └── queue-page.ts                 ← NEW
+│   └── specs/
+│       ├── api-client.spec.ts
+│       ├── auth-integrated.spec.ts
+│       ├── operations-api.spec.ts
+│       ├── rbac.spec.ts
+│       ├── responsive.spec.ts
+│       ├── route-audit.spec.ts
+│       ├── staff-queue.spec.ts
+│       ├── ui-smoke.spec.ts
+│       ├── visual.spec.ts
+│       ├── workflows.spec.ts
+│       ├── rbac-enforcement.spec.ts      ← NEW
+│       ├── staff-clinical.spec.ts        ← NEW
+│       ├── staff-operations.spec.ts      ← NEW
+│       ├── admin-pages.spec.ts           ← NEW
+│       ├── portal-pages.spec.ts          ← NEW
+│       ├── booking-wizard.spec.ts        ← NEW
+│       ├── seo-audit.spec.ts             ← NEW
+│       ├── performance.spec.ts           ← NEW
+│       └── security.spec.ts              ← NEW
+```
+
+---
+
+## 6. Test Execution Matrix
+
+| Command | What Runs | When |
+|---------|-----------|------|
+| `npm run test:unit` | Vitest unit tests | Pre-commit, CI |
+| `npm run test:unit:coverage` | Unit tests + coverage report | CI, PR gate |
+| `npm run test:e2e:ui` | Playwright `@ui` (smoke + data-driven) | CI, PR gate |
+| `npm run test:e2e:integrated` | Playwright `@integrated` (needs backend) | Staging, pre-release |
+| `npm run test:e2e:visual` | Playwright `@visual` (screenshot baselines) | PR gate |
+| `npm run test:e2e:ci` | Critical subset for fast CI | Every push |
+| Full suite | All layers | Nightly / release |
+
+---
+
+## 7. Coverage Targets
+
+| Layer | Current | Target | Delta |
+|-------|---------|--------|-------|
+| **Unit tests** | 6 | 66 | +60 |
+| **E2E Smoke** | 96 | 148 | +52 |
+| **E2E Integrated** | 7 | 35 | +28 |
+| **E2E Data-driven** | 7 | 114 | +107 |
+| **Responsive** | 24 | 42 | +18 |
+| **Visual** | 8 | 15 | +7 |
+| **Specialized** | 0 | 16 | +16 |
+| **TOTAL** | **~148** | **~436** | **+~288** |
+
+---
+
+## 8. Dependencies to Install
+
+```bash
+# Unit testing
+npm i -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom
+
+# Already installed
+# @playwright/test, @axe-core/playwright
+```
+
+---
+
+## 9. Success Criteria
+
+- [ ] **Unit test coverage ≥ 80%** on `src/lib/` modules
+- [ ] **Zero critical/serious a11y violations** on all routes
+- [ ] **All 56 routes render** without console errors or Next.js error overlays
+- [ ] **RBAC enforcement verified** for all 7 roles × protected route categories
+- [ ] **Every data-driven page** has at least one mocked test verifying its primary data render
+- [ ] **Visual baselines exist** for at least 15 key screens
+- [ ] **CI pipeline** runs unit + `@ui` + `@visual` on every PR in < 5 minutes
+- [ ] **Integrated tests** pass against staging backend before every release

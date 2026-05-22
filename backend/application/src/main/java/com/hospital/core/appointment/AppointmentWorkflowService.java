@@ -15,7 +15,10 @@ import com.hospital.shared.appointment.FollowUpRequest;
 import com.hospital.shared.appointment.FollowUpResponse;
 import com.hospital.shared.enums.AppointmentStatus;
 import com.hospital.shared.enums.UserRole;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -36,6 +40,7 @@ public class AppointmentWorkflowService {
   private final PatientIdentifierProtector patientIdentifierProtector;
   private final UserRepository userRepository;
   private final AuditLogService auditLogService;
+  private final EntityManager entityManager;
 
   public AppointmentWorkflowService(
       AppointmentRepository appointmentRepository,
@@ -43,13 +48,15 @@ public class AppointmentWorkflowService {
       FollowUpRepository followUpRepository,
       PatientIdentifierProtector patientIdentifierProtector,
       UserRepository userRepository,
-      AuditLogService auditLogService) {
+      AuditLogService auditLogService,
+      EntityManager entityManager) {
     this.appointmentRepository = appointmentRepository;
     this.vitalSignsRepository = vitalSignsRepository;
     this.followUpRepository = followUpRepository;
     this.patientIdentifierProtector = patientIdentifierProtector;
     this.userRepository = userRepository;
     this.auditLogService = auditLogService;
+    this.entityManager = entityManager;
   }
 
   @Transactional(readOnly = true)
@@ -63,8 +70,60 @@ public class AppointmentWorkflowService {
   public Page<AppointmentListResponse> listAppointments(
       AppointmentStatus status, UUID doctorId, LocalDate date, int page, int size) {
     var pageable = PageRequest.of(page, size);
-    return appointmentRepository.findAllFiltered(status, doctorId, date, pageable)
+    return findAppointmentsFiltered(status, doctorId, date, pageable)
         .map(this::toListResponse);
+  }
+
+  private Page<AppointmentEntity> findAppointmentsFiltered(
+      AppointmentStatus status, UUID doctorId, LocalDate date, PageRequest pageable) {
+    var filters = appointmentFilters(status, doctorId, date);
+    var whereClause = filters.isEmpty() ? "" : " where " + String.join(" and ", filters);
+    var sortClause = " order by appointment.appointmentDate desc, appointment.firstSlot.startTime asc";
+    var contentQuery = entityManager.createQuery(
+        "select appointment from AppointmentEntity appointment"
+            + " join fetch appointment.patient"
+            + " join fetch appointment.doctor"
+            + " join fetch appointment.firstSlot"
+            + whereClause
+            + sortClause,
+        AppointmentEntity.class);
+    bindAppointmentFilters(contentQuery, status, doctorId, date);
+    contentQuery.setFirstResult((int) pageable.getOffset());
+    contentQuery.setMaxResults(pageable.getPageSize());
+
+    var countQuery = entityManager.createQuery(
+        "select count(appointment) from AppointmentEntity appointment" + whereClause,
+        Long.class);
+    bindAppointmentFilters(countQuery, status, doctorId, date);
+
+    return new PageImpl<>(contentQuery.getResultList(), pageable, countQuery.getSingleResult());
+  }
+
+  private List<String> appointmentFilters(AppointmentStatus status, UUID doctorId, LocalDate date) {
+    var filters = new ArrayList<String>();
+    if (status != null) {
+      filters.add("appointment.status = :status");
+    }
+    if (doctorId != null) {
+      filters.add("appointment.doctor.id = :doctorId");
+    }
+    if (date != null) {
+      filters.add("appointment.appointmentDate = :date");
+    }
+    return filters;
+  }
+
+  private <T> void bindAppointmentFilters(
+      TypedQuery<T> query, AppointmentStatus status, UUID doctorId, LocalDate date) {
+    if (status != null) {
+      query.setParameter("status", status);
+    }
+    if (doctorId != null) {
+      query.setParameter("doctorId", doctorId);
+    }
+    if (date != null) {
+      query.setParameter("date", date);
+    }
   }
 
   @Transactional

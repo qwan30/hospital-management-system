@@ -1,6 +1,6 @@
 # Hospital Management System Documentation Map
 
-**Status:** current documentation map for the April 26, 2026 repository baseline.
+**Status:** current documentation map for the May 13, 2026 repository baseline.
 **Scope:** documentation navigation, ownership, source-of-truth rules, and maintenance checks.
 
 ## 1. How To Read This Documentation Set
@@ -24,14 +24,17 @@ Use repository source reality as the tie-breaker when documents disagree:
 | Repository overview | [`../README.md`](../README.md) | this map |
 | Product scope | [`HMS_PRD.md`](HMS_PRD.md) | [`HMS_ProjectPlan.md`](HMS_ProjectPlan.md), [`HMS_UserManual.md`](HMS_UserManual.md) |
 | System requirements | [`HMS_SRS.md`](HMS_SRS.md) | [`reference/role-screen-api-matrix.md`](reference/role-screen-api-matrix.md) |
-| Technical design | [`HMS_TDD.md`](HMS_TDD.md) | [`HMS_ArchitectureDiagrams.html`](HMS_ArchitectureDiagrams.html) |
-| API contract | [`../API_CONTRACT.md`](../API_CONTRACT.md) | [`API_ENDPOINTS_COMPREHENSIVE.md`](API_ENDPOINTS_COMPREHENSIVE.md), [`reference/removed-endpoints.md`](reference/removed-endpoints.md) |
+| Technical design | [`HMS_TDD.md`](HMS_TDD.md) | [`HMS_ArchitectureDiagrams.html`](HMS_ArchitectureDiagrams.html), [`03-architecture/FRONTEND_ARCHITECTURE.md`](03-architecture/FRONTEND_ARCHITECTURE.md) |
+| Code intelligence scan | [`reference/gitnexus-codebase-scan.md`](reference/gitnexus-codebase-scan.md) | [`reference/engineering-metrics.md`](reference/engineering-metrics.md), GitNexus index under `../.gitnexus` |
+| Current system flows | [`reference/current-system-flows.md`](reference/current-system-flows.md) | [`reference/frontend-route-inventory.md`](reference/frontend-route-inventory.md), [`reference/role-screen-api-matrix.md`](reference/role-screen-api-matrix.md) |
+| API contract | [`../API_CONTRACT.md`](../API_CONTRACT.md) | [`API_ENDPOINTS_COMPREHENSIVE.md`](API_ENDPOINTS_COMPREHENSIVE.md), [`04-api/COMPONENT_API_MAPPING.md`](04-api/COMPONENT_API_MAPPING.md), [`04-api/DATA_FLOW_SPECIFICATION.md`](04-api/DATA_FLOW_SPECIFICATION.md), [`04-api/ERROR_HANDLING_MATRIX.md`](04-api/ERROR_HANDLING_MATRIX.md), [`reference/removed-endpoints.md`](reference/removed-endpoints.md) |
 | Database migrations | [`HMS_DBMigrationPlan.md`](HMS_DBMigrationPlan.md) | migration files under `../backend/start/src/main/resources/db/migration` |
 | Deployment and setup | [`HMS_DeploymentGuide.md`](HMS_DeploymentGuide.md) | [`../README.md`](../README.md), [`reference/demo-accounts-and-seed-data.md`](reference/demo-accounts-and-seed-data.md) |
-| Testing | [`HMS_TestPlan.md`](HMS_TestPlan.md) | `../backend/application/src/test`, `../backend/start/src/test`, `../web/e2e` |
+| Testing | [`HMS_TestPlan.md`](HMS_TestPlan.md) | [`06-testing/business-flow-test-matrix.md`](06-testing/business-flow-test-matrix.md), `../backend/application/src/test`, `../backend/start/src/test`, `../web/e2e` |
+| Stabilization readiness | [`audits/stabilization-readiness-2026-05-13.md`](audits/stabilization-readiness-2026-05-13.md) | [`HMS_TestPlan.md`](HMS_TestPlan.md), GitNexus index, Khuym onboarding state |
 | Frontend routes | [`reference/frontend-route-inventory.md`](reference/frontend-route-inventory.md) | [`design_brief.md`](design_brief.md), `../web/e2e/helpers/routes.ts` |
 | Design direction | [`design_brief.md`](design_brief.md) | [`DESIGN.md`](DESIGN.md) |
-| Documentation audit | [`audits/documentation-review-and-improvement-plan.md`](audits/documentation-review-and-improvement-plan.md) | [`audits/verification-checklist.md`](audits/verification-checklist.md), [`audits/final-documentation-review-notes.md`](audits/final-documentation-review-notes.md) |
+| Documentation audit | [`audits/documentation-review-and-improvement-plan.md`](audits/documentation-review-and-improvement-plan.md) | [`INTEGRATION_GAPS.md`](INTEGRATION_GAPS.md), [`audits/verification-checklist.md`](audits/verification-checklist.md), [`audits/final-documentation-review-notes.md`](audits/final-documentation-review-notes.md) |
 | Agent workflow governance | [`09-agent-workflows/README.md`](09-agent-workflows/README.md) | [`reference/agent-workflow-governance.md`](reference/agent-workflow-governance.md) |
 
 ## 2.1 Professional Category Navigation
@@ -73,7 +76,10 @@ The long-term documentation category structure is present as a navigation layer:
 | `HMS_UseCaseDiagram.puml` | current/reference | PlantUML source |
 | `HMS_UserManual.md` | current/reference | role workflow guide, not proof of complete frontend production readiness |
 | `archive/resolved/implementation_plan.md.resolved` | archived | superseded implementation status note retained for history |
+| `audits/stabilization-readiness-2026-05-13.md` | current/audit | latest stabilization verdict, verification evidence, and Docker blocker |
 | `reference/agent-workflow-governance.md` | current/reference | classifies agent assets as workflow tooling, not product features |
+| `reference/current-system-flows.md` | current/reference | active public, staff, admin, finance, inventory, and patient portal flow map |
+| `reference/gitnexus-codebase-scan.md` | current/reference | GitNexus graph snapshot, key code surfaces, and source metrics |
 
 ## 4. Status Labels
 
@@ -108,7 +114,7 @@ Use these labels consistently:
 ## 7. Maintenance Rules
 
 - Endpoint changes require updates to `../API_CONTRACT.md`, `API_ENDPOINTS_COMPREHENSIVE.md`, and affected requirements/design docs.
-- Frontend route changes require updates to `reference/frontend-route-inventory.md`, `design_brief.md`, and test documentation.
+- Frontend route or workflow changes require updates to `reference/frontend-route-inventory.md`, `reference/current-system-flows.md`, `design_brief.md`, and test documentation.
 - Migration changes require updates to `HMS_DBMigrationPlan.md`, `HMS_TDD.md`, and overview docs if counts are mentioned.
 - Test suite changes require updates to `HMS_TestPlan.md`.
 - Deployment or environment changes require updates to `HMS_DeploymentGuide.md`, `.env.example`, and root setup notes.

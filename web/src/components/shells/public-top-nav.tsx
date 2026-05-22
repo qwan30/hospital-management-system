@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowRight, ShieldPlus } from "lucide-react";
+import { Activity, ArrowRight, ChevronDown, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const publicLinks = [
@@ -21,12 +21,12 @@ export function PublicTopNav() {
       <div className="flex min-w-0 w-full items-center gap-4 md:gap-8">
         <Link
           href="/"
-          className="flex shrink-0 items-center gap-3 text-base font-bold text-white uppercase"
+          className="flex min-w-0 items-center gap-3 text-[18px] font-bold uppercase leading-6 tracking-normal text-white"
         >
-          <span className="grid size-9 place-items-center rounded-[10px] border border-white/15 bg-white/10 text-[var(--hc-blue-500)]">
-            <ShieldPlus className="size-5" aria-hidden="true" />
+          <span className="grid size-9 shrink-0 place-items-center rounded-[10px] border border-white/15 bg-white/10 text-[var(--hc-blue-500)]">
+            <Activity className="size-5" aria-hidden="true" />
           </span>
-          HOSPITAL CORE
+          <span className="shrink-0 whitespace-nowrap">HOSPITAL CORE</span>
         </Link>
         <nav className="hidden md:flex h-full items-center">
           {publicLinks.map((link) => {
@@ -61,8 +61,13 @@ export function PublicTopNav() {
             href="/staff/login"
             className="inline-flex h-10 shrink-0 items-center gap-2 rounded-[var(--radius-md)] bg-[var(--hc-blue-600)] px-4 text-xs font-bold text-white shadow-[var(--shadow-blue)] transition hover:bg-[var(--hc-blue-700)] sm:text-sm"
           >
+            <UserRound className="size-3.5" aria-hidden="true" />
             Staff Login
-            <ArrowRight className="size-3.5" aria-hidden="true" />
+            {pathname === "/booking" ? (
+              <ChevronDown className="size-3.5" aria-hidden="true" />
+            ) : (
+              <ArrowRight className="size-3.5" aria-hidden="true" />
+            )}
           </Link>
         </div>
       </div>

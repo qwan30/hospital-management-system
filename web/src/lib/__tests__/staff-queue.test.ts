@@ -40,7 +40,7 @@ describe("staff-queue", () => {
       const appt1 = { ...baseAppointment, appointmentId: "1", startTime: "10:00" };
       const appt2 = { ...baseAppointment, appointmentId: "2", startTime: "09:00" };
       const override1 = { ...baseAppointment, appointmentId: "1", startTime: "11:00", status: "CHECKED_IN" as const };
-      
+
       const primary = [appt1, appt2];
       const overrides = [override1];
 
@@ -74,19 +74,19 @@ describe("staff-queue", () => {
     it("returns in_progress state", () => {
       expect(getQueueState({ ...baseAppointment, status: "IN_PROGRESS" })).toEqual({
         label: "In progress",
-        dotClass: "bg-hms-primary",
+        dotClass: "bg-hc-primary",
       });
     });
     it("returns ready state", () => {
       expect(getQueueState({ ...baseAppointment, status: "CHECKED_IN" })).toEqual({
         label: "Ready",
-        dotClass: "bg-hms-secondary",
+        dotClass: "bg-hc-secondary",
       });
     });
     it("returns waiting state by default", () => {
       expect(getQueueState({ ...baseAppointment, status: "PENDING" })).toEqual({
         label: "Waiting",
-        dotClass: "bg-hms-tertiary",
+        dotClass: "bg-hc-tertiary",
       });
     });
   });
@@ -106,7 +106,7 @@ describe("staff-queue", () => {
       expect(result[0].total).toBe(2);
       expect(result[0].waiting).toBe(1);
       expect(result[0].ready).toBe(1);
-      
+
       expect(result[1].doctorId).toBe("doc-2");
       expect(result[1].total).toBe(1);
       expect(result[1].inProgress).toBe(1);

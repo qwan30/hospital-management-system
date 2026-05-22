@@ -1,4 +1,5 @@
 import { PageHeader } from "@/components/ui/page-header";
+import { Badge } from "@/components/ui/badge";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { DataPanel } from "@/components/ui/data-panel";
 import { HcIcon } from "@/components/ui/hc-icon";
@@ -9,12 +10,12 @@ export default function PatientSupportPage() {
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-8">
       <div className="flex justify-between items-start">
-        <PageHeader 
+        <PageHeader
           title="Support"
           description="Route non-urgent care, billing, portal access, and scheduling questions to the right hospital desk."
           className="mb-0"
         />
-        <Link 
+        <Link
           href="/portal/messages"
           className="hc-button-primary"
         >
@@ -59,7 +60,7 @@ export default function PatientSupportPage() {
               {
                 eyebrow: "Scheduling desk",
                 title: "Appointment changes",
-                detail: "Review upcoming visits and request a reschedule from appointments.",
+                detail: "To change or cancel an appointment, please contact the scheduling desk or call the hospital reception.",
                 status: "Appointments",
               },
               {
@@ -75,19 +76,19 @@ export default function PatientSupportPage() {
                   <h3 className="text-base font-bold text-[var(--hc-text)] mt-1">{step.title}</h3>
                   <p className="text-sm text-[var(--hc-text-secondary)] mt-1">{step.detail}</p>
                 </div>
-                <span className="hc-badge bg-[var(--hc-surface-soft)] border border-[var(--hc-border)] text-[var(--hc-text-secondary)] whitespace-nowrap">
+                <Badge variant="secondary">
                   {step.status}
-                </span>
+                </Badge>
               </div>
             ))}
           </DataPanel>
         </div>
-        
+
         <div className="lg:col-span-1">
           <DataPanel className="bg-white">
-            <span className="text-[11px] font-bold text-[var(--hc-red-600)] uppercase tracking-widest mb-4 block">Safety notice</span>
+            <span className="text-[11px] font-bold text-[var(--hc-danger)] uppercase tracking-widest mb-4 block">Safety notice</span>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-full bg-[var(--hc-red-50)] text-[var(--hc-red-600)] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-[var(--hc-danger-bg)] text-[var(--hc-danger)] flex items-center justify-center">
                 <HcIcon name="warning" className="text-lg" />
               </div>
               <h3 className="text-base font-bold text-[var(--hc-text)]">Emergency guidance</h3>

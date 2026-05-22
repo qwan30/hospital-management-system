@@ -5,14 +5,14 @@ A comprehensive hospital management platform with appointment scheduling, clinic
 ## Stack
 
 - **Backend**: Java 17 / Spring Boot 3.3, multi-module Maven project (`domain`, `infrastructure`, `application`, `controller`, `start`)
-- **Database**: PostgreSQL 15, managed by Flyway (`V1` through `V16`; includes removal of historical assistant tables and current clinical/RBAC schema catch-up)
+- **Database**: PostgreSQL 15, managed by Flyway (`V1` through `V17`; includes removal of historical assistant tables plus current clinical, RBAC, and inventory constraint schema catch-up)
 - **Email**: Gmail API for transactional emails (confirmation, prescriptions, reminders)
-- **API Docs**: SpringDoc OpenAPI, with roughly 110 repository controller method mappings plus SpringDoc/Actuator support endpoints
+- **API Docs**: SpringDoc OpenAPI, with 117 method-level controller mappings plus SpringDoc/Actuator support endpoints
 - **Frontend**: Next.js 16 / React 19 / TypeScript in `web/`; static design prototypes remain in `frontend/`
 
 ## Current Status
 
-The backend API is fully functional with roughly 110 mapped controller methods covering:
+The backend API is fully functional with 117 method-level controller mappings covering:
 - Authentication (Staff JWT + Patient portal)
 - Smart Reservation System (booking and clinical triage intake)
 - Clinical Workflow (medical records, prescriptions, PDF generation)
@@ -33,28 +33,84 @@ The `web/` app contains the canonical Next.js route tree for public, staff, admi
 
 ### Quick Start
 
-```bash
-# 1. Start PostgreSQL
-docker compose up -d postgres
+#### Step 1 — Start PostgreSQL
 
-# 2. Build all backend modules
+```bash
+docker compose up -d postgres
+```
+
+Wait until the container is healthy (`docker ps` should show `(healthy)`).
+
+#### Step 2 — Set up environment variables
+
+Copy `.env.example` to `.env` at the project root (if not already done):
+
+```bash
+cp .env.example .env
+```
+
+The `.env` file must contain at minimum:
+
+```dotenv
+POSTGRES_PASSWORD=hospital_pass
+JWT_SECRET=this-is-a-very-secure-secret-key-123456
+PATIENT_IDENTIFIER_SECRET=another-very-secure-secret-key-123456
+SPRING_PROFILES_ACTIVE=dev
+HMS_NON_BILLING_DEMO_SEED_ENABLED=true
+```
+
+#### Step 3 — Build & Run Backend
+
+**Option A — Use the launcher script (recommended):**
+
+```powershell
+# From the project root
+.\backend\run.ps1
+```
+
+The script automatically loads `.env`, sets required variables, and runs the correct module.
+
+**Option B — Manual Maven commands:**
+
+```powershell
+# Set environment variables (PowerShell)
+$env:POSTGRES_PASSWORD='hospital_pass'
+$env:JWT_SECRET='this-is-a-very-secure-secret-key-123456'
+$env:PATIENT_IDENTIFIER_SECRET='another-very-secure-secret-key-123456'
+$env:SPRING_PROFILES_ACTIVE='dev'
+$env:HMS_NON_BILLING_DEMO_SEED_ENABLED='true'
+$env:HMS_ALLOW_CREDENTIALS='true'
+
+# Build all modules
 cd backend
 mvn install -DskipTests
 
-# 3. Run the backend (from the backend directory)
-mvn spring-boot:run -pl start -DskipTests
+# Run the backend — MUST target the 'start' module
+mvn spring-boot:run -f start/pom.xml
+```
 
-# 4. Open Swagger UI
-# http://localhost:8080/swagger-ui/index.html
+> ⚠️ **Common mistake:** Running `mvn spring-boot:run` from `backend/` without `-f start/pom.xml` will fail with
+> `Unable to find a suitable main class`. The parent POM is an aggregator (`<packaging>pom</packaging>`)
+> and has no main class. The `@SpringBootApplication` class lives in the `start` module.
 
-# 5. Health check
-# http://localhost:8080/actuator/health
+#### Step 4 — Verify backend is running
 
-# 6. Run frontend checks/build (from the web directory)
-cd ../web
-npm run lint
-npm run build
+```bash
+# Health check
+curl http://localhost:8081/actuator/health
+# → {"status":"UP"}
+
+# Swagger UI
+# Open in browser: http://localhost:8081/swagger-ui/index.html
+```
+
+#### Step 5 — Run frontend (optional)
+
+```bash
+cd web
+npm install
 npm run dev
+# → http://localhost:3000
 ```
 
 ### Demo Users (seeded on first startup)
@@ -64,19 +120,25 @@ npm run dev
 | `doctor1@hospital.vn` | `Doctor@1234` | DOCTOR |
 | `doctor2@hospital.vn` | `Doctor@1234` | DOCTOR |
 | `nurse@hospital.vn` | `Nurse@1234` | NURSE |
+| `receptionist@hospital.vn` | `Reception@1234` | RECEPTIONIST |
+| `pharmacist@hospital.vn` | `Pharma@1234` | PHARMACIST |
 | `admin@hospital.vn` | `Admin@1234` | ADMIN |
 | `accountant@hospital.vn` | `Acc@1234` | ACCOUNTANT |
 
 See [demo accounts and seed data](docs/reference/demo-accounts-and-seed-data.md) for the complete current seed-data reference.
 
-### Environment Variables (optional)
+For a Docker/VPS UAT release demo, set `HMS_RELEASE_DEMO_SEED_ENABLED=true` before backend startup. This adds synthetic data across public booking, queue, portal, admin, inventory, finance, and audit flows without using real patient data.
 
-External integrations are disabled by default and degrade gracefully:
+### Environment Variables
+
+Secrets are required. External integrations are disabled by default and degrade gracefully:
 
 | Variable | Default | Purpose |
 |:---------|:--------|:--------|
+| `POSTGRES_PASSWORD` | required | PostgreSQL password for the backend datasource |
+| `JWT_SECRET` | required | JWT signing secret; use a long random value |
+| `PATIENT_IDENTIFIER_SECRET` | required | Separate patient identifier hashing secret; do not reuse `JWT_SECRET` |
 | `GMAIL_ENABLED` | `false` | Enable email notifications |
-| `JWT_SECRET` | dev default | JWT signing secret |
 
 ## Project Structure
 

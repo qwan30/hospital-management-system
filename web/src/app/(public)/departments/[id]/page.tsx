@@ -28,24 +28,24 @@ function getInitials(fullName: string) {
 
 function DoctorCard({ doctor }: { doctor: DepartmentDoctorSummary }) {
   return (
-    <div className="bg-surface-container-lowest p-6 flex gap-4 transition-colors hover:bg-white group">
-      <div className="w-20 h-20 bg-surface-container-high shrink-0 flex items-center justify-center">
-        <span className="text-xl font-light text-primary">{getInitials(doctor.fullName)}</span>
+    <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] p-6 flex gap-5 transition-all hover:shadow-md hover:border-slate-300 group">
+      <div className="w-16 h-16 rounded-[var(--radius-lg)] bg-slate-100 shrink-0 flex items-center justify-center">
+        <span className="text-xl font-bold text-[var(--hc-primary)]">{getInitials(doctor.fullName)}</span>
       </div>
       <div className="flex flex-col justify-center">
-        <h4 className="font-headline font-semibold text-lg leading-tight group-hover:text-primary transition-colors">
+        <h4 className="font-bold text-lg leading-tight text-[var(--hc-text)] group-hover:text-[var(--hc-primary)] transition-colors mb-1">
           {doctor.fullName}
         </h4>
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-outline mb-2">
+        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">
           {doctor.specialty || "Specialist"}
         </p>
         <div className="flex flex-wrap gap-2">
           {doctor.qualification ? (
-            <span className="text-[10px] bg-surface-container-highest px-2 py-0.5 font-medium">
+            <span className="text-[10px] font-bold text-slate-500 bg-slate-100 rounded-md px-2.5 py-1 uppercase tracking-widest">
               {doctor.qualification}
             </span>
           ) : null}
-          <span className="text-[10px] bg-surface-container-highest px-2 py-0.5 font-medium">
+          <span className="text-[10px] font-bold text-slate-500 bg-slate-100 rounded-md px-2.5 py-1 uppercase tracking-widest">
             {doctor.experienceYears == null
               ? "Experience not provided"
               : `${doctor.experienceYears} years`}
@@ -110,138 +110,142 @@ export default function DepartmentDetailPage() {
 
   return (
     <main>
-      <div className="bg-surface-container-low px-8 py-12">
-        <div className="max-w-7xl mx-auto">
-          <nav className="flex items-center gap-2 mb-8 text-[10px] font-semibold uppercase tracking-[0.2em] text-outline">
-            <Link className="hover:text-primary transition-colors" href="/departments">
+      <div className="bg-slate-50 min-h-screen px-6 py-12 md:px-8">
+        <div className="max-w-[1440px] mx-auto">
+          <nav className="flex items-center gap-3 mb-10 text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
+            <Link className="hover:text-[var(--hc-primary)] transition-colors" href="/departments">
               Departments
             </Link>
-            <HcIcon name="chevron_right" className="text-[12px]" />
-            <span className="text-on-surface">
+            <HcIcon name="chevron_right" className="w-4 h-4" />
+            <span className="text-[var(--hc-text)]">
               {department?.name ?? routeLabel}
             </span>
           </nav>
 
           {isLoading ? (
-            <div className="bg-surface-container-lowest p-10 text-center text-sm text-on-surface-variant">
-              Loading department from the hospital system...
+            <div className="border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] bg-white p-16 flex flex-col items-center justify-center text-center">
+              <HcIcon name="hourglass_empty" className="text-4xl text-slate-300 mb-4" />
+              <h2 className="text-xl font-bold tracking-tight text-[var(--hc-text)] mb-2">Loading Department</h2>
+              <p className="text-sm text-[var(--hc-text-secondary)] font-medium">Loading department from the hospital system...</p>
             </div>
           ) : error ? (
-            <div className="bg-surface-container-lowest p-10 text-center" role="alert">
-              <h1 className="mb-4 text-4xl font-light tracking-tight text-on-surface">
+            <div className="border border-red-200 rounded-[var(--radius-xl)] bg-white p-16 flex flex-col items-center justify-center text-center shadow-sm" role="alert">
+              <HcIcon name="error_outline" className="text-4xl text-red-500 mb-4" />
+              <h1 className="mb-3 text-2xl font-bold tracking-tight text-red-900">
                 Department could not be loaded: {routeLabel}
               </h1>
-              <p className="mb-6 text-sm text-on-surface-variant">{error}</p>
-              <p className="mb-8 text-sm text-on-surface-variant">
+              <p className="mb-2 text-sm text-red-700 font-medium">{error}</p>
+              <p className="mb-8 text-sm text-red-500 font-medium max-w-md">
                 Department detail routes require the backend department UUID. Legacy static slugs are
                 not mapped to fake department data.
               </p>
-              <button
-                className="mr-3 bg-primary px-6 py-3 text-xs font-semibold uppercase tracking-widest text-white"
-                onClick={() => void loadDepartment()}
-                type="button"
-              >
-                Try Again
-              </button>
-              <Link
-                className="inline-block bg-surface-container-high px-6 py-3 text-xs font-semibold uppercase tracking-widest text-on-surface"
-                href="/departments"
-              >
-                Back To Departments
-              </Link>
+              <div className="flex gap-4">
+                <button
+                  className="hc-button-secondary border-red-200 text-red-700 hover:bg-red-50"
+                  onClick={() => void loadDepartment()}
+                  type="button"
+                >
+                  Try Again
+                </button>
+                <Link
+                  className="hc-button-primary"
+                  href="/departments"
+                >
+                  Back To Departments
+                </Link>
+              </div>
             </div>
           ) : department ? (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-              <div className="lg:col-span-8">
-                <h1 className="text-6xl md:text-8xl font-light font-headline tracking-tighter text-on-surface mb-8 leading-[0.9]">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+              <div className="lg:col-span-8 flex flex-col gap-10">
+                <h1 className="text-5xl md:text-7xl font-light tracking-tight text-[var(--hc-text)] leading-tight">
                   {department.name}
                 </h1>
-                <div className="bg-surface-container-lowest p-8 relative mb-12">
-                  <p className="text-xl font-body leading-relaxed text-on-surface-variant font-light">
+
+                <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] p-8 shadow-sm">
+                  <p className="text-lg leading-relaxed text-[var(--hc-text-secondary)] font-medium">
                     {department.description || "No public description has been published."}
                   </p>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-                  <div className="bg-surface-container-highest p-6">
-                    <span className="block text-4xl font-headline font-light mb-1">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] p-6 shadow-sm flex flex-col items-center text-center">
+                    <span className="block text-4xl font-light text-[var(--hc-primary)] mb-2">
                       {department.activeDoctorCount}
                     </span>
-                    <span className="text-[10px] font-semibold uppercase tracking-widest text-outline">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
                       Active Doctors
                     </span>
                   </div>
-                  <div className="bg-surface-container-highest p-6">
-                    <span className="block text-4xl font-headline font-light mb-1">
+                  <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] p-6 shadow-sm flex flex-col items-center text-center">
+                    <span className="block text-4xl font-light text-[var(--hc-text)] mb-2">
                       {department.phone ? "Yes" : "No"}
                     </span>
-                    <span className="text-[10px] font-semibold uppercase tracking-widest text-outline">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
                       Public Phone
                     </span>
                   </div>
                 </div>
 
-                <section id="doctors">
-                  <div className="flex justify-between items-end mb-8">
-                    <h2 className="text-2xl font-headline font-semibold tracking-tight">
+                <section id="doctors" className="mt-4">
+                  <div className="flex justify-between items-end mb-6">
+                    <h2 className="text-2xl font-bold tracking-tight text-[var(--hc-text)]">
                       Doctors in this department
                     </h2>
                     <Link
-                      className="text-primary text-xs font-semibold uppercase tracking-widest flex items-center hover:underline"
+                      className="text-[var(--hc-primary)] text-xs font-bold uppercase tracking-widest flex items-center hover:underline"
                       href="/doctors"
                     >
                       View All Staff
-                      <HcIcon name="arrow_forward" className="ml-2" />
+                      <HcIcon name="arrow_forward" className="ml-2 w-4 h-4" />
                     </Link>
                   </div>
                   {department.doctors.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-outline-variant/10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {department.doctors.map((doctor) => (
                         <DoctorCard doctor={doctor} key={doctor.id} />
                       ))}
                     </div>
                   ) : (
-                    <div className="bg-surface-container-lowest p-8 text-sm text-on-surface-variant">
+                    <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] p-12 text-center text-sm text-[var(--hc-text-secondary)] font-medium shadow-sm">
                       No active doctors are assigned to this department.
                     </div>
                   )}
                 </section>
               </div>
 
-              <aside className="lg:col-span-4">
-                <div className="sticky top-20">
-                  <div className="bg-surface-container-lowest p-8 border-t-4 border-primary">
-                    <h2 className="text-sm font-semibold uppercase tracking-widest mb-8 flex items-center">
-                      <HcIcon name="info" className="mr-2" />
-                      Quick Facts
-                    </h2>
-                    <div className="space-y-8">
-                      <div>
-                        <span className="block text-[10px] font-semibold uppercase tracking-widest text-outline mb-1">
-                          Direct Phone
-                        </span>
-                        <p className="text-xl font-headline font-medium">
-                          {department.phone || "Not published"}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="block text-[10px] font-semibold uppercase tracking-widest text-outline mb-1">
-                          Data Source
-                        </span>
-                        <p className="text-sm text-on-surface-variant font-light">
-                          `GET /api/v1/departments/{departmentId}`
-                        </p>
-                      </div>
+              <aside className="lg:col-span-4 sticky top-10">
+                <div className="bg-white border border-[var(--hc-border-soft)] border-t-4 border-t-[var(--hc-primary)] rounded-b-[var(--radius-xl)] shadow-sm p-8">
+                  <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-8 flex items-center gap-2">
+                    <HcIcon name="info" className="w-4 h-4" />
+                    Quick Facts
+                  </h2>
+                  <div className="space-y-8">
+                    <div>
+                      <span className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-primary)] mb-2">
+                        Direct Phone
+                      </span>
+                      <p className="text-lg font-bold text-[var(--hc-text)]">
+                        {department.phone || "Not published"}
+                      </p>
                     </div>
-                    <div className="mt-12 space-y-3">
-                      <Link
-                        className="flex w-full items-center justify-center gap-3 bg-primary py-4 text-xs font-semibold uppercase tracking-widest text-white transition-colors hover:bg-surface-tint"
-                        href={`/booking`}
-                      >
-                        Book Consultation
-                        <HcIcon name="calendar_month" className="text-sm" />
-                      </Link>
+                    <div>
+                      <span className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">
+                        Data Source
+                      </span>
+                      <p className="text-sm text-[var(--hc-text-secondary)] font-medium bg-slate-50 p-3 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] font-mono text-[11px]">
+                        GET /api/v1/departments/{departmentId}
+                      </p>
                     </div>
+                  </div>
+                  <div className="mt-10">
+                    <Link
+                      className="hc-button-primary w-full flex items-center justify-center gap-3 py-3.5"
+                      href={`/booking`}
+                    >
+                      Book Consultation
+                      <HcIcon name="calendar_month" className="w-4 h-4" />
+                    </Link>
                   </div>
                 </div>
               </aside>

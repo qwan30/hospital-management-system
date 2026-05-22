@@ -107,6 +107,7 @@ describe("AdminPublicContentPage", () => {
       });
     });
 
+    await userEvent.click(screen.getByRole("button", { name: /edit hero landing/i }));
     fireEvent.change(screen.getByLabelText("Title"), {
       target: { value: "Hero Landing Updated" },
     });

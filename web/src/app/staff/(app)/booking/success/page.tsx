@@ -1,91 +1,90 @@
 import Image from "next/image";
-
 import { HcIcon } from "@/components/ui/hc-icon";
+
 export default function BookingSuccessPage() {
   return (
-    <>
-      <main>
+    <main className="max-w-[1400px] mx-auto p-8 pb-20 flex flex-col items-center justify-center min-h-[calc(100vh-100px)]">
+      <div className="w-full max-w-[720px] flex flex-col space-y-10">
 
-{/* Centered Confirmation Stack: ~720px */}
-<div className="w-full max-w-[720px] flex flex-col space-y-12">
-{/* Success Indicator & Display Heading */}
-<header className="flex flex-col items-center text-center space-y-6">
-<div className="w-20 h-20 flex items-center justify-center bg-primary-container text-white">
-<HcIcon name="check_circle" className="text-5xl" />
-</div>
-<div className="space-y-2">
-<h1 className="text-5xl font-[300] tracking-tight text-on-surface leading-tight">
-                        Booking confirmed.
-                    </h1>
-<p className="text-sm font-semibold uppercase tracking-widest text-outline">
-                        Appointment ID: #MC-8294401
-                    </p>
-</div>
-</header>
-{/* Summary Card: Monochromatic Layering */}
-<section className="bg-surface-container-low p-8 md:p-10 space-y-10">
-<div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-{/* Data Monolith: Doctor */}
-<div className="flex flex-col space-y-2">
-<span className="text-xs font-semibold uppercase tracking-widest text-outline">Practitioner</span>
-<div className="flex items-start space-x-4">
-<Image alt="Doctor Profile" className="w-12 h-12 grayscale" data-alt="Professional portrait of a male doctor in a white lab coat with a stethoscope around his neck, minimalist white background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGYAfT8LWRcPEPCvaz0oYNZwLwRF0tPWJAo13CzHohYwCGfXzkEyzL4EOfWZ-XY42A1rUtPU3Qm0UXI3KDaKavGQyUQvVSKQ_ULnGTIL3azNekw7wwmb58ffbypeSes6KUZ85GQxnGX6ZniQELqQ75fYn-ILfTphg-sRbt5SP2QANxbuy5S_dSzi0fo9XiBlQVdRzYbTrLeI9mSDUYVaJXc6Ikj2EsoSlCAwhX3pLyzCnRaWWC2VwyznNIS2A_KCNQRsMZrrkDhQ" width={1200} height={800}/>
-<div className="flex flex-col">
-<h2 className="text-xl font-semibold">Dr. Julian Sterling</h2>
-<p className="text-sm text-outline">Chief Cardiologist</p>
-</div>
-</div>
-</div>
-{/* Data Monolith: Schedule */}
-<div className="flex flex-col space-y-2">
-<span className="text-xs font-semibold uppercase tracking-widest text-outline">Schedule Details</span>
-<div className="space-y-1">
-<div className="flex items-center space-x-2">
-<HcIcon name="calendar_today" className="text-primary text-xl" />
-<span className="text-xl font-semibold">October 24, 2023</span>
-</div>
-<div className="flex items-center space-x-2">
-<HcIcon name="schedule" className="text-primary text-xl" />
-<span className="text-xl font-semibold">09:15 AM (EST)</span>
-</div>
-</div>
-</div>
-</div>
-{/* Separation Logic: Background shift instead of border */}
-<div className="bg-surface-container-highest h-[1px] w-full"></div>
-{/* Next Steps Instructions */}
-<div className="space-y-4">
-<span className="text-xs font-semibold uppercase tracking-widest text-outline">Instructions</span>
-<ul className="space-y-4">
-<li className="flex items-start space-x-3">
-<HcIcon name="info" className="text-primary mt-0.5" />
-<p className="text-sm leading-relaxed">Please arrive 15 minutes prior to your appointment at the <strong>West Wing Cardiology Department, Level 4</strong>.</p>
-</li>
-<li className="flex items-start space-x-3">
-<HcIcon name="mail" className="text-primary mt-0.5" />
-<p className="text-sm leading-relaxed">A confirmation email has been sent to your registered address with the digital check-in QR code.</p>
-</li>
-</ul>
-</div>
-</section>
-{/* Actions */}
-<footer className="flex flex-col sm:flex-row items-center gap-4">
-<button className="w-full sm:w-auto px-12 h-12 bg-primary-container text-white font-semibold text-sm hover:brightness-110 active:translate-y-[2px] transition-all">
-                    Go Home
-                </button>
-<button className="w-full sm:w-auto px-12 h-12 bg-surface-container-high text-on-surface font-semibold text-sm hover:bg-surface-container-highest active:translate-y-[2px] transition-all">
-                    Book Another
-                </button>
-</footer>
-{/* Branding Footer */}
-<div className="pt-12 text-center">
-<p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-outline-variant">
-                    Automated Hospital Core System (c) 2024 HOSPITAL CORE
-                </p>
-</div>
-</div>
+        <header className="flex flex-col items-center text-center space-y-6">
+          <div className="w-20 h-20 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-sm">
+            <HcIcon name="check_circle" className="text-5xl" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-4xl md:text-5xl font-light tracking-tight text-[var(--hc-text)] leading-tight">
+              Booking confirmed.
+            </h1>
+            <p className="text-sm font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
+              Appointment ID: #MC-8294401
+            </p>
+          </div>
+        </header>
 
-</main>
-    </>
+        <section className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8 md:p-10 flex flex-col gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div className="flex flex-col space-y-4">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Practitioner</span>
+              <div className="flex items-center space-x-4">
+                <Image
+                  alt="Doctor Profile"
+                  className="w-14 h-14 object-cover rounded-[var(--radius-md)] grayscale"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGYAfT8LWRcPEPCvaz0oYNZwLwRF0tPWJAo13CzHohYwCGfXzkEyzL4EOfWZ-XY42A1rUtPU3Qm0UXI3KDaKavGQyUQvVSKQ_ULnGTIL3azNekw7wwmb58ffbypeSes6KUZ85GQxnGX6ZniQELqQ75fYn-ILfTphg-sRbt5SP2QANxbuy5S_dSzi0fo9XiBlQVdRzYbTrLeI9mSDUYVaJXc6Ikj2EsoSlCAwhX3pLyzCnRaWWC2VwyznNIS2A_KCNQRsMZrrkDhQ"
+                  width={1200} height={800}
+                />
+                <div className="flex flex-col">
+                  <h2 className="text-lg font-bold text-[var(--hc-text)]">Dr. Julian Sterling</h2>
+                  <p className="text-sm font-medium text-slate-500">Chief Cardiologist</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col space-y-4">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Schedule Details</span>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-3 text-[var(--hc-text)]">
+                  <HcIcon name="calendar_today" className="text-[var(--hc-primary)] text-xl" />
+                  <span className="text-lg font-bold">October 24, 2023</span>
+                </div>
+                <div className="flex items-center space-x-3 text-[var(--hc-text)]">
+                  <HcIcon name="schedule" className="text-[var(--hc-primary)] text-xl" />
+                  <span className="text-lg font-bold">09:15 AM (EST)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="h-px bg-[var(--hc-border-soft)] w-full"></div>
+
+          <div className="space-y-4">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Instructions</span>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3 bg-slate-50 p-4 rounded-[var(--radius-lg)]">
+                <HcIcon name="info" className="text-[var(--hc-primary)] mt-0.5 shrink-0" />
+                <p className="text-sm text-[var(--hc-text-secondary)] leading-relaxed font-medium">Please arrive 15 minutes prior to your appointment at the <strong className="text-[var(--hc-text)]">West Wing Cardiology Department, Level 4</strong>.</p>
+              </li>
+              <li className="flex items-start gap-3 bg-slate-50 p-4 rounded-[var(--radius-lg)]">
+                <HcIcon name="mail" className="text-[var(--hc-primary)] mt-0.5 shrink-0" />
+                <p className="text-sm text-[var(--hc-text-secondary)] leading-relaxed font-medium">A confirmation email has been sent to your registered address with the digital check-in QR code.</p>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <footer className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <button className="w-full sm:w-auto px-12 py-3 hc-button-primary">
+            Go Home
+          </button>
+          <button className="w-full sm:w-auto px-12 py-3 hc-button-secondary">
+            Book Another
+          </button>
+        </footer>
+
+        <div className="pt-8 text-center">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+            Automated Hospital Core System &copy; 2024 HOSPITAL CORE
+          </p>
+        </div>
+      </div>
+    </main>
   );
 }

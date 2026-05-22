@@ -6,7 +6,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-hospital_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "${HMS_POSTGRES_HOST_PORT:-5432}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hospital_user} -d ${POSTGRES_DB:-hospital_db}"]
       interval: 10s
@@ -26,26 +26,36 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       JWT_SECRET: ${JWT_SECRET}
       PATIENT_IDENTIFIER_SECRET: ${PATIENT_IDENTIFIER_SECRET}
-      SERVER_PORT: 8080
+      SERVER_PORT: 8081
+      HMS_ALLOW_CREDENTIALS: "true"
+      HMS_ALLOWED_ORIGIN_PRIMARY: ${HMS_ALLOWED_ORIGIN_PRIMARY:-http://localhost:3000}
+      HMS_ALLOWED_ORIGIN_SECONDARY: ${HMS_ALLOWED_ORIGIN_SECONDARY:-http://localhost:${HMS_FRONTEND_HOST_PORT:-3000}}
+      HMS_PUBLIC_RATE_LIMIT_PER_MINUTE: ${HMS_PUBLIC_RATE_LIMIT_PER_MINUTE:-30}
+      HMS_RELEASE_DEMO_SEED_ENABLED: ${HMS_RELEASE_DEMO_SEED_ENABLED:-false}
+      HMS_RELEASE_DEMO_FUTURE_SLOT_DAYS: ${HMS_RELEASE_DEMO_FUTURE_SLOT_DAYS:-14}
+      HMS_RELEASE_DEMO_TARGET_PATIENTS: ${HMS_RELEASE_DEMO_TARGET_PATIENTS:-8}
+      HMS_RELEASE_DEMO_TARGET_APPOINTMENTS: ${HMS_RELEASE_DEMO_TARGET_APPOINTMENTS:-12}
+      HMS_RELEASE_DEMO_TARGET_INVENTORY_ITEMS: ${HMS_RELEASE_DEMO_TARGET_INVENTORY_ITEMS:-8}
+      HMS_RELEASE_DEMO_TARGET_AUDIT_LOGS: ${HMS_RELEASE_DEMO_TARGET_AUDIT_LOGS:-16}
     depends_on:
       postgres:
         condition: service_healthy
     ports:
-      - "8080:8080"
+      - "${HMS_BACKEND_HOST_PORT:-8081}:8081"
 
   frontend:
     build:
       context: ./web
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080/api/v1}
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8081/api/v1}
     environment:
       NODE_ENV: production
-      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080/api/v1}
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8081/api/v1}
     depends_on:
       - backend
     ports:
-      - "3000:3000"
+      - "${HMS_FRONTEND_HOST_PORT:-3000}:3000"
 
 volumes:
   postgres-data:

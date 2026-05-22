@@ -74,6 +74,7 @@ async function completeRequiredForm() {
 describe("PublicBookingPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    window.history.pushState({}, "", "/booking");
     vi.mocked(listDoctors).mockResolvedValue([doctor]);
     vi.mocked(listDoctorSlots).mockResolvedValue([slot]);
     vi.mocked(createPublicAppointment).mockResolvedValue({
@@ -126,5 +127,132 @@ describe("PublicBookingPage", () => {
       "Requested slot window is already reserved",
     );
     expect(screen.queryByText(/booking request received/i)).not.toBeInTheDocument();
+  });
+
+  it("preselects a requested doctor from the query string and loads slots", async () => {
+    window.history.pushState({}, "", `/booking?doctorId=${doctor.id}`);
+
+    render(<PublicBookingPage />);
+
+    expect(await screen.findByText(/selected doctor:/i)).toHaveTextContent("Dr. Lan Tran");
+    await waitFor(() => {
+      expect(listDoctorSlots).toHaveBeenCalledWith(doctor.id, expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/));
+    });
+  });
+
+  it("ignores unknown requested doctor ids from the query string", async () => {
+    window.history.pushState({}, "", "/booking?doctorId=missing-doctor");
+
+    render(<PublicBookingPage />);
+
+    expect(await screen.findByLabelText("Doctor")).toHaveValue("");
+    expect(screen.getByText(/select a doctor to load real available slots/i)).toBeInTheDocument();
+    expect(listDoctorSlots).not.toHaveBeenCalled();
+  });
+
+  it("shows doctor loading errors without static fallback doctors", async () => {
+    vi.mocked(listDoctors).mockRejectedValueOnce(new Error("Doctors unavailable"));
+
+    render(<PublicBookingPage />);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Doctors unavailable");
+    expect(screen.queryByText("Dr. Lan Tran")).not.toBeInTheDocument();
+  });
+
+  it("shows unknown doctor loading errors with the default copy", async () => {
+    vi.mocked(listDoctors).mockRejectedValueOnce("network down");
+
+    render(<PublicBookingPage />);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Unable to load doctors.");
+  });
+
+  it("handles doctor clearing and empty slot responses", async () => {
+    vi.mocked(listDoctorSlots).mockResolvedValueOnce([]);
+
+    render(<PublicBookingPage />);
+
+    await userEvent.selectOptions(await screen.findByLabelText("Doctor"), doctor.id);
+    expect(await screen.findByText(/no available slots/i)).toBeInTheDocument();
+
+    await userEvent.selectOptions(screen.getByLabelText("Doctor"), "");
+    expect(screen.getByText(/select a doctor to load real available slots/i)).toBeInTheDocument();
+  });
+
+  it("shows slot loading errors and keeps the form usable", async () => {
+    vi.mocked(listDoctorSlots).mockRejectedValueOnce(new Error("Slots unavailable"));
+
+    render(<PublicBookingPage />);
+
+    await userEvent.selectOptions(await screen.findByLabelText("Doctor"), doctor.id);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Slots unavailable");
+    expect(screen.getByText(/no available slots/i)).toBeInTheDocument();
+  });
+
+  it("shows default slot loading errors for non-error rejections", async () => {
+    vi.mocked(listDoctorSlots).mockRejectedValueOnce("network down");
+
+    render(<PublicBookingPage />);
+
+    await userEvent.selectOptions(await screen.findByLabelText("Doctor"), doctor.id);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Unable to load doctor slots.");
+  });
+
+  it("requires a selected doctor and slot before submitting", async () => {
+    render(<PublicBookingPage />);
+
+    await screen.findByLabelText("Doctor");
+    await userEvent.click(screen.getByRole("button", { name: /confirm appointment/i }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Select a doctor and an available appointment slot before submitting.",
+    );
+    expect(createPublicAppointment).not.toHaveBeenCalled();
+  });
+
+  it("requires all patient, contact, address, and symptom fields", async () => {
+    render(<PublicBookingPage />);
+
+    await userEvent.selectOptions(await screen.findByLabelText("Doctor"), doctor.id);
+    await userEvent.click(await screen.findByRole("button", { name: "09:00 - 09:30" }));
+    await userEvent.click(screen.getByRole("button", { name: /confirm appointment/i }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Complete all required patient, contact, address, and symptom fields.",
+    );
+    expect(createPublicAppointment).not.toHaveBeenCalled();
+  });
+
+  it("validates CCCD format before creating an appointment", async () => {
+    render(<PublicBookingPage />);
+
+    await completeRequiredForm();
+    fireEvent.change(screen.getByLabelText(/patient cccd/i), {
+      target: { value: "123" },
+    });
+    await userEvent.click(screen.getByRole("button", { name: /confirm appointment/i }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Patient CCCD must be exactly 12 digits.",
+    );
+    expect(createPublicAppointment).not.toHaveBeenCalled();
+  });
+
+  it("uses default submit error copy for non-error failures", async () => {
+    vi.mocked(createPublicAppointment).mockRejectedValueOnce("network down");
+
+    render(<PublicBookingPage />);
+
+    await completeRequiredForm();
+    await userEvent.click(screen.getByRole("button", { name: /confirm appointment/i }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Unable to submit booking request.",
+    );
+    await waitFor(() => {
+      expect(listDoctorSlots).toHaveBeenCalledTimes(2);
+    });
   });
 });

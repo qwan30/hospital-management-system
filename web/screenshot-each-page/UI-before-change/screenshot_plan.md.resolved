@@ -1,0 +1,263 @@
+# Screenshot Collection Plan — Hospital Management System
+
+## Overview
+
+Systematically capture screenshots of **every page** in the hospital management system, organized by access level and role. All screenshots saved to:
+
+```
+d:\projects\hospital-management-system\web\screenshot-each-page\
+```
+
+**Frontend URL:** `http://localhost:3000`
+**Backend API:** `http://localhost:8081/api/v1`
+
+---
+
+## Prerequisites
+
+> [!IMPORTANT]
+> Both backend and frontend must be running before starting.
+
+1. **Backend** — `cd backend && .\run.ps1` (Spring Boot on port 8081)
+2. **Frontend** — `cd web && npm run dev` (Next.js on port 3000)
+3. **Seed data** — auto-loaded on first backend boot
+
+---
+
+## Login Credentials
+
+| Role | Email | Password | Login Page |
+|------|-------|----------|------------|
+| Admin | `admin@hospital.vn` | `Admin@1234` | `/staff/login` |
+| Doctor | `doctor1@hospital.vn` | `Doctor@1234` | `/staff/login` |
+| Nurse | `nurse@hospital.vn` | `Nurse@1234` | `/staff/login` |
+| Receptionist | `receptionist@hospital.vn` | `Reception@1234` | `/staff/login` |
+| Pharmacist | `pharmacist@hospital.vn` | `Pharma@1234` | `/staff/login` |
+| Accountant | `accountant@hospital.vn` | `Acc@1234` | `/staff/login` |
+| Patient | `patient@example.com` | `Patient@1234` | `/portal/login` |
+
+---
+
+## File Naming Convention
+
+```
+{section}_{page-name}.png
+```
+
+Examples: `public_home.png`, `staff-login.png`, `doctor_dashboard.png`, `admin_users.png`, `patient_overview.png`
+
+---
+
+## Phase 1: Public Pages (No Login Required)
+
+| # | URL | Screenshot Name |
+|---|-----|-----------------|
+| 1 | `/` | `public_home.png` |
+| 2 | `/home-classic` | `public_home-classic.png` |
+| 3 | `/home-variant` | `public_home-variant.png` |
+| 4 | `/departments` | `public_departments.png` |
+| 5 | `/doctors` | `public_doctors.png` |
+| 6 | `/booking` | `public_booking.png` |
+| 7 | `/news` | `public_news.png` |
+| 8 | `/privacy` | `public_privacy.png` |
+| 9 | `/terms` | `public_terms.png` |
+| 10 | `/security` | `public_security.png` |
+| 11 | `/session-expired` | `public_session-expired.png` |
+| 12 | `/forbidden` | `public_forbidden.png` |
+
+---
+
+## Phase 2: Login Pages
+
+| # | URL | Screenshot Name |
+|---|-----|-----------------|
+| 13 | `/staff/login` | `staff_login.png` |
+| 14 | `/portal/login` | `portal_login.png` |
+| 15 | `/portal/claim` | `portal_claim.png` |
+
+---
+
+## Phase 3: Admin Role (`admin@hospital.vn` / `Admin@1234`)
+
+Login via `/staff/login`, then capture:
+
+### Admin-Exclusive Pages
+| # | URL | Screenshot Name |
+|---|-----|-----------------|
+| 16 | `/admin/dashboard` | `admin_dashboard.png` |
+| 17 | `/admin/users` | `admin_users.png` |
+| 18 | `/admin/audit-logs` | `admin_audit-logs.png` |
+| 19 | `/admin/appointments` | `admin_appointments.png` |
+| 20 | `/admin/departments` | `admin_departments.png` |
+| 21 | `/admin/knowledge` | `admin_knowledge.png` |
+| 22 | `/admin/monitoring` | `admin_monitoring.png` |
+| 23 | `/admin/news` | `admin_news.png` |
+| 24 | `/admin/public-content` | `admin_public-content.png` |
+| 25 | `/admin/rooms` | `admin_rooms.png` |
+| 26 | `/admin/schedule-templates` | `admin_schedule-templates.png` |
+| 27 | `/admin/slots` | `admin_slots.png` |
+| 28 | `/admin/special-closures` | `admin_special-closures.png` |
+
+### Staff Pages (Admin has access)
+| # | URL | Screenshot Name |
+|---|-----|-----------------|
+| 29 | `/staff/dashboard` | `admin_staff-dashboard.png` |
+| 30 | `/staff/booking` | `admin_staff-booking.png` |
+| 31 | `/staff/queue` | `admin_staff-queue.png` |
+| 32 | `/staff/nurse-intake` | `admin_staff-nurse-intake.png` |
+| 33 | `/staff/vital-signs` | `admin_staff-vital-signs.png` |
+| 34 | `/staff/patients` | `admin_staff-patients.png` |
+| 35 | `/staff/doctor/dashboard` | `admin_staff-doctor-dashboard.png` |
+| 36 | `/staff/inventory` | `admin_staff-inventory.png` |
+| 37 | `/staff/invoices` | `admin_staff-invoices.png` |
+| 38 | `/staff/pricing` | `admin_staff-pricing.png` |
+| 39 | `/staff/revenue` | `admin_staff-revenue.png` |
+| 40 | `/staff/closures` | `admin_staff-closures.png` |
+| 41 | `/staff/slots` | `admin_staff-slots.png` |
+| 42 | `/staff/support` | `admin_staff-support.png` |
+| 43 | `/staff/assistant` | `admin_staff-assistant.png` |
+| 44 | `/staff/lab-results` | `admin_staff-lab-results.png` |
+| 45 | `/staff/prescriptions/preview` | `admin_staff-prescriptions-preview.png` |
+
+**→ Logout after completing**
+
+---
+
+## Phase 4: Doctor Role (`doctor1@hospital.vn` / `Doctor@1234`)
+
+Login via `/staff/login`, then capture:
+
+| # | URL | Screenshot Name |
+|---|-----|-----------------|
+| 46 | `/staff/dashboard` | `doctor_dashboard.png` |
+| 47 | `/staff/doctor/dashboard` | `doctor_doctor-dashboard.png` |
+| 48 | `/staff/schedule` | `doctor_schedule.png` |
+| 49 | `/staff/patients` | `doctor_patients.png` |
+| 50 | `/staff/vital-signs` | `doctor_vital-signs.png` |
+| 51 | `/staff/lab-results` | `doctor_lab-results.png` |
+| 52 | `/staff/prescriptions/preview` | `doctor_prescriptions-preview.png` |
+| 53 | `/staff/support` | `doctor_support.png` |
+| 54 | `/staff/assistant` | `doctor_assistant.png` |
+
+**→ Logout after completing**
+
+---
+
+## Phase 5: Nurse Role (`nurse@hospital.vn` / `Nurse@1234`)
+
+Login via `/staff/login`, then capture:
+
+| # | URL | Screenshot Name |
+|---|-----|-----------------|
+| 55 | `/staff/dashboard` | `nurse_dashboard.png` |
+| 56 | `/staff/booking` | `nurse_booking.png` |
+| 57 | `/staff/queue` | `nurse_queue.png` |
+| 58 | `/staff/nurse-intake` | `nurse_nurse-intake.png` |
+| 59 | `/staff/vital-signs` | `nurse_vital-signs.png` |
+| 60 | `/staff/lab-results` | `nurse_lab-results.png` |
+| 61 | `/staff/support` | `nurse_support.png` |
+
+**→ Logout after completing**
+
+---
+
+## Phase 6: Receptionist Role (`receptionist@hospital.vn` / `Reception@1234`)
+
+Login via `/staff/login`, then capture:
+
+| # | URL | Screenshot Name |
+|---|-----|-----------------|
+| 62 | `/staff/dashboard` | `receptionist_dashboard.png` |
+| 63 | `/staff/booking` | `receptionist_booking.png` |
+| 64 | `/staff/queue` | `receptionist_queue.png` |
+| 65 | `/staff/support` | `receptionist_support.png` |
+
+**→ Logout after completing**
+
+---
+
+## Phase 7: Pharmacist Role (`pharmacist@hospital.vn` / `Pharma@1234`)
+
+Login via `/staff/login`, then capture:
+
+| # | URL | Screenshot Name |
+|---|-----|-----------------|
+| 66 | `/staff/dashboard` | `pharmacist_dashboard.png` |
+| 67 | `/staff/inventory` | `pharmacist_inventory.png` |
+| 68 | `/staff/prescriptions/preview` | `pharmacist_prescriptions-preview.png` |
+| 69 | `/staff/support` | `pharmacist_support.png` |
+
+**→ Logout after completing**
+
+---
+
+## Phase 8: Accountant Role (`accountant@hospital.vn` / `Acc@1234`)
+
+Login via `/staff/login`, then capture:
+
+| # | URL | Screenshot Name |
+|---|-----|-----------------|
+| 70 | `/staff/dashboard` | `accountant_dashboard.png` |
+| 71 | `/staff/invoices` | `accountant_invoices.png` |
+| 72 | `/staff/pricing` | `accountant_pricing.png` |
+| 73 | `/staff/revenue` | `accountant_revenue.png` |
+| 74 | `/admin/audit-logs` | `accountant_audit-logs.png` |
+| 75 | `/staff/support` | `accountant_support.png` |
+
+**→ Logout after completing**
+
+---
+
+## Phase 9: Patient Role (`patient@example.com` / `Patient@1234`)
+
+Login via `/portal/login`, then capture:
+
+| # | URL | Screenshot Name |
+|---|-----|-----------------|
+| 76 | `/portal/overview` | `patient_overview.png` |
+| 77 | `/portal/appointments` | `patient_appointments.png` |
+| 78 | `/portal/scheduling` | `patient_scheduling.png` |
+| 79 | `/portal/records` | `patient_records.png` |
+| 80 | `/portal/lab-results` | `patient_lab-results.png` |
+| 81 | `/portal/diagnostics` | `patient_diagnostics.png` |
+| 82 | `/portal/messages` | `patient_messages.png` |
+| 83 | `/portal/billing` | `patient_billing.png` |
+| 84 | `/portal/pharmacy` | `patient_pharmacy.png` |
+| 85 | `/portal/inventory` | `patient_inventory.png` |
+| 86 | `/portal/patients` | `patient_patients.png` |
+| 87 | `/portal/staff` | `patient_staff.png` |
+| 88 | `/portal/profile` | `patient_profile.png` |
+| 89 | `/portal/support` | `patient_support.png` |
+| 90 | `/portal/admit` | `patient_admit.png` |
+
+---
+
+## Execution Summary
+
+| Phase | Section | Role | Pages |
+|-------|---------|------|-------|
+| 1 | Public | None | 12 |
+| 2 | Login | None | 3 |
+| 3 | Admin | Admin | 18 |
+| 4 | Doctor | Doctor | 9 |
+| 5 | Nurse | Nurse | 7 |
+| 6 | Receptionist | Receptionist | 4 |
+| 7 | Pharmacist | Pharmacist | 4 |
+| 8 | Accountant | Accountant | 6 |
+| 9 | Patient | Patient | 15 |
+| **Total** | | | **~78 screenshots** |
+
+---
+
+## Execution Method
+
+Use **Chrome browser** via `browser_subagent` and `chrome-devtools` MCP:
+
+1. Navigate to each URL
+2. Wait for page load
+3. Take full-page screenshot → save to `d:\projects\hospital-management-system\web\screenshot-each-page\{name}.png`
+4. For authenticated pages: login once per role session, capture all accessible pages, then logout
+5. Handle dynamic pages (e.g., `/staff/doctor/[id]`) using known seed data IDs
+
+> [!NOTE]
+> Some pages with dynamic `[id]` params may show "not found" if no matching record exists. We'll use seed data IDs where available.

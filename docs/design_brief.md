@@ -3,6 +3,7 @@
 Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
 Route inventory: [reference/frontend-route-inventory.md](reference/frontend-route-inventory.md)
+Current flow map: [reference/current-system-flows.md](reference/current-system-flows.md)
 
 ## Product Direction
 

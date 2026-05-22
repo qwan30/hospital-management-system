@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   getPatientRecordDetail,
   searchPatientRecords,
@@ -142,8 +143,8 @@ export default function PatientsPage() {
     <div className="flex bg-[var(--hc-background)] h-[calc(100vh-[var(--hc-topbar-height)])] overflow-hidden">
       <div className="w-[41.66%] bg-[var(--hc-surface)] border-r border-[var(--hc-border)] flex flex-col h-full z-10">
         <form className="p-8 pb-6 border-b border-[var(--hc-border-soft)] space-y-6" onSubmit={handleSearchSubmit}>
-          <PageHeader 
-            title="Search Records" 
+          <PageHeader
+            title="Search Records"
             description="Patient Directory"
             className="mb-0"
           />
@@ -203,9 +204,9 @@ export default function PatientsPage() {
                       {patient.patientId}
                     </p>
                   </div>
-                  <span className="hc-badge bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]">
+                  <Badge variant="secondary">
                     {patient.totalAppointments} visits
-                  </span>
+                  </Badge>
                 </div>
                 <div className="flex gap-4">
                   <div>
@@ -251,7 +252,7 @@ export default function PatientsPage() {
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center gap-3 mb-2">
-                       <span className="hc-badge bg-[var(--hc-info-bg)] text-[var(--hc-info)]">Active Record</span>
+                       <Badge variant="info">Active Record</Badge>
                        <span className="text-[11px] font-mono font-medium text-[var(--hc-text-secondary)]">ID: {selectedDetail.patientId}</span>
                     </div>
                     <h2 className="text-3xl font-bold tracking-tight text-[var(--hc-text)]">
@@ -363,7 +364,7 @@ export default function PatientsPage() {
                             </p>
                             {appointment.medicalRecord ? (
                               <div className="mt-3 text-[13px] text-[var(--hc-text)] bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] p-3 rounded-[var(--radius-md)]">
-                                <span className="font-bold block mb-1">Diagnosis:</span> 
+                                <span className="font-bold block mb-1">Diagnosis:</span>
                                 {appointment.medicalRecord.diagnosis}
                               </div>
                             ) : null}

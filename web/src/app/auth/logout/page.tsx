@@ -33,7 +33,7 @@ export default function LogoutPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-8">
-      <p className="text-sm font-semibold uppercase tracking-widest text-on-surface-variant">
+      <p className="text-sm font-semibold uppercase tracking-widest text-[var(--hc-text-secondary)]">
         Signing out...
       </p>
     </main>

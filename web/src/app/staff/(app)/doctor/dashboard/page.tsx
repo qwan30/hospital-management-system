@@ -223,7 +223,7 @@ export default function DoctorDashboardPage() {
             </p>
             <h2 className="mt-3 text-2xl font-light text-[var(--hc-text)]">{error}</h2>
             <button
-              className="mt-6 rounded-md bg-[var(--hc-blue-600)] px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white hover:bg-[var(--hc-blue-700)] transition-colors"
+              className="mt-6 rounded-md bg-[var(--hc-primary)] px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white hover:bg-[var(--hc-blue-700)] transition-colors"
               type="button"
               onClick={loadAppointments}
             >
@@ -302,7 +302,7 @@ function AppointmentRow({
 
   return (
     <>
-      <tr className="group transition-colors hover:bg-[var(--hc-blue-50)]">
+      <tr className="group transition-colors hover:bg-[var(--hc-primary-bg)]">
         <td className="p-4">
           <div className="text-[13px] font-bold text-[var(--hc-text)]">{appointment.patientName}</div>
           <div className="font-mono text-[11px] text-[var(--hc-text-secondary)]">
@@ -326,7 +326,7 @@ function AppointmentRow({
         <td className="p-4">
           {canStartConsultation ? (
             <button
-              className="rounded-md bg-[var(--hc-blue-600)] px-3.5 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-[var(--hc-blue-700)] disabled:opacity-60"
+              className="rounded-md bg-[var(--hc-primary)] px-3.5 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-[var(--hc-blue-700)] disabled:opacity-60"
               type="button"
               onClick={() => onStartConsultation(appointment)}
               disabled={isUpdating}

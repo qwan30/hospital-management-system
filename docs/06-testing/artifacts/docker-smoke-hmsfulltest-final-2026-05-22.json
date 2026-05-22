@@ -1,0 +1,13 @@
+{
+    "GeneratedAt":  "2026-05-22T01:13:27",
+    "BackendHealth":  "UP",
+    "FrontendStatus":  200,
+    "DepartmentsCount":  8,
+    "DoctorsCount":  4,
+    "StaffAuthRole":  "ADMIN",
+    "PatientAuthRole":  "PATIENT",
+    "StaffAuthSuccess":  true,
+    "PatientAuthSuccess":  true,
+    "RateLimitPerMinute":  300,
+    "DurationSeconds":  0.58
+}

@@ -13,6 +13,8 @@ import com.hospital.shared.appointment.AppointmentVitalSignsRequest;
 import com.hospital.shared.appointment.FollowUpRequest;
 import com.hospital.shared.enums.AppointmentStatus;
 import com.hospital.shared.enums.UserRole;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -34,7 +36,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,6 +48,9 @@ class AppointmentWorkflowServiceTest {
   @Mock private PatientIdentifierProtector patientIdentifierProtector;
   @Mock private UserRepository userRepository;
   @Mock private AuditLogService auditLogService;
+  @Mock private EntityManager entityManager;
+  @Mock private TypedQuery<AppointmentEntity> appointmentQuery;
+  @Mock private TypedQuery<Long> appointmentCountQuery;
 
   @InjectMocks private AppointmentWorkflowService service;
 
@@ -90,9 +95,7 @@ class AppointmentWorkflowServiceTest {
   class ListAppointments {
     @Test
     void shouldReturnPaginatedAppointments() {
-      var page = new PageImpl<>(List.of(sampleAppointment), PageRequest.of(0, 20), 1);
-      when(appointmentRepository.findAllFiltered(null, null, null, PageRequest.of(0, 20)))
-          .thenReturn(page);
+      mockAppointmentSearch(List.of(sampleAppointment), 1L);
 
       var result = service.listAppointments(null, null, null, 0, 20);
       assertThat(result.getContent()).hasSize(1);
@@ -102,13 +105,26 @@ class AppointmentWorkflowServiceTest {
 
     @Test
     void shouldFilterByStatus() {
-      var page = new PageImpl<>(List.of(sampleAppointment), PageRequest.of(0, 10), 1);
-      when(appointmentRepository.findAllFiltered(AppointmentStatus.CONFIRMED, null, null, PageRequest.of(0, 10)))
-          .thenReturn(page);
+      mockAppointmentSearch(List.of(sampleAppointment), 1L);
 
       var result = service.listAppointments(AppointmentStatus.CONFIRMED, null, null, 0, 10);
       assertThat(result.getContent()).hasSize(1);
+      verify(appointmentQuery).setParameter("status", AppointmentStatus.CONFIRMED);
+      verify(appointmentCountQuery).setParameter("status", AppointmentStatus.CONFIRMED);
     }
+  }
+
+  private void mockAppointmentSearch(List<AppointmentEntity> appointments, long total) {
+    when(entityManager.createQuery(startsWith("select appointment from AppointmentEntity appointment"), eq(AppointmentEntity.class)))
+        .thenReturn(appointmentQuery);
+    when(entityManager.createQuery(startsWith("select count(appointment) from AppointmentEntity appointment"), eq(Long.class)))
+        .thenReturn(appointmentCountQuery);
+    lenient().when(appointmentQuery.setParameter(anyString(), any())).thenReturn(appointmentQuery);
+    lenient().when(appointmentCountQuery.setParameter(anyString(), any())).thenReturn(appointmentCountQuery);
+    when(appointmentQuery.setFirstResult(anyInt())).thenReturn(appointmentQuery);
+    when(appointmentQuery.setMaxResults(anyInt())).thenReturn(appointmentQuery);
+    when(appointmentQuery.getResultList()).thenReturn(appointments);
+    when(appointmentCountQuery.getSingleResult()).thenReturn(total);
   }
 
   @Nested

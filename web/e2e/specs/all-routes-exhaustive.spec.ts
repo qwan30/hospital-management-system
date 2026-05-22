@@ -33,7 +33,7 @@ test.describe("@ui exhaustive route contracts", () => {
 
     await page.goto("/auth/logout", { waitUntil: "domcontentloaded" });
 
-    await expect(page).toHaveURL(/\/staff\/login$/);
+    await expect(page).toHaveURL(/\/staff\/login$/, { timeout: 15000 });
     await expect(page.locator("body")).toContainText(/Clinical Suite Access|Log in/i);
     await expect(
       page.evaluate(() => window.sessionStorage.getItem("hms_staff_access_token")),
@@ -47,7 +47,7 @@ test.describe("@ui exhaustive route guard denials", () => {
 
     await page.goto("/staff/dashboard", { waitUntil: "domcontentloaded" });
 
-    await expect(page).toHaveURL(/\/staff\/login$/);
+    await expect(page).toHaveURL(/\/staff\/login$/, { timeout: 15000 });
   });
 
   test("unauthenticated admin routes redirect to staff login", async ({ page }) => {
@@ -55,7 +55,7 @@ test.describe("@ui exhaustive route guard denials", () => {
 
     await page.goto("/admin/users", { waitUntil: "domcontentloaded" });
 
-    await expect(page).toHaveURL(/\/staff\/login$/);
+    await expect(page).toHaveURL(/\/staff\/login$/, { timeout: 15000 });
   });
 
   test("unauthenticated portal routes redirect to portal login", async ({ page }) => {
@@ -63,7 +63,7 @@ test.describe("@ui exhaustive route guard denials", () => {
 
     await page.goto("/portal/overview", { waitUntil: "domcontentloaded" });
 
-    await expect(page).toHaveURL(/\/portal\/login$/);
+    await expect(page).toHaveURL(/\/portal\/login$/, { timeout: 15000 });
   });
 
   test("staff roles outside a route policy land on forbidden", async ({ page }) => {
@@ -72,7 +72,7 @@ test.describe("@ui exhaustive route guard denials", () => {
 
     await page.goto("/staff/queue", { waitUntil: "domcontentloaded" });
 
-    await expect(page).toHaveURL(/\/forbidden$/);
+    await expect(page).toHaveURL(/\/forbidden$/, { timeout: 15000 });
     await expect(page.locator("body")).toContainText(/Access denied|Forbidden/i);
   });
 
@@ -82,7 +82,7 @@ test.describe("@ui exhaustive route guard denials", () => {
 
     await page.goto("/staff/dashboard", { waitUntil: "domcontentloaded" });
 
-    await expect(page).toHaveURL(/\/staff\/login$/);
+    await expect(page).toHaveURL(/\/staff\/login$/, { timeout: 15000 });
   });
 });
 

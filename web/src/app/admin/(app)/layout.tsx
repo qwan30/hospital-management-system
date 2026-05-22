@@ -21,6 +21,7 @@ export default function AdminLayout({
           homeHref="/admin/dashboard"
           alertHref="/admin/monitoring"
           settingsHref="/admin/users"
+          supportHref="/admin/monitoring"
           profileHref="/admin/users"
           userName="Admin Ops"
           userRole="Administrator"

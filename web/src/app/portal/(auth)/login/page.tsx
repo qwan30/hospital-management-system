@@ -1,22 +1,37 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
+import { type FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  Plus,
+  ShieldCheck,
+  Hospital,
+  Calendar,
+  HeartPulse,
+  FileText,
+  MessageSquare,
+  Globe,
+  ChevronDown,
+  ClipboardPlus
+} from "lucide-react";
 import {
   apiRequest,
   persistSession,
   type PatientLoginResponse,
 } from "@/lib/api-client";
 
-import { HcIcon } from "@/components/ui/hc-icon";
 export default function PortalLoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
     setIsSubmitting(true);
@@ -31,7 +46,11 @@ export default function PortalLoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      persistSession("patient", response.data?.tokens, response.data?.role);
+      if (!response.data?.tokens?.accessToken) {
+        throw new Error("Patient login did not return a session.");
+      }
+
+      persistSession("patient", response.data.tokens, response.data.role);
       router.push("/portal/overview");
     } catch (loginError) {
       setError(loginError instanceof Error ? loginError.message : "Unable to log in");
@@ -41,137 +60,269 @@ export default function PortalLoginPage() {
   };
 
   return (
-    <div className="bg-hc-surface text-hc-on-surface flex min-h-screen items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <Image
-          alt="Modern medical facility interior with clinical clean lines and soft daylight"
-          className="w-full h-full object-cover opacity-15 grayscale"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvBHEq86VCvjE9waCtk89foGtvC7hJUwiD699_L1LLP2BkubUqc1QAL8vPoo2a47FKBM7pfgWmgV-E5LEc0MNt83CYrEBSJXMcPxqoJDYIKLFHdJV2sSaNAA1Ar8JaCH7x5dzvtelyGgTxazCzT5_YItOUqbxhSnAGpyF3fu18k5gflhOpFfryg4YmjEtJMAzaYV-D_5FBRfE8faJnj5dMIgVj4HoAS5iCIGiFdbwk6yAUJVroHuFMo4AsPlmnCvwZrVu7sqTyOg"
-          fill
-          unoptimized
-        />
-        <div className="absolute inset-0 bg-gradient-to-tr from-hc-surface via-hc-surface/90 to-hc-surface-container-low/50" />
-      </div>
+    <main className="relative flex min-h-screen flex-col overflow-hidden bg-white text-[var(--hc-text)]">
+      {/* SUPPORT Button - Floating top-right on the entire viewport */}
+      <button className="absolute right-8 top-8 z-30 flex h-10 items-center gap-2 rounded-full border border-[var(--hc-border)] bg-white px-4 text-[13px] font-bold text-[var(--hc-primary)] shadow-sm hover:bg-[var(--hc-surface-muted)] transition">
+        <span className="grid size-[18px] place-items-center rounded-full border-[1.5px] border-[var(--hc-primary)] font-bold text-[10px]">?</span>
+        SUPPORT
+      </button>
 
-      <main className="relative z-10 w-full max-w-[420px] flex flex-col gap-12 p-4 md:p-0">
-        <header className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <span className="bg-hc-primary p-1 flex items-center justify-center">
-              <HcIcon name="medical_services" className="text-white text-lg" />
+      <div className="relative flex flex-1">
+
+        {/* Left Column - Information Panel */}
+        <section className="relative z-10 hidden w-full flex-col justify-center px-8 py-10 lg:flex lg:w-[45%] lg:px-16 xl:px-24 bg-[#f8fbff]">
+          <div className="absolute left-8 top-8 flex items-center gap-3 lg:left-12">
+            <span className="grid size-9 place-items-center rounded-lg bg-[var(--hc-primary)] text-white">
+              <Plus className="size-6 stroke-[3]" aria-hidden="true" />
             </span>
-            <h1 className="text-xl font-bold tracking-widest text-neutral-900 uppercase">
-              HOSPITAL CORE
+            <span className="text-[17px] font-bold tracking-wide text-[var(--hc-primary)] uppercase">MEDCORE OS</span>
+          </div>
+
+          <div className="mt-8 max-w-[480px]">
+            <h1 className="text-[52px] font-bold leading-[1.1] tracking-tight text-[#0a2540]">
+              Patient Portal
             </h1>
-          </div>
-          <p className="text-[3.5rem] leading-[0.9] font-light tracking-tighter text-hc-on-surface">
-            Patient Portal
-          </p>
-        </header>
+            <p className="mt-2 text-[20px] font-medium text-[var(--hc-text-secondary)]">
+              Your health. Your time. Your portal.
+            </p>
 
-        <section className="bg-hc-surface-container-lowest border-t-4 border-hc-primary p-12 flex flex-col gap-10">
-          <div className="flex flex-col gap-2">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-hc-outline">
-              Log in
-            </h2>
-          </div>
-          <form className="flex flex-col gap-8" onSubmit={handleLogin}>
-            <div className="group flex flex-col gap-1">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-hc-on-surface-variant" htmlFor="email">
-                Email
-              </label>
-              <input
-                className="w-full bg-hc-surface-container-low border-0 border-b-2 border-hc-outline-variant py-4 px-0 placeholder:text-hc-outline/40 focus:ring-0 focus:border-hc-primary focus:bg-hc-surface-container transition-all duration-200 outline-none"
-                id="email"
-                name="email"
-                placeholder="name@hospital.com"
-                type="email"
-                required
+            <p className="mb-8 mt-12 text-[22px] font-bold leading-snug text-[#0a2540]">
+              Everything you need<br />
+              for your health journey,<br />
+              all in one place.
+            </p>
+
+            <div className="grid gap-7">
+              <FeatureItem
+                icon={<Calendar className="size-[22px] text-[var(--hc-primary)]" />}
+                title="Manage Appointments"
+                description="Schedule, view or cancel appointments with ease."
+              />
+              <FeatureItem
+                icon={<HeartPulse className="size-[22px] text-[var(--hc-primary)]" />}
+                title="Access Your Health"
+                description="View test results, medications, immunizations and more."
+              />
+              <FeatureItem
+                icon={<FileText className="size-[22px] text-[var(--hc-primary)]" />}
+                title="Billing & Payments"
+                description="View statements and make secure payments online."
+              />
+              <FeatureItem
+                icon={<MessageSquare className="size-[22px] text-[var(--hc-primary)]" />}
+                title="Message Your Care Team"
+                description="Communicate securely with your healthcare providers."
               />
             </div>
 
-            <div className="group flex flex-col gap-1">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-hc-on-surface-variant" htmlFor="password">
-                Password
-              </label>
-              <input
-                className="w-full bg-hc-surface-container-low border-0 border-b-2 border-hc-outline-variant py-4 px-0 placeholder:text-hc-outline/40 focus:ring-0 focus:border-hc-primary focus:bg-hc-surface-container transition-all duration-200 outline-none"
-                id="password"
-                name="password"
-                placeholder="Password"
-                type="password"
-                required
-              />
+            <div className="mt-10 flex items-start gap-4 rounded-xl bg-[#eef6ff] p-5 border border-[#d6e8ff]">
+              <LockKeyhole className="mt-0.5 size-5 shrink-0 text-[var(--hc-primary)]" aria-hidden="true" />
+              <div>
+                <p className="text-[14px] font-bold text-[var(--hc-primary)]">Your privacy is our priority.</p>
+                <p className="mt-0.5 text-[13px] text-[#4b6a8e]">
+                  We keep your information safe and secure in compliance with HIPAA standards.
+                </p>
+              </div>
             </div>
-
-            {error ? (
-              <p className="bg-red-50 border border-red-200 px-4 py-3 text-sm font-semibold text-red-700" role="alert">
-                {error}
-              </p>
-            ) : null}
-
-            <button
-              className="group relative flex items-center justify-between w-full bg-hc-primary-container text-white py-5 px-8 font-semibold transition-all duration-200 hover:bg-hc-primary active:translate-y-[2px] disabled:cursor-not-allowed disabled:opacity-60"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              <span className="tracking-widest uppercase text-sm">
-                {isSubmitting ? "Authenticating..." : "Log in"}
-              </span>
-              <HcIcon name="arrow_forward" className="transition-transform duration-200 group-hover:translate-x-1" />
-            </button>
-          </form>
-
-          <footer className="flex flex-col gap-4">
-            <div className="h-[1px] w-full bg-hc-outline-variant opacity-20" />
-            <div className="flex justify-between items-center">
-              <Link className="text-xs font-semibold text-hc-primary hover:underline underline-offset-4 tracking-wide" href="#">
-                Forgot password?
-              </Link>
-              <Link
-                className="text-xs font-semibold text-hc-on-surface-variant hover:text-hc-on-surface tracking-wide flex items-center gap-1 group"
-                href="/portal/claim"
-              >
-                Need access? <span className="text-hc-primary group-hover:underline underline-offset-4">Claim portal</span>
-              </Link>
-            </div>
-          </footer>
+          </div>
         </section>
 
-        <div className="flex items-center justify-between opacity-40">
-          <div className="flex flex-col">
-            <span className="text-[10px] font-black uppercase tracking-[0.3em]">HOSPITAL ADMIN</span>
-            <span className="text-[8px] font-medium tracking-widest">V.2.4.0-STABLE</span>
-          </div>
-          <div className="flex gap-4">
-            <HcIcon name="security" className="text-sm" />
-            <HcIcon name="language" className="text-sm" />
+        {/* Right Column - Reception Lobby Photo Panel */}
+        <section className="relative w-full lg:w-[55%] overflow-hidden">
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url('/lobby.png')` }}
+          />
+          {/* Subtle translucent overlay */}
+          <div className="absolute inset-0 bg-white/5 backdrop-blur-[0.5px]" />
+        </section>
+
+        {/* Floating Centered Card Container */}
+        <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+          <div className="w-full max-w-[540px] px-6 py-10 pointer-events-auto">
+            <div className="rounded-[24px] border border-[var(--hc-border)] bg-white px-8 py-10 shadow-[0_24px_80px_rgba(15,23,42,0.12)]">
+              <header className="mb-8 flex flex-col items-center text-center">
+                <span className="mb-4 grid size-12 place-items-center rounded-xl border border-[var(--hc-primary)] bg-[#f8fbff] text-[var(--hc-primary)]">
+                  <ClipboardPlus className="size-6" aria-hidden="true" />
+                </span>
+                <span className="mb-1.5 text-[12px] font-extrabold uppercase tracking-widest text-[var(--hc-primary)]">
+                  Welcome Back
+                </span>
+                <h2 className="text-[28px] font-bold text-[#0a2540]">
+                  Log in to your account
+                </h2>
+                <p className="mt-1 text-[15px] text-[var(--hc-text-secondary)]">
+                  Access your health information securely
+                </p>
+              </header>
+
+              <hr className="mb-8 border-[var(--hc-border)]" />
+
+              <form className="grid gap-5" onSubmit={handleLogin}>
+                <label className="grid gap-2" htmlFor="patient-email">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#0a2540]">Email</span>
+                  <span className="flex h-12 items-center gap-3 rounded-lg border border-[var(--hc-border)] bg-white px-4 transition focus-within:border-[var(--hc-primary)] focus-within:ring-2 focus-within:ring-[rgba(15,98,254,0.12)]">
+                    <MailIcon className="size-5 shrink-0 text-[#9bb9da]" aria-hidden="true" />
+                    <input
+                      className="h-full min-w-0 flex-1 border-0 bg-transparent text-[15px] font-medium text-[var(--hc-text)] outline-none placeholder:text-[#9bb9da]"
+                      id="patient-email"
+                      name="email"
+                      placeholder="name@hospital.com"
+                      type="email"
+                      autoComplete="username"
+                      required
+                    />
+                  </span>
+                </label>
+
+                <label className="grid gap-2" htmlFor="patient-password">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#0a2540]">Password</span>
+                  <span className="flex h-12 items-center gap-3 rounded-lg border border-[var(--hc-border)] bg-white px-4 transition focus-within:border-[var(--hc-primary)] focus-within:ring-2 focus-within:ring-[rgba(15,98,254,0.12)]">
+                    <LockKeyhole className="size-5 shrink-0 text-[#9bb9da]" aria-hidden="true" />
+                    <input
+                      className="h-full min-w-0 flex-1 border-0 bg-transparent text-[15px] font-medium text-[var(--hc-text)] outline-none placeholder:text-[#9bb9da]"
+                      id="patient-password"
+                      name="password"
+                      placeholder="Password"
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="text-[#9bb9da] hover:text-[var(--hc-text)] focus:outline-none"
+                    >
+                      {showPassword ? <EyeOff className="size-5 shrink-0" aria-hidden="true" /> : <Eye className="size-5 shrink-0" aria-hidden="true" />}
+                    </button>
+                  </span>
+                </label>
+
+                <div className="flex items-center justify-between mt-1">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" className="size-4 rounded border-[#9bb9da] text-[var(--hc-primary)] focus:ring-[var(--hc-primary)]" />
+                    <span className="text-[13px] font-bold text-[#0a2540]">Remember me</span>
+                  </label>
+                  <a className="text-[13px] font-bold text-[var(--hc-primary)] hover:underline" href="#">
+                    Forgot password?
+                  </a>
+                </div>
+
+                {error ? (
+                  <p
+                    className="rounded-lg border border-[var(--hc-danger-bg)] bg-[var(--hc-danger-bg)] px-4 py-3 text-sm font-semibold text-[var(--hc-danger)]"
+                    role="alert"
+                  >
+                    {error}
+                  </p>
+                ) : null}
+
+                <button
+                  className="relative mt-2 flex h-12 w-full items-center justify-center rounded-lg bg-[var(--hc-primary)] px-5 text-[15px] font-bold text-white shadow-[0_4px_14px_rgba(11,92,255,0.3)] transition hover:bg-[var(--hc-blue-700)] disabled:cursor-not-allowed disabled:opacity-60"
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  <span>
+                    {isSubmitting ? "Authenticating..." : "Log In"}
+                  </span>
+                  <ArrowRight className="absolute right-5 size-5" aria-hidden="true" />
+                </button>
+
+                <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 mt-4 mb-2">
+                  <div className="h-px bg-[var(--hc-border)]" />
+                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-[var(--hc-text-muted)]">
+                    OR
+                  </span>
+                  <div className="h-px bg-[var(--hc-border)]" />
+                </div>
+
+                <Link
+                  href="/portal/claim"
+                  className="flex h-12 w-full items-center justify-center gap-3 rounded-lg border border-[var(--hc-border-strong)] bg-white px-4 text-[14px] font-bold text-[var(--hc-primary)] shadow-sm transition hover:border-[var(--hc-primary)] hover:bg-[var(--hc-primary-bg)]"
+                >
+                  <Hospital className="size-[18px]" aria-hidden="true" />
+                  Need access? Claim your portal
+                </Link>
+              </form>
+            </div>
           </div>
         </div>
-      </main>
 
-      <div className="fixed bottom-8 left-8 hidden lg:block">
-        <div className="flex flex-col gap-1 border-l border-hc-outline-variant pl-4">
-          <span className="text-[10px] font-bold text-hc-outline uppercase tracking-widest">
-            System Status
+      </div>
+
+      {/* Footer Bar */}
+      <footer className="relative z-20 flex h-[64px] items-center justify-between border-t border-[var(--hc-border)] bg-[#f4f7fb] px-6 lg:px-12">
+        <div className="flex items-center gap-3">
+          <span className="grid size-8 place-items-center rounded-full bg-[#0a2540] text-[13px] font-bold text-white">
+            N
           </span>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-hc-primary" />
-            <span className="text-[10px] font-medium text-hc-on-surface-variant">
-              OPERATIONAL // NODE_S7
+          <div className="flex flex-col">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-[var(--hc-text-muted)]">
+              System Status
+            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-[var(--hc-success)]" />
+              <span className="text-[11px] font-bold text-[#0a2540]">OPERATIONAL // NODE_S7</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="hidden items-center gap-3 lg:flex">
+          <ShieldCheck className="size-5 text-[#0a2540]" aria-hidden="true" />
+          <span className="text-[13px] font-bold text-[#0a2540]">Trusted. Secure. Healthcare.</span>
+          <span className="text-[13px] font-medium text-[var(--hc-primary)]">HIPAA Compliant</span>
+        </div>
+
+        <div className="flex items-center gap-6">
+          <div className="hidden items-center gap-2 lg:flex cursor-pointer hover:text-[var(--hc-primary)] transition">
+            <Globe className="size-4 text-[var(--hc-text-secondary)]" />
+            <span className="text-[13px] font-bold text-[#0a2540]">English (US)</span>
+            <ChevronDown className="size-4 text-[var(--hc-text-secondary)]" />
+          </div>
+          <div className="flex flex-col text-right">
+            <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#0a2540]">
+              HOSPITAL ADMIN
+            </span>
+            <span className="text-[10px] font-medium text-[var(--hc-text-secondary)]">
+              v2.4.0-STABLE
             </span>
           </div>
         </div>
-      </div>
+      </footer>
+    </main>
+  );
+}
 
-      <div className="fixed top-8 right-8 hidden lg:block">
-        <button
-          className="bg-hc-surface-container-high px-4 py-2 flex items-center gap-3 hover:bg-hc-surface-container-highest transition-colors"
-          aria-label="Open support"
-        >
-          <HcIcon name="help" className="text-lg" />
-          <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Support</span>
-        </button>
+function FeatureItem({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+  return (
+    <div className="flex items-center gap-4">
+      <span className="grid size-12 shrink-0 place-items-center rounded-full bg-[#eef6ff]">
+        {icon}
+      </span>
+      <div>
+        <h3 className="text-[15px] font-bold text-[#0a2540]">{title}</h3>
+        <p className="mt-0.5 text-[14px] text-[var(--hc-text-secondary)]">{description}</p>
       </div>
     </div>
+  );
+}
+
+function MailIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="20" height="16" x="2" y="4" rx="2" />
+      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    </svg>
   );
 }

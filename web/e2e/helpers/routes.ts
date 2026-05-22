@@ -77,6 +77,12 @@ export const adminRoutes: RouteCase[] = [
   { path: "/admin/rooms", label: "admin rooms" },
   { path: "/admin/users", label: "admin users" },
   { path: "/admin/users/1", label: "admin user detail" },
+  { path: "/admin/inventory", label: "admin inventory" },
+  { path: "/admin/pricing", label: "admin pricing" },
+  { path: "/admin/schedule-templates", label: "admin schedule templates" },
+  { path: "/admin/slots", label: "admin slots" },
+  { path: "/admin/special-closures", label: "admin special closures" },
+  { path: "/admin/support", label: "admin support" },
 ];
 
 export const smokeRoutes = [
@@ -99,6 +105,12 @@ export const responsiveRoutes: RouteCase[] = [
   { path: "/staff/medical-records/1/edit", label: "medical record edit" },
   { path: "/portal/overview", label: "portal overview" },
   { path: "/admin/users", label: "admin users" },
+  { path: "/staff/login", label: "staff login" },
+  { path: "/portal/login", label: "portal login" },
+  { path: "/staff/queue", label: "staff queue" },
+  { path: "/staff/inventory", label: "staff inventory" },
+  { path: "/portal/appointments", label: "portal appointments" },
+  { path: "/admin/dashboard", label: "admin dashboard" },
 ];
 
 export const visualRoutes = responsiveRoutes;

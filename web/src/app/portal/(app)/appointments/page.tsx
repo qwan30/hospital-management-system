@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
 import {
   listPatientPortalAppointments,
   type PatientPortalAppointmentResponse,
@@ -82,18 +83,18 @@ export default function PatientAppointmentsPage() {
   return (
     <main>
       <div className="mx-auto max-w-6xl p-8">
-        <PageHeader 
+        <PageHeader
           title="Patient Appointments"
           description="View your upcoming and past medical appointments."
           className="mb-8"
         />
 
-        <div className="flex w-fit items-center gap-0 bg-[var(--hc-surface-soft)] p-1 rounded-[var(--radius-md)] mb-8">
+        <div className="flex w-fit items-center gap-0 bg-[var(--hc-surface-soft)] p-1 rounded-[var(--radius-md)] mb-8 border border-[var(--hc-border-soft)]">
           <button
             className={`px-8 py-2 text-xs font-bold rounded-[var(--radius-sm)] ${
               activeTab === "upcoming"
-                ? "bg-white text-[var(--hc-blue-600)] shadow-[var(--shadow-sm)]"
-                : "text-[var(--hc-text-secondary)] transition-colors hover:bg-white/50"
+                ? "bg-[var(--hc-surface)] text-[var(--hc-primary)] shadow-sm"
+                : "text-[var(--hc-text-secondary)] transition-colors hover:bg-[var(--hc-surface)] hover:text-[var(--hc-text)]"
             }`}
             type="button"
             onClick={() => setActiveTab("upcoming")}
@@ -103,8 +104,8 @@ export default function PatientAppointmentsPage() {
           <button
             className={`px-8 py-2 text-xs font-bold rounded-[var(--radius-sm)] ${
               activeTab === "past"
-                ? "bg-white text-[var(--hc-blue-600)] shadow-[var(--shadow-sm)]"
-                : "text-[var(--hc-text-secondary)] transition-colors hover:bg-white/50"
+                ? "bg-[var(--hc-surface)] text-[var(--hc-primary)] shadow-sm"
+                : "text-[var(--hc-text-secondary)] transition-colors hover:bg-[var(--hc-surface)] hover:text-[var(--hc-text)]"
             }`}
             type="button"
             onClick={() => setActiveTab("past")}
@@ -114,8 +115,8 @@ export default function PatientAppointmentsPage() {
         </div>
 
         {error ? (
-          <section className="mb-8 border border-[var(--hc-red-200)] bg-[var(--hc-red-50)] p-6 rounded-[var(--radius-md)]" role="alert">
-            <p className="text-sm font-semibold text-[var(--hc-red-600)]">{error}</p>
+          <section className="mb-8 border border-[var(--hc-danger)] bg-[var(--hc-danger-bg)] p-6 rounded-[var(--radius-md)]" role="alert">
+            <p className="text-sm font-semibold text-[var(--hc-danger)]">{error}</p>
           </section>
         ) : null}
 
@@ -152,7 +153,7 @@ export default function PatientAppointmentsPage() {
               </div>
             </DataPanel>
 
-            <div className="bg-[var(--hc-blue-600)] rounded-[var(--radius-lg)] p-8 text-white">
+            <div className="bg-[var(--hc-primary)] rounded-[var(--radius-lg)] p-8 text-white">
               <h2 className="mb-4 text-[10px] font-bold uppercase tracking-[0.2em] opacity-80">
                 Unsupported Actions
               </h2>
@@ -178,7 +179,7 @@ function AppointmentCard({ appointment }: { appointment: PatientPortalAppointmen
   const date = formatDateParts(appointment.appointmentDate);
 
   return (
-    <article className="hc-data-panel group relative flex flex-col justify-between overflow-hidden rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-white shadow-[var(--shadow-card)] transition-all hover:border-[var(--hc-blue-200)] hover:shadow-[var(--shadow-card-hover)] md:flex-row md:items-center">
+    <article className="hc-data-panel group relative flex flex-col justify-between overflow-hidden rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-[var(--hc-surface)] shadow-[var(--shadow-card)] transition-all hover:border-[var(--hc-primary)] hover:shadow-[var(--shadow-card-hover)] md:flex-row md:items-center">
       <div className="flex items-start">
         <div className="flex min-w-[100px] flex-col items-center justify-center bg-[var(--hc-surface-soft)] p-6 border-r border-[var(--hc-border-soft)]">
           <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
@@ -188,9 +189,9 @@ function AppointmentCard({ appointment }: { appointment: PatientPortalAppointmen
         </div>
         <div className="p-6">
           <div className="mb-2 flex items-center gap-2">
-            <span className="hc-badge bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] border border-[var(--hc-blue-100)]">
+            <Badge variant="default">
               {appointment.status}
-            </span>
+            </Badge>
             <span className="text-xs font-medium text-[var(--hc-text-secondary)]">
               {formatTimeRange(appointment)}
             </span>
@@ -210,8 +211,8 @@ function AppointmentCard({ appointment }: { appointment: PatientPortalAppointmen
         >
           Unsupported
         </button>
-        <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[var(--hc-surface-soft)] group-hover:bg-[var(--hc-blue-50)] transition-colors">
-          <HcIcon name="arrow_forward_ios" className="text-sm text-[var(--hc-text-placeholder)] group-hover:text-[var(--hc-blue-600)]" />
+        <div className="w-8 h-8 flex items-center justify-center rounded-[var(--radius-full)] bg-[var(--hc-surface-soft)] group-hover:bg-[var(--hc-primary-bg)] transition-colors border border-transparent group-hover:border-[var(--hc-primary)]">
+          <HcIcon name="arrow_forward_ios" className="text-sm text-[var(--hc-text-placeholder)] group-hover:text-[var(--hc-primary)]" />
         </div>
       </div>
     </article>

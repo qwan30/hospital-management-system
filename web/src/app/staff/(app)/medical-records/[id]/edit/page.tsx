@@ -13,7 +13,7 @@ import { getErrorMessage } from "@/lib/staff-queue";
 
 import { HcIcon } from "@/components/ui/hc-icon";
 import { PageHeader } from "@/components/ui/page-header";
-import { DataPanel } from "@/components/ui/data-panel";
+
 interface PrescriptionDraft {
   medicineName: string;
   dosage: string;
@@ -187,8 +187,9 @@ export default function MedicalRecordEditorPage() {
   if (isLoading) {
     return (
       <main className="p-8" aria-busy="true">
-        <section className="bg-surface-container-lowest p-8">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-outline">
+        <section className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] p-8 shadow-sm flex flex-col items-center justify-center min-h-[300px]">
+          <HcIcon name="hourglass_empty" className="text-4xl text-[var(--hc-text-placeholder)] mb-4 animate-pulse" />
+          <p className="text-xs font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">
             Loading appointment context...
           </p>
         </section>
@@ -199,19 +200,20 @@ export default function MedicalRecordEditorPage() {
   if (loadError || !appointment) {
     return (
       <main className="p-8">
-        <section className="border border-error-container bg-white p-8" role="alert">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-error">
-            Medical record context unavailable
-          </p>
-          <h1 className="mt-3 text-3xl font-light text-on-surface">
+        <section className="bg-[var(--hc-surface)] border border-red-200 rounded-[var(--radius-xl)] p-12 shadow-sm flex flex-col items-center justify-center text-center min-h-[300px]" role="alert">
+          <HcIcon name="error_outline" className="text-4xl text-red-500 mb-4" />
+          <h1 className="mb-2 text-2xl font-bold tracking-tight text-[var(--hc-text)]">
             {loadError || "Appointment was not returned by the backend."}
           </h1>
+          <p className="mb-8 text-sm font-bold uppercase tracking-widest text-red-500">
+            Medical record context unavailable
+          </p>
           <button
-            className="mt-6 bg-primary-container px-4 py-3 text-xs font-bold uppercase tracking-widest text-white"
+            className="hc-button-secondary border-red-200 text-red-700 hover:bg-red-50"
             type="button"
             onClick={loadAppointment}
           >
-            Retry
+            Retry Loading
           </button>
         </section>
       </main>
@@ -220,113 +222,120 @@ export default function MedicalRecordEditorPage() {
 
   return (
     <main>
-      <PageHeader 
+      <PageHeader
         title="Patient Record Entry"
         description={`${appointment.appointmentDate} | ${formatTimeRange(appointment)} | ${appointment.status}`}
       />
       <form className="grid grid-cols-12 gap-8 p-8 pt-0" onSubmit={handleSubmit}>
-        <div className="col-span-12 flex flex-col gap-8 lg:col-span-8">
+        <div className="col-span-12 flex flex-col gap-8 xl:col-span-8">
 
           {formError ? (
-            <div className="border border-error-container bg-white p-4 text-sm font-semibold text-error" role="alert">
+            <div className="bg-red-50 border border-red-200 text-red-700 rounded-[var(--radius-lg)] p-4 text-sm font-medium flex items-center gap-3" role="alert">
+              <HcIcon name="warning" className="w-5 h-5 shrink-0" />
               {formError}
             </div>
           ) : null}
           {savedRecord ? (
-            <div className="border border-primary-container bg-surface-container-low p-4 text-sm font-semibold text-primary" role="status">
+            <div className="bg-green-50 border border-green-200 text-green-700 rounded-[var(--radius-lg)] p-4 text-sm font-medium flex items-center gap-3" role="status">
+              <HcIcon name="check_circle" className="w-5 h-5 shrink-0" />
               Medical record saved. Appointment status is now {savedRecord.appointmentStatus}.
             </div>
           ) : null}
 
-          <div className="grid grid-cols-2 gap-px bg-surface-container-highest">
-            <div className="bg-surface-container-lowest p-6">
-              <label className="mb-3 block font-['Public_Sans'] text-[10px] font-semibold uppercase tracking-widest text-outline" htmlFor="diagnosis">
-                Primary Diagnosis
-              </label>
-              <input
-                id="diagnosis"
-                className="w-full border-b-2 border-outline/30 bg-surface-container-low px-3 py-3 text-sm font-semibold outline-none focus:border-primary-container"
-                placeholder="Enter diagnosis"
-                value={diagnosis}
-                onChange={(event) => setDiagnosis(event.target.value)}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4 bg-surface-container-lowest p-6">
-              <div>
-                <label className="mb-2 block font-['Public_Sans'] text-[10px] font-semibold uppercase tracking-widest text-outline">
-                  Status
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[var(--hc-border-soft)]">
+              <div className="p-6 bg-[var(--hc-surface-soft)]">
+                <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]" htmlFor="diagnosis">
+                  Primary Diagnosis
                 </label>
-                <span className="inline-flex items-center bg-tertiary-fixed px-2 py-1 text-[10px] font-bold uppercase tracking-tighter text-on-tertiary-fixed-variant">
-                  {appointment.status}
-                </span>
+                <input
+                  id="diagnosis"
+                  className="hc-input w-full bg-[var(--hc-surface)]"
+                  placeholder="Enter diagnosis"
+                  value={diagnosis}
+                  onChange={(event) => setDiagnosis(event.target.value)}
+                />
               </div>
-              <div>
-                <label className="mb-2 block font-['Public_Sans'] text-[10px] font-semibold uppercase tracking-widest text-outline">
-                  Doctor
-                </label>
-                <span className="block text-xs font-semibold">{appointment.doctorName}</span>
+              <div className="grid grid-cols-2 gap-6 p-6">
+                <div>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">
+                    Status
+                  </label>
+                  <span className="inline-flex items-center bg-blue-50 text-blue-700 px-3 py-1 rounded-[var(--radius-sm)] text-[10px] font-bold uppercase tracking-widest">
+                    {appointment.status}
+                  </span>
+                </div>
+                <div>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">
+                    Doctor
+                  </label>
+                  <span className="block text-sm font-bold text-[var(--hc-text)]">{appointment.doctorName}</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <section className="grid grid-cols-4 gap-px bg-surface-container-highest">
+          <section className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[var(--hc-border-soft)]">
             <VitalInput label="Blood Pressure" value={bloodPressure} onChange={setBloodPressure} placeholder="120/80" />
             <VitalInput label="Temperature" value={temperature} onChange={setTemperature} placeholder="37.2" />
             <VitalInput label="Weight" value={weight} onChange={setWeight} placeholder="65" />
             <VitalInput label="Height" value={height} onChange={setHeight} placeholder="170" />
           </section>
 
-          <section className="flex flex-col">
-            <label className="mb-4 font-['Public_Sans'] text-[11px] font-semibold uppercase tracking-widest text-on-surface" htmlFor="clinical-notes">
-              Clinical Observation &amp; Subjective Notes
-            </label>
+          <section className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden flex flex-col">
+            <div className="p-4 border-b border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)]">
+              <label className="text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="clinical-notes">
+                Clinical Observation &amp; Subjective Notes
+              </label>
+            </div>
             <textarea
               id="clinical-notes"
-              className="min-h-[320px] w-full border-none bg-surface-container-lowest p-8 text-base leading-relaxed text-on-surface-variant placeholder:opacity-30 focus:ring-1 focus:ring-primary-container"
+              className="min-h-[320px] w-full border-none p-6 text-sm leading-relaxed text-[var(--hc-text-secondary)] font-medium placeholder:text-[var(--hc-text-placeholder)] focus:ring-0 focus:outline-none resize-y"
               placeholder="Start typing clinical observation notes here..."
               value={clinicalNotes}
               onChange={(event) => setClinicalNotes(event.target.value)}
             />
           </section>
 
-          <section className="bg-surface-container-lowest p-8">
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="font-['Public_Sans'] text-[11px] font-semibold uppercase tracking-widest">
+          <section className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+            <div className="p-6 border-b border-[var(--hc-border-soft)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]">
                 Active Prescriptions &amp; Medication Orders
               </h2>
               <button
-                className="flex items-center gap-2 bg-on-surface px-4 py-2 text-[10px] font-bold text-surface transition-all hover:bg-black"
+                className="hc-button-secondary py-2"
                 type="button"
                 onClick={addPrescription}
               >
-                <HcIcon name="add" className="text-sm" /> ADD MEDICATION
+                <HcIcon name="add" className="w-4 h-4" /> ADD MEDICATION
               </button>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-left">
+              <table className="w-full text-left">
                 <thead>
-                  <tr className="bg-surface-container-low">
-                    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-outline">Medication</th>
-                    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-outline">Dosage</th>
-                    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-outline">Frequency</th>
-                    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-outline">Days</th>
-                    <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-outline">Action</th>
+                  <tr className="bg-[var(--hc-surface-soft)] border-b border-[var(--hc-border-soft)]">
+                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">Medication</th>
+                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">Dosage</th>
+                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">Frequency</th>
+                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">Days</th>
+                    <th className="px-6 py-3 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-surface-container">
+                <tbody className="divide-y divide-[var(--hc-border-soft)]">
                   {prescriptions.map((item, index) => (
-                    <tr key={index}>
+                    <tr key={index} className="hover:bg-[var(--hc-surface-soft)] transition-colors">
                       <MedicationCell label={`Medicine ${index + 1}`} value={item.medicineName} onChange={(value) => updatePrescription(index, "medicineName", value)} />
                       <MedicationCell label={`Dosage ${index + 1}`} value={item.dosage} onChange={(value) => updatePrescription(index, "dosage", value)} />
                       <MedicationCell label={`Frequency ${index + 1}`} value={item.frequency} onChange={(value) => updatePrescription(index, "frequency", value)} />
                       <MedicationCell label={`Duration days ${index + 1}`} value={item.durationDays} onChange={(value) => updatePrescription(index, "durationDays", value)} />
-                      <td className="px-4 py-4 text-xs">
+                      <td className="px-6 py-4">
                         <button
-                          className="min-h-6 text-[10px] font-bold text-error"
+                          className="flex items-center justify-center w-8 h-8 rounded-full text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                           type="button"
+                          title="Remove medication"
                           onClick={() => removePrescription(index)}
                         >
-                          REMOVE
+                          <HcIcon name="delete" className="w-4 h-4" />
                         </button>
                       </td>
                     </tr>
@@ -336,79 +345,82 @@ export default function MedicalRecordEditorPage() {
             </div>
           </section>
 
-          <section className="grid grid-cols-3 gap-px bg-surface-container-highest">
-            <div className="bg-surface-container-lowest p-6">
-              <label className="mb-3 block font-['Public_Sans'] text-[10px] font-semibold uppercase tracking-widest text-outline" htmlFor="follow-up-date">
+          <section className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[var(--hc-border-soft)]">
+            <div className="p-6 bg-[var(--hc-surface-soft)]">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]" htmlFor="follow-up-date">
                 Follow-up Schedule
               </label>
               <input
                 id="follow-up-date"
-                className="w-full border-b-2 border-outline/30 bg-surface-container-low px-3 py-3 text-sm font-semibold outline-none focus:border-primary-container"
+                className="hc-input w-full bg-[var(--hc-surface)]"
                 type="date"
                 value={followUpDate}
                 onChange={(event) => setFollowUpDate(event.target.value)}
               />
             </div>
-            <div className="bg-surface-container-lowest p-6">
-              <label className="mb-3 block font-['Public_Sans'] text-[10px] font-semibold uppercase tracking-widest text-outline">
+            <div className="p-6 flex flex-col justify-center">
+              <label className="mb-1 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]">
                 PDF Support
               </label>
-              <p className="text-xs font-semibold text-on-surface-variant">
+              <p className="text-xs font-medium text-[var(--hc-text-secondary)]">
                 Prescription PDF is generated by the backend after a successful save.
               </p>
             </div>
-            <div className="flex items-end bg-surface-container-lowest p-6">
+            <div className="p-6 flex items-center justify-center bg-[var(--hc-surface-soft)]">
               <button
-                className="flex h-[52px] w-full items-center justify-center gap-3 bg-primary-container text-xs font-bold uppercase tracking-widest text-on-primary-container transition-all hover:bg-primary disabled:opacity-60"
+                className="hc-button-primary w-full py-3 flex items-center justify-center gap-2"
                 type="submit"
                 disabled={isSubmitting || !canCreateRecord}
               >
-                {isSubmitting ? "Saving Record" : "Commit Record"}
-                <HcIcon name="send" />
+                {isSubmitting ? "Saving Record..." : "Commit Record"}
+                <HcIcon name="send" className="w-4 h-4" />
               </button>
             </div>
           </section>
         </div>
 
-        <aside className="col-span-12 lg:col-span-4">
-          <div className="sticky top-24 flex flex-col gap-6">
-            <div className="bg-on-surface p-8 text-surface">
+        <aside className="col-span-12 xl:col-span-4">
+          <div className="sticky top-8 flex flex-col gap-6">
+            <div className="bg-[var(--hc-text)] text-white rounded-[var(--radius-xl)] p-8 shadow-md">
               <div className="mb-8">
-                <p className="mb-1 font-['Public_Sans'] text-[10px] font-semibold uppercase tracking-[0.2em] opacity-60">
+                <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--hc-text-placeholder)]">
                   Subject Profile
                 </p>
                 <h2 className="text-3xl font-light tracking-tight">
                   {appointment.patientFullName}
                 </h2>
               </div>
-              <div className="grid grid-cols-2 gap-y-6">
-                <Info label="ID Number" value={appointment.patientCccd} />
-                <Info label="Birth Date" value={appointment.patientDateOfBirth} />
-                <Info label="Gender" value={appointment.patientGender} />
-                <Info label="Phone" value={appointment.patientPhone} />
+              <div className="grid grid-cols-2 gap-y-6 gap-x-4">
+                <Info label="ID Number" value={appointment.patientCccd} theme="dark" />
+                <Info label="Birth Date" value={appointment.patientDateOfBirth} theme="dark" />
+                <Info label="Gender" value={appointment.patientGender} theme="dark" />
+                <Info label="Phone" value={appointment.patientPhone} theme="dark" />
               </div>
             </div>
 
-            <div className="bg-surface-container-low p-8">
-              <h3 className="mb-6 font-['Public_Sans'] text-[10px] font-semibold uppercase tracking-widest">
+            <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] p-8 shadow-sm">
+              <h3 className="mb-6 text-xs font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">
                 Appointment Context
               </h3>
-              <div className="space-y-5 text-xs font-semibold">
-                <Info label="Symptoms" value={appointment.symptoms || "No symptoms recorded"} />
-                <Info label="Appointment ID" value={appointment.appointmentId} />
-                <Info label="Patient Email" value={appointment.patientEmail} />
+              <div className="space-y-6">
+                <Info label="Symptoms" value={appointment.symptoms || "No symptoms recorded"} theme="light" />
+                <Info label="Appointment ID" value={appointment.appointmentId} theme="light" />
+                <p className="text-xs font-semibold text-[var(--hc-text-secondary)]">Case File: {appointment.confirmationCode}</p>
+                <Info label="Patient Email" value={appointment.patientEmail} theme="light" />
               </div>
             </div>
 
             {!canCreateRecord ? (
-              <div className="bg-error-container p-6" role="alert">
+              <div className="bg-red-50 border border-red-200 rounded-[var(--radius-xl)] p-6 shadow-sm" role="alert">
                 <div className="mb-3 flex items-center gap-3">
-                  <HcIcon name="warning" className="text-error" />
-                  <h3 className="font-['Public_Sans'] text-[11px] font-semibold uppercase tracking-widest text-on-error-container">
+                  <div className="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+                    <HcIcon name="warning" className="w-4 h-4" />
+                  </div>
+                  <h3 className="text-xs font-bold uppercase tracking-widest text-red-900">
                     Record Creation Blocked
                   </h3>
                 </div>
-                <p className="text-xs font-bold">
+                <p className="text-xs font-medium text-red-700 leading-relaxed">
                   This appointment is {appointment.status}. The backend only accepts records
                   for checked-in, in-progress, or done appointments.
                 </p>
@@ -433,12 +445,12 @@ function VitalInput({
   value: string;
 }) {
   return (
-    <div className="bg-surface-container-lowest p-4">
-      <label className="mb-2 block text-[10px] font-semibold uppercase tracking-widest text-outline">
+    <div className="p-6">
+      <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">
         {label}
       </label>
       <input
-        className="w-full border-b border-outline/30 bg-surface-container-low px-3 py-2 text-sm font-semibold outline-none focus:border-primary"
+        className="w-full border-b-2 border-[var(--hc-border-soft)] bg-transparent px-1 py-2 text-sm font-bold text-[var(--hc-text)] outline-none focus:border-[var(--hc-primary)] transition-colors placeholder:text-[var(--hc-text-placeholder)] placeholder:font-medium"
         placeholder={placeholder}
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -457,23 +469,28 @@ function MedicationCell({
   value: string;
 }) {
   return (
-    <td className="px-4 py-4 text-xs">
+    <td className="px-6 py-4">
       <label className="sr-only">{label}</label>
       <input
         aria-label={label}
-        className="w-full border-b border-outline/30 bg-transparent px-1 py-2 outline-none focus:border-primary"
+        className="w-full border-b-2 border-[var(--hc-border-soft)] bg-transparent px-1 py-2 text-sm font-medium text-[var(--hc-text)] outline-none focus:border-[var(--hc-primary)] transition-colors"
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        placeholder="Enter value"
       />
     </td>
   );
 }
 
-function Info({ label, value }: { label: string; value: string }) {
+function Info({ label, value, theme = "light" }: { label: string; value: string; theme?: "light" | "dark" }) {
   return (
     <div>
-      <p className="mb-1 text-[10px] font-bold uppercase opacity-50">{label}</p>
-      <p className="break-words text-sm font-semibold">{value}</p>
+      <p className={`mb-1 text-[10px] font-bold uppercase tracking-widest ${theme === "dark" ? "text-[var(--hc-text-placeholder)]" : "text-[var(--hc-text-placeholder)]"}`}>
+        {label}
+      </p>
+      <p className={`break-words text-sm font-bold ${theme === "dark" ? "text-white" : "text-[var(--hc-text)]"}`}>
+        {value}
+      </p>
     </div>
   );
 }

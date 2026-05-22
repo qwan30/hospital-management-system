@@ -1,7 +1,12 @@
 import { expect, test } from "@playwright/test";
 import { BookingPage } from "../pages/booking-page";
+import { installUiApiMocks } from "../helpers/ui-api-mocks";
 
 test.describe("@ui critical workflow smoke", () => {
+  test.beforeEach(async ({ page }) => {
+    await installUiApiMocks(page);
+  });
+
   test("public booking validates required intake fields", async ({ page }) => {
     const booking = new BookingPage(page);
 
@@ -70,7 +75,7 @@ test.describe("@ui critical workflow smoke", () => {
       { path: "/admin/audit-logs", heading: /Audit Logs/i },
       { path: "/admin/monitoring", heading: /Monitoring|Operational Health/i },
       { path: "/admin/news", heading: /News/i },
-      { path: "/admin/public-content", heading: /Public Facing|Hero Landing/i },
+      { path: "/admin/public-content", heading: /Public Content|Public Facing|Hero Landing/i },
       { path: "/admin/rooms", heading: /Rooms|Room/i },
     ];
 

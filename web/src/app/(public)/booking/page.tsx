@@ -230,33 +230,33 @@ export default function PublicBookingPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-12 md:px-10">
-      <header className="mb-10">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.24em] text-hc-primary">
+    <div className="mx-auto max-w-7xl px-6 py-16 md:px-10">
+      <header className="mb-12">
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[var(--hc-primary)]">
           Patient Booking
         </p>
-        <h1 className="text-4xl font-light tracking-tight text-hc-on-surface md:text-5xl">
+        <h1 className="mb-6 text-5xl font-light tracking-tight text-[var(--hc-text)] md:text-6xl">
           Book Appointment
         </h1>
-        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-hc-on-surface-variant">
+        <p className="max-w-2xl text-xl font-medium leading-relaxed text-[var(--hc-text-secondary)]">
           Choose a real doctor, select an available slot, and submit the required patient details.
           Unsupported or unavailable slots are not faked.
         </p>
       </header>
 
-      <div className="grid gap-0 border border-hc-outline-variant/30 lg:grid-cols-12">
-        <form className="bg-hc-surface-container-low p-6 lg:col-span-8 lg:p-10" onSubmit={handleSubmit} noValidate>
-          <section className="mb-10 border border-hc-outline-variant/30 bg-hc-surface p-5">
-            <h2 className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-hc-outline">
+      <div className="grid gap-8 lg:grid-cols-12">
+        <form className="border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] bg-white p-8 lg:col-span-8 lg:p-12 shadow-sm" onSubmit={handleSubmit} noValidate>
+          <section className="mb-12 border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] bg-[var(--hc-surface-muted)] p-8">
+            <h2 className="mb-6 text-xs font-bold uppercase tracking-[0.15em] text-[var(--hc-text-muted)]">
               Doctor And Slot
             </h2>
             <div className="grid gap-6 md:grid-cols-2">
               <div>
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-hc-on-surface" htmlFor="booking-doctor">
+                <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-doctor">
                   Doctor
                 </label>
                 <select
-                  className="w-full border-0 border-b-2 border-hc-outline bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-hc-primary"
+                  className="hc-input w-full bg-white"
                   disabled={isLoadingDoctors}
                   id="booking-doctor"
                   onChange={(event) => handleDoctorChange(event.target.value)}
@@ -271,11 +271,11 @@ export default function PublicBookingPage() {
                 </select>
               </div>
               <div>
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-hc-on-surface" htmlFor="booking-date">
+                <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-date">
                   Appointment Date
                 </label>
                 <input
-                  className="w-full border-0 border-b-2 border-hc-outline bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-hc-primary"
+                  className="hc-input w-full bg-white"
                   id="booking-date"
                   min={todayDate()}
                   onChange={(event) => handleDateChange(event.target.value)}
@@ -284,14 +284,14 @@ export default function PublicBookingPage() {
                 />
               </div>
             </div>
-            <div className="mt-6">
+            <div className="mt-8">
               {selectedDoctor ? (
-                <p className="mb-3 text-xs text-hc-on-surface-variant">
-                  Selected doctor: <span className="font-semibold text-hc-on-surface">{selectedDoctor.fullName}</span>
+                <p className="mb-4 text-sm text-[var(--hc-text-secondary)] font-medium">
+                  Selected doctor: <span className="font-bold text-[var(--hc-text)]">{selectedDoctor.fullName}</span>
                 </p>
               ) : null}
               {isLoadingSlots ? (
-                <p className="border border-hc-outline-variant/30 bg-hc-surface-container-low p-4 text-sm text-hc-on-surface-variant">
+                <p className="border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] bg-white p-4 text-sm font-medium text-[var(--hc-text-secondary)]">
                   Loading available slots...
                 </p>
               ) : selectedDoctorId ? (
@@ -299,10 +299,10 @@ export default function PublicBookingPage() {
                   <div className="grid gap-3 sm:grid-cols-3">
                     {availableSlots.map((slot) => (
                       <button
-                        className={`border px-4 py-3 text-xs font-bold uppercase tracking-widest transition-colors ${
+                        className={`border rounded-[var(--radius-md)] px-4 py-3 text-xs font-bold uppercase tracking-widest transition-colors ${
                           selectedSlotId === slot.id
-                            ? "border-hc-primary bg-hc-primary-container text-white"
-                            : "border-hc-outline-variant bg-hc-surface text-hc-on-surface hover:border-hc-primary"
+                            ? "border-[var(--hc-primary)] bg-[var(--hc-primary-bg)] text-[var(--hc-primary)]"
+                            : "border-[var(--hc-border-soft)] bg-white text-[var(--hc-text)] hover:border-[var(--hc-border-strong)]"
                         }`}
                         key={slot.id}
                         onClick={() => setSelectedSlotId(slot.id)}
@@ -313,12 +313,12 @@ export default function PublicBookingPage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="border border-hc-outline-variant/30 bg-hc-surface-container-low p-4 text-sm text-hc-on-surface-variant">
+                  <p className="border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] bg-white p-4 text-sm font-medium text-[var(--hc-text-secondary)]">
                     No available slots for this doctor and date.
                   </p>
                 )
               ) : (
-                <p className="border border-hc-outline-variant/30 bg-hc-surface-container-low p-4 text-sm text-hc-on-surface-variant">
+                <p className="border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] bg-white p-4 text-sm font-medium text-[var(--hc-text-secondary)]">
                   Select a doctor to load real available slots.
                 </p>
               )}
@@ -327,40 +327,40 @@ export default function PublicBookingPage() {
 
           <div className="grid gap-6 md:grid-cols-2">
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-hc-on-surface" htmlFor="booking-full-name">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-full-name">
                 Full Name
               </label>
-              <input className="w-full border-0 border-b-2 border-hc-outline bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-hc-primary" id="booking-full-name" name="fullName" placeholder="Patient full name" type="text" />
+              <input className="hc-input w-full" id="booking-full-name" name="fullName" placeholder="Patient full name" type="text" />
             </div>
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-hc-on-surface" htmlFor="booking-phone">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-phone">
                 Contact Number
               </label>
-              <input className="w-full border-0 border-b-2 border-hc-outline bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-hc-primary" id="booking-phone" name="phone" placeholder="+84 ..." type="tel" />
+              <input className="hc-input w-full" id="booking-phone" name="phone" placeholder="+84 ..." type="tel" />
             </div>
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-hc-on-surface" htmlFor="booking-email">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-email">
                 Email Address
               </label>
-              <input className="w-full border-0 border-b-2 border-hc-outline bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-hc-primary" id="booking-email" name="email" placeholder="name@example.com" type="email" />
+              <input className="hc-input w-full" id="booking-email" name="email" placeholder="name@example.com" type="email" />
             </div>
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-hc-on-surface" htmlFor="booking-cccd">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-cccd">
                 Patient CCCD
               </label>
-              <input className="w-full border-0 border-b-2 border-hc-outline bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-hc-primary" id="booking-cccd" inputMode="numeric" name="cccd" placeholder="12 digits" type="text" />
+              <input className="hc-input w-full" id="booking-cccd" inputMode="numeric" name="cccd" placeholder="12 digits" type="text" />
             </div>
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-hc-on-surface" htmlFor="booking-dob">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-dob">
                 Date Of Birth
               </label>
-              <input className="w-full border-0 border-b-2 border-hc-outline bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-hc-primary" id="booking-dob" name="dateOfBirth" type="date" />
+              <input className="hc-input w-full" id="booking-dob" name="dateOfBirth" type="date" />
             </div>
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-hc-on-surface" htmlFor="booking-gender">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-gender">
                 Gender
               </label>
-              <select className="w-full border-0 border-b-2 border-hc-outline bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-hc-primary" id="booking-gender" name="gender" defaultValue="">
+              <select className="hc-input w-full" id="booking-gender" name="gender" defaultValue="">
                 <option value="">Select gender</option>
                 <option value="MALE">Male</option>
                 <option value="FEMALE">Female</option>
@@ -368,99 +368,117 @@ export default function PublicBookingPage() {
               </select>
             </div>
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-hc-on-surface" htmlFor="booking-province">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-province">
                 Province Or City
               </label>
-              <input className="w-full border-0 border-b-2 border-hc-outline bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-hc-primary" id="booking-province" name="provinceOrCity" placeholder="Ho Chi Minh City" type="text" />
+              <input className="hc-input w-full" id="booking-province" name="provinceOrCity" placeholder="Ho Chi Minh City" type="text" />
             </div>
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-hc-on-surface" htmlFor="booking-district">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-district">
                 District
               </label>
-              <input className="w-full border-0 border-b-2 border-hc-outline bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-hc-primary" id="booking-district" name="district" placeholder="District 1" type="text" />
+              <input className="hc-input w-full" id="booking-district" name="district" placeholder="District 1" type="text" />
             </div>
             <div className="md:col-span-2">
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-hc-on-surface" htmlFor="booking-street">
+              <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-street">
                 Street Address
               </label>
-              <input className="w-full border-0 border-b-2 border-hc-outline bg-transparent px-0 py-3 text-sm outline-none transition-colors focus:border-hc-primary" id="booking-street" name="streetAddress" placeholder="Street address" type="text" />
+              <input className="hc-input w-full" id="booking-street" name="streetAddress" placeholder="Street address" type="text" />
             </div>
           </div>
 
-          <div className="mt-8">
-            <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-hc-on-surface" htmlFor="booking-symptoms">
+          <div className="mt-10">
+            <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-symptoms">
               Primary Symptom Description
             </label>
-            <textarea className="min-h-36 w-full border border-hc-outline-variant/40 bg-hc-surface p-4 text-sm outline-none transition-colors focus:border-hc-primary" id="booking-symptoms" name="symptoms" placeholder="Describe your symptoms, duration and severity..." />
+            <textarea className="hc-input w-full min-h-36 py-4 resize-y" id="booking-symptoms" name="symptoms" placeholder="Describe your symptoms, duration and severity..." />
           </div>
 
-          <div className="mt-8">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-hc-on-surface">
+          <div className="mt-10">
+            <p className="mb-4 text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]">
               Observed Symptoms
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               {symptomOptions.map((symptom) => (
-                <label key={symptom} className="flex items-center gap-3 border border-hc-outline-variant/30 bg-hc-surface px-3 py-2 text-sm">
-                  <input className="h-4 w-4 rounded-none border-hc-outline" name="observedSymptoms" type="checkbox" value={symptom} />
+                <label key={symptom} className="flex items-center gap-3 border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] bg-[var(--hc-surface-muted)] px-4 py-3 text-sm font-medium hover:border-[var(--hc-border-strong)] transition-colors cursor-pointer">
+                  <input className="h-4 w-4 rounded-sm border-[var(--hc-border-strong)] text-[var(--hc-primary)] focus:ring-[var(--hc-primary)]" name="observedSymptoms" type="checkbox" value={symptom} />
                   <span>{symptom}</span>
                 </label>
               ))}
             </div>
           </div>
 
-          <div className="mt-10 flex flex-wrap items-center gap-3">
-            <button className="bg-hc-primary-container px-6 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-hc-primary disabled:cursor-not-allowed disabled:opacity-60" type="submit" disabled={isSubmitting || isLoadingDoctors || isLoadingSlots}>
-              {isSubmitting ? "Submitting Booking" : "Confirm Appointment"}
+          <div className="mt-12 flex flex-wrap items-center gap-4 border-t border-[var(--hc-border-soft)] pt-8">
+            <button className="hc-button-primary px-8 py-3" type="submit" disabled={isSubmitting || isLoadingDoctors || isLoadingSlots}>
+              {isSubmitting ? "Submitting Booking..." : "Confirm Appointment"}
             </button>
-            <Link href="/portal/login" className="border border-hc-outline-variant px-6 py-3 text-xs font-bold uppercase tracking-widest text-hc-on-surface transition-colors hover:bg-hc-surface-container">
+            <Link href="/portal/login" className="hc-button-secondary px-8 py-3">
               Sign In For Saved Profile
             </Link>
           </div>
 
           {message ? (
-            <p className={`mt-6 border px-4 py-3 text-sm font-semibold ${messageTone === "success" ? "border-green-200 bg-green-50 text-green-700" : "border-red-200 bg-red-50 text-red-700"}`} role="alert">
-              {message}
-            </p>
+            <div className={`mt-8 border rounded-[var(--radius-md)] p-6 flex flex-col gap-2 ${messageTone === "success" ? "border-green-200 bg-[var(--hc-success-bg)] text-[var(--hc-success)]" : "border-red-200 bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]"}`} role="alert">
+              <span className="text-sm font-bold tracking-tight">{messageTone === "success" ? "Success" : "Error"}</span>
+              <p className="text-sm font-medium">{message}</p>
+            </div>
           ) : null}
         </form>
 
-        <aside className="bg-hc-surface p-6 lg:col-span-4 lg:p-10">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-hc-outline">
-            Intake Summary
-          </h2>
+        <aside className="lg:col-span-4">
+          <div className="sticky top-24 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] bg-[var(--hc-surface-soft)] p-8">
+            <h2 className="mb-8 text-xs font-bold uppercase tracking-[0.15em] text-[var(--hc-text-muted)]">
+              Intake Summary
+            </h2>
 
-          <div className="mt-6 space-y-5">
-            <div className="border-l-4 border-hc-primary bg-hc-surface-container-low p-4">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-hc-primary">
-                Appointment Status
-              </p>
-              <p className="mt-2 text-3xl font-light text-hc-on-surface">
-                {confirmation?.status ?? "Pending"}
-              </p>
-              <p className="mt-1 text-xs text-hc-on-surface-variant">
-                {confirmation
-                  ? `Code ${confirmation.confirmationCode} for ${confirmation.appointmentDate}.`
-                  : "A real confirmation code appears only after the backend creates an appointment."}
-              </p>
-            </div>
+            <div className="space-y-6">
+              <div className="border border-[var(--hc-border-strong)] rounded-[var(--radius-lg)] bg-white p-6 shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-full bg-[var(--hc-primary)]"></div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--hc-text-muted)] mb-2">
+                  Appointment Status
+                </p>
+                <p className="text-3xl font-light text-[var(--hc-text)] tracking-tight">
+                  {confirmation?.status ?? "Pending"}
+                </p>
+                <p className="mt-2 text-xs font-medium text-[var(--hc-text-secondary)] leading-relaxed">
+                  {confirmation
+                    ? `Code ${confirmation.confirmationCode} for ${confirmation.appointmentDate}.`
+                    : "A real confirmation code appears only after the backend creates an appointment."}
+                </p>
+              </div>
 
-            <div className="border border-hc-outline-variant/30 p-4">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-hc-outline">
-                Selected Slot
-              </p>
-              <ul className="mt-3 space-y-2 text-sm text-hc-on-surface-variant">
-                <li>Doctor: {selectedDoctor?.fullName ?? "Not selected"}</li>
-                <li>Date: {slotDate || "Not selected"}</li>
-                <li>
-                  Time: {slots.find((slot) => slot.id === selectedSlotId)
-                    ? formatSlotTime(slots.find((slot) => slot.id === selectedSlotId) as DoctorSlotResponse)
-                    : "Not selected"}
-                </li>
-              </ul>
-            </div>
+              <div className="border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] bg-white p-6 shadow-sm">
+                <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--hc-text-muted)] mb-4">
+                  Selected Slot
+                </p>
+                <ul className="space-y-3 text-sm font-medium text-[var(--hc-text-secondary)]">
+                  <li className="flex justify-between border-b border-[var(--hc-border-soft)] pb-2">
+                    <span>Doctor</span>
+                    <span className="text-[var(--hc-text)] font-bold">{selectedDoctor?.fullName ?? "Not selected"}</span>
+                  </li>
+                  <li className="flex justify-between border-b border-[var(--hc-border-soft)] pb-2">
+                    <span>Date</span>
+                    <span className="text-[var(--hc-text)] font-bold">{slotDate || "Not selected"}</span>
+                  </li>
+                  <li className="flex justify-between">
+                    <span>Time</span>
+                    <span className="text-[var(--hc-text)] font-bold">
+                      {slots.find((slot) => slot.id === selectedSlotId)
+                      ? formatSlotTime(slots.find((slot) => slot.id === selectedSlotId) as DoctorSlotResponse)
+                      : "Not selected"}
+                    </span>
+                  </li>
+                </ul>
+              </div>
 
-            <div className="border border-hc-outline-variant/30 p-4 text-xs leading-relaxed text-hc-on-surface-variant">
-              Emergency symptoms such as severe chest pain, breathing distress, or heavy bleeding should use emergency services immediately.
+              <div className="border border-[var(--hc-warning-bg)] rounded-[var(--radius-lg)] bg-[var(--hc-warning-bg)] p-6 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <span className="text-[var(--hc-warning)] text-xl mt-0.5">⚠</span>
+                  <p className="text-xs font-medium leading-relaxed text-[var(--hc-warning)]">
+                    Emergency symptoms such as severe chest pain, breathing distress, or heavy bleeding should use emergency services immediately.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </aside>

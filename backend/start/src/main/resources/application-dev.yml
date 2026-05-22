@@ -11,10 +11,25 @@ integration:
     enabled: false
 
 spring:
+  datasource:
+    password: ${POSTGRES_PASSWORD}
   flyway:
     clean-disabled: false
+
+server:
+  port: 8081
+
+security:
+  http:
+    allow-credentials: ${HMS_ALLOW_CREDENTIALS:true}
+  jwt:
+    secret: ${JWT_SECRET}
+  patient-identifier:
+    secret: ${PATIENT_IDENTIFIER_SECRET}
 
 hms:
   seed:
     non-billing-demo:
       enabled: ${HMS_NON_BILLING_DEMO_SEED_ENABLED:true}
+    release-demo:
+      enabled: ${HMS_RELEASE_DEMO_SEED_ENABLED:false}

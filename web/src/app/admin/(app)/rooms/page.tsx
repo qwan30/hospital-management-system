@@ -13,9 +13,24 @@ import {
 } from "@/lib/operations-api";
 
 import { PageHeader } from "@/components/ui/page-header";
-import { KpiCard } from "@/components/ui/kpi-card";
-import { DataPanel } from "@/components/ui/data-panel";
-import { DoorOpen, CheckCircle2, Activity, Wrench, Plus, AlertCircle, X } from "lucide-react";
+import {
+  CheckCircle2,
+  Wrench,
+  Plus,
+  X,
+  ChevronDown,
+  Filter,
+  Download,
+  MoreHorizontal,
+  ChevronLeft,
+  ChevronRight,
+  User,
+  PauseCircle,
+  Trash2,
+  Activity,
+  ChevronsUpDown,
+  DoorOpen
+} from "lucide-react";
 
 const statuses: RoomStatus[] = ["READY", "IN_USE", "BREAK", "MAINTENANCE"];
 
@@ -181,13 +196,17 @@ export default function AdminRoomsPage() {
   }
 
   return (
-    <div className="p-8 pb-20">
+    <div className="p-8 pb-20 max-w-[1400px] mx-auto">
       <PageHeader
         title="Room Inventory"
-        description="API-Backed Monitoring & Allocation • Manage hospital rooms and their statuses"
+        description="API-backed monitoring & allocation of clinical rooms and spaces."
         action={
-          <div className="flex gap-2">
-            <button className="hc-button-primary flex items-center gap-2" onClick={openCreateForm} type="button">
+          <div className="flex gap-3">
+            <button className="flex items-center justify-center gap-2 h-10 px-4 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] bg-white text-[var(--hc-text)] hover:bg-slate-50 transition-colors shadow-sm">
+              <Download className="w-4 h-4" />
+              <span className="font-bold text-[11px] uppercase tracking-widest">Export CSV</span>
+            </button>
+            <button className="hc-button-primary flex items-center gap-2 h-10 px-5" onClick={openCreateForm} type="button">
               <Plus className="w-4 h-4" />
               <span className="font-bold text-[11px] uppercase tracking-widest">Add Room</span>
             </button>
@@ -199,53 +218,105 @@ export default function AdminRoomsPage() {
       {formError ? <Alert message={formError} /> : null}
       {success ? <div className="mb-6 rounded-[var(--radius-md)] border border-[var(--hc-success)] bg-[var(--hc-success-bg)] p-4 text-sm font-medium text-[var(--hc-success)]" role="status">{success}</div> : null}
 
-      <div className="hc-kpi-grid mb-8">
-        <KpiCard label="Total Rooms" value={rooms.length.toString()} icon={DoorOpen} tone="blue" />
-        <KpiCard label="Ready" value={readyCount.toString()} icon={CheckCircle2} tone="green" />
-        <KpiCard label="In Use" value={inUseCount.toString()} icon={Activity} tone="amber" />
-        <KpiCard label="Maintenance" value={rooms.filter(r => r.status === "MAINTENANCE").length.toString()} icon={Wrench} tone="red" />
-      </div>
+      <div className="flex flex-col lg:flex-row gap-6 mt-6">
+        <div className="flex-1 flex flex-col min-w-0 gap-6">
+          <div className="bg-white p-5 rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] shadow-sm">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-8">
+                <div>
+                  <label className="block text-[11px] font-medium text-[var(--hc-text-secondary)] mb-2 capitalize">Status</label>
+                  <div className="relative">
+                    <select
+                      aria-label="Filter rooms by status"
+                      className="h-10 pl-4 pr-10 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] focus:outline-none focus:border-[var(--hc-blue-500)] focus:ring-1 focus:ring-[var(--hc-blue-500)] appearance-none font-medium min-w-[200px]"
+                      onChange={(e) => setStatusFilter(e.target.value as "ALL" | RoomStatus)}
+                      value={statusFilter}
+                    >
+                      <option value="ALL">All Statuses</option>
+                      {statuses.map((status) => <option key={status} value={status}>{status.replace('_', ' ')}</option>)}
+                    </select>
+                    <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] pointer-events-none" />
+                    <div className="absolute left-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-[var(--hc-success)] pointer-events-none" />
+                    <style jsx>{`select { padding-left: 1.75rem; }`}</style>
+                  </div>
+                </div>
 
-      <DataPanel
-        title="Rooms Directory"
-        action={
-          <div className="flex items-center gap-4">
-            <select
-              aria-label="Filter by Status"
-              className="hc-input py-2 text-xs w-48"
-              onChange={(e) => setStatusFilter(e.target.value as "ALL" | RoomStatus)}
-              value={statusFilter}
-            >
-              <option value="ALL">Status: All</option>
-              {statuses.map((status) => <option key={status} value={status}>{status}</option>)}
-            </select>
-            <select
-              aria-label="Filter by Department"
-              className="hc-input py-2 text-xs w-48"
-              onChange={(e) => setDepartmentFilter(e.target.value)}
-              value={departmentFilter}
-            >
-              <option value="ALL">Department: All</option>
-              {departments.map((department) => <option key={department} value={department}>{department}</option>)}
-            </select>
+                <div>
+                  <label className="block text-[11px] font-medium text-[var(--hc-text-secondary)] mb-2 capitalize">Department</label>
+                  <div className="relative">
+                    <select
+                      aria-label="Filter rooms by department"
+                      className="h-10 pl-4 pr-10 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] focus:outline-none focus:border-[var(--hc-blue-500)] focus:ring-1 focus:ring-[var(--hc-blue-500)] appearance-none font-medium min-w-[200px]"
+                      onChange={(e) => setDepartmentFilter(e.target.value)}
+                      value={departmentFilter}
+                    >
+                      <option value="ALL">All Departments</option>
+                      {departments.map((department) => <option key={department} value={department}>{department}</option>)}
+                    </select>
+                    <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] pointer-events-none" />
+                    <Activity className="w-3 h-3 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    <style jsx>{`select { padding-left: 1.75rem; }`}</style>
+                  </div>
+                </div>
+
+                <div>
+                   <label className="block text-[11px] font-medium text-[var(--hc-text-secondary)] mb-2 capitalize">Ready / In Use</label>
+                   <div className="h-10 flex items-center">
+                     <span className="text-xl font-bold text-[var(--hc-blue-600)]">{readyCount}</span>
+                     <span className="text-xl font-medium text-slate-300 mx-1.5">/</span>
+                     <span className="text-xl font-bold text-[var(--hc-text)]">{inUseCount}</span>
+                   </div>
+                </div>
+              </div>
+
+              <button
+                className="flex items-center gap-2 px-4 h-10 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] text-sm font-semibold text-[var(--hc-text-secondary)] hover:bg-slate-50 transition-colors"
+                onClick={() => {
+                  setStatusFilter("ALL");
+                  setDepartmentFilter("ALL");
+                }}
+              >
+                <Filter className="w-4 h-4" />
+                Clear All Filters
+              </button>
+            </div>
           </div>
-        }
-      >
-        <div className="flex w-full flex-col lg:flex-row">
-          <div className="flex-1 overflow-x-auto lg:border-r border-[var(--hc-border-soft)]">
+
+          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm flex-1 flex flex-col">
             {isLoading ? (
               <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">Loading rooms...</div>
             ) : (
-              <RoomsTable
-                isSaving={isSaving}
-                onEdit={openEditForm}
-                onSelect={(room) => setSelectedRoomId(room.roomId)}
-                rooms={filteredRooms}
-                selectedRoomId={selectedRoom?.roomId ?? null}
-              />
+              <>
+                <RoomsTable
+                  isSaving={isSaving}
+                  onEdit={openEditForm}
+                  onSelect={(room) => setSelectedRoomId(room.roomId)}
+                  rooms={filteredRooms}
+                  selectedRoomId={selectedRoom?.roomId ?? null}
+                />
+                <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-slate-50/50 mt-auto">
+                  <span className="text-xs text-[var(--hc-text-secondary)] font-medium">
+                    Showing 1 to {filteredRooms.length} of {rooms.length} rooms
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium">
+                      1
+                    </button>
+                    <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </>
             )}
           </div>
-          <div className="w-full lg:w-96 shrink-0 bg-[var(--hc-surface-soft)]">
+        </div>
+
+        <div className="w-full lg:w-[380px] shrink-0">
+          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm sticky top-6">
             <RoomDetails
               isSaving={isSaving}
               onDeactivate={deactivateRoom}
@@ -254,12 +325,7 @@ export default function AdminRoomsPage() {
             />
           </div>
         </div>
-        <div className="flex items-center justify-between p-4 bg-[var(--hc-surface-soft)] border-t border-[var(--hc-border-soft)]">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
-            Showing {filteredRooms.length} of {rooms.length} rooms
-          </span>
-        </div>
-      </DataPanel>
+      </div>
 
       {isFormOpen ? (
         <Dialog title={editingRoom ? "Edit Room" : "Add Room"} onClose={() => setIsFormOpen(false)}>
@@ -288,49 +354,83 @@ function RoomsTable({
   }
 
   return (
-    <table className="hc-table">
-      <thead>
-        <tr>
-          <th>Room ID</th>
-          <th>Department</th>
-          <th>Status</th>
-          <th>Active</th>
-          <th className="text-right">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rooms.map((room) => (
-          <tr className={`cursor-pointer transition-colors ${selectedRoomId === room.roomId ? "bg-[var(--hc-surface-soft)]" : ""}`} key={room.roomId} onClick={() => onSelect(room)}>
-            <td className="font-mono text-sm font-bold text-[var(--hc-blue-600)]">
-              {room.name}
-            </td>
-            <td className="font-semibold text-[var(--hc-text)]">{room.departmentName || "Unassigned"}</td>
-            <td><StatusBadge status={room.status} /></td>
-            <td>
-              <div className="flex items-center gap-2">
-                <div className={`w-1.5 h-1.5 rounded-full ${room.active ? "bg-[var(--hc-success)]" : "bg-[var(--hc-text-secondary)]"}`} />
-                <span className={`text-[10px] font-bold uppercase tracking-widest ${room.active ? "" : "text-[var(--hc-text-secondary)]"}`}>
-                  {room.active ? "Active" : "Inactive"}
-                </span>
+    <div className="overflow-x-auto flex-1">
+      <table className="hc-table">
+        <thead>
+          <tr>
+            <th className="w-[20%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                Room ID <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
               </div>
-            </td>
-            <td className="text-right">
-              <button
-                className="hc-button-secondary py-1.5 px-3 text-[11px]"
-                disabled={isSaving}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEdit(room);
-                }}
-                type="button"
-              >
-                Edit
-              </button>
-            </td>
+            </th>
+            <th className="w-[30%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                Department <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[20%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                Status <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[15%]">
+              <div className="flex items-center gap-2 cursor-pointer group">
+                Active <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+              </div>
+            </th>
+            <th className="w-[15%] text-right">Actions</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rooms.map((room) => {
+            const isSelected = selectedRoomId === room.roomId;
+            return (
+              <tr
+                className={`cursor-pointer transition-colors relative group ${isSelected ? "bg-blue-50/50" : "hover:bg-[var(--hc-background)]"}`}
+                key={room.roomId}
+                onClick={() => onSelect(room)}
+              >
+                {isSelected && (
+                  <td className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--hc-blue-600)] rounded-r p-0 border-0" />
+                )}
+                <td className="font-semibold text-sm text-[var(--hc-blue-600)]">
+                  {room.name}
+                </td>
+                <td>
+                  <div className="flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-slate-400" />
+                    <span className="text-sm font-medium text-[var(--hc-text)]">{room.departmentName || "Unassigned"}</span>
+                  </div>
+                </td>
+                <td><StatusBadge status={room.status} /></td>
+                <td>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${room.active ? "bg-[var(--hc-success)]" : "bg-slate-400"}`} />
+                    <span className={`text-sm font-medium ${room.active ? "text-[var(--hc-text)]" : "text-[var(--hc-text-secondary)]"}`}>
+                      {room.active ? "Active" : "Inactive"}
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  <div className="flex items-center justify-end gap-2">
+                    <button className="w-8 h-8 flex items-center justify-center text-[var(--hc-blue-600)] hover:bg-blue-50 rounded-md transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit(room);
+                      }}
+                      disabled={isSaving}
+                      aria-label="Edit"
+                    >
+                      <MoreHorizontal className="w-4 h-4" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -347,61 +447,162 @@ function RoomDetails({
 }) {
   return (
     <div className="flex flex-col h-full min-h-[400px]">
-      <div className="p-6 border-b border-[var(--hc-border-soft)]">
-        <h2 className="text-[13px] font-bold uppercase tracking-widest text-[var(--hc-text)]">Status Management</h2>
+      <div className="px-6 py-5 border-b border-[var(--hc-border-soft)] flex justify-between items-center">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--hc-blue-600)]">Room Details</h2>
+        {room && room.active && (
+           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[var(--hc-success-bg)] text-[var(--hc-success)] border border-[var(--hc-success)]">
+             <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Active</span>
+           </div>
+        )}
       </div>
+
       <div className="flex-1 p-6">
         {!room ? (
-          <p className="text-sm font-medium text-[var(--hc-text-secondary)] text-center mt-10">Select a room to manage its status.</p>
+          <div className="h-full flex flex-col items-center justify-center text-[var(--hc-text-secondary)] opacity-60">
+            <DoorOpen className="w-12 h-12 mb-3" />
+            <p className="text-sm font-medium">Select a room to manage its status.</p>
+          </div>
         ) : (
           <div className="space-y-8">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">Current Room</span>
-              <div className="text-3xl font-bold text-[var(--hc-text)] mt-1">{room.name}</div>
-              <div className="flex gap-2 mt-3"><StatusBadge status={room.status} /></div>
-            </div>
-            
-            <div className="p-4 rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] bg-white shadow-sm">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">Department</div>
-              <div className="text-sm font-semibold text-[var(--hc-text)]">{room.departmentName || "Unassigned"}</div>
+              <div className="text-sm font-medium text-[var(--hc-text-secondary)] mb-3">Current Active Entity</div>
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center shrink-0 border border-red-100">
+                  <Activity className="w-8 h-8 text-red-500" />
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-[var(--hc-text)] mb-2">{room.name}</div>
+                  <StatusBadge status={room.status} />
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-3">
-              <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">Update Status</div>
-              <div className="grid grid-cols-2 gap-2">
-                {statuses.map((status) => (
-                  <button
-                    className={`py-3 px-2 rounded-[var(--radius-md)] text-[10px] font-bold uppercase tracking-widest border transition-colors disabled:opacity-60 ${room.status === status ? "bg-[var(--hc-blue-50)] border-[var(--hc-blue-600)] text-[var(--hc-blue-600)] shadow-sm" : "bg-white border-[var(--hc-border)] text-[var(--hc-text-secondary)] hover:border-[var(--hc-text)]"}`}
-                    disabled={isSaving || room.status === status}
-                    key={status}
-                    onClick={() => onStatusChange(room, status)}
-                    type="button"
-                  >
-                    {status}
-                  </button>
-                ))}
+            <div>
+              <div className="text-sm font-medium text-[var(--hc-text-secondary)] mb-3">Department</div>
+              <div className="p-4 rounded-xl border border-[var(--hc-border-soft)] bg-slate-50/50 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center shrink-0">
+                  <Activity className="w-5 h-5 text-red-500" />
+                </div>
+                <div className="text-sm font-bold text-[var(--hc-text)]">{room.departmentName || "Unassigned"}</div>
+              </div>
+            </div>
+
+            <div>
+              <div className="text-sm font-medium text-[var(--hc-text-secondary)] mb-3">Update Room Status</div>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  className={`flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-xl border transition-all ${
+                    room.status === "READY"
+                      ? "bg-[var(--hc-success-bg)] border-[var(--hc-success)] text-[var(--hc-success)] shadow-sm"
+                      : "bg-white border-[var(--hc-success)] text-[var(--hc-success)] hover:bg-[var(--hc-success-bg)]"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  disabled={isSaving || room.status === "READY"}
+                  onClick={() => onStatusChange(room, "READY")}
+                  aria-label="READY"
+                  type="button"
+                >
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span className="text-sm font-semibold">Ready</span>
+                </button>
+
+                <button
+                  className={`flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-xl border transition-all ${
+                    room.status === "IN_USE"
+                      ? "bg-red-50 border-red-500 text-red-600 shadow-sm"
+                      : "bg-white border-red-300 text-red-600 hover:bg-red-50"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  disabled={isSaving || room.status === "IN_USE"}
+                  onClick={() => onStatusChange(room, "IN_USE")}
+                  aria-label="IN_USE"
+                  type="button"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="text-sm font-semibold">In Use</span>
+                </button>
+
+                <button
+                  className={`flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-xl border transition-all ${
+                    room.status === "BREAK"
+                      ? "bg-amber-50 border-amber-500 text-amber-600 shadow-sm"
+                      : "bg-white border-amber-300 text-amber-600 hover:bg-amber-50"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  disabled={isSaving || room.status === "BREAK"}
+                  onClick={() => onStatusChange(room, "BREAK")}
+                  aria-label="BREAK"
+                  type="button"
+                >
+                  <PauseCircle className="w-5 h-5" />
+                  <span className="text-sm font-semibold">Break</span>
+                </button>
+
+                <button
+                  className={`flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-xl border transition-all ${
+                    room.status === "MAINTENANCE"
+                      ? "bg-slate-100 border-slate-400 text-slate-600 shadow-sm"
+                      : "bg-white border-slate-300 text-slate-600 hover:bg-slate-50"
+                  } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  disabled={isSaving || room.status === "MAINTENANCE"}
+                  onClick={() => onStatusChange(room, "MAINTENANCE")}
+                  aria-label="MAINTENANCE"
+                  type="button"
+                >
+                  <Wrench className="w-5 h-5" />
+                  <span className="text-sm font-semibold">Maintenance</span>
+                </button>
               </div>
             </div>
           </div>
         )}
       </div>
-      <div className="p-6 border-t border-[var(--hc-border-soft)] mt-auto">
-        <button
-          className="w-full py-3 rounded-[var(--radius-md)] text-[10px] font-bold uppercase tracking-widest border transition-colors disabled:opacity-50 border-[var(--hc-danger)] text-[var(--hc-danger)] hover:bg-[var(--hc-danger-bg)] bg-white shadow-sm"
-          disabled={isSaving || !room?.active}
-          onClick={() => room && onDeactivate(room)}
-          type="button"
-        >
-          Deactivate Room
-        </button>
-      </div>
+
+      {room && (
+        <div className="p-6">
+          <button
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border transition-colors disabled:opacity-50 border-red-200 text-red-600 hover:bg-red-50 bg-white"
+            disabled={isSaving || !room.active}
+            onClick={() => onDeactivate(room)}
+            type="button"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span className="text-sm font-semibold">Deactivate Room</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 }
 
 function StatusBadge({ status }: { status: RoomStatus }) {
-  const color = status === "READY" ? "bg-[var(--hc-success-bg)] text-[var(--hc-success)]" : status === "IN_USE" ? "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]" : status === "BREAK" ? "bg-[var(--hc-purple-bg)] text-[var(--hc-purple)]" : "bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]";
-  return <span className={`hc-badge ${color} border-none shadow-sm`}>{status}</span>;
+  if (status === "READY") {
+    return (
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-[var(--hc-success)] bg-[var(--hc-success-bg)] text-[var(--hc-success)]">
+        <div className="w-1.5 h-1.5 rounded-full bg-[var(--hc-success)]" />
+        <span className="text-[11px] font-semibold leading-none">Ready</span>
+      </div>
+    );
+  }
+  if (status === "IN_USE") {
+    return (
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-red-300 bg-red-50 text-red-600">
+        <div className="w-1.5 h-1.5 rounded-full bg-red-600" />
+        <span className="text-[11px] font-semibold leading-none">In Use</span>
+      </div>
+    );
+  }
+  if (status === "BREAK") {
+    return (
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-amber-300 bg-amber-50 text-amber-600">
+        <div className="w-1.5 h-1.5 rounded-full bg-amber-600" />
+        <span className="text-[11px] font-semibold leading-none">Break</span>
+      </div>
+    );
+  }
+  return (
+    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-300 bg-slate-100 text-slate-600">
+      <div className="w-1.5 h-1.5 rounded-full bg-slate-500" />
+      <span className="text-[11px] font-semibold leading-none">Maintenance</span>
+    </div>
+  );
 }
 
 function RoomForm({
@@ -422,7 +623,7 @@ function RoomForm({
       <div>
         <label className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-2">Status</label>
         <select aria-label="Status" className="hc-input w-full" onChange={(event) => onChange({ ...form, status: event.target.value as RoomStatus })} value={form.status}>
-          {statuses.map((status) => <option key={status} value={status}>{status}</option>)}
+          {statuses.map((status) => <option key={status} value={status}>{status.replace('_', ' ')}</option>)}
         </select>
       </div>
       <label className="flex items-center gap-3 pt-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text)]">

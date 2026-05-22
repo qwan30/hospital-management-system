@@ -24,6 +24,8 @@ target/
 # OS / logs
 Thumbs.db
 *.log
+backend/start/test_output*.txt
+backend/start/startup-log.txt
 
 # Python
 __pycache__/

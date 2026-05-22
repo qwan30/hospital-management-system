@@ -1,0 +1,11 @@
+﻿{
+    "command":  "docker compose -p hmsprod20260522 build frontend",
+    "cwd":  "D:\\projects\\hospital-management-system",
+    "startedAt":  "2026-05-22T12:27:41.0621447+07:00",
+    "endedAt":  "2026-05-22T12:32:51.6568735+07:00",
+    "durationSeconds":  310.59,
+    "exitCode":  0,
+    "status":  "PASS",
+    "failureReason":  "",
+    "logPath":  "D:\\projects\\hospital-management-system\\docs\\06-testing\\artifacts\\production-readiness-2026-05-22\\docker-compose-build-frontend-after-security-2026-05-22.log"
+}

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { PortalTopNav, StaffTopNav } from "../top-nav";
+import { HcTopbar, PortalTopNav, StaffTopNav } from "../top-nav";
 
 const navigationState = vi.hoisted(() => ({
   pathname: "/staff/dashboard",
@@ -68,6 +68,71 @@ describe("StaffTopNav", () => {
       "/staff/doctor/dashboard",
     );
   });
+
+  it("falls back to staff profile copy and hides the badge when alert count is zero", () => {
+    roleState.staffRole = null;
+
+    render(
+      <HcTopbar
+        links={[{ label: "Patients", href: "/staff/patients" }]}
+        roleScope="staff"
+        homeHref="/staff/dashboard"
+        alertHref="/staff/queue"
+        settingsHref="/staff/schedule"
+        profileHref="/staff/profile"
+        userName=""
+        userRole=""
+        alertCount={0}
+      />,
+    );
+
+    expect(screen.getByText("Staff Ops")).toBeInTheDocument();
+    expect(screen.getByText("Clinical team")).toBeInTheDocument();
+    expect(screen.queryByText("2")).not.toBeInTheDocument();
+  });
+
+  it("marks subroutes as active for allowed staff links", () => {
+    roleState.staffRole = "ADMIN";
+    navigationState.pathname = "/staff/patients/active";
+
+    render(
+      <HcTopbar
+        links={[{ label: "Patients", href: "/staff/patients" }]}
+        roleScope="staff"
+        homeHref="/staff/dashboard"
+        alertHref="/staff/queue"
+        settingsHref="/staff/schedule"
+        profileHref="/staff/profile"
+        userName="Staff User"
+        userRole="Clinical team"
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: /patients/i })).toHaveAttribute("data-active", "true");
+  });
+
+  it("renders image profiles and configured support targets", () => {
+    roleState.staffRole = "ADMIN";
+
+    render(
+      <HcTopbar
+        links={[]}
+        roleScope="staff"
+        homeHref="/staff/dashboard"
+        alertHref="/staff/queue"
+        settingsHref="/staff/schedule"
+        profileHref="/staff/profile"
+        supportHref="/staff/support"
+        userName="Fallback User"
+        userRole="Fallback Role"
+        profileImageSrc="/staff-bg.png"
+      />,
+    );
+
+    expect(screen.getByAltText("Admin Ops")).toBeInTheDocument();
+    expect(screen.getByLabelText(/open support/i)).toHaveAttribute("href", "/staff/support");
+    expect(screen.getByText("3")).toBeInTheDocument();
+  });
 });
 
 describe("PortalTopNav", () => {
@@ -112,5 +177,14 @@ describe("PortalTopNav", () => {
       "href",
       "/portal/profile",
     );
+  });
+
+  it("falls back to patient profile copy when no portal role is stored", () => {
+    roleState.patientRole = null;
+
+    render(<PortalTopNav />);
+
+    expect(screen.getByText("Patient")).toBeInTheDocument();
+    expect(screen.getByText("Verified portal")).toBeInTheDocument();
   });
 });

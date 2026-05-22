@@ -15,7 +15,7 @@ interface DialogProps {
 
 export function Dialog({ isOpen, onClose, title, description, children, className }: DialogProps) {
   if (!isOpen) {
-    return null;
+    return <div className="hidden" data-testid="dialog-hidden" aria-hidden="true">{children}</div>;
   }
 
   return (
