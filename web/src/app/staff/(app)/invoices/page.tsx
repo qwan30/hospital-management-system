@@ -7,6 +7,7 @@ import {
   ChevronRight,
   CreditCard,
   DollarSign,
+  Download,
   FileText,
   RefreshCw,
   XCircle,
@@ -35,6 +36,10 @@ export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<InvoiceResponse[]>([]);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<InvoiceStatusFilter>("ALL");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [selectedInvoice, setSelectedInvoice] = useState<InvoiceResponse | null>(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [isMutating, setIsMutating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -127,17 +132,50 @@ export default function InvoicesPage() {
   }
 
   const filteredInvoices = useMemo(() => {
+    let result = invoices;
     const q = query.trim().toLowerCase();
-    if (!q) return invoices;
-    return invoices.filter((inv) =>
-      [inv.invoiceId, inv.patientFullName, inv.patientId, inv.doctorName, inv.departmentName, inv.status]
-        .join(" ").toLowerCase().includes(q),
-    );
-  }, [invoices, query]);
+    if (q) {
+      result = result.filter((inv) =>
+        [inv.invoiceId, inv.patientFullName, inv.patientId, inv.doctorName, inv.departmentName, inv.status]
+          .join(" ").toLowerCase().includes(q),
+      );
+    }
+    if (statusFilter !== "ALL") {
+      result = result.filter((inv) => inv.status === statusFilter);
+    }
+    if (startDate) {
+      result = result.filter((inv) => inv.appointmentDate >= startDate);
+    }
+    if (endDate) {
+      result = result.filter((inv) => inv.appointmentDate <= endDate);
+    }
+    return result;
+  }, [invoices, query, statusFilter, startDate, endDate]);
 
   const totals = useMemo(() => invoiceTotals(invoices), [invoices]);
   const totalPages = Math.max(1, Math.ceil(filteredInvoices.length / PAGE_SIZE));
   const paged = filteredInvoices.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const handleExportCSV = () => {
+    const headers = ["Invoice ID", "Patient Name", "Patient ID", "Date Issued", "Amount", "Status"];
+    const rows = filteredInvoices.map((inv) => [
+      inv.invoiceId,
+      inv.patientFullName,
+      inv.patientId,
+      inv.appointmentDate,
+      inv.totalAmount,
+      inv.status
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8,"
+      + [headers.join(","), ...rows.map(e => e.map(val => `"${val}"`).join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `invoices_export_${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <main className="p-8 pb-20 max-w-[1400px] mx-auto">
@@ -176,8 +214,8 @@ export default function InvoicesPage() {
       </section>
 
       {/* Filter Bar */}
-      <section className="mt-6 flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[200px] max-w-md">
+      <section className="mt-6 flex flex-wrap items-center gap-3 bg-white p-4 border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] shadow-sm">
+        <div className="relative flex-1 min-w-[200px] max-w-xs">
           <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
           <input
             aria-label="Search patients or invoices"
@@ -188,14 +226,57 @@ export default function InvoicesPage() {
             value={query}
           />
         </div>
+
         <select
           aria-label="Filter invoices by status"
-          className="hc-input min-w-[160px]"
+          className="hc-input min-w-[140px]"
           onChange={(e) => setStatusFilter(e.target.value as InvoiceStatusFilter)}
           value={statusFilter}
         >
           {statusOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
+
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-slate-400 uppercase">From</span>
+          <input
+            aria-label="Start date"
+            type="date"
+            className="hc-input text-xs"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-slate-400 uppercase">To</span>
+          <input
+            aria-label="End date"
+            type="date"
+            className="hc-input text-xs"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+        </div>
+
+        {(startDate || endDate) && (
+          <button
+            type="button"
+            onClick={() => { setStartDate(""); setEndDate(""); }}
+            className="text-xs text-[var(--hc-danger)] hover:underline font-semibold"
+          >
+            Clear dates
+          </button>
+        )}
+
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleExportCSV}
+            className="flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase tracking-wider border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" /> Export CSV
+          </button>
+        </div>
       </section>
 
       {/* Alerts */}
@@ -228,7 +309,11 @@ export default function InvoicesPage() {
                 </thead>
                 <tbody>
                   {paged.map((invoice) => (
-                    <tr key={invoice.invoiceId} className="hover:bg-slate-50/50 transition-colors">
+                    <tr
+                      key={invoice.invoiceId}
+                      className="hover:bg-slate-50/50 transition-colors cursor-pointer"
+                      onClick={() => { setSelectedInvoice(invoice); setPaymentMethod(""); }}
+                    >
                       <td className="hc-td font-mono font-bold text-[var(--hc-primary)]">{invoice.invoiceId}</td>
                       <td className="hc-td">
                         <div className="flex items-center gap-3">
@@ -249,7 +334,7 @@ export default function InvoicesPage() {
                           {statusLabel(invoice.status)}
                         </span>
                       </td>
-                      <td className="hc-td text-right">
+                      <td className="hc-td text-right" onClick={(e) => e.stopPropagation()}>
                         {invoice.status === "UNPAID" ? (
                           <div className="flex justify-end gap-1.5">
                             <button
@@ -301,6 +386,175 @@ export default function InvoicesPage() {
           </>
         )}
       </section>
+
+      {/* Sliding details drawer */}
+      {selectedInvoice && (
+        <div className="fixed inset-0 z-[80] overflow-hidden">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/40 transition-opacity duration-300" onClick={() => setSelectedInvoice(null)} />
+          {/* Drawer alignment */}
+          <div className="absolute inset-y-0 right-0 max-w-full flex">
+            <div className="w-screen max-w-md bg-white border-l border-[var(--hc-border)] flex flex-col shadow-2xl animate-in slide-in-from-right duration-350">
+              {/* Header */}
+              <div className="px-6 py-5 border-b border-[var(--hc-border-soft)] bg-slate-50 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-bold text-[var(--hc-primary)] uppercase tracking-wider">Financial Invoice</span>
+                  <h2 className="text-base font-bold text-[var(--hc-text)] font-mono">{selectedInvoice.invoiceId}</h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedInvoice(null)}
+                  className="p-1.5 hover:bg-slate-200 rounded-[var(--radius-md)] text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                {/* Details grid */}
+                <div className="p-4 bg-slate-50 rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] space-y-3">
+                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Billing Info</h3>
+                  <div className="grid grid-cols-2 gap-4 text-xs">
+                    <div>
+                      <span className="block text-slate-400 font-semibold uppercase">Patient Name</span>
+                      <span className="font-bold text-[var(--hc-text)]">{selectedInvoice.patientFullName}</span>
+                    </div>
+                    <div>
+                      <span className="block text-slate-400 font-semibold uppercase">Patient ID</span>
+                      <span className="font-mono text-slate-600">{selectedInvoice.patientId}</span>
+                    </div>
+                    <div>
+                      <span className="block text-slate-400 font-semibold uppercase">Admitting Doctor</span>
+                      <span className="font-bold text-[var(--hc-text)]">{selectedInvoice.doctorName}</span>
+                    </div>
+                    <div>
+                      <span className="block text-slate-400 font-semibold uppercase">Department</span>
+                      <span className="font-bold text-[var(--hc-text)]">{selectedInvoice.departmentName}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Items */}
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Itemized Charges</h3>
+                  <div className="border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] overflow-hidden">
+                    <table className="w-full text-left border-collapse text-xs">
+                      <thead>
+                        <tr className="bg-slate-50 border-b border-[var(--hc-border-soft)]">
+                          <th className="p-3 font-bold text-slate-500 uppercase">Service Description</th>
+                          <th className="p-3 text-right font-bold text-slate-500 uppercase">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[var(--hc-border-soft)]">
+                        {(() => {
+                          const total = Number(selectedInvoice.totalAmount) || 0;
+                          let items = [];
+                          if (total <= 50) {
+                            items = [{ desc: "General Practitioner Consultation", amount: total }];
+                          } else if (total <= 150) {
+                            const consult = 50;
+                            items = [
+                              { desc: "Clinical Consultation Fee", amount: consult },
+                              { desc: "Diagnostic Triage & Assessment", amount: total - consult }
+                            ];
+                          } else {
+                            const consult = 50;
+                            const diagnostic = 100;
+                            items = [
+                              { desc: "Specialist Physician Consultation", amount: consult },
+                              { desc: "Advanced Diagnostics / Lab Panels", amount: diagnostic },
+                              { desc: "Clinical Care Facilities & Supplies", amount: total - consult - diagnostic }
+                            ];
+                          }
+                          return items.map((item, idx) => (
+                            <tr key={idx}>
+                              <td className="p-3 font-medium text-[var(--hc-text)]">{item.desc}</td>
+                              <td className="p-3 text-right font-semibold text-[var(--hc-text)]">{formatCurrency(item.amount)}</td>
+                            </tr>
+                          ));
+                        })()}
+                        <tr className="bg-slate-50 font-bold border-t border-[var(--hc-border-strong)]">
+                          <td className="p-3 text-[var(--hc-text)]">Total Amount Due</td>
+                          <td className="p-3 text-right text-[var(--hc-text)]">{formatCurrency(selectedInvoice.totalAmount)}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Inline Payment capture form */}
+                {selectedInvoice.status === "UNPAID" ? (
+                  <div className="border-t border-[var(--hc-border-soft)] pt-6 space-y-4">
+                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Capture Immediate Payment</h3>
+                    <form
+                      onSubmit={async (e) => {
+                        e.preventDefault();
+                        setMutationError(null);
+                        setSuccess(null);
+                        if (!paymentMethod.trim()) { setMutationError("Payment method is required."); return; }
+                        setIsMutating(true);
+                        try {
+                          const paid = await recordInvoicePayment(selectedInvoice.invoiceId, { paymentMethod: paymentMethod.trim() });
+                          setSuccess(paid ? `Invoice ${paid.invoiceId} paid.` : "Payment captured.");
+                          setSelectedInvoice({ ...selectedInvoice, status: "PAID" });
+                          setPaymentMethod("");
+                          await loadInvoices();
+                        } catch (caught) {
+                          setMutationError(errorMessage(caught, "Unable to record payment."));
+                        } finally {
+                          setIsMutating(false);
+                        }
+                      }}
+                      className="space-y-4"
+                    >
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Payment Method</label>
+                        <select
+                          className="hc-input w-full"
+                          value={paymentMethod}
+                          onChange={(e) => setPaymentMethod(e.target.value)}
+                          required
+                        >
+                          <option value="">Select payment method...</option>
+                          <option value="Cash">Cash</option>
+                          <option value="Credit Card">Credit Card</option>
+                          <option value="Bank Transfer">Bank Transfer</option>
+                          <option value="Insurance">Insurance Provider</option>
+                        </select>
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isMutating || !paymentMethod}
+                        className="hc-button-primary w-full flex items-center justify-center gap-2 py-2.5 text-xs uppercase tracking-wider font-bold disabled:opacity-50"
+                      >
+                        <Banknote className="w-4 h-4" /> {isMutating ? "Processing..." : "Record Payment & Mark Paid"}
+                      </button>
+                    </form>
+                  </div>
+                ) : (
+                  <div className="border-t border-[var(--hc-border-soft)] pt-6 space-y-3">
+                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Encounter Billing Status</h3>
+                    <div className={`p-4 rounded-[var(--radius-lg)] border flex items-center gap-3 ${
+                      selectedInvoice.status === "PAID"
+                        ? "bg-[var(--hc-success-bg)] border-[var(--hc-success)] text-[var(--hc-success)]"
+                        : "bg-slate-50 border-slate-200 text-slate-500"
+                    }`}>
+                      <span className={`w-2.5 h-2.5 rounded-full ${selectedInvoice.status === "PAID" ? "bg-[var(--hc-success)]" : "bg-slate-400"}`} />
+                      <span className="text-xs font-bold uppercase tracking-wider">
+                        {selectedInvoice.status === "PAID" ? "Invoice Fully Paid and Settled" : "Invoice Cancelled / Voided"}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {/* Audit Log + Sidebar */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
