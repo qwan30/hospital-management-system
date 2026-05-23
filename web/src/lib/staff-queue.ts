@@ -137,15 +137,15 @@ export function calculateWaitMinutes(
 }
 
 export function getWaitBadgeClass(waitMinutes: number) {
-  if (waitMinutes >= 30) {
-    return "bg-hc-error-container text-hc-on-error-container";
+  if (waitMinutes >= 40) {
+    return "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)] border border-[var(--hc-danger)]/20";
   }
 
-  if (waitMinutes >= 15) {
-    return "bg-hc-tertiary-container text-hc-on-tertiary";
+  if (waitMinutes >= 20) {
+    return "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)] border border-[var(--hc-warning)]/20";
   }
 
-  return "bg-hc-secondary-container text-hc-on-secondary-container";
+  return "bg-[var(--hc-success-bg)] text-[var(--hc-success)] border border-[var(--hc-success)]/20";
 }
 
 export function formatWait(waitMinutes: number) {

@@ -158,15 +158,15 @@ describe("staff-queue", () => {
   });
 
   describe("getWaitBadgeClass", () => {
-    it("returns error class for >= 30 mins", () => {
-      expect(getWaitBadgeClass(30)).toContain("error");
+    it("returns danger class for >= 40 mins", () => {
+      expect(getWaitBadgeClass(40)).toContain("--hc-danger");
     });
-    it("returns tertiary class for >= 15 mins", () => {
-      expect(getWaitBadgeClass(15)).toContain("tertiary");
-      expect(getWaitBadgeClass(29)).toContain("tertiary");
+    it("returns warning class for >= 20 mins", () => {
+      expect(getWaitBadgeClass(20)).toContain("--hc-warning");
+      expect(getWaitBadgeClass(39)).toContain("--hc-warning");
     });
-    it("returns secondary class for < 15 mins", () => {
-      expect(getWaitBadgeClass(14)).toContain("secondary");
+    it("returns success class for < 20 mins", () => {
+      expect(getWaitBadgeClass(19)).toContain("--hc-success");
     });
   });
 

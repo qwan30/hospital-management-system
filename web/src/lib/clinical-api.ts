@@ -287,6 +287,7 @@ function requireAppointmentResponse(
 /* ------------------------------------------------------------------ */
 
 export interface LabResultResponse {
+  id?: string;
   labResultId: string;
   appointmentId: string;
   testName: string;
@@ -297,6 +298,10 @@ export interface LabResultResponse {
   collectedAt: string;
 }
 
+type LabResultApiResponse = Omit<LabResultResponse, "labResultId"> & {
+  labResultId?: string;
+};
+
 export interface LabResultCreateRequest {
   appointmentId: string;
   testName: string;
@@ -306,17 +311,17 @@ export interface LabResultCreateRequest {
 }
 
 export async function listLabResultsByAppointment(appointmentId: string) {
-  const response = await apiRequest<LabResultResponse[]>(
+  const response = await apiRequest<LabResultApiResponse[]>(
     `/appointments/${appointmentId}/lab-results`,
     {},
     { authScope: "staff" },
   );
 
-  return response.data ?? [];
+  return (response.data ?? []).map(normalizeLabResult);
 }
 
 export async function getLabResult(resultId: string) {
-  const response = await apiRequest<LabResultResponse>(
+  const response = await apiRequest<LabResultApiResponse>(
     `/lab-results/${resultId}`,
     {},
     { authScope: "staff" },
@@ -326,11 +331,11 @@ export async function getLabResult(resultId: string) {
     throw new Error("Lab result not found");
   }
 
-  return response.data;
+  return normalizeLabResult(response.data);
 }
 
 export async function createLabResult(request: LabResultCreateRequest) {
-  const response = await apiRequest<LabResultResponse>(
+  const response = await apiRequest<LabResultApiResponse>(
     "/lab-results",
     {
       method: "POST",
@@ -343,7 +348,14 @@ export async function createLabResult(request: LabResultCreateRequest) {
     throw new Error("Lab result creation did not return a result");
   }
 
-  return response.data;
+  return normalizeLabResult(response.data);
+}
+
+function normalizeLabResult(result: LabResultApiResponse): LabResultResponse {
+  return {
+    ...result,
+    labResultId: result.labResultId ?? result.id ?? "",
+  };
 }
 
 export async function deleteLabResult(resultId: string) {
