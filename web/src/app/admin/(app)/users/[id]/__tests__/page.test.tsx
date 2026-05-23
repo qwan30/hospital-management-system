@@ -10,8 +10,10 @@ import {
   type AdminUserResponse,
 } from "@/lib/operations-api";
 
+const testUserId = "22222222-2222-2222-2222-222222222222";
+
 vi.mock("next/navigation", () => ({
-  useParams: () => ({ id: "user-1" }),
+  useParams: () => ({ id: testUserId }),
 }));
 
 vi.mock("@/lib/operations-api", async () => {
@@ -29,7 +31,7 @@ vi.mock("@/lib/operations-api", async () => {
 });
 
 const user: AdminUserResponse = {
-  userId: "user-1",
+  userId: testUserId,
   email: "linh.doctor@example.com",
   fullName: "Linh Doctor",
   phone: "0900000000",
@@ -58,7 +60,7 @@ describe("AdminUserDetailEditPage", () => {
     expect(await screen.findByDisplayValue("Linh Doctor")).toBeInTheDocument();
     expect(screen.getByText("Cardiology")).toBeInTheDocument();
     expect(screen.queryByText("Sarah Jenkins")).not.toBeInTheDocument();
-    expect(getAdminUser).toHaveBeenCalledWith("user-1");
+    expect(getAdminUser).toHaveBeenCalledWith(testUserId);
   });
 
   it("updates the selected user with the backend request shape", async () => {
@@ -71,7 +73,7 @@ describe("AdminUserDetailEditPage", () => {
 
     await waitFor(() => {
       expect(updateAdminUser).toHaveBeenCalledWith(
-        "user-1",
+        testUserId,
         expect.objectContaining({
           fullName: "Updated Doctor",
           email: "linh.doctor@example.com",
@@ -90,16 +92,18 @@ describe("AdminUserDetailEditPage", () => {
     await userEvent.click(screen.getByRole("button", { name: /deactivate user/i }));
 
     await waitFor(() => {
-      expect(deactivateAdminUser).toHaveBeenCalledWith("user-1");
+      expect(deactivateAdminUser).toHaveBeenCalledWith(testUserId);
     });
   });
 
-  it("shows API errors without static fallback", async () => {
+  it("shows a professional not-found state without raw API errors", async () => {
     vi.mocked(getAdminUser).mockRejectedValueOnce(new Error("User access denied"));
 
     render(<AdminUserDetailEditPage />);
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("User access denied");
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("Staff user not found");
+    expect(alert).not.toHaveTextContent("User access denied");
     expect(screen.queryByText("Sarah Jenkins")).not.toBeInTheDocument();
   });
 });

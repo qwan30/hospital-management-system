@@ -8,8 +8,10 @@ import {
   type AppointmentDetailResponse,
 } from "@/lib/medical-records-api";
 
+const testAppointmentId = "11111111-1111-1111-1111-111111111111";
+
 vi.mock("next/navigation", () => ({
-  useParams: () => ({ id: "appointment-1" }),
+  useParams: () => ({ id: testAppointmentId }),
 }));
 
 vi.mock("@/lib/medical-records-api", async () => {
@@ -25,7 +27,7 @@ vi.mock("@/lib/medical-records-api", async () => {
 });
 
 const appointment: AppointmentDetailResponse = {
-  appointmentId: "appointment-1",
+  appointmentId: testAppointmentId,
   confirmationCode: "HMS-1001",
   status: "IN_PROGRESS",
   appointmentDate: "2026-05-15",
@@ -51,7 +53,7 @@ describe("MedicalRecordEditorPage", () => {
     vi.mocked(getAppointmentDetail).mockResolvedValue(appointment);
     vi.mocked(createMedicalRecord).mockResolvedValue({
       recordId: "record-1",
-      appointmentId: "appointment-1",
+      appointmentId: testAppointmentId,
       diagnosis: "Seasonal allergy",
       clinicalNotes: "Improving",
       vitalSigns: { bloodPressure: "120/80", temperature: 37.2 },
@@ -68,7 +70,7 @@ describe("MedicalRecordEditorPage", () => {
     expect(await screen.findByText("Nguyen Van A")).toBeInTheDocument();
     expect(screen.getByText(/Case File:\s*HMS-1001/i)).toBeInTheDocument();
     expect(screen.queryByText("Kerrigan, Sarah")).not.toBeInTheDocument();
-    expect(getAppointmentDetail).toHaveBeenCalledWith("appointment-1");
+    expect(getAppointmentDetail).toHaveBeenCalledWith(testAppointmentId);
   });
 
   it("blocks submit until diagnosis is present", async () => {
@@ -107,7 +109,7 @@ describe("MedicalRecordEditorPage", () => {
     await waitFor(() =>
       expect(createMedicalRecord).toHaveBeenCalledWith(
         expect.objectContaining({
-          appointmentId: "appointment-1",
+          appointmentId: testAppointmentId,
           diagnosis: "Seasonal allergy",
           clinicalNotes: "Improving after treatment",
           vitalSigns: expect.objectContaining({
@@ -156,5 +158,19 @@ describe("MedicalRecordEditorPage", () => {
 
     expect(await screen.findByText(/record creation blocked/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /commit record/i })).toBeDisabled();
+  });
+
+  it("shows a professional route error when appointment context is invalid", async () => {
+    vi.mocked(getAppointmentDetail).mockRejectedValueOnce(new Error("Invalid request parameter"));
+
+    render(<MedicalRecordEditorPage />);
+
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("Appointment context unavailable");
+    expect(alert).not.toHaveTextContent("Invalid request parameter");
+    expect(screen.getByRole("link", { name: /back to patient records/i })).toHaveAttribute(
+      "href",
+      "/staff/patients",
+    );
   });
 });

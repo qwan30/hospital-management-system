@@ -1,17 +1,15 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
 import {
   AlertTriangle,
   ChevronLeft,
   ChevronRight,
-  ChevronsUpDown,
   Clock,
   Download,
   ExternalLink,
-  Eye,
   Filter,
   Headphones,
   Layers,
@@ -38,9 +36,6 @@ interface SupportTicket {
   waitTime: string;
   sla: string;
 }
-
-type SortField = "ticketId" | "priority" | "status" | "waitTime";
-type SortDir = "asc" | "desc";
 
 const PAGE_SIZE = 10;
 
@@ -73,8 +68,6 @@ export default function AdminSupportPage() {
   const [ownerFilter, setOwnerFilter] = useState("All");
   const [activeTab, setActiveTab] = useState(0);
   const [page, setPage] = useState(1);
-  const [sortField, setSortField] = useState<SortField>("ticketId");
-  const [sortDir, setSortDir] = useState<SortDir>("desc");
 
   /* ─── KPI ─── */
   const totalActive = tickets.filter((t) => t.status !== "Resolved").length;
@@ -104,11 +97,6 @@ export default function AdminSupportPage() {
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-  function toggleSort(field: SortField) {
-    if (sortField === field) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
-    else { setSortField(field); setSortDir("asc"); }
-  }
 
   /* ─── Priority badge ─── */
   function PriorityBadge({ priority }: { priority: string }) {
@@ -143,11 +131,11 @@ export default function AdminSupportPage() {
   }
 
   return (
-    <main className="p-8 pb-20 max-w-[1400px] mx-auto">
+    <main className="mx-auto w-full max-w-[1400px] overflow-x-hidden px-4 py-6 pb-20 sm:p-8 sm:pb-20">
       <PageHeader
-        categoryLabel="STAFF SUPPORT"
-        title="Queue Board"
-        description="Monitor and manage operational queues, track response times, and resolve escalations efficiently."
+        categoryLabel="ADMIN SUPPORT"
+        title="Admin Support Center"
+        description="Track staff help desk requests, operational incidents, access issues, and escalation response."
       />
 
       {/* KPI Cards */}
@@ -159,16 +147,16 @@ export default function AdminSupportPage() {
       </section>
 
       {/* ─── Main Layout: Table + Sidebar ─── */}
-      <div className="mt-6 grid grid-cols-1 xl:grid-cols-[1fr_280px] gap-6">
+      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[1fr_280px]">
         {/* Left: Filters + Table */}
-        <div>
+        <div className="min-w-0">
           {/* Filter bar */}
-          <div className="flex flex-wrap items-center gap-3 mb-4">
-            <div className="relative flex-1 min-w-[200px] max-w-sm">
+          <div className="mb-4 grid gap-3 sm:flex sm:flex-wrap sm:items-center">
+            <div className="relative min-w-0 sm:min-w-[200px] sm:max-w-sm sm:flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input type="search" placeholder="Search tickets by ID, requester, or keyword…" value={query} onChange={(e) => { setQuery(e.target.value); setPage(1); }} className="hc-input w-full pl-10" />
             </div>
-            <div className="flex items-center gap-1.5 text-sm">
+            <div className="grid gap-1.5 text-sm sm:flex sm:items-center">
               <label className="text-xs font-bold text-slate-500 uppercase">Priority</label>
               <select value={priorityFilter} onChange={(e) => { setPriorityFilter(e.target.value); setPage(1); }} className="hc-input">
                 <option value="All">All</option>
@@ -178,7 +166,7 @@ export default function AdminSupportPage() {
                 <option value="Low">Low</option>
               </select>
             </div>
-            <div className="flex items-center gap-1.5 text-sm">
+            <div className="grid gap-1.5 text-sm sm:flex sm:items-center">
               <label className="text-xs font-bold text-slate-500 uppercase">Status</label>
               <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} className="hc-input">
                 <option value="All">All</option>
@@ -188,7 +176,7 @@ export default function AdminSupportPage() {
                 <option value="Resolved">Resolved</option>
               </select>
             </div>
-            <div className="flex items-center gap-1.5 text-sm">
+            <div className="grid gap-1.5 text-sm sm:flex sm:items-center">
               <label className="text-xs font-bold text-slate-500 uppercase">Owner</label>
               <select value={ownerFilter} onChange={(e) => { setOwnerFilter(e.target.value); setPage(1); }} className="hc-input">
                 <option value="All">All</option>
@@ -204,21 +192,22 @@ export default function AdminSupportPage() {
           </div>
 
           {/* Tabs */}
-          <div className="flex items-center gap-0 border-b border-[var(--hc-border-soft)] mb-0">
-            {tabs.map((tab, i) => (
-              <button
-                key={tab.label}
-                type="button"
-                onClick={() => { setActiveTab(i); setPage(1); }}
-                className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${i === activeTab ? "border-[var(--hc-primary)] text-[var(--hc-primary)]" : "border-transparent text-slate-500 hover:text-slate-700"}`}
-              >
-                {tab.label} <span className="ml-1 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-slate-100">{tab.count}</span>
-              </button>
-            ))}
-            <div className="flex-1" />
-            <div className="flex items-center gap-3 pb-1 text-sm text-slate-500">
+          <div className="mb-0 grid gap-3 border-b border-[var(--hc-border-soft)] lg:flex lg:items-center">
+            <div className="-mx-1 flex min-w-0 overflow-x-auto px-1">
+              {tabs.map((tab, i) => (
+                <button
+                  key={tab.label}
+                  type="button"
+                  onClick={() => { setActiveTab(i); setPage(1); }}
+                  className={`shrink-0 px-3 py-3 text-sm font-medium border-b-2 transition-colors sm:px-4 ${i === activeTab ? "border-[var(--hc-primary)] text-[var(--hc-primary)]" : "border-transparent text-slate-500 hover:text-slate-700"}`}
+                >
+                  {tab.label} <span className="ml-1 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-slate-100">{tab.count}</span>
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-wrap items-center gap-2 pb-3 text-sm text-slate-500 lg:ml-auto lg:gap-3 lg:pb-1">
               <span>Sort by</span>
-              <select className="hc-input text-xs py-1">
+              <select className="hc-input min-w-0 max-w-full text-xs py-1">
                 <option>Wait Time (High → Low)</option>
                 <option>Priority (High → Low)</option>
                 <option>Newest First</option>
@@ -306,7 +295,7 @@ export default function AdminSupportPage() {
             </div>
 
             {/* Pagination */}
-            <div className="px-6 py-3 flex items-center justify-between border-t border-[var(--hc-border-soft)] text-sm">
+            <div className="flex flex-col gap-3 border-t border-[var(--hc-border-soft)] px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <span className="text-slate-500">
                 Showing {((page - 1) * PAGE_SIZE) + 1} to {Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length} tickets
               </span>

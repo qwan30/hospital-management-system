@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { PageHeader } from "@/components/ui/page-header";
 import { DataPanel } from "@/components/ui/data-panel";
 import { HcIcon } from "@/components/ui/hc-icon";
+import { RouteErrorState } from "@/components/ui/route-error-state";
 import { getLabResult, deleteLabResult, type LabResultResponse } from "@/lib/clinical-api";
 import { useStoredRole } from "@/lib/use-stored-role";
 
@@ -73,12 +74,12 @@ export default function LabResultDetailPage() {
   if (error && !result) {
     return (
       <div className="p-8">
-        <section
-          className="border border-[var(--hc-red-200)] bg-[var(--hc-red-50)] p-6 rounded-[var(--radius-md)]"
-          role="alert"
-        >
-          <p className="text-sm font-semibold text-[var(--hc-red-600)]">{error}</p>
-        </section>
+        <RouteErrorState
+          title="Lab result not found"
+          description="This result may have been removed, expired, or you may not have permission to view it."
+          primaryHref="/staff/lab-results"
+          primaryLabel="Back to Lab Results"
+        />
       </div>
     );
   }

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import {
   activateAdminUser,
@@ -14,7 +14,7 @@ import {
 
 import { PageHeader } from "@/components/ui/page-header";
 
-import { HcIcon } from "@/components/ui/hc-icon";
+import { RouteErrorState } from "@/components/ui/route-error-state";
 
 type StaffRole = Exclude<UserRole, "PATIENT">;
 
@@ -52,36 +52,34 @@ export default function AdminUserDetailEditPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  useEffect(() => {
-    let mounted = true;
+  const loadUser = useCallback(async () => {
+    setIsLoading(true);
+    setSuccess(null);
 
-    async function loadUser() {
-      try {
-        const nextUser = await getAdminUser(userId);
-        if (!mounted) {
-          return;
-        }
-        setUser(nextUser);
-        setForm(toForm(nextUser));
-        setError(null);
-      } catch (caught) {
-        if (!mounted) {
-          return;
-        }
-        setError(errorMessage(caught, "Unable to load admin user."));
-      } finally {
-        if (mounted) {
-          setIsLoading(false);
-        }
-      }
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+    if (!isUUID) {
+      setUser(null);
+      setError("User not found.");
+      setIsLoading(false);
+      return;
     }
 
-    void loadUser();
-
-    return () => {
-      mounted = false;
-    };
+    try {
+      const nextUser = await getAdminUser(userId);
+      setUser(nextUser);
+      setForm(toForm(nextUser));
+      setError(null);
+    } catch (caught) {
+      setUser(null);
+      setError(errorMessage(caught, "Unable to load admin user."));
+    } finally {
+      setIsLoading(false);
+    }
   }, [userId]);
+
+  useEffect(() => {
+    void Promise.resolve().then(loadUser);
+  }, [loadUser]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -143,7 +141,7 @@ export default function AdminUserDetailEditPage() {
 
       <div className="p-8 pt-0 max-w-5xl">
 
-        {error ? (
+        {error && user ? (
           <div className="mb-8 border border-[var(--hc-danger)] bg-[var(--hc-danger-bg)] p-4 text-sm font-medium text-[var(--hc-danger)] rounded-[var(--radius-md)]" role="alert">
             {error}
           </div>
@@ -155,9 +153,13 @@ export default function AdminUserDetailEditPage() {
         ) : null}
 
         {!user ? (
-          <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl shadow-sm p-8 text-sm font-medium text-[var(--hc-text-secondary)]">
-            No user detail was returned for this ID.
-          </div>
+          <RouteErrorState
+            title="Staff user not found"
+            description="This staff account may have been removed, deactivated, or you may not have permission to view it."
+            primaryHref="/admin/users"
+            primaryLabel="Back to Staff Directory"
+            onRetry={error === "User not found." ? undefined : () => void loadUser()}
+          />
         ) : (
           <div className="grid grid-cols-12 gap-8">
             <form className="col-span-12 lg:col-span-8" noValidate onSubmit={handleSubmit}>

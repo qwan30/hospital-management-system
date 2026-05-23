@@ -13,6 +13,7 @@ import { getErrorMessage } from "@/lib/staff-queue";
 
 import { HcIcon } from "@/components/ui/hc-icon";
 import { PageHeader } from "@/components/ui/page-header";
+import { RouteErrorState } from "@/components/ui/route-error-state";
 
 interface PrescriptionDraft {
   medicineName: string;
@@ -86,6 +87,14 @@ export default function MedicalRecordEditorPage() {
   const loadAppointment = useCallback(async () => {
     setIsLoading(true);
     setLoadError(null);
+
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(appointmentId);
+    if (!isUUID) {
+      setAppointment(null);
+      setLoadError("Invalid ID format.");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       setAppointment(await getAppointmentDetail(appointmentId));
@@ -186,7 +195,7 @@ export default function MedicalRecordEditorPage() {
 
   if (isLoading) {
     return (
-      <main className="p-8" aria-busy="true">
+      <main className="p-4 sm:p-8" aria-busy="true">
         <section className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] p-8 shadow-sm flex flex-col items-center justify-center min-h-[300px]">
           <HcIcon name="hourglass_empty" className="text-4xl text-[var(--hc-text-placeholder)] mb-4 animate-pulse" />
           <p className="text-xs font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">
@@ -198,36 +207,31 @@ export default function MedicalRecordEditorPage() {
   }
 
   if (loadError || !appointment) {
+    const isInvalidFormat = loadError === "Invalid ID format.";
     return (
-      <main className="p-8">
-        <section className="bg-[var(--hc-surface)] border border-red-200 rounded-[var(--radius-xl)] p-12 shadow-sm flex flex-col items-center justify-center text-center min-h-[300px]" role="alert">
-          <HcIcon name="error_outline" className="text-4xl text-red-500 mb-4" />
-          <h1 className="mb-2 text-2xl font-bold tracking-tight text-[var(--hc-text)]">
-            {loadError || "Appointment was not returned by the backend."}
-          </h1>
-          <p className="mb-8 text-sm font-bold uppercase tracking-widest text-red-500">
-            Medical record context unavailable
-          </p>
-          <button
-            className="hc-button-secondary border-red-200 text-red-700 hover:bg-red-50"
-            type="button"
-            onClick={loadAppointment}
-          >
-            Retry Loading
-          </button>
-        </section>
+      <main className="p-4 sm:p-8">
+        <RouteErrorState
+          title="Appointment context unavailable"
+          description="This appointment may have been completed, removed, or unavailable for record entry."
+          primaryHref="/staff/patients"
+          primaryLabel="Back to Patient Records"
+          secondaryHref="/staff/queue"
+          secondaryLabel="Back to Queue"
+          onRetry={isInvalidFormat ? undefined : loadAppointment}
+          retryLabel={isInvalidFormat ? undefined : "Retry Loading"}
+        />
       </main>
     );
   }
 
   return (
-    <main>
+    <main className="w-full overflow-x-hidden">
       <PageHeader
         title="Patient Record Entry"
         description={`${appointment.appointmentDate} | ${formatTimeRange(appointment)} | ${appointment.status}`}
       />
-      <form className="grid grid-cols-12 gap-8 p-8 pt-0" onSubmit={handleSubmit}>
-        <div className="col-span-12 flex flex-col gap-8 xl:col-span-8">
+      <form className="grid min-w-0 grid-cols-12 gap-6 px-4 pb-8 pt-0 sm:gap-8 sm:p-8 sm:pt-0" onSubmit={handleSubmit}>
+        <div className="col-span-12 flex min-w-0 flex-col gap-6 sm:gap-8 xl:col-span-8">
 
           {formError ? (
             <div className="bg-red-50 border border-red-200 text-red-700 rounded-[var(--radius-lg)] p-4 text-sm font-medium flex items-center gap-3" role="alert">
@@ -379,7 +383,7 @@ export default function MedicalRecordEditorPage() {
           </section>
         </div>
 
-        <aside className="col-span-12 xl:col-span-4">
+        <aside className="col-span-12 min-w-0 xl:col-span-4">
           <div className="sticky top-8 flex flex-col gap-6">
             <div className="bg-[var(--hc-text)] text-white rounded-[var(--radius-xl)] p-8 shadow-md">
               <div className="mb-8">

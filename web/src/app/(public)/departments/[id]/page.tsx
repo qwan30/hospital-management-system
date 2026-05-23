@@ -5,11 +5,13 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import {
   getDepartment,
+  listDepartments,
   type DepartmentDetailResponse,
   type DepartmentDoctorSummary,
 } from "@/lib/public-api";
 
 import { HcIcon } from "@/components/ui/hc-icon";
+import { RouteErrorState } from "@/components/ui/route-error-state";
 function formatRouteLabel(value: string) {
   return decodeURIComponent(value)
     .replace(/[-_]+/g, " ")
@@ -65,12 +67,37 @@ export default function DepartmentDetailPage() {
 
   const routeLabel = useMemo(() => formatRouteLabel(departmentId), [departmentId]);
 
+  function slugify(text: string) {
+    return text
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+  }
+
+  async function resolveDepartmentId(id: string): Promise<string> {
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    if (isUUID) {
+      return id;
+    }
+    const depts = await listDepartments();
+    const matched = depts.find(
+      (d) => slugify(d.name) === id.toLowerCase() || d.id === id
+    );
+    if (!matched) {
+      throw new Error("Department not found");
+    }
+    return matched.id;
+  }
+
   async function loadDepartment() {
     setIsLoading(true);
     setError(null);
 
     try {
-      setDepartment(await getDepartment(departmentId));
+      const resolvedId = await resolveDepartmentId(departmentId);
+      setDepartment(await getDepartment(resolvedId));
     } catch (loadError) {
       setDepartment(null);
       setError(loadError instanceof Error ? loadError.message : "Unable to load department");
@@ -82,18 +109,18 @@ export default function DepartmentDetailPage() {
   useEffect(() => {
     let isActive = true;
 
-    getDepartment(departmentId)
+    resolveDepartmentId(departmentId)
+      .then((resolvedId) => {
+        if (!isActive) return;
+        return getDepartment(resolvedId);
+      })
       .then((nextDepartment) => {
-        if (!isActive) {
-          return;
-        }
+        if (!isActive || !nextDepartment) return;
         setDepartment(nextDepartment);
         setError(null);
       })
       .catch((loadError) => {
-        if (!isActive) {
-          return;
-        }
+        if (!isActive) return;
         setDepartment(null);
         setError(loadError instanceof Error ? loadError.message : "Unable to load department");
       })
@@ -129,32 +156,13 @@ export default function DepartmentDetailPage() {
               <p className="text-sm text-[var(--hc-text-secondary)] font-medium">Loading department from the hospital system...</p>
             </div>
           ) : error ? (
-            <div className="border border-red-200 rounded-[var(--radius-xl)] bg-white p-16 flex flex-col items-center justify-center text-center shadow-sm" role="alert">
-              <HcIcon name="error_outline" className="text-4xl text-red-500 mb-4" />
-              <h1 className="mb-3 text-2xl font-bold tracking-tight text-red-900">
-                Department could not be loaded: {routeLabel}
-              </h1>
-              <p className="mb-2 text-sm text-red-700 font-medium">{error}</p>
-              <p className="mb-8 text-sm text-red-500 font-medium max-w-md">
-                Department detail routes require the backend department UUID. Legacy static slugs are
-                not mapped to fake department data.
-              </p>
-              <div className="flex gap-4">
-                <button
-                  className="hc-button-secondary border-red-200 text-red-700 hover:bg-red-50"
-                  onClick={() => void loadDepartment()}
-                  type="button"
-                >
-                  Try Again
-                </button>
-                <Link
-                  className="hc-button-primary"
-                  href="/departments"
-                >
-                  Back To Departments
-                </Link>
-              </div>
-            </div>
+            <RouteErrorState
+              title="Department not found"
+              description={`${routeLabel} may have been removed, renamed, or temporarily unavailable in the public directory.`}
+              primaryHref="/departments"
+              primaryLabel="Back to Departments"
+              onRetry={() => void loadDepartment()}
+            />
           ) : department ? (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
               <div className="lg:col-span-8 flex flex-col gap-10">

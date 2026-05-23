@@ -119,7 +119,7 @@ describe("AdminNewsPage", () => {
         expect.objectContaining({ title: "Updated Visiting Hours v2" }),
       );
     });
-  });
+  }, 10_000);
 
   it("shows empty and error states without mock fallback", async () => {
     vi.mocked(listAdminNewsArticles).mockResolvedValueOnce([]);

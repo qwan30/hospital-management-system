@@ -77,11 +77,13 @@ describe("LabResultDetailPage", () => {
   });
 
   it("shows error state when lab result is not found", async () => {
-    vi.mocked(getLabResult).mockRejectedValue(new Error("Lab result not found"));
+    vi.mocked(getLabResult).mockRejectedValue(new Error("Invalid request parameter"));
 
     render(<LabResultDetailPage />);
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Lab result not found");
+    const alert = await screen.findByRole("alert");
+    expect(alert).toHaveTextContent("Lab result not found");
+    expect(alert).not.toHaveTextContent("Invalid request parameter");
   });
 
   it("renders result metadata panel", async () => {
