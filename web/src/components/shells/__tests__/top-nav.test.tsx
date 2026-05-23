@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { HcTopbar, PortalTopNav, StaffTopNav } from "../top-nav";
 
@@ -26,8 +27,10 @@ describe("StaffTopNav", () => {
     roleState.staffRole = "NURSE";
   });
 
-  it("filters staff top navigation by stored role", () => {
+  it("filters staff mobile navigation by stored role", async () => {
     render(<StaffTopNav />);
+
+    await userEvent.click(screen.getByRole("button", { name: /open navigation menu/i }));
 
     expect(screen.getByRole("link", { name: /dashboard/i })).toHaveAttribute(
       "href",
@@ -41,13 +44,21 @@ describe("StaffTopNav", () => {
     expect(screen.queryByRole("link", { name: /finance/i })).not.toBeInTheDocument();
   });
 
-  it("marks the active staff top navigation link", () => {
+  it("marks the active staff mobile navigation link", async () => {
     render(<StaffTopNav />);
+
+    await userEvent.click(screen.getByRole("button", { name: /open navigation menu/i }));
 
     const activeLink = screen.getByRole("link", { name: /queue/i });
     expect(activeLink).toHaveAttribute("data-active", "true");
-    expect(activeLink.className).toContain("border-b-[3px]");
+    expect(activeLink.className).toContain("bg-white/10");
     expect(activeLink.className).toContain("text-white");
+  });
+
+  it("does not duplicate module links in the desktop topbar by default", () => {
+    render(<StaffTopNav />);
+
+    expect(screen.queryByRole("navigation", { name: /module navigation/i })).not.toBeInTheDocument();
   });
 
   it("keeps staff utility links available", () => {
@@ -98,6 +109,7 @@ describe("StaffTopNav", () => {
     render(
       <HcTopbar
         links={[{ label: "Patients", href: "/staff/patients" }]}
+        showModuleNav
         roleScope="staff"
         homeHref="/staff/dashboard"
         alertHref="/staff/queue"
@@ -141,8 +153,10 @@ describe("PortalTopNav", () => {
     roleState.patientRole = "PATIENT";
   });
 
-  it("renders patient portal navigation links for a patient session", () => {
+  it("renders patient portal mobile navigation links for a patient session", async () => {
     render(<PortalTopNav />);
+
+    await userEvent.click(screen.getByRole("button", { name: /open navigation menu/i }));
 
     expect(screen.getByRole("link", { name: /appointments/i })).toHaveAttribute(
       "href",
@@ -158,12 +172,14 @@ describe("PortalTopNav", () => {
     );
   });
 
-  it("marks active portal links and exposes portal utility targets", () => {
+  it("marks active portal links and exposes portal utility targets", async () => {
     render(<PortalTopNav />);
+
+    await userEvent.click(screen.getByRole("button", { name: /open navigation menu/i }));
 
     const activeLink = screen.getByRole("link", { name: /messages/i });
     expect(activeLink).toHaveAttribute("data-active", "true");
-    expect(activeLink.className).toContain("border-b-[3px]");
+    expect(activeLink.className).toContain("bg-white/10");
     expect(activeLink.className).toContain("text-white");
     expect(screen.getByLabelText(/open notifications/i)).toHaveAttribute(
       "href",

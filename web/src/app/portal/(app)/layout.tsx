@@ -1,6 +1,6 @@
 import { RouteGuard } from "@/components/auth/route-guard";
 import { PortalTopNav } from "@/components/shells/top-nav";
-import { PortalSideNav } from "@/components/shells/side-nav";
+import { defaultPortalSideLinks, PortalSideNav } from "@/components/shells/side-nav";
 
 export default function PortalLayout({
   children,
@@ -10,7 +10,7 @@ export default function PortalLayout({
   return (
     <RouteGuard scope="patient">
       <div className="hc-app min-h-screen bg-[var(--hc-bg)] text-[var(--hc-text)]">
-        <PortalTopNav />
+        <PortalTopNav mobileLinks={defaultPortalSideLinks} />
         <PortalSideNav />
         <main className="hc-main min-h-screen bg-[var(--hc-content-bg)] pt-[var(--hc-topbar-h)] md:ml-[var(--hc-sidebar-w)]">
           {children}

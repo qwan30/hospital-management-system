@@ -5,7 +5,7 @@ import {
   HcSidebar,
   defaultAdminSideLinks,
 } from "@/components/shells/side-nav";
-import { HcTopbar, defaultAdminTopLinks } from "@/components/shells/top-nav";
+import { HcTopbar } from "@/components/shells/top-nav";
 
 export default function AdminLayout({
   children,
@@ -16,7 +16,7 @@ export default function AdminLayout({
     <RouteGuard scope="staff">
       <div className="hc-app min-h-screen bg-[var(--hc-bg)] text-[var(--hc-text)]">
         <HcTopbar
-          links={defaultAdminTopLinks}
+          mobileLinks={defaultAdminSideLinks}
           roleScope="staff"
           homeHref="/admin/dashboard"
           alertHref="/admin/monitoring"

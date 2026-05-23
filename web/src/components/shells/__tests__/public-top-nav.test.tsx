@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { PublicTopNav } from "../public-top-nav";
 
@@ -54,6 +55,22 @@ describe("PublicTopNav", () => {
 
     expect(screen.getByRole("link", { name: /home/i }).className).not.toContain(
       "border-b-[3px]",
+    );
+  });
+
+  it("opens a mobile menu with public and portal links", async () => {
+    render(<PublicTopNav />);
+
+    await userEvent.click(screen.getByRole("button", { name: /open public navigation/i }));
+
+    expect(screen.getByRole("dialog", { name: /public mobile navigation/i })).toBeInTheDocument();
+    expect(screen.getAllByRole("link", { name: /patient portal/i }).at(-1)).toHaveAttribute(
+      "href",
+      "/portal/login",
+    );
+    expect(screen.getAllByRole("link", { name: /staff login/i }).at(-1)).toHaveAttribute(
+      "href",
+      "/staff/login",
     );
   });
 });

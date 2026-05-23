@@ -97,7 +97,7 @@ const iconMap: Record<string, LucideIcon> = {
   view_timeline: MonitorCog,
 };
 
-const defaultStaffLinks: SideNavLink[] = [
+export const defaultStaffSideLinks: SideNavLink[] = [
   { label: "Overview", href: "/staff/dashboard", icon: "dashboard" },
   { label: "Patient Records", href: "/staff/patients", icon: "assignment" },
   { label: "Queue Board", href: "/staff/queue", icon: "format_list_numbered" },
@@ -108,7 +108,7 @@ const defaultStaffLinks: SideNavLink[] = [
   { label: "Billing", href: "/staff/invoices", icon: "payments" },
 ];
 
-const defaultPortalLinks: SideNavLink[] = [
+export const defaultPortalSideLinks: SideNavLink[] = [
   { label: "Overview", href: "/portal/overview", icon: "dashboard" },
   { label: "Electronic Records", href: "/portal/records", icon: "assignment" },
   { label: "Appointments", href: "/portal/appointments", icon: "calendar_today" },
@@ -160,7 +160,7 @@ export function HcSidebar({
 }: HcSidebarProps) {
   const pathname = usePathname();
   const role = useStoredRole(roleScope);
-  const navLinks = filterNavigationLinks(links || defaultStaffLinks, role);
+  const navLinks = filterNavigationLinks(links || defaultStaffSideLinks, role);
   const canUseCta = ctaHref ? getRouteDecision(ctaHref, role).allowed : false;
 
   return (
@@ -283,7 +283,7 @@ export function StaffSideNav({
       title={title}
       subtitle={subtitle}
       roleScope="staff"
-      links={links || defaultStaffLinks}
+      links={links || defaultStaffSideLinks}
       ctaLabel={ctaLabel}
       ctaHref={ctaHref}
       supportHref="/staff/support"
@@ -304,7 +304,7 @@ export function PortalSideNav({
       title={title}
       subtitle={subtitle}
       roleScope="patient"
-      links={links || defaultPortalLinks}
+      links={links || defaultPortalSideLinks}
       ctaLabel={ctaLabel}
       ctaHref={ctaHref}
       supportHref="/portal/support"
