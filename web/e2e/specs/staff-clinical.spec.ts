@@ -11,7 +11,7 @@ test.describe('Staff Clinical Pages (@ui)', () => {
     test('renders KPI stats cards correctly', async ({ page }) => {
       await page.goto('/staff/dashboard', { waitUntil: 'domcontentloaded' });
 
-      await expect(page.getByText('Doctor Dashboard')).toBeVisible();
+      await expect(page.getByText('Clinical Operations Dashboard')).toBeVisible();
       await expect(page.getByText('Active Rounds')).toBeVisible();
       await expect(page.getByText('Critical Alerts')).toBeVisible();
       await expect(page.getByText('Wait Time Avg')).toBeVisible();

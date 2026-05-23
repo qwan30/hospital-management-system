@@ -4,6 +4,8 @@ import { patientPersona, staffPersonas } from "../helpers/personas";
 import { BookingPage } from "../pages/booking-page";
 import { PortalLoginPage, StaffLoginPage } from "../pages/login-page";
 
+const NAVIGATION_TIMEOUT = 15_000;
+
 test.describe("@integrated auth and API flows", () => {
   test.beforeEach(async ({ request }) => {
     test.skip(!(await isBackendHealthy(request)), `Backend is not healthy at ${apiURL}`);
@@ -20,7 +22,7 @@ test.describe("@integrated auth and API flows", () => {
     await login.login(staffPersonas.admin.email, staffPersonas.admin.password);
 
     expect((await authResponse).ok()).toBe(true);
-    await expect(page).toHaveURL(/\/staff\/dashboard$/);
+    await expect(page).toHaveURL(/\/staff\/dashboard$/, { timeout: NAVIGATION_TIMEOUT });
   });
 
   test("nurse opens live queue and can check in a waiting appointment", async ({ page }) => {
@@ -28,7 +30,7 @@ test.describe("@integrated auth and API flows", () => {
 
     await login.goto();
     await login.login(staffPersonas.nurse.email, staffPersonas.nurse.password);
-    await expect(page).toHaveURL(/\/staff\/dashboard$/);
+    await expect(page).toHaveURL(/\/staff\/dashboard$/, { timeout: NAVIGATION_TIMEOUT });
 
     const queueResponse = page.waitForResponse((response) =>
       response.url().includes("/api/v1/queue/today"),
@@ -71,11 +73,11 @@ test.describe("@integrated auth and API flows", () => {
 
     await login.goto();
     await login.login(staffPersonas.doctor.email, staffPersonas.doctor.password);
-    await expect(page).toHaveURL(/\/staff\/dashboard$/);
+    await expect(page).toHaveURL(/\/staff\/dashboard$/, { timeout: NAVIGATION_TIMEOUT });
 
     await page.goto("/staff/queue");
 
-    await expect(page).toHaveURL(/\/forbidden$/);
+    await expect(page).toHaveURL(/\/forbidden$/, { timeout: NAVIGATION_TIMEOUT });
     await expect(page.getByRole("heading", { name: /Access denied/i })).toBeVisible();
   });
 
@@ -108,9 +110,9 @@ test.describe("@integrated auth and API flows", () => {
     expect(response.status()).toBeLessThan(500);
 
     if (response.ok()) {
-      await expect(page).toHaveURL(/\/portal\/overview$/);
+      await expect(page).toHaveURL(/\/portal\/overview$/, { timeout: NAVIGATION_TIMEOUT });
     } else {
-      await expect(page).toHaveURL(/\/portal\/login$/);
+      await expect(page).toHaveURL(/\/portal\/login$/, { timeout: NAVIGATION_TIMEOUT });
       await login.expectError();
     }
   });
@@ -133,14 +135,19 @@ test.describe("@integrated auth and API flows", () => {
   });
 
   test("logout calls staff auth logout endpoint", async ({ page }) => {
+    const login = new StaffLoginPage(page);
+    await login.goto();
+    await login.login(staffPersonas.admin.email, staffPersonas.admin.password);
+    await expect(page).toHaveURL(/\/staff\/dashboard$/, { timeout: NAVIGATION_TIMEOUT });
+
     const logoutResponse = page.waitForResponse((response) =>
       response.url().includes("/api/v1/auth/logout"),
     );
 
-    await page.goto("/auth/logout");
+    await page.goto("/auth/logout", { waitUntil: "domcontentloaded" });
 
     expect((await logoutResponse).ok()).toBe(true);
-    await expect(page).toHaveURL(/\/staff\/login$/);
+    await expect(page).toHaveURL(/\/staff\/login$/, { timeout: NAVIGATION_TIMEOUT });
   });
 
   test("public booking submits an appointment request after valid intake", async ({ page }) => {

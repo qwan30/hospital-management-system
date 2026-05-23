@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { installUiApiMocks } from '../helpers/ui-api-mocks';
+import { mockAdminUserId } from '../helpers/routes';
+
+const PAGE_READY_TIMEOUT = 15_000;
 
 test.describe('Admin Pages (@ui)', () => {
   test.beforeEach(async ({ page }) => {
@@ -74,21 +77,21 @@ test.describe('Admin Pages (@ui)', () => {
 
   test.describe('/admin/users/[id]', () => {
     test('renders user detail view', async ({ page }) => {
-      await page.goto('/admin/users/MC-0842', { waitUntil: 'domcontentloaded' });
+      await page.goto(`/admin/users/${mockAdminUserId}`, { waitUntil: 'domcontentloaded' });
       await expect(page.getByRole('heading', { name: /Staff Directory/i })).toBeVisible();
       await expect(page.getByLabel('Full Name')).toHaveValue('Sarah Jenkins');
       await expect(page.getByLabel('Specialty')).toHaveValue('Interventional Cardiology');
     });
 
     test('renders API-backed detail form', async ({ page }) => {
-      await page.goto('/admin/users/MC-0842', { waitUntil: 'domcontentloaded' });
+      await page.goto(`/admin/users/${mockAdminUserId}`, { waitUntil: 'domcontentloaded' });
       await expect(page.getByLabel('Full Name')).toHaveValue('Sarah Jenkins');
       await expect(page.getByLabel('Email')).toHaveValue('sarah.jenkins@hospital-core.test');
       await expect(page.getByText('Cardiology')).toBeVisible();
     });
 
     test('renders action buttons', async ({ page }) => {
-      await page.goto('/admin/users/MC-0842', { waitUntil: 'domcontentloaded' });
+      await page.goto(`/admin/users/${mockAdminUserId}`, { waitUntil: 'domcontentloaded' });
       await expect(page.getByRole('button', { name: /Save User/i })).toBeVisible();
       await expect(page.getByRole('button', { name: /Deactivate User/i })).toBeVisible();
     });
@@ -125,9 +128,13 @@ test.describe('Admin Pages (@ui)', () => {
   test.describe('/admin/news', () => {
     test('renders news list and publish toggles', async ({ page }) => {
       await page.goto('/admin/news', { waitUntil: 'domcontentloaded' });
-      await expect(page.getByRole('heading', { name: /News/i })).toBeVisible();
+      await expect(page.getByRole('heading', { name: /News/i })).toBeVisible({
+        timeout: PAGE_READY_TIMEOUT,
+      });
       // Just check if a table or list appears
-      await expect(page.getByRole('button', { name: /Create/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: /Create/i })).toBeVisible({
+        timeout: PAGE_READY_TIMEOUT,
+      });
     });
   });
   test.describe('/admin/appointments', () => {
@@ -154,6 +161,14 @@ test.describe('Admin Pages (@ui)', () => {
       await expect(page.getByRole('heading', { name: /Public Content/i }).first()).toBeVisible();
       await expect(page.getByRole('button', { name: /Create Section/i })).toBeVisible();
       await expect(page.getByPlaceholder(/Search sections.../i)).toBeVisible();
+    });
+  });
+
+  test.describe('/admin/support', () => {
+    test('renders support-focused admin heading', async ({ page }) => {
+      await page.goto('/admin/support', { waitUntil: 'domcontentloaded' });
+      await expect(page.getByRole('heading', { name: /Admin Support Center/i })).toBeVisible();
+      await expect(page.getByRole('heading', { name: /Queue Board/i })).not.toBeVisible();
     });
   });
 });

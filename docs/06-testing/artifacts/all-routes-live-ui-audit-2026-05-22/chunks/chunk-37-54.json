@@ -1,0 +1,930 @@
+[
+  {
+    "index": 37,
+    "path": "/portal/login",
+    "label": "portal login",
+    "area": "public",
+    "role": null,
+    "requestedUrl": "http://localhost:13002/portal/login",
+    "finalUrl": "http://localhost:13002/portal/login",
+    "responseStatus": 200,
+    "elapsedMs": 2017,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/37-portal-login.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "? SUPPORT MEDCORE OS Patient Portal Your health. Your time. Your portal. Everything you need for your health journey, all in one place. Manage Appointments Schedule, view or cancel appointments with ease. Access Your Health View test results, medications, immu",
+      "headings": [
+        "Patient Portal",
+        "Log in to your account"
+      ],
+      "buttons": [
+        "?SUPPORT",
+        "Forgot password?",
+        "Log In",
+        "Need access? Claim your portal"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 38,
+    "path": "/portal/overview",
+    "label": "portal overview",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/overview",
+    "finalUrl": "http://localhost:13002/portal/overview",
+    "responseStatus": 200,
+    "elapsedMs": 1840,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/38-portal-overview.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Patient Portal Overview",
+        "Your current portal record has 2 upcoming appointments and 0 available lab results."
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 39,
+    "path": "/portal/records",
+    "label": "portal records",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/records",
+    "finalUrl": "http://localhost:13002/portal/records",
+    "responseStatus": 200,
+    "elapsedMs": 1647,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/39-portal-records.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Search Records",
+        "Sarah J. Miller"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1918,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 40,
+    "path": "/portal/appointments",
+    "label": "portal appointments",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/appointments",
+    "finalUrl": "http://localhost:13002/portal/appointments",
+    "responseStatus": 200,
+    "elapsedMs": 1604,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/40-portal-appointments.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Patient Appointments",
+        "Dr. Nguyen Van An",
+        "Dr. Nguyen Van An",
+        "Summary Metrics",
+        "Unsupported Actions"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 41,
+    "path": "/portal/appointments/2",
+    "label": "portal appointment detail",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/appointments/2",
+    "finalUrl": "http://localhost:13002/portal/appointments/2",
+    "responseStatus": 200,
+    "elapsedMs": 1694,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/41-portal-appointments-2.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Patient Appointments"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 42,
+    "path": "/portal/lab-results",
+    "label": "portal lab results",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/lab-results",
+    "finalUrl": "http://localhost:13002/portal/lab-results",
+    "responseStatus": 200,
+    "elapsedMs": 1631,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/42-portal-lab-results.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Patient Lab Results",
+        "Laboratory Results"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 43,
+    "path": "/portal/messages",
+    "label": "portal messages",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/messages",
+    "finalUrl": "http://localhost:13002/portal/messages",
+    "responseStatus": 200,
+    "elapsedMs": 1611,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/43-portal-messages.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Inbox",
+        "Release UAT care-team follow-up",
+        "Release UAT care-team follow-up"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1096,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 44,
+    "path": "/portal/profile",
+    "label": "portal profile",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/profile",
+    "finalUrl": "http://localhost:13002/portal/profile",
+    "responseStatus": 200,
+    "elapsedMs": 1651,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/44-portal-profile.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Patient Profile",
+        "Personal Information",
+        "Security Settings"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1560,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 45,
+    "path": "/portal/claim",
+    "label": "portal claim",
+    "area": "public",
+    "role": null,
+    "requestedUrl": "http://localhost:13002/portal/claim",
+    "finalUrl": "http://localhost:13002/portal/claim",
+    "responseStatus": 200,
+    "elapsedMs": 1588,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/45-portal-claim.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "⌘/ 1 P Patient Verified portal HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Support Logout PORTAL STATUS Secure patient access HOSPITAL CORE Patient Claim Access Secure portal activation for medical record retrieval and insurance claim managem",
+      "headings": [
+        "Patient Claim Access"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "1",
+        "PPatientVerified portal",
+        "HOSPITAL CORE",
+        "Book Appointment",
+        "Support",
+        "Logout",
+        "Request Verification Code",
+        "Already activated? Sign in"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 46,
+    "path": "/portal/billing",
+    "label": "portal billing",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/billing",
+    "finalUrl": "http://localhost:13002/portal/billing",
+    "responseStatus": 200,
+    "elapsedMs": 1584,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/46-portal-billing.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Billing"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 47,
+    "path": "/portal/diagnostics",
+    "label": "portal diagnostics",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/diagnostics",
+    "finalUrl": "http://localhost:13002/portal/diagnostics",
+    "responseStatus": 200,
+    "elapsedMs": 1583,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/47-portal-diagnostics.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Patient Lab Results",
+        "Laboratory Results"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 48,
+    "path": "/portal/inventory",
+    "label": "portal inventory",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/inventory",
+    "finalUrl": "http://localhost:13002/portal/inventory",
+    "responseStatus": 200,
+    "elapsedMs": 1538,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/48-portal-inventory.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Home Care Inventory"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 49,
+    "path": "/portal/patients",
+    "label": "portal patients",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/patients",
+    "finalUrl": "http://localhost:13002/portal/patients",
+    "responseStatus": 200,
+    "elapsedMs": 1550,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/49-portal-patients.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Patient Profile Access"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 50,
+    "path": "/portal/pharmacy",
+    "label": "portal pharmacy",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/pharmacy",
+    "finalUrl": "http://localhost:13002/portal/pharmacy",
+    "responseStatus": 200,
+    "elapsedMs": 1603,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/50-portal-pharmacy.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Pharmacy"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 51,
+    "path": "/portal/scheduling",
+    "label": "portal scheduling",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/scheduling",
+    "finalUrl": "http://localhost:13002/portal/scheduling",
+    "responseStatus": 200,
+    "elapsedMs": 1604,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/51-portal-scheduling.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Patient Appointments",
+        "Dr. Nguyen Van An",
+        "Dr. Nguyen Van An",
+        "Summary Metrics",
+        "Unsupported Actions"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 52,
+    "path": "/portal/staff",
+    "label": "portal staff",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/staff",
+    "finalUrl": "http://localhost:13002/portal/staff",
+    "responseStatus": 200,
+    "elapsedMs": 1554,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/52-portal-staff.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Assigned Staff"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 53,
+    "path": "/portal/support",
+    "label": "portal support",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/support",
+    "finalUrl": "http://localhost:13002/portal/support",
+    "responseStatus": 200,
+    "elapsedMs": 1565,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/53-portal-support.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Support"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 54,
+    "path": "/portal/admit",
+    "label": "portal admit",
+    "area": "portal",
+    "role": "patient",
+    "requestedUrl": "http://localhost:13002/portal/admit",
+    "finalUrl": "http://localhost:13002/portal/admit",
+    "responseStatus": 200,
+    "elapsedMs": 1583,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/54-portal-admit.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Appointments Lab Results Messages Profile ⌘/ 1 NT Nguyen Thi Hoa Patient HOSPITAL CORE Clinical Suite STANDARD ACCESS Book Appointment Overview Electronic Records Appointments Pharmacy Lab Results Billing Messages Profile Support Logout PORTAL STATUS",
+      "headings": [
+        "Admission And Booking"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Appointments",
+        "Lab Results",
+        "Messages",
+        "Profile",
+        "1",
+        "NTNguyen Thi HoaPatient",
+        "HOSPITAL CORE",
+        "Book Appointment"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  }
+]

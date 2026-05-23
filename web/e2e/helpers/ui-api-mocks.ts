@@ -1,8 +1,9 @@
 import type { Page, Route } from '@playwright/test';
+import { mockAdminUserId, mockMedicalRecordAppointmentId } from './routes';
 
 const adminUsers = [
   {
-    userId: 'MC-0842',
+    userId: mockAdminUserId,
     email: 'sarah.kingston@hospital-core.test',
     fullName: 'Sarah Kingston',
     phone: '+84900000101',
@@ -111,7 +112,7 @@ const pricingRules = [
 ];
 
 const appointmentDetail = {
-  appointmentId: '1',
+  appointmentId: mockMedicalRecordAppointmentId,
   confirmationCode: 'Q-1001',
   status: 'CHECKED_IN',
   appointmentDate: '2026-05-15',
@@ -251,7 +252,7 @@ const staffScheduleAppointments = [
 const staffLabResults = [
   {
     labResultId: 'staff-lr-1',
-    appointmentId: '1',
+    appointmentId: mockMedicalRecordAppointmentId,
     testName: 'Complete Blood Count',
     status: 'Reviewed',
     resultSummary: 'Hemoglobin within normal range.',
@@ -263,7 +264,7 @@ const staffLabResults = [
 
 const staffAppointmentsList = [
   {
-    appointmentId: '1',
+    appointmentId: mockMedicalRecordAppointmentId,
     confirmationCode: 'Q-1001',
     status: 'DONE',
     appointmentDate: '2026-05-15',

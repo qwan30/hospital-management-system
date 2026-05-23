@@ -3,6 +3,9 @@ export interface RouteCase {
   label: string;
 }
 
+export const mockMedicalRecordAppointmentId = "11111111-1111-1111-1111-111111111111";
+export const mockAdminUserId = "22222222-2222-2222-2222-222222222222";
+
 export const publicRoutes: RouteCase[] = [
   { path: "/", label: "public home" },
   { path: "/departments", label: "public departments" },
@@ -33,7 +36,7 @@ export const staffRoutes: RouteCase[] = [
   { path: "/staff/invoices", label: "staff invoices" },
   { path: "/staff/lab-results", label: "staff lab results" },
   { path: "/staff/lab-results/1", label: "staff lab result detail" },
-  { path: "/staff/medical-records/1/edit", label: "staff medical record edit" },
+  { path: `/staff/medical-records/${mockMedicalRecordAppointmentId}/edit`, label: "staff medical record edit" },
   { path: "/staff/nurse-intake", label: "staff nurse intake" },
   { path: "/staff/doctor/1", label: "staff doctor detail" },
   { path: "/staff/doctor/dashboard", label: "staff doctor dashboard" },
@@ -76,7 +79,7 @@ export const adminRoutes: RouteCase[] = [
   { path: "/admin/public-content", label: "admin public content" },
   { path: "/admin/rooms", label: "admin rooms" },
   { path: "/admin/users", label: "admin users" },
-  { path: "/admin/users/1", label: "admin user detail" },
+  { path: `/admin/users/${mockAdminUserId}`, label: "admin user detail" },
   { path: "/admin/inventory", label: "admin inventory" },
   { path: "/admin/pricing", label: "admin pricing" },
   { path: "/admin/schedule-templates", label: "admin schedule templates" },
@@ -102,7 +105,7 @@ export const responsiveRoutes: RouteCase[] = [
   { path: "/staff/dashboard", label: "staff dashboard" },
   { path: "/staff/doctor/dashboard", label: "doctor dashboard" },
   { path: "/staff/nurse-intake", label: "nurse intake" },
-  { path: "/staff/medical-records/1/edit", label: "medical record edit" },
+  { path: `/staff/medical-records/${mockMedicalRecordAppointmentId}/edit`, label: "medical record edit" },
   { path: "/portal/overview", label: "portal overview" },
   { path: "/admin/users", label: "admin users" },
   { path: "/staff/login", label: "staff login" },

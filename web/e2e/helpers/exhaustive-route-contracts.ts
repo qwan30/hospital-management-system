@@ -1,5 +1,12 @@
 import type { Page } from "@playwright/test";
-import { adminRoutes, portalRoutes, publicRoutes, staffRoutes } from "./routes";
+import {
+  adminRoutes,
+  mockAdminUserId,
+  mockMedicalRecordAppointmentId,
+  portalRoutes,
+  publicRoutes,
+  staffRoutes,
+} from "./routes";
 
 export type RouteArea = "public" | "staff" | "portal" | "admin";
 export type SeededRole =
@@ -50,7 +57,7 @@ const staffRouteText = new Map<string, RegExp>([
   ["/staff/invoices", /Invoices|Billing/i],
   ["/staff/lab-results", /Lab Results|Diagnostics/i],
   ["/staff/lab-results/1", /Complete Blood Count|Lab Result/i],
-  ["/staff/medical-records/1/edit", /Patient Record Entry/i],
+  [`/staff/medical-records/${mockMedicalRecordAppointmentId}/edit`, /Patient Record Entry/i],
   ["/staff/nurse-intake", /Daily Intake Schedule|Intake/i],
   ["/staff/doctor/1", /Dr\. Alistair Thorne|Interventional Cardiology/i],
   ["/staff/doctor/dashboard", /Doctor|Dashboard|Consultation/i],
@@ -93,7 +100,7 @@ const adminRouteText = new Map<string, RegExp>([
   ["/admin/public-content", /Public Content/i],
   ["/admin/rooms", /Rooms/i],
   ["/admin/users", /Staff Directory/i],
-  ["/admin/users/1", /Staff Directory|Sarah Jenkins|Marcus Vance/i],
+  [`/admin/users/${mockAdminUserId}`, /Staff Directory|Sarah Jenkins|Marcus Vance/i],
   ["/admin/inventory", /Inventory/i],
   ["/admin/pricing", /Pricing/i],
   ["/admin/schedule-templates", /Schedule Templates/i],

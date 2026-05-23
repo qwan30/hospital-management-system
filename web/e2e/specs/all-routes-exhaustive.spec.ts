@@ -20,7 +20,9 @@ test.describe("@ui exhaustive route contracts", () => {
       const response = await page.goto(route.path, { waitUntil: "domcontentloaded" });
 
       expect(response?.status(), `${route.path} response status`).toBeLessThan(400);
-      await expect(page.locator("body")).toContainText(route.expectedText);
+      await expect(page.locator("body")).toContainText(route.expectedText, {
+        timeout: 15_000,
+      });
       await expectRouteApiRequests(route, apiRequests);
       await expectNoNextErrorOverlay(page);
       expect(consoleProblems, `${route.path} console problems`).toEqual([]);

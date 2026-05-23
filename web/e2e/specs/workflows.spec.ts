@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { BookingPage } from "../pages/booking-page";
 import { installUiApiMocks } from "../helpers/ui-api-mocks";
+import { mockMedicalRecordAppointmentId } from "../helpers/routes";
 
 test.describe("@ui critical workflow smoke", () => {
   test.beforeEach(async ({ page }) => {
@@ -50,7 +51,7 @@ test.describe("@ui critical workflow smoke", () => {
       { path: "/staff/vital-signs", heading: /Vital/i },
       { path: "/staff/closures", heading: /Special Closures|Closure Calendar/i },
       { path: "/staff/doctor/dashboard", heading: /Dashboard|Consultation|Doctor/i },
-      { path: "/staff/medical-records/1/edit", heading: /Patient Record Entry/i },
+      { path: `/staff/medical-records/${mockMedicalRecordAppointmentId}/edit`, heading: /Patient Record Entry/i },
       { path: "/staff/prescriptions/preview", heading: /Prescription|Preview/i },
       { path: "/staff/lab-results/1", heading: /Complete Blood Count/i },
     ];

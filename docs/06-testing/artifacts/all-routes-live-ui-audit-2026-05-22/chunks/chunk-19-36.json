@@ -1,0 +1,974 @@
+[
+  {
+    "index": 19,
+    "path": "/staff/booking/review",
+    "label": "staff booking review",
+    "area": "staff",
+    "role": "receptionist",
+    "requestedUrl": "http://localhost:13002/staff/booking/review",
+    "finalUrl": "http://localhost:13002/staff/booking/review",
+    "responseStatus": 200,
+    "elapsedMs": 1775,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/19-staff-booking-review.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Queue ⌘/ 2 RD Reception Desk Front Office HOSPITAL CORE Clinical Suite STANDARD ACCESS Admit Patient Overview Queue Board Appointments Support Logout SYSTEM STATUS Core services online 1 Symptoms 2 Triage & Slots 3 Patient Details 4 Confirmation Pati",
+      "headings": [
+        "Patient Details & Review",
+        "Required Information",
+        "Optional Health Context"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Queue",
+        "2",
+        "RDReception DeskFront Office",
+        "HOSPITAL CORE",
+        "Admit Patient",
+        "Overview",
+        "Queue Board",
+        "Appointments"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1142,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 20,
+    "path": "/staff/booking/slots",
+    "label": "staff booking slots",
+    "area": "staff",
+    "role": "receptionist",
+    "requestedUrl": "http://localhost:13002/staff/booking/slots",
+    "finalUrl": "http://localhost:13002/staff/booking/slots",
+    "responseStatus": 200,
+    "elapsedMs": 1450,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/20-staff-booking-slots.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Queue ⌘/ 2 RD Reception Desk Front Office HOSPITAL CORE Clinical Suite STANDARD ACCESS Admit Patient Overview Queue Board Appointments Support Logout SYSTEM STATUS Core services online 1 Symptoms 2 Triage & Slots 3 Patient Info 4 Confirmation Schedul",
+      "headings": [
+        "Schedule Appointment",
+        "Available Specialists",
+        "Appointment Summary"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Queue",
+        "2",
+        "RDReception DeskFront Office",
+        "HOSPITAL CORE",
+        "Admit Patient",
+        "Overview",
+        "Queue Board",
+        "Appointments"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 21,
+    "path": "/staff/booking/success",
+    "label": "staff booking success",
+    "area": "staff",
+    "role": "receptionist",
+    "requestedUrl": "http://localhost:13002/staff/booking/success",
+    "finalUrl": "http://localhost:13002/staff/booking/success",
+    "responseStatus": 200,
+    "elapsedMs": 1410,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/21-staff-booking-success.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Queue ⌘/ 2 RD Reception Desk Front Office HOSPITAL CORE Clinical Suite STANDARD ACCESS Admit Patient Overview Queue Board Appointments Support Logout SYSTEM STATUS Core services online Booking confirmed. APPOINTMENT ID: #MC-8294401 PRACTITIONER Dr. J",
+      "headings": [
+        "Booking confirmed.",
+        "Dr. Julian Sterling"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Queue",
+        "2",
+        "RDReception DeskFront Office",
+        "HOSPITAL CORE",
+        "Admit Patient",
+        "Overview",
+        "Queue Board",
+        "Appointments"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 22,
+    "path": "/staff/booking/symptoms",
+    "label": "staff booking symptoms",
+    "area": "staff",
+    "role": "receptionist",
+    "requestedUrl": "http://localhost:13002/staff/booking/symptoms",
+    "finalUrl": "http://localhost:13002/staff/booking/symptoms",
+    "responseStatus": 200,
+    "elapsedMs": 1485,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/22-staff-booking-symptoms.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Queue ⌘/ 2 RD Reception Desk Front Office HOSPITAL CORE Clinical Suite STANDARD ACCESS Admit Patient Overview Queue Board Appointments Support Logout SYSTEM STATUS Core services online 1 Symptoms 2 Triage 3 Scheduling 4 Confirmation Booking Wizard: S",
+      "headings": [
+        "Booking Wizard: Symptoms",
+        "Patient Input Section",
+        "Real-time Analysis"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Queue",
+        "2",
+        "RDReception DeskFront Office",
+        "HOSPITAL CORE",
+        "Admit Patient",
+        "Overview",
+        "Queue Board",
+        "Appointments"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 23,
+    "path": "/staff/inventory",
+    "label": "staff inventory",
+    "area": "staff",
+    "role": "pharmacist",
+    "requestedUrl": "http://localhost:13002/staff/inventory",
+    "finalUrl": "http://localhost:13002/staff/inventory",
+    "responseStatus": 200,
+    "elapsedMs": 2018,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/23-staff-inventory.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Inventory ⌘/ 3 PD Pharmacy Desk Inventory Control HOSPITAL CORE Clinical Suite STANDARD ACCESS Overview Inventory Support Logout SYSTEM STATUS Core services online Inventory Workspace Operations Center • Monitor stock levels, lots, and movements ADD ",
+      "headings": [
+        "Inventory Workspace",
+        "Items",
+        "Expiring Lots",
+        "Recent Movements"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Inventory",
+        "3",
+        "PDPharmacy DeskInventory Control",
+        "HOSPITAL CORE",
+        "Overview",
+        "Inventory",
+        "Support",
+        "Logout"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 2178,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 24,
+    "path": "/staff/invoices",
+    "label": "staff invoices",
+    "area": "staff",
+    "role": "accountant",
+    "requestedUrl": "http://localhost:13002/staff/invoices",
+    "finalUrl": "http://localhost:13002/staff/invoices",
+    "responseStatus": 200,
+    "elapsedMs": 1705,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/24-staff-invoices.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Finance ⌘/ 3 FO Finance Ops Accounting HOSPITAL CORE Clinical Suite STANDARD ACCESS Overview Billing Support Logout SYSTEM STATUS Core services online FINANCE Financial Ledger Centralized billing & invoice control. Refresh Create Invoice TOTAL ISSUED",
+      "headings": [
+        "Financial Ledger"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Finance",
+        "3",
+        "FOFinance OpsAccounting",
+        "HOSPITAL CORE",
+        "Overview",
+        "Billing",
+        "Support",
+        "Logout"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 25,
+    "path": "/staff/lab-results",
+    "label": "staff lab results",
+    "area": "staff",
+    "role": "doctor",
+    "requestedUrl": "http://localhost:13002/staff/lab-results",
+    "finalUrl": "http://localhost:13002/staff/lab-results",
+    "responseStatus": 200,
+    "elapsedMs": 1764,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/25-staff-lab-results.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [
+      {
+        "url": "http://localhost:13002/staff/lab-results/new?_rsc=PAz47pwO2dYFKnVs",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://localhost:13002/staff/lab-results/undefined?_rsc=E4yAv3WP8kVlAheu",
+        "failure": "net::ERR_ABORTED"
+      },
+      {
+        "url": "http://localhost:13002/staff/lab-results/undefined?_rsc=PAz47pwO2dYFKnVs",
+        "failure": "net::ERR_ABORTED"
+      }
+    ],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Patients Schedule ⌘/ 3 DR Dr. Rivera Cardiology HOSPITAL CORE Clinical Suite STANDARD ACCESS Overview Patient Records Scheduling Diagnostics Support Logout SYSTEM STATUS Core services online DIAGNOSTICS Laboratory Results Review patient diagnostics, ",
+      "headings": [
+        "Laboratory Results"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Patients",
+        "Schedule",
+        "3",
+        "DRDr. RiveraCardiology",
+        "HOSPITAL CORE",
+        "Overview",
+        "Patient Records",
+        "Scheduling"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "data/auth/setup blocker",
+    "reasons": [
+      "3 request failure(s)"
+    ]
+  },
+  {
+    "index": 26,
+    "path": "/staff/lab-results/1",
+    "label": "staff lab result detail",
+    "area": "staff",
+    "role": "doctor",
+    "requestedUrl": "http://localhost:13002/staff/lab-results/1",
+    "finalUrl": "http://localhost:13002/staff/lab-results/1",
+    "responseStatus": 200,
+    "elapsedMs": 1427,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/26-staff-lab-results-1.png",
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 400 ()"
+    ],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [
+      {
+        "url": "http://127.0.0.1:18083/api/v1/lab-results/1",
+        "status": 400
+      }
+    ],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Patients Schedule ⌘/ 3 DR Dr. Rivera Cardiology HOSPITAL CORE Clinical Suite STANDARD ACCESS Overview Patient Records Scheduling Diagnostics Support Logout SYSTEM STATUS Core services online Invalid request parameter",
+      "headings": [],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Patients",
+        "Schedule",
+        "3",
+        "DRDr. RiveraCardiology",
+        "HOSPITAL CORE",
+        "Overview",
+        "Patient Records",
+        "Scheduling"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "data/auth/setup blocker",
+    "reasons": [
+      "1 HTTP 4xx/5xx response(s)",
+      "1 console error(s)"
+    ]
+  },
+  {
+    "index": 27,
+    "path": "/staff/medical-records/1/edit",
+    "label": "staff medical record edit",
+    "area": "staff",
+    "role": "doctor",
+    "requestedUrl": "http://localhost:13002/staff/medical-records/1/edit",
+    "finalUrl": "http://localhost:13002/staff/medical-records/1/edit",
+    "responseStatus": 200,
+    "elapsedMs": 1437,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/27-staff-medical-records-1-edit.png",
+    "consoleErrors": [
+      "Failed to load resource: the server responded with a status of 400 ()"
+    ],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [
+      {
+        "url": "http://127.0.0.1:18083/api/v1/appointments/1",
+        "status": 400
+      }
+    ],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Patients Schedule ⌘/ 3 DR Dr. Rivera Cardiology HOSPITAL CORE Clinical Suite STANDARD ACCESS Overview Patient Records Scheduling Diagnostics Support Logout SYSTEM STATUS Core services online Invalid request parameter MEDICAL RECORD CONTEXT UNAVAILABL",
+      "headings": [
+        "Invalid request parameter"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Patients",
+        "Schedule",
+        "3",
+        "DRDr. RiveraCardiology",
+        "HOSPITAL CORE",
+        "Overview",
+        "Patient Records",
+        "Scheduling"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "data/auth/setup blocker",
+    "reasons": [
+      "1 HTTP 4xx/5xx response(s)",
+      "1 console error(s)"
+    ]
+  },
+  {
+    "index": 28,
+    "path": "/staff/nurse-intake",
+    "label": "staff nurse intake",
+    "area": "staff",
+    "role": "nurse",
+    "requestedUrl": "http://localhost:13002/staff/nurse-intake",
+    "finalUrl": "http://localhost:13002/staff/nurse-intake",
+    "responseStatus": 200,
+    "elapsedMs": 1713,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/28-staff-nurse-intake.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Queue ⌘/ 3 NS Nurse Sarah Chen Shift Lead - Ward 4C HOSPITAL CORE Clinical Suite STANDARD ACCESS Admit Patient Overview Queue Board Appointments Diagnostics Support Logout SYSTEM STATUS Core services online NURSE STATION Intake Board Live checked-in ",
+      "headings": [
+        "Intake Board",
+        "Today's Intake Queue",
+        "Selected Patient"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Queue",
+        "3",
+        "NSNurse Sarah ChenShift Lead - Ward 4C",
+        "HOSPITAL CORE",
+        "Admit Patient",
+        "Overview",
+        "Queue Board",
+        "Appointments"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 29,
+    "path": "/staff/doctor/1",
+    "label": "staff doctor detail",
+    "area": "staff",
+    "role": "doctor",
+    "requestedUrl": "http://localhost:13002/staff/doctor/1",
+    "finalUrl": "http://localhost:13002/staff/doctor/1",
+    "responseStatus": 200,
+    "elapsedMs": 1557,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/29-staff-doctor-1.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Patients Schedule ⌘/ 3 DR Dr. Rivera Cardiology HOSPITAL CORE Clinical Suite STANDARD ACCESS Overview Patient Records Scheduling Diagnostics Support Logout SYSTEM STATUS Core services online Doctor Detail SENIOR CONSULTANT Dr. Alistair Thorne Interve",
+      "headings": [
+        "Doctor Detail",
+        "Dr. Alistair Thorne",
+        "Interventional Cardiology & Electrophysiology"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Patients",
+        "Schedule",
+        "3",
+        "DRDr. RiveraCardiology",
+        "HOSPITAL CORE",
+        "Overview",
+        "Patient Records",
+        "Scheduling"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1209,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 30,
+    "path": "/staff/doctor/dashboard",
+    "label": "staff doctor dashboard",
+    "area": "staff",
+    "role": "doctor",
+    "requestedUrl": "http://localhost:13002/staff/doctor/dashboard",
+    "finalUrl": "http://localhost:13002/staff/doctor/dashboard",
+    "responseStatus": 200,
+    "elapsedMs": 1528,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/30-staff-doctor-dashboard.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Patients Schedule ⌘/ 3 DR Dr. Rivera Cardiology HOSPITAL CORE Clinical Suite STANDARD ACCESS Overview Patient Records Scheduling Diagnostics Support Logout SYSTEM STATUS Core services online Doctor Dashboard API backed appointment schedule for 2026-0",
+      "headings": [
+        "Doctor Dashboard"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Patients",
+        "Schedule",
+        "3",
+        "DRDr. RiveraCardiology",
+        "HOSPITAL CORE",
+        "Overview",
+        "Patient Records",
+        "Scheduling"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 31,
+    "path": "/staff/prescriptions/preview",
+    "label": "staff prescription preview",
+    "area": "staff",
+    "role": "doctor",
+    "requestedUrl": "http://localhost:13002/staff/prescriptions/preview",
+    "finalUrl": "http://localhost:13002/staff/prescriptions/preview",
+    "responseStatus": 200,
+    "elapsedMs": 1560,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/31-staff-prescriptions-preview.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Patients Schedule ⌘/ 3 DR Dr. Rivera Cardiology HOSPITAL CORE Clinical Suite STANDARD ACCESS Overview Patient Records Scheduling Diagnostics Support Logout SYSTEM STATUS Core services online Prescription Preview PATIENT DETAILS NAME Jonathan H. Mille",
+      "headings": [
+        "Prescription Preview",
+        "HMS Precision"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Patients",
+        "Schedule",
+        "3",
+        "DRDr. RiveraCardiology",
+        "HOSPITAL CORE",
+        "Overview",
+        "Patient Records",
+        "Scheduling"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 32,
+    "path": "/staff/pricing",
+    "label": "staff pricing",
+    "area": "staff",
+    "role": "accountant",
+    "requestedUrl": "http://localhost:13002/staff/pricing",
+    "finalUrl": "http://localhost:13002/staff/pricing",
+    "responseStatus": 200,
+    "elapsedMs": 1493,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/32-staff-pricing.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Finance ⌘/ 3 FO Finance Ops Accounting HOSPITAL CORE Clinical Suite STANDARD ACCESS Overview Billing Support Logout SYSTEM STATUS Core services online FINANCE Pricing Catalog Manage standard billing rates and service protocols for global billing. Add",
+      "headings": [
+        "Pricing Catalog"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Finance",
+        "3",
+        "FOFinance OpsAccounting",
+        "HOSPITAL CORE",
+        "Overview",
+        "Billing",
+        "Support",
+        "Logout"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 33,
+    "path": "/staff/revenue",
+    "label": "staff revenue",
+    "area": "staff",
+    "role": "accountant",
+    "requestedUrl": "http://localhost:13002/staff/revenue",
+    "finalUrl": "http://localhost:13002/staff/revenue",
+    "responseStatus": 200,
+    "elapsedMs": 1418,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/33-staff-revenue.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Finance ⌘/ 3 FO Finance Ops Accounting HOSPITAL CORE Clinical Suite STANDARD ACCESS Overview Billing Support Logout SYSTEM STATUS Core services online FINANCE Revenue Monitor Paid invoice revenue and department breakdowns. DAILY MONTHLY TOTAL GROSS R",
+      "headings": [
+        "Revenue Monitor"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Finance",
+        "3",
+        "FOFinance OpsAccounting",
+        "HOSPITAL CORE",
+        "Overview",
+        "Billing",
+        "Support",
+        "Logout"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 34,
+    "path": "/staff/slots",
+    "label": "staff slots",
+    "area": "staff",
+    "role": "admin",
+    "requestedUrl": "http://localhost:13002/staff/slots",
+    "finalUrl": "http://localhost:13002/staff/slots",
+    "responseStatus": 200,
+    "elapsedMs": 2672,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/34-staff-slots.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Patients Queue Inventory Finance ⌘/ 3 AO Admin Ops Administrator HOSPITAL CORE Clinical Suite STANDARD ACCESS Admit Patient Overview Patient Records Queue Board Appointments Inventory Diagnostics Billing Support Logout SYSTEM STATUS Core services onl",
+      "headings": [
+        "Generate Service Slots",
+        "01. Parameters",
+        "02. Operational Impact",
+        "03. Sampling Preview"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Patients",
+        "Queue",
+        "Inventory",
+        "Finance",
+        "3",
+        "AOAdmin OpsAdministrator",
+        "HOSPITAL CORE",
+        "Admit Patient"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 35,
+    "path": "/staff/support",
+    "label": "staff support",
+    "area": "staff",
+    "role": "admin",
+    "requestedUrl": "http://localhost:13002/staff/support",
+    "finalUrl": "http://localhost:13002/staff/support",
+    "responseStatus": 200,
+    "elapsedMs": 1593,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/35-staff-support.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Patients Queue Inventory Finance ⌘/ 3 AO Admin Ops Administrator HOSPITAL CORE Clinical Suite STANDARD ACCESS Admit Patient Overview Patient Records Queue Board Appointments Inventory Diagnostics Billing Support Logout SYSTEM STATUS Core services onl",
+      "headings": [
+        "Operations Help Desk",
+        "Open Request",
+        "Critical Escalation"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Patients",
+        "Queue",
+        "Inventory",
+        "Finance",
+        "3",
+        "AOAdmin OpsAdministrator",
+        "HOSPITAL CORE",
+        "Admit Patient"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  },
+  {
+    "index": 36,
+    "path": "/staff/vital-signs",
+    "label": "staff vital signs",
+    "area": "staff",
+    "role": "nurse",
+    "requestedUrl": "http://localhost:13002/staff/vital-signs",
+    "finalUrl": "http://localhost:13002/staff/vital-signs",
+    "responseStatus": 200,
+    "elapsedMs": 1547,
+    "screenshotPath": "D:/projects/hospital-management-system/docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/screenshots/36-staff-vital-signs.png",
+    "consoleErrors": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "httpProblems": [],
+    "metrics": {
+      "title": "HOSPITAL CORE | Management System",
+      "mainVisible": true,
+      "bodyHasText": true,
+      "bodyTextPreview": "Dashboard Queue ⌘/ 3 NS Nurse Sarah Chen Shift Lead - Ward 4C HOSPITAL CORE Clinical Suite STANDARD ACCESS Admit Patient Overview Queue Board Appointments Diagnostics Support Logout SYSTEM STATUS Core services online NURSING Vital Signs Recording Record clinic",
+      "headings": [
+        "Vital Signs Recording",
+        "Record Vitals"
+      ],
+      "buttons": [
+        "HOSPITAL CORE",
+        "Dashboard",
+        "Queue",
+        "3",
+        "NSNurse Sarah ChenShift Lead - Ward 4C",
+        "HOSPITAL CORE",
+        "Admit Patient",
+        "Overview",
+        "Queue Board",
+        "Appointments"
+      ],
+      "horizontalOverflow": false,
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "scroll": {
+        "width": 1920,
+        "height": 1080,
+        "clientWidth": 1920,
+        "clientHeight": 1080
+      }
+    },
+    "navigationError": "",
+    "classification": "Pass",
+    "reasons": []
+  }
+]
