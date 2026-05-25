@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Management System - Hướng Dẫn Onboarding Nhà Phát Triển</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Styling Variable Definitions (Vanilla HSL Tailored Palettes) */
+    :root {
+      --hc-primary-h: 220;
+      --hc-primary-s: 90%;
+      --hc-primary-l: 56%;
+      --hc-primary: hsl(var(--hc-primary-h), var(--hc-primary-s), var(--hc-primary-l));
+      --hc-primary-hover: hsl(var(--hc-primary-h), var(--hc-primary-s), calc(var(--hc-primary-l) - 8%));
+      --hc-primary-bg: hsl(var(--hc-primary-h), var(--hc-primary-s), 96%);
+
+      --hc-bg: #f8fafc;
+      --hc-surface: #ffffff;
+      --hc-surface-muted: #f1f5f9;
+      --hc-border: #e2e8f0;
+      --hc-border-hover: #cbd5e1;
+
+      --hc-text: #0f172a;
+      --hc-text-secondary: #475569;
+      --hc-text-muted: #94a3b8;
+
+      --hc-success: #10b981;
+      --hc-success-bg: #ecfdf5;
+      --hc-warning: #f59e0b;
+      --hc-warning-bg: #fffbeb;
+      --hc-danger: #ef4444;
+      --hc-danger-bg: #fef2f2;
+
+      --hc-navy-dark: #0a2540;
+
+      --transition-fast: 0.15s ease;
+      --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.06), 0 4px 6px -4px rgba(15, 23, 42, 0.06);
+      --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --radius-xl: 20px;
+    }
+
+    [data-theme="dark"] {
+      --hc-bg: #0b0f19;
+      --hc-surface: #121824;
+      --hc-surface-muted: #1e2530;
+      --hc-border: #2d3545;
+      --hc-border-hover: #3d4659;
+
+      --hc-text: #f3f4f6;
+      --hc-text-secondary: #9ca3af;
+      --hc-text-muted: #6b7280;
+
+      --hc-primary-bg: rgba(59, 130, 246, 0.12);
+
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Reset & Core Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--hc-bg);
+      color: var(--hc-text);
+      line-height: 1.6;
+      transition: background-color var(--transition-normal), color var(--transition-normal);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    a {
+      color: var(--hc-primary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code, pre {
+      font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+      font-size: 0.95em;
+    }
+
+    /* Layout */
+    .app-header {
+      background-color: var(--hc-navy-dark);
+      color: #ffffff;
+      padding: 2.5rem 2rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 4px solid var(--hc-primary);
+      z-index: 10;
+    }
+
+    .app-header-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                  linear-gradient(135deg, #0a2540 0%, #0d1e33 100%);
+      z-index: -1;
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.4rem 0.8rem;
+      border-radius: 100px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #93c5fd;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-title h1 {
+      font-size: 2.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .header-title p {
+      color: #94a3b8;
+      font-size: 1.05rem;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      border: 1px solid transparent;
+    }
+
+    .btn-theme {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .btn-theme:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Container */
+    .app-container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+      .app-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      position: sticky;
+      top: 2rem;
+      height: calc(100vh - 4rem);
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .sidebar {
+        position: static;
+        height: auto;
+      }
+    }
+
+    .nav-card {
+      background: var(--hc-surface);
+      border: 1px solid var(--hc-border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-card-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--hc-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--hc-text-secondary);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .nav-item:hover, .nav-item.active {
+      color: var(--hc-primary);
+      background: var(--hc-primary-bg);
+    }
+
+    .nav-item.active {
+      font-weight: 600;
+      box-shadow: inset 3px 0 0 var(--hc-primary);
+      padding-left: 1.1rem;
+    }
+
+    /* Main Panel */
+    .main-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .content-card {
+      background: var(--hc-surface);
+      border: 1px solid var(--hc-border);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      box-shadow: var(--shadow-md);
+      transition: border-color var(--transition-normal), background-color var(--transition-normal);
+    }
+
+    .content-card h2 {
+      font-size: 1.65rem;
+      color: var(--hc-text);
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--hc-border);
+      padding-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .content-card h3 {
+      font-size: 1.25rem;
+      color: var(--hc-text);
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Search & Filter section */
+    .search-section {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 2.75rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--hc-border);
+      background: var(--hc-surface);
+      color: var(--hc-text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all var(--transition-fast);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-input:focus {
+      border-color: var(--hc-primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--hc-text-muted);
+      pointer-events: none;
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+
+    /* Badges & Tables */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.6rem;
+      border-radius: 100px;
+      font-size: 0.725rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .badge-primary { background: var(--hc-primary-bg); color: var(--hc-primary); }
+    .badge-success { background: var(--hc-success-bg); color: var(--hc-success); }
+    .badge-warning { background: var(--hc-warning-bg); color: var(--hc-warning); }
+    .badge-danger { background: var(--hc-danger-bg); color: var(--hc-danger); }
+    .badge-neutral { background: var(--hc-surface-muted); color: var(--hc-text-secondary); }
+
+    .path-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      color: var(--hc-primary);
+      background: var(--hc-primary-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      word-break: break-all;
+    }
+    .path-link:hover {
+      text-decoration: underline;
+    }
+
+    .badge-role {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .role-admin { background: #fee2e2; color: #991b1b; }
+    .role-doctor { background: #e0f2fe; color: #075985; }
+    .role-nurse { background: #f0fdf4; color: #166534; }
+    .role-accountant { background: #fef3c7; color: #92400e; }
+    .role-patient { background: #f3e8ff; color: #6b21a8; }
+
+    /* Data Tables */
+    .data-table-wrapper {
+      overflow-x: auto;
+      border: 1px solid var(--hc-border);
+      border-radius: var(--radius-md);
+      margin-top: 1rem;
+      background-color: var(--hc-surface);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    .data-table th, .data-table td {
+      padding: 0.85rem 1.1rem;
+      border-bottom: 1px solid var(--hc-border);
+      vertical-align: middle;
+    }
+
+    .data-table th {
+      background-color: var(--hc-surface-muted);
+      font-weight: 700;
+      color: var(--hc-text-secondary);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background-color: rgba(59, 130, 246, 0.02);
+    }
+
+    /* Architecture Visual Blocks */
+    .visual-arch {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .arch-flow-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .arch-block {
+      flex: 1;
+      min-width: 160px;
+      background: var(--hc-surface-muted);
+      border: 2px solid var(--hc-border);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-fast);
+      position: relative;
+    }
+
+    .arch-block:hover {
+      border-color: var(--hc-primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .arch-block-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      color: var(--hc-text);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .arch-block-tech {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.725rem;
+      color: var(--hc-text-secondary);
+    }
+
+    .arch-arrow {
+      color: var(--hc-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.25rem;
+    }
+
+    @media (max-width: 768px) {
+      .arch-flow-row {
+        flex-direction: column;
+      }
+      .arch-arrow {
+        transform: rotate(90deg);
+        margin: 0.5rem 0;
+      }
+    }
+
+    /* Timeline style for Flyway migrations */
+    .timeline {
+      position: relative;
+      margin: 1.5rem 0 1.5rem 1.5rem;
+      border-left: 2px solid var(--hc-border);
+      padding-left: 1.5rem;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .timeline-badge {
+      position: absolute;
+      left: calc(-1.5rem - 7px);
+      top: 0.25rem;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--hc-border);
+      border: 2px solid var(--hc-surface);
+      transition: background-color var(--transition-fast);
+    }
+
+    .timeline-item:hover .timeline-badge {
+      background-color: var(--hc-primary);
+    }
+
+    .timeline-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-version {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--hc-primary);
+    }
+
+    .timeline-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--hc-text);
+    }
+
+    .timeline-desc {
+      font-size: 0.85rem;
+      color: var(--hc-text-secondary);
+    }
+
+    .timeline-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--hc-text-muted);
+      margin-top: 0.15rem;
+    }
+
+    /* Accordion style for E2E Flows */
+    .flows-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .flow-card {
+      border: 1px solid var(--hc-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--hc-surface);
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-fast);
+    }
+
+    .flow-card:hover {
+      border-color: var(--hc-primary);
+      box-shadow: var(--shadow-md);
+    }
+
+    .flow-header {
+      padding: 1.1rem 1.5rem;
+      background: var(--hc-surface-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      gap: 1rem;
+      transition: background-color var(--transition-fast);
+    }
+
+    .flow-header:hover {
+      background: var(--hc-primary-bg);
+    }
+
+    .flow-header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .flow-index {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--hc-primary);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .flow-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--hc-text);
+    }
+
+    .flow-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .flow-toggle-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: var(--hc-text-secondary);
+      transition: transform var(--transition-normal);
+    }
+
+    .flow-card.open .flow-toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    .flow-body {
+      display: none;
+      padding: 1.5rem;
+      border-top: 1px solid var(--hc-border);
+      background: var(--hc-surface);
+    }
+
+    .flow-card.open .flow-body {
+      display: block;
+      animation: expandFade var(--transition-normal) forwards;
+    }
+
+    @keyframes expandFade {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .flow-description {
+      font-size: 0.95rem;
+      color: var(--hc-text-secondary);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    /* Architecture Visual Chain */
+    .arch-chain {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      position: relative;
+      margin-left: 1.25rem;
+      border-left: 2px dashed var(--hc-border);
+      padding-left: 1.75rem;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+    }
+
+    .chain-step {
+      position: relative;
+      background: var(--hc-surface-muted);
+      border: 1px solid var(--hc-border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+    }
+
+    .chain-step:hover {
+      border-color: var(--hc-primary);
+    }
+
+    .chain-step::before {
+      content: "";
+      position: absolute;
+      left: calc(-1.75rem - 6px);
+      top: 1.5rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--hc-border);
+      border: 2px solid var(--hc-surface);
+      z-index: 5;
+      transition: background-color var(--transition-fast);
+    }
+
+    .chain-step:hover::before {
+      background-color: var(--hc-primary);
+    }
+
+    .chain-step-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--hc-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.35rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chain-step-desc {
+      font-size: 0.925rem;
+      color: var(--hc-text);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .chain-step-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 0.75rem;
+      font-size: 0.825rem;
+      color: var(--hc-text-secondary);
+      border-top: 1px solid var(--hc-border);
+      padding-top: 0.6rem;
+      margin-top: 0.6rem;
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .detail-label {
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.675rem;
+      color: var(--hc-text-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .detail-value {
+      font-family: inherit;
+    }
+    .detail-value-code {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--hc-text);
+      word-break: break-all;
+    }
+
+    /* JSON payload viewer */
+    .json-wrapper {
+      background: #0f172a;
+      color: #cbd5e1;
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      overflow-x: auto;
+      margin-top: 0.5rem;
+      border: 1px solid #1e293b;
+      font-size: 0.8rem;
+    }
+
+    /* Flow filtering stats */
+    .results-count {
+      font-size: 0.9rem;
+      color: var(--hc-text-secondary);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: transparent;
+      border: none;
+      color: var(--hc-text-muted);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all var(--transition-fast);
+      margin-left: 0.5rem;
+    }
+    .copy-btn:hover {
+      background: var(--hc-surface-muted);
+      color: var(--hc-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="app-header-bg"></div>
+    <div class="header-content">
+      <div class="header-title">
+        <span class="header-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Hệ Thống Quản Lý Bệnh Viện - Hospital Core Suite
+        </span>
+        <h1>Tài Liệu Hướng Dẫn Nhà Phát Triển (Onboarding Guide)</h1>
+        <p>Sơ đồ kiến trúc & Danh mục luồng nghiệp vụ tương tác Front-to-Back</p>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-theme" id="theme-toggle" aria-label="Thay đổi giao diện sáng/tối">
+          <svg id="theme-sun" style="display:none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg id="theme-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <span id="theme-text">Chế độ tối</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- App Container -->
+  <div class="app-container">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <!-- General Navigation -->
+      <nav class="nav-card">
+        <div class="nav-card-title">CÁC TRANG TÀI LIỆU</div>
+        <ul class="nav-list">
+          <li class="nav-item active" data-section="overview-section">Tổng quan hệ thống</li>
+          <li class="nav-item" data-section="testing-section">Chiến lược kiểm thử</li>
+          <li class="nav-item" data-section="migrations-section">Lịch sử Schema migrations</li>
+          <li class="nav-item" data-section="discovery-1-section">1. Khóa ghi CSDL (Pessimistic)</li>
+          <li class="nav-item" data-section="discovery-2-section">2. Nhật ký Từ chối truy cập</li>
+          <li class="nav-item" data-section="discovery-3-section">3. Gmail API & Token Rotation</li>
+          <li class="nav-item" data-section="discovery-4-section">4. PDFBox Font Việt hóa</li>
+          <li class="nav-item" data-section="discovery-5-section">5. Data Seeding & Performance</li>
+          <li class="nav-item" data-section="discovery-6-section">6. Mặt nạ che PII Patient CCCD</li>
+          <li class="nav-item" data-section="discovery-7-section">7. Cân bằng tải Bác sĩ</li>
+          <li class="nav-item" data-section="discovery-8-section">8. Cảnh báo màu SLA chờ đợi</li>
+          <li class="nav-item" data-section="discovery-9-section">9. Sổ cái kho hàng Delta</li>
+          <li class="nav-item" data-section="discovery-10-section">10. Scheduler múi giờ & Test Clock</li>
+          <li class="nav-item" data-section="flows-section">Danh mục 12 Luồng E2E</li>
+        </ul>
+      </nav>
+
+      <!-- Flows quick nav -->
+      <nav class="nav-card" id="flows-quick-nav" style="display:none;">
+        <div class="nav-card-title">Nhảy Nhanh Luồng</div>
+        <ul class="nav-list" id="quick-jump-list" style="max-height: 250px; overflow-y: auto;">
+          <!-- Populated dynamically -->
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="main-panel">
+
+      <!-- Section 1: System Overview -->
+      <section class="content-card" id="overview-section">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          Tổng quan hệ thống & Sơ đồ phụ thuộc Module
+        </h2>
+        <div class="flow-description">
+          Hệ thống Quản lý Bệnh viện (HMS) được cấu trúc dưới dạng một mô hình Monolith phân tầng sạch sẽ. Giao diện frontend Next.js 16 giao tiếp trực tiếp với Spring Boot 3.3 backend và cơ sở dữ liệu PostgreSQL.
+        </div>
+
+        <h3>Sơ đồ Kiến trúc Hệ thống</h3>
+        <div class="visual-arch">
+          <div class="arch-flow-row">
+            <div class="arch-block">
+              <div class="arch-block-title">Giao diện Frontend</div>
+              <div class="arch-block-tech">Next.js 16 / React 19</div>
+            </div>
+            <div class="arch-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+            <div class="arch-block">
+              <div class="arch-block-title">Bộ bọc API Client</div>
+              <div class="arch-block-tech">web/src/lib/public-api.ts</div>
+            </div>
+            <div class="arch-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+            <div class="arch-block" style="border-color: var(--hc-primary);">
+              <div class="arch-block-title">REST Controllers</div>
+              <div class="arch-block-tech">backend/controller/</div>
+            </div>
+          </div>
+
+          <div class="arch-flow-row" style="margin-top: 1rem; justify-content: flex-end;">
+            <div class="arch-arrow" style="transform: rotate(90deg); margin-right: 70px;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+          </div>
+
+          <div class="arch-flow-row">
+            <div class="arch-block" style="border-color: var(--hc-success);">
+              <div class="arch-block-title">Cơ sở dữ liệu PostgreSQL</div>
+              <div class="arch-block-tech">PostgreSQL 16</div>
+            </div>
+            <div class="arch-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 5 5 12 12 19"/></svg>
+            </div>
+            <div class="arch-block">
+              <div class="arch-block-title">Tầng hạ tầng / JPA</div>
+              <div class="arch-block-tech">backend/infrastructure/</div>
+            </div>
+            <div class="arch-arrow">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 5 5 12 12 19"/></svg>
+            </div>
+            <div class="arch-block">
+              <div class="arch-block-title">Dịch vụ nghiệp vụ (Services)</div>
+              <div class="arch-block-tech">backend/application/</div>
+            </div>
+          </div>
+        </div>
+
+        <h3>Luồng Trạng Thái Hàng Đợi Lâm Sàng</h3>
+        <div class="visual-arch" style="margin-top: 2rem;">
+          <div class="arch-flow-row">
+            <div class="arch-block">
+              <div class="arch-block-title" style="color: var(--hc-warning);">CONFIRMED</div>
+              <div class="arch-block-tech">Đặt lịch thành công</div>
+            </div>
+            <div class="arch-arrow">➔</div>
+            <div class="arch-block" style="border-color: var(--hc-warning);">
+              <div class="arch-block-title" style="color: var(--hc-warning);">CHECKED_IN</div>
+              <div class="arch-block-tech">Tiếp nhận / Đo sinh hiệu</div>
+            </div>
+            <div class="arch-arrow">➔</div>
+            <div class="arch-block" style="border-color: var(--hc-primary);">
+              <div class="arch-block-title" style="color: var(--hc-primary);">IN_PROGRESS</div>
+              <div class="arch-block-tech">Bác sĩ khám bệnh</div>
+            </div>
+            <div class="arch-arrow">➔</div>
+            <div class="arch-block" style="border-color: var(--hc-success);">
+              <div class="arch-block-title" style="color: var(--hc-success);">DONE</div>
+              <div class="arch-block-tech">Hoàn tất (Hóa đơn/Thuốc)</div>
+            </div>
+          </div>
+        </div>
+
+        <h3>Luồng Phụ Thuộc Module Backend</h3>
+        <div class="flow-description">
+          Hệ thống monolith mô-đun ở backend áp dụng nghiêm ngặt các ranh giới kiến trúc sạch (clean architecture):
+          <br>
+          <code>start</code> (chạy ứng dụng, phụ thuộc vào <code>controller</code>, <code>application</code>, <code>infrastructure</code>) ➔ <code>controller</code> (phơi bày REST API, phụ thuộc vào <code>application</code>) ➔ <code>application</code> (xử lý logic nghiệp vụ, phụ thuộc vào <code>domain</code> và sử dụng repositories) ➔ <code>infrastructure</code> (truy cập cơ sở dữ liệu và cấu hình JPA/Flyway) ➔ <code>domain</code> (chứa thực thể cốt lõi độc lập hoàn toàn).
+        </div>
+
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th style="width: 25%;">Tầng thành phần</th>
+                <th style="width: 35%;">Công nghệ & Tệp tin</th>
+                <th style="width: 40%;">Mô tả & Trách nhiệm chính</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Frontend Client</strong></td>
+                <td>Next.js 16, React 19, TS<br><a class="path-link" href="file:///d:/projects/hospital-management-system/web">web/</a></td>
+                <td>Ứng dụng client động sử dụng React Server & Client Components, lưu trữ trạng thái qua sessionStorage, quản lý định tuyến RBAC.</td>
+              </tr>
+              <tr>
+                <td><strong>API Client Wrapper</strong></td>
+                <td>Native Fetch, TS Interfaces<br><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib">web/src/lib/</a></td>
+                <td>Tập hợp helper thực hiện gọi API được phân tách theo nghiệp vụ. Wrapper chính trong <a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/api-client.ts">api-client.ts</a> tự động đính kèm token Bearer JWT.</td>
+              </tr>
+              <tr>
+                <td><strong>REST Controllers</strong></td>
+                <td>REST Controllers Spring Boot<br><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/controller">backend/controller/</a></td>
+                <td>Expose các endpoints dưới dạng `/api/v1/*`. Thực hiện xác thực payload đầu vào, kiểm tra quyền truy cập và bọc phản hồi trong định dạng envelope `ApiResponse<T>`.</td>
+              </tr>
+              <tr>
+                <td><strong>Tầng dịch vụ (Application Services)</strong></td>
+                <td>Spring Services & DTOs<br><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/application">backend/application/</a></td>
+                <td>Điều phối các quy trình nghiệp vụ, kiểm tra tính toàn vẹn dữ liệu, và quản lý các giao dịch cơ sở dữ liệu thông qua annotation `@Transactional`.</td>
+              </tr>
+              <tr>
+                <td><strong>Thực thể cốt lõi (Domain Entities)</strong></td>
+                <td>JPA & Hibernate entities<br><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/domain">backend/domain/</a></td>
+                <td>Các thực thể biểu diễn dữ liệu cốt lõi (như `AppointmentEntity`, `PatientEntity`). Độc lập hoàn toàn với framework và thư viện ngoài.</td>
+              </tr>
+              <tr>
+                <td><strong>Tầng hạ tầng (Infrastructure)</strong></td>
+                <td>Spring Data JPA, Flyway, Postgres<br><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/infrastructure">backend/infrastructure/</a></td>
+                <td>Thực thi các câu lệnh truy vấn database, thiết lập bộ giải mã token JWT, và chứa các tệp di cư schema Flyway SQL.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 2: Testing Strategy -->
+      <section class="content-card" id="testing-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          Chiến lược kiểm thử toàn diện
+        </h2>
+        <div class="flow-description">
+          Dự án áp dụng quy chuẩn kiểm thử nghiêm ngặt, yêu cầu độ bao phủ tối thiểu 80% đối với mã nguồn mới/thay đổi. Kiểm thử được phân bổ rõ ràng giữa Backend (JUnit 5, Mockito) và Frontend (Vitest, RTL, Playwright).
+        </div>
+
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Loại kiểm thử</th>
+                <th>Lệnh thực thi</th>
+                <th>Vị trí / Phạm vi</th>
+                <th>Chiến lược Mock & Database</th>
+                <th>Độ sâu & Mục tiêu bao phủ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Backend Unit Tests</strong></td>
+                <td><code>mvn test</code></td>
+                <td>Các lớp kiểm thử JUnit 5 trong module application/domain</td>
+                <td>Sử dụng <strong>Mockito</strong> để cô lập nghiệp vụ bằng cách stubbing tầng Repository. Không khởi chạy CSDL.</td>
+                <td>Xác thực các quy tắc kiểm tra logic, ràng buộc nghiệp vụ, mapping DTO. Đạt mục tiêu bao phủ > 80%.</td>
+              </tr>
+              <tr>
+                <td><strong>Backend Integration Tests</strong></td>
+                <td><code>mvn verify</code></td>
+                <td>Các lớp kiểm thử trong module start/controller</td>
+                <td>Khởi chạy toàn bộ context của Spring Boot. Khởi động <strong>Testcontainers</strong> PostgreSQL với schema Flyway hoàn chỉnh.</td>
+                <td>Xác thực luồng giao dịch cơ sở dữ liệu, phân quyền REST endpoints, kiểm tra log hoạt động hệ thống.</td>
+              </tr>
+              <tr>
+                <td><strong>Frontend Unit & RTL Tests</strong></td>
+                <td><code>npm run test:unit</code><br><code>npm run test:unit:coverage</code></td>
+                <td>Thư mục <code>web/src/**/__tests__</code> hoặc tệp component tương ứng</td>
+                <td>Mock router của Next.js. Thực hiện stubbing các cuộc gọi API thông qua global fetch mock handlers.</td>
+                <td>Xác thực giao diện hiển thị, trạng thái tải (loading, error, empty), hoạt động của các biểu mẫu. Đạt mục tiêu > 80%.</td>
+              </tr>
+              <tr>
+                <td><strong>E2E Playwright Tests</strong></td>
+                <td><code>npm run test:e2e:ci</code></td>
+                <td>Playwright specs trong thư mục <code>web/e2e/</code></td>
+                <td>Khởi chạy toàn bộ hệ thống thực tế: Next.js dev server + Spring Boot backend monolith + PostgreSQL.</td>
+                <td>Mô phỏng hành trình người dùng đầu cuối (đăng nhập nhân viên, tiếp nhận hàng đợi, lưu trữ bệnh án, xuất hóa đơn).</td>
+              </tr>
+              <tr>
+                <td><strong>Visual Regression Tests</strong></td>
+                <td><code>npm run test:e2e:visual</code></td>
+                <td>Playwright visual specs</td>
+                <td>Chụp màn hình giao diện thực tế trên Chromium/Webkit/Firefox và so sánh sai lệch pixel với snapshot mẫu.</td>
+                <td>Đảm bảo cấu trúc giao diện CSS, màu sắc, cảnh báo hiển thị chính xác và không bị lệch vỡ cấu trúc.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Section 3: Schema Migrations -->
+      <section class="content-card" id="migrations-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M6.34 17.66l-2.83-2.83M19.07 4.93l-2.83 2.83"/></svg>
+          Tiến hóa Schema cơ sở dữ liệu (Flyway)
+        </h2>
+        <div class="flow-description">
+          Quá trình nâng cấp, thay đổi cấu trúc bảng cơ sở dữ liệu được theo dõi phiên bản nghiêm ngặt thông qua các tệp di cư SQL Flyway nằm tại thư mục tài nguyên của module start: <a class="path-link" href="file:///d:/projects/hospital-management-system/backend/start/src/main/resources/db/migration">backend/start/src/main/resources/db/migration/</a>.
+        </div>
+
+        <div class="timeline">
+          <!-- V1 -->
+          <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-header">
+              <div class="timeline-version">V1</div>
+              <div class="timeline-title">Khởi tạo Schema cơ sở dữ liệu ban đầu</div>
+            </div>
+            <div class="timeline-desc">Tạo các bảng cơ bản cốt lõi: users, departments, rooms, patients, appointments, time_slots. Thiết lập khóa ngoại và chỉ mục chính.</div>
+            <div class="timeline-code">V1__Create_initial_schema.sql</div>
+          </div>
+          <!-- V2-4 -->
+          <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-header">
+              <div class="timeline-version">V2 - V4</div>
+              <div class="timeline-title">Bổ sung cột lâm sàng & Bảo mật PII bệnh nhân</div>
+            </div>
+            <div class="timeline-desc">V2 bổ sung cột checked_in_at cho hàng đợi. V3 thêm email bệnh nhân. V4 tích hợp thêm cột cccd mã hóa và chỉ mục cccd_hash giúp tìm kiếm định danh bảo mật.</div>
+            <div class="timeline-code">V4__Expand_patient_identifier_and_security.sql</div>
+          </div>
+          <!-- V5-8 -->
+          <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-header">
+              <div class="timeline-version">V5 - V8</div>
+              <div class="timeline-title">Hóa đơn, Sổ cái Kho & Cổng bệnh nhân</div>
+            </div>
+            <div class="timeline-desc">V5 tạo bảng invoices và service_pricing. V6 thêm trạng thái phòng khám. V7 xây dựng cấu trúc quản lý kho dược inventory_items, inventory_lots, movements. V8 thêm portal patient_accounts.</div>
+            <div class="timeline-code">V8__Add_patient_portal_tables.sql</div>
+          </div>
+          <!-- V9-11 -->
+          <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-header">
+              <div class="timeline-version">V9 - V11</div>
+              <div class="timeline-title">Loại bỏ cấu trúc Trợ lý AI và Cơ sở tri thức</div>
+            </div>
+            <div class="timeline-desc">V9 & V10 thêm các bảng lưu trữ phiên chat trợ lý AI. V11 thực hiện loại bỏ hoàn toàn các bảng này và phần mở rộng vector để thu gọn ranh giới phần mềm cốt lõi.</div>
+            <div class="timeline-code">V11__Remove_ai_assistant_features.sql</div>
+          </div>
+          <!-- V12-15 -->
+          <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-header">
+              <div class="timeline-version">V12 - V15</div>
+              <div class="timeline-title">Lịch hẹn tái khám, Sinh hiệu & Kết quả xét nghiệm</div>
+            </div>
+            <div class="timeline-desc">Bổ sung bảng lịch hẹn tái khám follow-ups (V12), bảng ghi nhận chỉ số sinh hiệu vital_signs (V13), metadata bệnh án (V14) và kết nối tệp tin lab_results (V15).</div>
+            <div class="timeline-code">V13__Add_appointment_vital_signs_table.sql</div>
+          </div>
+          <!-- V16-18 -->
+          <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-header">
+              <div class="timeline-version">V16 - V18</div>
+              <div class="timeline-title">Cập nhật phân quyền RBAC & Ràng buộc toàn vẹn</div>
+            </div>
+            <div class="timeline-desc">V16 bổ sung thêm các phân quyền vai trò (ACCOUNTANT, PHARMACIST). V17 thiết lập ràng buộc giá trị tồn kho không âm trên database. V18 đồng nhất định nghĩa trạng thái hóa đơn (UNPAID, PAID, CANCELLED).</div>
+            <div class="timeline-code">V18__Align_invoice_status_constraint.sql</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Discovery 1 -->
+      <section class="content-card" id="discovery-1-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          1. Khóa ghi cơ sở dữ liệu chống trùng lặp (Pessimistic Write Locking)
+        </h2>
+        <div class="flow-description">
+          HMS ngăn chặn tình trạng đặt lịch trùng lặp phòng khám hoặc khung giờ bác sĩ bằng cách áp dụng khóa độc quyền ở tầng dữ liệu.
+        </div>
+        <div class="chain-step">
+          <div class="chain-step-title">Mô tả mã nguồn</div>
+          <div class="chain-step-desc">Sử dụng Pessimistic Write Lock khi truy vấn khung giờ rảnh</div>
+          <div class="chain-step-details">
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/infrastructure/src/main/java/com/hospital/core/timeslot/TimeSlotRepository.java">TimeSlotRepository.java</a></span></div>
+            <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Chú thích <code>@Lock(LockModeType.PESSIMISTIC_WRITE)</code> trên phương thức <code>lockWindow()</code> và <code>findByIdForUpdate()</code>. Khi có nhiều luồng tranh chấp đăng ký cùng một khung giờ, DB sẽ khóa dòng dữ liệu đó, buộc các luồng đăng ký sau phải chờ cho đến khi giao dịch hiện tại hoàn tất (Commit hoặc Rollback), giúp loại bỏ hoàn toàn rủi ro Overbooking.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Discovery 2 -->
+      <section class="content-card" id="discovery-2-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          2. Ghi nhật ký vi phạm phân quyền ở tầng bộ lọc (Filter Level Denial Audit)
+        </h2>
+        <div class="flow-description">
+          Ghi nhận toàn bộ sự cố truy cập trái phép trực tiếp tại ranh giới servlet filter trước khi yêu cầu đi vào controller Spring.
+        </div>
+        <div class="chain-step">
+          <div class="chain-step-title">Mô tả mã nguồn</div>
+          <div class="chain-step-desc">Bộ lọc ghi nhật ký truy cập trái phép</div>
+          <div class="chain-step-details">
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/controller/src/main/java/com/hospital/api/config/AuthorizationDenialAuditFilter.java">AuthorizationDenialAuditFilter.java</a></span></div>
+            <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Filter bắt gói phản hồi có HTTP status 401 hoặc 403. Sau đó, trích xuất mã số định danh tác nhân (actorId), phương thức, địa chỉ URL đã được làm sạch cấu trúc, định dạng và ghi trực tiếp bản ghi kiểm toán bảo mật <code>SECURITY_ACCESS_DENIED</code> vào bảng CSDL audit_logs.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Discovery 3 -->
+      <section class="content-card" id="discovery-3-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          3. Tích hợp trực tiếp API REST của Gmail với cơ chế tự động xoay Token
+        </h2>
+        <div class="flow-description">
+          HMS xây dựng bộ gửi email nhẹ thông qua kết nối HTTP thô đến Google Cloud API, giảm sự phụ thuộc vào các SDK lớn.
+        </div>
+        <div class="chain-step">
+          <div class="chain-step-title">Mô tả mã nguồn</div>
+          <div class="chain-step-desc">Giao thức trao đổi JWT và xoay vòng Refresh Token</div>
+          <div class="chain-step-details">
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/infrastructure/src/main/java/com/hospital/core/email/GmailApiClient.java">GmailApiClient.java</a></span></div>
+            <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Mỗi khi gửi mail (Xác nhận đặt lịch, Báo cáo kết quả khám kèm PDF đơn thuốc), client gửi request POST trao đổi OAuth2 Refresh Token lấy Bearer Access Token dùng một lần, sau đó đóng gói thư điện tử chuẩn MIME thô dưới dạng URL-Safe Base64 và chuyển tiếp qua API Google.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Discovery 4 -->
+      <section class="content-card" id="discovery-4-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          4. Nạp Font UTF-8 hệ thống để hiển thị đúng Tiếng Việt có dấu trong PDFBox
+        </h2>
+        <div class="flow-description">
+          Xử lý hiển thị ký tự Unicode tiếng Việt trong đơn thuốc xuất bản dạng PDF mà không làm vỡ hoặc lỗi font chữ.
+        </div>
+        <div class="chain-step">
+          <div class="chain-step-title">Mô tả mã nguồn</div>
+          <div class="chain-step-desc">Duyệt qua danh sách Font khả dụng của hệ điều hành</div>
+          <div class="chain-step-details">
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/infrastructure/src/main/java/com/hospital/core/prescription/PrescriptionPdfService.java">PrescriptionPdfService.java</a></span></div>
+            <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Duyệt tìm font TrueType khả dụng (Arial.ttf trên Windows, DejaVuSans.ttf trên Linux) và nạp qua <code>PDType0Font.load()</code> của Apache PDFBox. Nếu không tìm thấy, hệ thống sẽ fallback về font chuẩn Helvetica của PDF. Điều này đảm bảo đơn thuốc hiển thị đúng tên tiếng Việt có dấu.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Discovery 5 -->
+      <section class="content-card" id="discovery-5-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          5. Cấu hình Demo Seed dữ liệu tải lớn (Performance Simulation Seeding)
+        </h2>
+        <div class="flow-description">
+          HMS xây dựng một bộ khởi tạo dữ liệu mẫu cực lớn giúp lập trình viên kiểm thử hiệu năng tìm kiếm và phân trang trực tiếp.
+        </div>
+        <div class="chain-step">
+          <div class="chain-step-title">Mô tả mã nguồn</div>
+          <div class="chain-step-desc">Seeding hàng trăm bản ghi mẫu thông qua cấu hình Spring Properties</div>
+          <div class="chain-step-details">
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/application/src/main/java/com/hospital/core/seed/SeedDataService.java">SeedDataService.java</a></span></div>
+            <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Nhận thuộc tính từ lớp <code>NonBillingDemoSeedProperties</code>. Nếu được kích hoạt (enabled = true), ứng dụng tự động chạy CommandLineRunner chèn hàng trăm phòng ban, bác sĩ, bệnh nhân, lịch hẹn mẫu và hàng ngàn log kiểm toán, giúp mô phỏng chính xác môi trường sản xuất.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Discovery 6 -->
+      <section class="content-card" id="discovery-6-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><eye-off></eye-off><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+          6. Mặt nạ bảo vệ thông tin định danh cá nhân bệnh nhân (CCCD UI Masking)
+        </h2>
+        <div class="flow-description">
+          Tuân thủ nguyên tắc thiết kế bảo mật riêng tư (Privacy-by-Design) bằng cách che giấu các thông tin nhạy cảm trên màn hình hàng đợi công cộng.
+        </div>
+        <div class="chain-step">
+          <div class="chain-step-title">Mô tả mã nguồn</div>
+          <div class="chain-step-desc">Che ký tự căn cước công dân trên bảng điều phối của điều dưỡng</div>
+          <div class="chain-step-details">
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/staff-queue.ts">web/src/lib/staff-queue.ts</a></span></div>
+            <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Hàm <code>maskIdentifier(value)</code> nhận chuỗi CCCD gốc, thực hiện cắt chuỗi và chèn ký tự sao (ví dụ: hiển thị <code>079***012</code>). Điều này giúp bệnh nhân và điều dưỡng quan sát mã số định vị hàng đợi mà không lộ số căn cước công dân thực tế trên màn hình hiển thị.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Discovery 7 -->
+      <section class="content-card" id="discovery-7-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          7. Thuật toán đo lường tải khám và điều phối Bác sĩ tại phòng tiếp nhận
+        </h2>
+        <div class="flow-description">
+          HMS tính toán số lượng bệnh nhân tại từng trạng thái chờ khám của bác sĩ để tối ưu hóa thời gian tiếp đón bệnh nhân.
+        </div>
+        <div class="chain-step">
+          <div class="chain-step-title">Mô tả mã nguồn</div>
+          <div class="chain-step-desc">Tổng hợp số lượng bệnh nhân chờ đợi thực tế theo bác sĩ</div>
+          <div class="chain-step-details">
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/staff-queue.ts">web/src/lib/staff-queue.ts</a></span></div>
+            <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Hàm <code>calculatePhysicianLoads()</code> nhóm danh sách bệnh nhân tiếp nhận theo doctorId, đếm tổng số ca "waiting", "ready", và "in_progress". Dữ liệu này giúp nhân viên đón tiếp đưa bệnh nhân vào hàng đợi của bác sĩ đang rảnh hơn.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Discovery 8 -->
+      <section class="content-card" id="discovery-8-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          8. Phân mức độ ưu tiên hàng đợi qua cảnh báo màu thời gian chờ (SLA Alerts)
+        </h2>
+        <div class="flow-description">
+          Chỉ báo trực quan cho điều dưỡng biết bệnh nhân nào đã chờ quá thời gian cam kết dịch vụ (SLA) tại phòng khám.
+        </div>
+        <div class="chain-step">
+          <div class="chain-step-title">Mô tả mã nguồn</div>
+          <div class="chain-step-desc">Mã hóa màu dựa trên khoảng thời gian tính bằng phút</div>
+          <div class="chain-step-details">
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/staff-queue.ts">web/src/lib/staff-queue.ts</a></span></div>
+            <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Hàm <code>getWaitBadgeClass(waitMinutes)</code> sẽ kiểm tra: nếu thời gian chờ lớn hơn hoặc bằng 40 phút, trả về màu đỏ báo động (danger); từ 20 phút trở lên trả về màu vàng cảnh báo (warning); dưới 20 phút là màu xanh an toàn (success).</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Discovery 9 -->
+      <section class="content-card" id="discovery-9-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          9. Sổ cái kho dược phẩm cập nhật theo biến động giao dịch (Inventory Ledger Movements)
+        </h2>
+        <div class="flow-description">
+          HMS bảo vệ tính toàn vẹn tồn kho bằng cách cấm giảm trực tiếp số lượng thuốc trên kệ, thay vào đó bắt buộc thông qua giao dịch biến động.
+        </div>
+        <div class="chain-step">
+          <div class="chain-step-title">Mô tả mã nguồn</div>
+          <div class="chain-step-desc">Tính toán delta tồn kho và lưu vết biến động (Movements)</div>
+          <div class="chain-step-details">
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/application/src/main/java/com/hospital/core/inventory/InventoryWriteService.java">InventoryWriteService.java</a></span></div>
+            <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Hàm <code>recordMovement()</code> nhận delta biến động âm hoặc dương. Nó kiểm tra nếu tồn kho sau biến động bị âm sẽ ném ra lỗi xung đột (ConflictException). Nếu hợp lệ, hệ thống tạo bản ghi <code>InventoryMovementEntity</code>, lưu trữ vết loại biến động (RESTOCK, DISPENSE) và cập nhật số lượng tồn thực tế.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Discovery 10 -->
+      <section class="content-card" id="discovery-10-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          10. Scheduler múi giờ nội địa & Thiết kế nạp Clock giả lập trong kiểm thử
+        </h2>
+        <div class="flow-description">
+          Thiết lập chạy tiến trình tự động gửi email nhắc lịch tái khám đúng múi giờ Việt Nam và cho phép giả lập thời gian khi chạy Test.
+        </div>
+        <div class="chain-step">
+          <div class="chain-step-title">Mô tả mã nguồn</div>
+          <div class="chain-step-desc">Tích hợp Scheduled Cron và tiêm Bean Clock để mock thời gian</div>
+          <div class="chain-step-details">
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/application/src/main/java/com/hospital/core/scheduler/ReminderService.java">ReminderService.java</a></span></div>
+            <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Chú thích <code>@Scheduled(cron = ..., zone = "Asia/Saigon")</code> chạy quét mỗi 15 phút. Thay vì dùng <code>Instant.now()</code> tĩnh, dịch vụ tiêm vào đối tượng <code>Clock</code>. Khi chạy unit test, ta có thể dễ dàng chế tạo Clock giả lập thời gian trôi hoặc ngày bất kỳ để kiểm tra xem tiến trình gửi mail nhắc nhở có hoạt động chuẩn hay không.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: E2E Flows Section -->
+      <section class="content-card" id="flows-section" style="display:none;">
+        <h2>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Danh mục luồng nghiệp vụ E2E
+        </h2>
+        <div class="flow-description">
+          Sử dụng hộp tìm kiếm dưới đây để lọc luồng nghiệp vụ theo tên, tệp tin, endpoint, bảng CSDL hoặc logic chi tiết. Nhấp vào mỗi thẻ để mở rộng sơ đồ thực thi đầy đủ.
+        </div>
+
+        <!-- Search controls -->
+        <div class="search-section">
+          <div class="search-box">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+            <input type="text" class="search-input" id="flow-search" placeholder="Lọc luồng, tệp tin, endpoints, bảng cơ sở dữ liệu...">
+          </div>
+        </div>
+
+        <div class="results-count" id="results-meta">Đang hiển thị 12 luồng nghiệp vụ</div>
+
+        <!-- Flow Cards List -->
+        <div class="flows-grid" id="flows-container">
+          <!-- Flow 1 -->
+          <div class="flow-card" data-search="auth login logout authcontroller authservice userentity users sessionstorage handlelogin login/page.tsx">
+            <div class="flow-header">
+              <div class="flow-header-left">
+                <div class="flow-index">1</div>
+                <div class="flow-title">Xác thực nhân viên (Đăng nhập / Đăng xuất)</div>
+              </div>
+              <div class="flow-meta">
+                <span class="badge badge-primary">Xác thực</span>
+                <svg class="flow-toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-description">
+                Cho phép nhân viên y tế và nhân viên hành chính đăng nhập hệ thống an toàn, nhận phiên làm việc JWT và điều hướng đến màn hình chức năng phù hợp với quyền hạn.
+              </div>
+              <div class="arch-chain">
+                <!-- Step 1 -->
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 1: Hành động người dùng</div>
+                  <div class="chain-step-desc">Nhân viên điền thông tin đăng nhập và nhấn Submit</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/staff/(auth)/login/page.tsx">web/src/app/staff/(auth)/login/page.tsx</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Logic xử lý</span><span class="detail-value">Kích hoạt trình xử lý sự kiện form <code>handleLogin()</code>.</span></div>
+                  </div>
+                </div>
+                <!-- Step 2 -->
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 2: Gọi lệnh API Client</div>
+                  <div class="chain-step-desc">Gửi thông tin tài khoản đến REST endpoint</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value"><code>apiRequest("/auth/login", { method: "POST" })</code> trong <a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/api-client.ts">web/src/lib/api-client.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Payload</span><span class="detail-value-code">{"email": "admin@hospital.vn", "password": "***"}</span></div>
+                  </div>
+                </div>
+                <!-- Step 3 -->
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 3: Tiếp nhận tại REST Controller</div>
+                  <div class="chain-step-desc">Controller đón nhận request và phân tích dữ liệu đầu vào</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Method</span><span class="detail-value-code">com.hospital.api.auth.AuthController.login()</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí mã nguồn</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/controller/src/main/java/com/hospital/api/auth/AuthController.java">AuthController.java</a></span></div>
+                  </div>
+                </div>
+                <!-- Step 4 -->
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 4: Thực thi nghiệp vụ & Xác thực</div>
+                  <div class="chain-step-desc">Ứng dụng tìm kiếm nhân viên, so khớp mật khẩu mã hóa BCrypt và ký Token JWT</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Service</span><span class="detail-value-code">com.hospital.api.auth.AuthService.login()</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí mã nguồn</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/application/src/main/java/com/hospital/api/auth/AuthService.java">AuthService.java</a></span></div>
+                  </div>
+                </div>
+                <!-- Step 5 -->
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 5: Thao tác Cơ sở dữ liệu</div>
+                  <div class="chain-step-desc">Truy vấn thông tin tài khoản nhân viên từ bảng dữ liệu</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bảng liên quan</span><span class="detail-value-code">users</span></div>
+                    <div class="detail-item"><span class="detail-label">Loại thao tác</span><span class="detail-value">SELECT</span></div>
+                  </div>
+                </div>
+                <!-- Step 6 -->
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 6: Lưu trữ Session Storage</div>
+                  <div class="chain-step-desc">Lưu Token truy cập vào bộ nhớ trình duyệt và chuyển hướng trang</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bộ nhớ tạm</span><span class="detail-value">Gọi <code>persistSession("staff", tokens, role)</code> ghi khóa <code>hms_staff_access_token</code>.</span></div>
+                    <div class="detail-item"><span class="detail-label">Định hướng tuyến</span><span class="detail-value">Chuyển hướng về <code>/staff/dashboard</code></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flow 2 -->
+          <div class="flow-card" data-search="patient portal claim registration patientauthcontroller patientauthservice patientaccountentity patient_accounts patients cccd dateofbirth portal/claim">
+            <div class="flow-header">
+              <div class="flow-header-left">
+                <div class="flow-index">2</div>
+                <div class="flow-title">Kích hoạt tài khoản Cổng bệnh nhân (Claim)</div>
+              </div>
+              <div class="flow-meta">
+                <span class="badge badge-primary">Xác thực bệnh nhân</span>
+                <svg class="flow-toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-description">
+                Cho phép bệnh nhân đã từng khám tại viện thiết lập mật khẩu truy cập cổng thông tin trực tuyến bằng cách khớp xác minh CCCD, Ngày sinh và Email.
+              </div>
+              <div class="arch-chain">
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 1: Hành động người dùng</div>
+                  <div class="chain-step-desc">Bệnh nhân điền thông tin CCCD, Ngày sinh và đặt mật khẩu mới</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/portal/(app)/claim/page.tsx">web/src/app/portal/(app)/claim/page.tsx</a></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 2: Gọi lệnh API Client</div>
+                  <div class="chain-step-desc">Gửi thông tin xác thực đến endpoint đăng ký tài khoản bệnh nhân</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">apiRequest("/patient-auth/claim", { method: "POST" })</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 3: Tiếp nhận tại REST Controller</div>
+                  <div class="chain-step-desc">Nhận yêu cầu đăng ký tài khoản cổng bệnh nhân</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Method</span><span class="detail-value-code">com.hospital.api.patientauth.PatientAuthController.claim()</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí mã nguồn</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/controller/src/main/java/com/hospital/api/patientauth/PatientAuthController.java">PatientAuthController.java</a></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 4: Thực thi nghiệp vụ xác thực bệnh nhân</div>
+                  <div class="chain-step-desc">Mã hóa băm căn cước công dân đầu vào và so khớp với hồ sơ bệnh án gốc</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Service</span><span class="detail-value-code">com.hospital.api.patientauth.PatientAuthService.claim()</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí mã nguồn</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/application/src/main/java/com/hospital/api/patientauth/PatientAuthService.java">PatientAuthService.java</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Định danh bảo mật</span><span class="detail-value">Băm CCCD qua <code>patientIdentifierProtector.hash()</code> so sánh với <code>cccdHash</code>.</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 5: Thao tác Cơ sở dữ liệu</div>
+                  <div class="chain-step-desc">Lưu thông tin đăng nhập mới cho bệnh nhân trên hệ thống cổng dịch vụ</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bảng liên quan</span><span class="detail-value-code">patients (SELECT), patient_accounts (INSERT/UPDATE)</span></div>
+                    <div class="detail-item"><span class="detail-label">Loại thao tác</span><span class="detail-value">SELECT, INSERT, UPDATE</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flow 3 -->
+          <div class="flow-card" data-search="doctor list directory search specialties filter listdoctors doctorcontroller doctorreadservice users departments doctors/page.tsx">
+            <div class="flow-header">
+              <div class="flow-header-left">
+                <div class="flow-index">3</div>
+                <div class="flow-title">Danh bạ & Tìm kiếm bác sĩ công khai</div>
+              </div>
+              <div class="flow-meta">
+                <span class="badge badge-success">Công khai</span>
+                <svg class="flow-toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-description">
+                Cho phép khách vãng lai và bệnh nhân tìm kiếm danh sách bác sĩ, lọc theo khoa khám, chuyên khoa lâm sàng.
+              </div>
+              <div class="arch-chain">
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 1: Hành động người dùng</div>
+                  <div class="chain-step-desc">Người dùng mở danh sách bác sĩ và lọc theo tên hoặc chuyên khoa</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/(public)/doctors/page.tsx">web/src/app/(public)/doctors/page.tsx</a></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 2: Gọi lệnh API Client</div>
+                  <div class="chain-step-desc">Gửi yêu cầu GET tải danh sách bác sĩ kèm theo từ khóa lọc</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">listDoctors()</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/public-api.ts">web/src/lib/public-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Endpoint</span><span class="detail-value-code">GET /api/v1/doctors</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 3: Tiếp nhận tại REST Controller</div>
+                  <div class="chain-step-desc">Đón nhận truy vấn danh mục bác sĩ từ bên ngoài</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Method</span><span class="detail-value-code">com.hospital.api.doctor.DoctorController.listDoctors()</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí mã nguồn</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/controller/src/main/java/com/hospital/api/doctor/DoctorController.java">DoctorController.java</a></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 4: Thực thi nghiệp vụ đọc danh mục</div>
+                  <div class="chain-step-desc">Lấy dữ liệu người dùng có vai trò DOCTOR kèm khoa khám</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Service</span><span class="detail-value-code">com.hospital.core.doctor.DoctorReadService.listDoctors()</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 5: Thao tác Cơ sở dữ liệu</div>
+                  <div class="chain-step-desc">Lấy danh sách bác sĩ đang hoạt động</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bảng liên quan</span><span class="detail-value-code">users, departments</span></div>
+                    <div class="detail-item"><span class="detail-label">Loại thao tác</span><span class="detail-value">SELECT JOIN</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flow 4 -->
+          <div class="flow-card" data-search="doctor slot lookup availability calendar listdoctorslots doctorcontroller time_slots booking/page.tsx">
+            <div class="flow-header">
+              <div class="flow-header-left">
+                <div class="flow-index">4</div>
+                <div class="flow-title">Tra cứu thời gian trống của Bác sĩ</div>
+              </div>
+              <div class="flow-meta">
+                <span class="badge badge-success">Công khai</span>
+                <svg class="flow-toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-description">
+                Truy vấn dữ liệu thời gian thực các khung giờ rảnh của bác sĩ trong một ngày cụ thể, phục vụ luồng đặt lịch khám.
+              </div>
+              <div class="arch-chain">
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 1: Hành động người dùng</div>
+                  <div class="chain-step-desc">Người dùng chọn bác sĩ và click ngày trên lịch khám</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/(public)/booking/page.tsx">web/src/app/(public)/booking/page.tsx</a></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 2: Gọi lệnh API Client</div>
+                  <div class="chain-step-desc">Gửi yêu cầu kiểm tra khung giờ rảnh kèm theo doctorId và ngày khám</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">listDoctorSlots(doctorId, date)</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/public-api.ts">web/src/lib/public-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Endpoint</span><span class="detail-value-code">GET /api/v1/doctors/{doctorId}/slots?date=YYYY-MM-DD</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 3: Tiếp nhận tại REST Controller</div>
+                  <div class="chain-step-desc">Phân tích tham số truy vấn và gọi tầng nghiệp vụ đọc</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Method</span><span class="detail-value-code">com.hospital.api.doctor.DoctorController.listDoctorSlots()</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 4: Thực thi nghiệp vụ đọc khung giờ</div>
+                  <div class="chain-step-desc">Lọc các khung giờ có trạng thái trống (AVAILABLE) theo ngày chỉ định</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Service</span><span class="detail-value-code">com.hospital.core.doctor.DoctorReadService.listDoctorSlots()</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 5: Thao tác Cơ sở dữ liệu</div>
+                  <div class="chain-step-desc">Thực thi truy vấn bảng khung giờ</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bảng liên quan</span><span class="detail-value-code">time_slots</span></div>
+                    <div class="detail-item"><span class="detail-label">Loại thao tác</span><span class="detail-value">SELECT (lọc trạng thái AVAILABLE)</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flow 5 -->
+          <div class="flow-card" data-search="appointment booking createpublicappointment appointmentcontroller appointmentwriteservice patients appointments time_slots booking/page.tsx">
+            <div class="flow-header">
+              <div class="flow-header-left">
+                <div class="flow-index">5</div>
+                <div class="flow-title">Đăng ký đặt lịch khám công khai</div>
+              </div>
+              <div class="flow-meta">
+                <span class="badge badge-success">Công khai</span>
+                <svg class="flow-toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-description">
+                Xử lý luồng đặt lịch khám của bệnh nhân: thực hiện khóa khung giờ khám, mã hóa bảo mật số CCCD, khởi tạo/cập nhật hồ sơ bệnh nhân, ghi nhận lịch hẹn và kích hoạt gửi mail xác nhận.
+              </div>
+              <div class="arch-chain">
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 1: Hành động người dùng</div>
+                  <div class="chain-step-desc">Bệnh nhân nhập thông tin CCCD, Địa chỉ, Triệu chứng bệnh và nhấn Đăng ký</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/(public)/booking/page.tsx">web/src/app/(public)/booking/page.tsx</a></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 2: Gọi lệnh API Client</div>
+                  <div class="chain-step-desc">API Client gửi request tạo mới lịch hẹn lên backend</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">createPublicAppointment(request)</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/public-api.ts">web/src/lib/public-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Endpoint</span><span class="detail-value-code">POST /api/v1/appointments</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 3: Tiếp nhận tại REST Controller</div>
+                  <div class="chain-step-desc">Controller nhận dữ liệu, thực hiện kiểm tra cấu trúc dữ liệu cơ bản</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Method</span><span class="detail-value-code">com.hospital.api.appointment.AppointmentController.createAppointment()</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí mã nguồn</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/controller/src/main/java/com/hospital/api/appointment/AppointmentController.java">AppointmentController.java</a></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 4: Thực thi nghiệp vụ đăng ký khám</div>
+                  <div class="chain-step-desc">Bắt đầu giao dịch ghi CSDL, khóa chống trùng khung giờ, mã hóa CCCD bảo mật và lưu lịch khám</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Service</span><span class="detail-value-code">com.hospital.core.appointment.AppointmentWriteService.createAppointment()</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí mã nguồn</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/application/src/main/java/com/hospital/core/appointment/AppointmentWriteService.java">AppointmentWriteService.java</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Mã hóa PII</span><span class="detail-value">Mã hóa CCCD qua <code>patientIdentifierProtector.encrypt()</code>, tạo băm bằng <code>hash()</code>.</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 5: Giao dịch Cơ sở dữ liệu</div>
+                  <div class="chain-step-desc">Thực hiện cập nhật và chèn bản ghi mới dạng nguyên tử</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bảng liên quan</span><span class="detail-value-code">time_slots (update), patients (insert/update), appointments (insert)</span></div>
+                    <div class="detail-item"><span class="detail-label">Loại thao tác</span><span class="detail-value">SELECT FOR UPDATE, INSERT, UPDATE</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 6: Gửi thư điện tử xác nhận</div>
+                  <div class="chain-step-desc">Đóng gói mail xác nhận chứa mã đặt lịch và gửi bất đồng bộ qua Gmail API</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Dịch vụ</span><span class="detail-value"><code>emailService.sendAppointmentConfirmation(email, code)</code></span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flow 6 -->
+          <div class="flow-card" data-search="patient search detail searchpatientrecords getpatientrecorddetail patientrecordcontroller patientrecordservice patients appointments medical_records patients/page.tsx">
+            <div class="flow-header">
+              <div class="flow-header-left">
+                <div class="flow-index">6</div>
+                <div class="flow-title">Tìm kiếm & Xem hồ sơ bệnh nhân (Nhân viên)</div>
+              </div>
+              <div class="flow-meta">
+                <span class="badge badge-warning">Lâm sàng nhân viên</span>
+                <svg class="flow-toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-description">
+                Cho phép nhân viên y tế đã đăng nhập tìm kiếm nhanh hồ sơ bệnh nhân (bằng tên, số điện thoại hoặc mã băm CCCD) và giải mã thông tin hiển thị lịch sử khám chữa bệnh.
+              </div>
+              <div class="arch-chain">
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 1: Hành động người dùng</div>
+                  <div class="chain-step-desc">Bác sĩ hoặc điều dưỡng nhập từ khóa tìm kiếm bệnh nhân tại trang quản lý</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code">web/src/app/staff/(app)/patients/page.tsx</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 2: Gọi lệnh API Client</div>
+                  <div class="chain-step-desc">API Client gửi token JWT dưới phạm vi xác thực 'staff'</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">searchPatientRecords(query)</span> hoặc <code>getPatientRecordDetail(patientId)</code></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/patient-records-api.ts">web/src/lib/patient-records-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Endpoints</span><span class="detail-value-code">GET /api/v1/patient-records?query=...</span> hoặc <code>GET /api/v1/patient-records/{patientId}</code></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 3: Tiếp nhận tại REST Controller</div>
+                  <div class="chain-step-desc">Đánh giá phân quyền truy cập thông tin y tế</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Method</span><span class="detail-value-code">com.hospital.api.patientrecord.PatientRecordController.search() / getDetail()</span></div>
+                    <div class="detail-item"><span class="detail-label">Phân quyền RBAC</span><span class="detail-value-code">@PreAuthorize("@rbac.hasPermission(authentication, 'PATIENT_RECORD_READ')")</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 4: Giải mã thông tin định danh</div>
+                  <div class="chain-step-desc">Lấy dữ liệu thô từ DB và giải mã CCCD bảo mật trước khi gửi về client</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Service</span><span class="detail-value-code">com.hospital.core.patientrecord.PatientRecordService.getDetail()</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí mã nguồn</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/application/src/main/java/com/hospital/core/patientrecord/PatientRecordService.java">PatientRecordService.java</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Giải mã PII</span><span class="detail-value">Giải mã CCCD qua <code>patientIdentifierProtector.decrypt(patient.getCccd())</code></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 5: Thao tác Cơ sở dữ liệu</div>
+                  <div class="chain-step-desc">Tải dữ liệu nhân khẩu học bệnh nhân và lịch sử lâm sàng liên quan</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bảng liên quan</span><span class="detail-value-code">patients, appointments, medical_records, prescription_items</span></div>
+                    <div class="detail-item"><span class="detail-label">Loại thao tác</span><span class="detail-value">SELECT JOIN</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flow 7 -->
+          <div class="flow-card" data-search="checkin intake nurse checkInAppointment appointmentcontroller appointmentworkflowservice appointments queue/page.tsx">
+            <div class="flow-header">
+              <div class="flow-header-left">
+                <div class="flow-index">7</div>
+                <div class="flow-title">Điều dưỡng tiếp nhận & Check-in hàng đợi</div>
+              </div>
+              <div class="flow-meta">
+                <span class="badge badge-warning">Lâm sàng nhân viên</span>
+                <svg class="flow-toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-description">
+                Thực hiện khi bệnh nhân có mặt tại viện, điều dưỡng cập nhật trạng thái lịch hẹn từ CONFIRMED sang CHECKED_IN để xếp hàng khám bệnh.
+              </div>
+              <div class="arch-chain">
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 1: Hành động người dùng</div>
+                  <div class="chain-step-desc">Điều dưỡng bấm nút "Check-in" trên bảng danh sách hàng đợi</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/staff/(app)/queue/page.tsx">web/src/app/staff/(app)/queue/page.tsx</a></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 2: Gọi lệnh API Client</div>
+                  <div class="chain-step-desc">Gửi mốc thời gian tiếp nhận check-in thực tế</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">checkInAppointment(appointmentId, { checkedInAt })</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/clinical-api.ts">web/src/lib/clinical-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Endpoint</span><span class="detail-value-code">POST /api/v1/appointments/{appointmentId}/checkin</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 3: Tiếp nhận tại REST Controller</div>
+                  <div class="chain-step-desc">Controller đón nhận request và thực hiện xác thực quyền tiếp đón</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Method</span><span class="detail-value-code">com.hospital.api.appointment.AppointmentController.checkInAppointment()</span></div>
+                    <div class="detail-item"><span class="detail-label">Phân quyền RBAC</span><span class="detail-value-code">@PreAuthorize("@rbac.hasPermission(authentication, 'QUEUE_CHECK_IN')")</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 4: Thực thi nghiệp vụ chuyển đổi trạng thái</div>
+                  <div class="chain-step-desc">Xác minh trạng thái hiện tại là CONFIRMED, sau đó ghi mốc checkedInAt</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Service</span><span class="detail-value-code">com.hospital.core.appointment.AppointmentWorkflowService.checkInAppointment()</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí mã nguồn</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/application/src/main/java/com/hospital/core/appointment/AppointmentWorkflowService.java">AppointmentWorkflowService.java</a></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 5: Thao tác Cơ sở dữ liệu</div>
+                  <div class="chain-step-desc">Cập nhật cột dữ liệu thời gian tiếp đón của lịch khám</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bảng liên quan</span><span class="detail-value-code">appointments</span></div>
+                    <div class="detail-item"><span class="detail-label">Loại thao tác</span><span class="detail-value">UPDATE (status = 'CHECKED_IN', checked_in_at = :timestamp)</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flow 8 -->
+          <div class="flow-card" data-search="queue board room assignment call skip callqueuepatient skipqueuepatient assignqueueroom queuecontroller appointments audit_logs queue/page.tsx">
+            <div class="flow-header">
+              <div class="flow-header-left">
+                <div class="flow-index">8</div>
+                <div class="flow-title">Điều phối phòng khám & Gọi loa bệnh nhân</div>
+              </div>
+              <div class="flow-meta">
+                <span class="badge badge-warning">Lâm sàng nhân viên</span>
+                <svg class="flow-toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-description">
+                Cho phép điều dưỡng viên xếp phòng khám cho bệnh nhân đã tiếp đón, phát âm thanh gọi loa mời vào phòng, hoặc đánh dấu bỏ qua (skip) nếu bệnh nhân vắng mặt.
+              </div>
+              <div class="arch-chain">
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 1: Hành động người dùng</div>
+                  <div class="chain-step-desc">Điều dưỡng nhấn Gọi, Bỏ qua hoặc chọn phòng khám trên bảng điều phối</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/staff/(app)/queue/page.tsx">web/src/app/staff/(app)/queue/page.tsx</a></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 2: Gọi lệnh API Client</div>
+                  <div class="chain-step-desc">Gửi yêu cầu REST tương ứng lên tầng dịch vụ điều phối hàng đợi</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value"><code>callQueuePatient()</code>, <code>skipQueuePatient()</code>, <code>assignQueueRoom()</code>, <code>startQueueConsultation()</code>, or <code>completeQueueVisit()</code></span></div>
+                    <div class="detail-item"><span class="detail-label">Endpoints</span><span class="detail-value-code">POST /api/v1/queue/{appointmentId}/(call|skip|assign-room|start-consultation|complete)</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 3: Tiếp nhận tại REST Controller</div>
+                  <div class="chain-step-desc">Đón nhận tín hiệu điều phối và yêu cầu quyền kiểm soát hàng đợi</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Controller</span><span class="detail-value-code">com.hospital.api.queue.QueueController</span></div>
+                    <div class="detail-item"><span class="detail-label">Phân quyền RBAC</span><span class="detail-value-code">@PreAuthorize("@rbac.hasPermission(authentication, 'QUEUE_MANAGE')")</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 4: Thực thi luồng nghiệp vụ điều phối</div>
+                  <div class="chain-step-desc">Gắn ghi chú phòng khám hoặc cập nhật trạng thái (IN_PROGRESS) và chèn dữ liệu log</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Service</span><span class="detail-value-code">com.hospital.core.appointment.AppointmentWorkflowService</span></div>
+                    <div class="detail-item"><span class="detail-label">Kiểm toán</span><span class="detail-value">Gọi <code>auditLogService.record()</code> ghi nhận hoạt động điều phối.</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 5: Thao tác Cơ sở dữ liệu</div>
+                  <div class="chain-step-desc">Cập nhật hàng dữ liệu khám bệnh và chèn bản ghi nhật ký hoạt động</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bảng liên quan</span><span class="detail-value-code">appointments (UPDATE), audit_logs (INSERT)</span></div>
+                    <div class="detail-item"><span class="detail-label">Loại thao tác</span><span class="detail-value">UPDATE, INSERT</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flow 9 -->
+          <div class="flow-card" data-search="medical record clinical note prescription diagnosis edit createmedicalrecord medicalrecordcontroller medicalrecordservice medical_records prescription_items appointments medical-records/[id]/edit/page.tsx">
+            <div class="flow-header">
+              <div class="flow-header-left">
+                <div class="flow-index">9</div>
+                <div class="flow-title">Khám bệnh & Kê đơn thuốc (Bác sĩ)</div>
+              </div>
+              <div class="flow-meta">
+                <span class="badge badge-warning">Lâm sàng nhân viên</span>
+                <svg class="flow-toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-description">
+                Bác sĩ thực hiện khám bệnh tại phòng khám: ghi nhận chẩn đoán bệnh án lâm sàng, ghi chú thuốc kê đơn, hẹn tái khám, đánh dấu hoàn thành ca khám DONE và kích hoạt tạo tệp PDF đơn thuốc.
+              </div>
+              <div class="arch-chain">
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 1: Hành động người dùng</div>
+                  <div class="chain-step-desc">Bác sĩ viết chẩn đoán, ghi chú thuốc và nhấn Hoàn thành ca khám</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/staff/(app)/medical-records/[id]/edit/page.tsx">web/src/app/staff/(app)/medical-records/[id]/edit/page.tsx</a></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 2: Gọi lệnh API Client</div>
+                  <div class="chain-step-desc">API Client gửi request DTO gói dữ liệu bệnh án lâm sàng lên hệ thống</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">createMedicalRecord(request)</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/medical-records-api.ts">web/src/lib/medical-records-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Endpoint</span><span class="detail-value-code">POST /api/v1/medical-records</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 3: Tiếp nhận tại REST Controller</div>
+                  <div class="chain-step-desc">Đón nhận yêu cầu lưu bệnh án và xác nhận quyền ghi hồ sơ</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Method</span><span class="detail-value-code">com.hospital.api.medicalrecord.MedicalRecordController.createMedicalRecord()</span></div>
+                    <div class="detail-item"><span class="detail-label">Phân quyền RBAC</span><span class="detail-value-code">@PreAuthorize("@rbac.hasPermission(authentication, 'MEDICAL_RECORD_WRITE')")</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 4: Thực thi lưu bệnh án & Tạo đơn thuốc PDF</div>
+                  <div class="chain-step-desc">Kiểm tra quyền của bác sĩ khám, tạo thực thể bệnh án mới, thiết lập nhắc hẹn và gọi PdfService tạo đơn thuốc</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Service</span><span class="detail-value-code">com.hospital.core.medicalrecord.MedicalRecordService.createMedicalRecord()</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí mã nguồn</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/application/src/main/java/com/hospital/core/medicalrecord/MedicalRecordService.java">MedicalRecordService.java</a></span></div>
+                    <div class="detail-item"><span class="detail-label">In và Nhắc lịch</span><span class="detail-value">Gọi <code>reminderService.planReminder()</code> và <code>prescriptionPdfService.generate()</code>.</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 5: Thao tác Cơ sở dữ liệu</div>
+                  <div class="chain-step-desc">Chèn bản ghi bệnh án mới và cập nhật trạng thái lịch khám DONE</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bảng liên quan</span><span class="detail-value-code">medical_records (insert), prescription_items (insert), appointments (update status = 'DONE')</span></div>
+                    <div class="detail-item"><span class="detail-label">Loại thao tác</span><span class="detail-value">INSERT, UPDATE</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flow 10 -->
+          <div class="flow-card" data-search="billing invoicing ledger accountant createinvoice recordinvoicepayment voidinvoice invoicecontroller invoiceservice invoices audit_logs service_pricing invoices/page.tsx">
+            <div class="flow-header">
+              <div class="flow-header-left">
+                <div class="flow-index">10</div>
+                <div class="flow-title">Thanh toán & Sổ cái kế toán (Hóa đơn)</div>
+              </div>
+              <div class="flow-meta">
+                <span class="badge badge-warning">Tài chính nhân viên</span>
+                <svg class="flow-toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-description">
+                Xử lý thanh toán hóa đơn khám chữa bệnh: phân tích biểu giá theo chuyên khoa, ghi nhận thanh toán tiền mặt/chuyển khoản, cập nhật sổ cái kế toán và hỗ trợ hủy hóa đơn.
+              </div>
+              <div class="arch-chain">
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 1: User Action</div>
+                  <div class="chain-step-desc">Kế toán viên tải trang sổ cái, chọn hóa đơn chưa thanh toán hoặc nhập thông tin thanh toán</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/staff/(app)/invoices/page.tsx">web/src/app/staff/(app)/invoices/page.tsx</a></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 2: API Client Dispatch</div>
+                  <div class="chain-step-desc">Gửi yêu cầu khởi tạo hóa đơn, xác nhận thanh toán hoặc hủy hóa đơn</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value"><code>listInvoices()</code>, <code>createInvoice()</code>, <code>recordInvoicePayment()</code>, or <code>voidInvoice()</code></span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/operations-api.ts">web/src/lib/operations-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Endpoints</span><span class="detail-value-code">GET /invoices</span>, <code>POST /invoices</code>, <code>POST /invoices/{id}/payments</code>, <code>POST /invoices/{id}/void</code></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 3: Tiếp nhận tại REST Controller</div>
+                  <div class="chain-step-desc">Controller nhận yêu cầu hóa đơn và kiểm soát vai trò kế toán tài chính</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Controller</span><span class="detail-value-code">com.hospital.api.invoice.InvoiceController</span></div>
+                    <div class="detail-item"><span class="detail-label">Phân quyền RBAC</span><span class="detail-value-code">@PreAuthorize("@rbac.hasAnyPermission(authentication, 'INVOICE_READ', 'INVOICE_WRITE')")</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 4: Thực thi nghiệp vụ sổ cái hóa đơn</div>
+                  <div class="chain-step-desc">Xác minh lịch khám hoàn thành, áp dụng bảng giá tương ứng của khoa (mặc định 250.000 VND), cập nhật trạng thái hóa đơn và lưu vết kiểm toán</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Service</span><span class="detail-value-code">com.hospital.core.invoice.InvoiceService</span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí mã nguồn</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/backend/application/src/main/java/com/hospital/core/invoice/InvoiceService.java">InvoiceService.java</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Phân tích giá khám</span><span class="detail-value">Truy vấn <code>servicePricingRepository.findTopByDepartmentIdAndServiceNameIgnoreCase...</code></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 5: Thao tác Cơ sở dữ liệu</div>
+                  <div class="chain-step-desc">Cập nhật trạng thái hóa đơn mới và chèn dòng nhật ký hoạt động tài chính</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bảng liên quan</span><span class="detail-value-code">invoices (insert/update), service_pricing (select), audit_logs (insert)</span></div>
+                    <div class="detail-item"><span class="detail-label">Loại thao tác</span><span class="detail-value">SELECT, INSERT, UPDATE</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flow 11 -->
+          <div class="flow-card" data-search="patient portal overview appointments lab results messages profile update patientportalcontroller patientportalservice patient_accounts patients lab_results message_threads messages portal/page.tsx">
+            <div class="flow-header">
+              <div class="flow-header-left">
+                <div class="flow-index">11</div>
+                <div class="flow-title">Tổng quan, Lịch sử & Hồ sơ Cổng bệnh nhân</div>
+              </div>
+              <div class="flow-meta">
+                <span class="badge badge-neutral">Cổng bệnh nhân</span>
+                <svg class="flow-toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-description">
+                Cho phép bệnh nhân đăng nhập xem hồ sơ y tế trực tuyến của mình, xem lịch sử khám và tải về kết quả xét nghiệm định dạng PDF.
+              </div>
+              <div class="arch-chain">
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 1: Hành động người dùng</div>
+                  <div class="chain-step-desc">Bệnh nhân truy cập trang cá nhân, mở mục xét nghiệm hoặc cập nhật hồ sơ</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code">web/src/app/portal/ (dashboard, appointments, lab-results, messages)</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 2: Gọi lệnh API Client</div>
+                  <div class="chain-step-desc">API Client gửi access token JWT dưới phạm vi xác thực 'patient'</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value"><code>getPatientPortalOverview()</code>, <code>listPatientPortalLabResults()</code>, <code>getPatientPortalProfile()</code></span></div>
+                    <div class="detail-item"><span class="detail-label">Endpoint</span><span class="detail-value-code">GET /patient-portal/(overview|appointments|lab-results|profile)</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 3: Tiếp nhận tại REST Controller</div>
+                  <div class="chain-step-desc">Controller nhận dạng UUID bệnh nhân từ bối cảnh bảo mật JWT đã được xác thực</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Controller</span><span class="detail-value-code">com.hospital.api.patientportal.PatientPortalController</span></div>
+                    <div class="detail-item"><span class="detail-label">Phân tích ID</span><span class="detail-value">Giải mã chuỗi định danh UUID qua <code>UUID.fromString(authentication.getName())</code></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 4: Thực thi tầng dịch vụ cổng bệnh nhân</div>
+                  <div class="chain-step-desc">Truy vấn tất cả lịch sử lâm sàng và xét nghiệm của bệnh nhân tương ứng</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File & Service</span><span class="detail-value-code">com.hospital.core.patientportal.PatientPortalService</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 5: Thao tác Cơ sở dữ liệu</div>
+                  <div class="chain-step-desc">Truy vấn danh sách kết quả y tế cá nhân</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bảng liên quan</span><span class="detail-value-code">patients, appointments, lab_results, message_threads, messages</span></div>
+                    <div class="detail-item"><span class="detail-label">Loại thao tác</span><span class="detail-value">SELECT, UPDATE</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flow 12 -->
+          <div class="flow-card" data-search="admin operations user department room template slot auditing generation statistics monitoring admin/page.tsx">
+            <div class="flow-header">
+              <div class="flow-header-left">
+                <div class="flow-index">12</div>
+                <div class="flow-title">Quản trị hệ thống & Thiết lập vận hành</div>
+              </div>
+              <div class="flow-meta">
+                <span class="badge badge-danger">Quản trị</span>
+                <svg class="flow-toggle-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+              </div>
+            </div>
+            <div class="flow-body">
+              <div class="flow-description">
+                Cho phép quản trị viên (Admin) thiết lập cấu hình khám chữa bệnh, thêm tài khoản nhân viên y tế, tạo lịch khám tự động và giám sát nhật ký kiểm toán hệ thống.
+              </div>
+              <div class="arch-chain">
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 1: User Action</div>
+                  <div class="chain-step-desc">Admin thay đổi vai trò tài khoản, khởi tạo khung giờ khám hoặc xem nhật ký hệ thống</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">File</span><span class="detail-value-code">web/src/app/admin/ (users, departments, rooms, slots, closures, monitoring)</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 2: API Client Dispatch</div>
+                  <div class="chain-step-desc">Gửi yêu cầu CRUD lên các REST endpoints quản trị</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">listAdminUsers(), createAdminUser(), generateAdminSlots(), listAuditLogs()</span></div>
+                    <div class="detail-item"><span class="detail-label">Endpoints</span><span class="detail-value-code">/api/v1/admin/(users|departments|rooms|slots/generate|audit-logs|monitoring)</span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 3: Tiếp nhận tại REST Controller</div>
+                  <div class="chain-step-desc">Các controller kiểm tra phân quyền tài khoản Admin</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Controllers</span><span class="detail-value"><code>AdminUserController</code>, <code>AdminDepartmentController</code>, <code>AdminRoomController</code>, <code>AdminTimeSlotController</code>, <code>AdminAuditLogController</code></span></div>
+                  </div>
+                </div>
+                <div class="chain-step">
+                  <div class="chain-step-title">Bước 4: Giao dịch Cơ sở dữ liệu</div>
+                  <div class="chain-step-desc">Thực hiện thêm, xóa, sửa cấu hình vận hành bệnh viện</div>
+                  <div class="chain-step-details">
+                    <div class="detail-item"><span class="detail-label">Bảng liên quan</span><span class="detail-value-code">users, departments, rooms, time_slots, schedule_templates, special_closures, audit_logs</span></div>
+                    <div class="detail-item"><span class="detail-label">Loại thao tác</span><span class="detail-value">INSERT, UPDATE, DELETE, SELECT</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <script>
+    // Theme Manager
+    const themeToggle = document.getElementById("theme-toggle");
+    const themeText = document.getElementById("theme-text");
+    const themeSun = document.getElementById("theme-sun");
+    const themeMoon = document.getElementById("theme-moon");
+
+    function setTheme(mode) {
+      if (mode === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        themeSun.style.display = "inline-block";
+        themeMoon.style.display = "none";
+        themeText.textContent = "Giao diện sáng";
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+        themeSun.style.display = "none";
+        themeMoon.style.display = "inline-block";
+        themeText.textContent = "Chế độ tối";
+        localStorage.setItem("theme", "light");
+      }
+    }
+
+    // Initialize theme based on preference or local storage
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+
+    themeToggle.addEventListener("click", () => {
+      const currentTheme = document.documentElement.getAttribute("data-theme");
+      if (currentTheme === "dark") {
+        setTheme("light");
+      } else {
+        setTheme("dark");
+      }
+    });
+
+    // Navigation section switcher
+    const navItems = document.querySelectorAll(".nav-item");
+    const sections = document.querySelectorAll(".content-card");
+    const flowsQuickNav = document.getElementById("flows-quick-nav");
+
+    navItems.forEach(item => {
+      item.addEventListener("click", () => {
+        const targetId = item.getAttribute("data-section");
+
+        // Update nav visual state
+        navItems.forEach(nav => nav.classList.remove("active"));
+        item.classList.add("active");
+
+        // Show/hide sections
+        sections.forEach(sec => {
+          if (sec.id === targetId) {
+            sec.style.display = "block";
+          } else {
+            sec.style.display = "none";
+          }
+        });
+
+        // Quick jump menu display logic
+        if (targetId === "flows-section") {
+          flowsQuickNav.style.display = "block";
+        } else {
+          flowsQuickNav.style.display = "none";
+        }
+      });
+    });
+
+    // Populate quick jump links
+    const flowCards = document.querySelectorAll(".flow-card");
+    const quickJumpList = document.getElementById("quick-jump-list");
+
+    flowCards.forEach((card, index) => {
+      const titleText = card.querySelector(".flow-title").textContent;
+      const li = document.createElement("li");
+      li.className = "nav-item";
+      li.style.fontSize = "0.825rem";
+      li.style.padding = "0.45rem 0.65rem";
+      li.textContent = `${index + 1}. ${titleText}`;
+
+      li.addEventListener("click", () => {
+        // Toggle expansion
+        flowCards.forEach(c => c.classList.remove("open"));
+        card.classList.add("open");
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+
+      quickJumpList.appendChild(li);
+    });
+
+    // Expand / Collapse flows accordion
+    const flowHeaders = document.querySelectorAll(".flow-header");
+    flowHeaders.forEach(header => {
+      header.addEventListener("click", () => {
+        const card = header.closest(".flow-card");
+        card.classList.toggle("open");
+      });
+    });
+
+    // Search and filter logic (across all sections)
+    const searchInput = document.getElementById("flow-search");
+    const resultsMeta = document.getElementById("results-meta");
+
+    searchInput.addEventListener("input", () => {
+      const q = searchInput.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      flowCards.forEach(card => {
+        const searchKeywords = card.getAttribute("data-search").toLowerCase();
+        if (searchKeywords.includes(q)) {
+          card.style.display = "block";
+          visibleCount++;
+        } else {
+          card.style.display = "none";
+        }
+      });
+
+      resultsMeta.textContent = `Đang hiển thị ${visibleCount} luồng nghiệp vụ`;
+    });
+  </script>
+</body>
+</html>
