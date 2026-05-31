@@ -1,0 +1,99 @@
+
+> web@0.1.0 build
+> next build
+
+▲ Next.js 16.2.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 5.3s
+  Running TypeScript ...
+  Finished TypeScript in 12.9s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/72) ...
+  Generating static pages using 11 workers (18/72)
+  Generating static pages using 11 workers (36/72)
+  Generating static pages using 11 workers (54/72)
+✓ Generating static pages using 11 workers (72/72) in 973ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /admin/appointments
+├ ○ /admin/audit-logs
+├ ○ /admin/dashboard
+├ ○ /admin/departments
+├ ○ /admin/inventory
+├ ○ /admin/monitoring
+├ ○ /admin/news
+├ ○ /admin/pricing
+├ ○ /admin/public-content
+├ ○ /admin/rooms
+├ ○ /admin/schedule-templates
+├ ○ /admin/slots
+├ ○ /admin/special-closures
+├ ○ /admin/support
+├ ○ /admin/users
+├ ƒ /admin/users/[id]
+├ ○ /auth/logout
+├ ○ /booking
+├ ○ /departments
+├ ƒ /departments/[id]
+├ ○ /doctors
+├ ○ /forbidden
+├ ○ /news
+├ ○ /portal/admit
+├ ○ /portal/appointments
+├ ○ /portal/appointments/2
+├ ○ /portal/billing
+├ ○ /portal/claim
+├ ○ /portal/diagnostics
+├ ○ /portal/inventory
+├ ○ /portal/lab-results
+├ ○ /portal/login
+├ ○ /portal/messages
+├ ○ /portal/overview
+├ ○ /portal/patients
+├ ○ /portal/pharmacy
+├ ○ /portal/profile
+├ ○ /portal/records
+├ ○ /portal/scheduling
+├ ○ /portal/staff
+├ ○ /portal/support
+├ ○ /privacy
+├ ○ /robots.txt
+├ ○ /security
+├ ○ /session-expired
+├ ○ /sitemap.xml
+├ ○ /staff/booking
+├ ○ /staff/booking/review
+├ ○ /staff/booking/slots
+├ ○ /staff/booking/success
+├ ○ /staff/booking/symptoms
+├ ○ /staff/closures
+├ ○ /staff/dashboard
+├ ƒ /staff/doctor/[id]
+├ ○ /staff/doctor/dashboard
+├ ○ /staff/inventory
+├ ○ /staff/invoices
+├ ○ /staff/lab-results
+├ ƒ /staff/lab-results/[id]
+├ ○ /staff/lab-results/new
+├ ○ /staff/login
+├ ƒ /staff/medical-records/[id]/edit
+├ ○ /staff/nurse-intake
+├ ○ /staff/patients
+├ ○ /staff/prescriptions/preview
+├ ○ /staff/pricing
+├ ○ /staff/queue
+├ ○ /staff/revenue
+├ ○ /staff/schedule
+├ ○ /staff/slots
+├ ○ /staff/support
+├ ○ /staff/vital-signs
+└ ○ /terms
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand

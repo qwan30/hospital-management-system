@@ -74,6 +74,10 @@ public class GmailApiClient {
     }
   }
 
+  public boolean isReadyForExternalDelivery() {
+    return isConfigured();
+  }
+
   private boolean isConfigured() {
     return properties.enabled()
         && isPresent(properties.clientId())

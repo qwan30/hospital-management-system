@@ -3,8 +3,8 @@
   "feature_slug": "hms-production-readiness-hardening-2026-05-22",
   "mode": "degraded-direct-execution",
   "active_skill": "verification-loop",
-  "phase": "post-report-w01-complete",
-  "phase_number": 9,
+  "phase": "post-report-waivers-closed",
+  "phase_number": 10,
   "epic_id": "",
   "approved_gates": {
     "context": true,
@@ -18,12 +18,12 @@
   "blockers": [
     "GKG CLI is missing from PATH and the GKG server is not reachable/indexed; GitNexus CLI and direct source inspection were used.",
     "GitNexus detect_changes is unavailable in the installed CLI surface; gitnexus status and git diff checks were used.",
-    "Global git diff --check passes for the current working tree with only line-ending warnings.",
-    "Production Ready cannot be claimed until W-02 pharmacy dispensing and W-03 external notification delivery are fully implemented or explicitly waived, and the final release verification suite is rerun."
+    "Global git diff --check passes cleanly after artifact normalization.",
+    "W-01, W-02, and W-03 are closed with verification evidence; release-owner sign-off is still needed for remaining P1/P2 product and safety backlog before an unconstrained Production Ready claim."
   ],
   "focus": "production-readiness-hardening",
-  "summary": "Completed the post-report W-01 lab-result creation slice in the working tree. Staff can create lab results through /staff/lab-results/new against POST /api/v1/lab-results, RBAC now limits creation to Admin/Doctor, unit and Playwright coverage were added, backend lab integration tests passed, and readiness docs now mark W-01 closed. Final release decision remains Demo Ready Only until W-02/W-03 and final release verification are complete.",
-  "next_action": "Implement and verify W-02 pharmacy dispensing and W-03 external notification delivery, then rerun the full release verification suite before any Production Ready claim.",
+  "summary": "Completed and committed W-02 pharmacy dispensing and W-03 notification delivery evidence after the prior W-01 lab-result slice. Staff inventory now supports prescription-backed dispense against item/lot/medical-record data, inventory delete has browser confirmation, email delivery attempts are persisted, and ReminderService keeps failed external delivery retryable. Backend, frontend, Docker, Playwright, audit, secret-scan, and backup/restore release gates passed on 2026-06-01. Current verdict is Release Candidate / Ship with fixes because the wider P1/P2 UX and safety backlog remains.",
+  "next_action": "Continue the P1 backlog: remaining fake/static UI actions, destructive confirmations outside inventory/lab delete, patient self-service scope decisions, and clinical safety policy.",
   "deferred_beads": [],
   "last_compounding_run": {
     "feature": "hms-production-readiness-hardening-2026-05-22",
@@ -31,5 +31,5 @@
     "learnings_file": "",
     "critical_promotions": 0
   },
-  "last_updated": "2026-05-31T23:42:03+07:00"
+  "last_updated": "2026-06-01T00:00:00+07:00"
 }

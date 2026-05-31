@@ -2,14 +2,14 @@
   "schema_version": "1.0",
   "feature": "hms-production-readiness-hardening-2026-05-22",
   "skill": "verification-loop",
-  "phase": "post-report-w01-complete",
-  "next_action": "Continue with W-02 pharmacy dispensing and W-03 external notification delivery. Do not label HMS Production Ready until those flows are fully implemented or explicitly waived and the final release verification suite is rerun.",
+  "phase": "post-report-waivers-closed",
+  "next_action": "Continue the P1/P2 backlog before any unconstrained Production Ready claim.",
   "context_pct": "medium",
   "blockers": [
     "GKG CLI unavailable; GitNexus/source fallback used.",
     "GitNexus detect_changes unavailable in installed CLI; gitnexus status used.",
-    "Global git diff --check fails on pre-existing user-owned whitespace outside this pass.",
-    "Production Ready still requires W-02/BF-09 pharmacy dispensing and W-03/BF-11 external notification delivery, plus final release verification."
+    "Global git diff --check passes cleanly after artifact normalization.",
+    "W-01/W-02/W-03 are closed with release-gate evidence; remaining blocker is release-owner acceptance or implementation of the broader P1/P2 product and safety backlog."
   ],
   "completed": [
     "Reviewed route-by-route visual diffs and accepted current UI snapshots after live-stack evidence.",
@@ -21,7 +21,11 @@
     "Passed Playwright release-data, CI, integrated, UI, and visual suites.",
     "Completed env, CORS/CSP, Flyway, secret scan, backup/restore, health/monitoring, performance, and privacy checks.",
     "Created docs/06-testing/full-hms-production-readiness-report-2026-05-22.md.",
-    "Closed W-01/BF-07 in the working tree by adding the staff lab-result creation route, API contract tests, RBAC coverage, Playwright coverage, and readiness-doc updates."
+    "Closed W-01/BF-07 in the working tree by adding the staff lab-result creation route, API contract tests, RBAC coverage, Playwright coverage, and readiness-doc updates.",
+    "Closed W-02/BF-09 by adding prescription-backed inventory dispense, lot/medical-record traceability, audit movement evidence, staff UI, and backend/frontend/Playwright coverage.",
+    "Closed W-03/BF-11 by adding email delivery attempt persistence, safe LOCAL_RECORD staging provider behavior, Gmail delivery attempt audit, and retry-preserving reminder failure handling.",
+    "Refreshed docs/06-testing/full-hms-production-readiness-report-2026-06-01.md and repository status with Release Candidate / Ship with fixes verdict.",
+    "Committed the waiver-closure implementation and evidence as feat: close HMS pharmacy and notification waivers."
   ],
   "verification": [
     "mvn.cmd verify: PASS, 145 tests",
@@ -36,6 +40,18 @@
     "npm run test:e2e:integrated: PASS, 90 passed",
     "npm run test:e2e:ui: PASS, 319 passed, 1 skipped",
     "npm run test:e2e:visual: PASS, 14 passed",
-    "Post-report W-01 slice: frontend unit PASS, lint PASS with existing warnings, build PASS, staff Playwright PASS, chromium CI Playwright PASS, backend LabResultIntegrationTest PASS"
+    "Post-report W-01 slice: frontend unit PASS, lint PASS with existing warnings, build PASS, staff Playwright PASS, chromium CI Playwright PASS, backend LabResultIntegrationTest PASS",
+    "2026-06-01 backend mvn verify: PASS, 148 tests",
+    "2026-06-01 frontend lint: PASS, 29 existing warnings",
+    "2026-06-01 frontend unit coverage: PASS, branch coverage 80.48%",
+    "2026-06-01 frontend build: PASS",
+    "2026-06-01 npm audit and production audit: PASS, 0 vulnerabilities after qs 6.15.2 override",
+    "2026-06-01 Docker release-demo rebuild/smoke: PASS on hmsprod20260601",
+    "2026-06-01 Playwright release-data: PASS, 2 passed",
+    "2026-06-01 Playwright chromium CI: PASS, 183 passed, 1 skipped",
+    "2026-06-01 Playwright integrated serialized: PASS, 92 passed, 3 expected skips",
+    "2026-06-01 Playwright UI: PASS, 323 passed, 1 skipped",
+    "2026-06-01 Playwright visual: PASS, 14 passed",
+    "2026-06-01 secret scan and backup/restore smoke: PASS"
   ]
 }

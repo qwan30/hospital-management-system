@@ -9,6 +9,7 @@ import {
   deleteInventoryItem,
   createInventoryLot,
   recordInventoryMovement,
+  dispenseMedication,
   getMonitoringSnapshot,
   listAuditLogs,
   getPatientPortalOverview,
@@ -227,6 +228,32 @@ describe("operations-api", () => {
 
       expect(apiRequest).toHaveBeenCalledWith(
         "/inventory/movements",
+        {
+          method: "POST",
+          body: JSON.stringify(request),
+        },
+        { authScope: "staff" },
+      );
+      expect(result).toMatchObject(request);
+    });
+
+    it("dispenses medication against a prescription and lot", async () => {
+      const request = {
+        itemId: "item-1",
+        lotId: "lot-1",
+        medicalRecordId: "record-1",
+        prescriptionItemName: "Bandage",
+        quantity: 1,
+        note: "Prescription pickup",
+      };
+      vi.mocked(apiRequest).mockResolvedValueOnce({
+        data: { movementId: "movement-1", ...request },
+      });
+
+      const result = await dispenseMedication(request);
+
+      expect(apiRequest).toHaveBeenCalledWith(
+        "/inventory/dispense",
         {
           method: "POST",
           body: JSON.stringify(request),

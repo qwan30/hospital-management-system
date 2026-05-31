@@ -3,6 +3,8 @@ package com.hospital.api.inventory;
 import com.hospital.core.inventory.InventoryService;
 import com.hospital.core.inventory.InventoryWriteService;
 import com.hospital.shared.api.ApiResponse;
+import com.hospital.shared.inventory.InventoryDispenseRequest;
+import com.hospital.shared.inventory.InventoryDispenseResponse;
 import com.hospital.shared.inventory.InventoryAlertResponse;
 import com.hospital.shared.inventory.InventoryItemCreateRequest;
 import com.hospital.shared.inventory.InventoryItemResponse;
@@ -101,5 +103,11 @@ public class InventoryController {
   @PreAuthorize("@rbac.hasPermission(authentication, 'INVENTORY_MANAGE')")
   public ResponseEntity<ApiResponse<InventoryMovementResponse>> recordMovement(@Valid @RequestBody InventoryMovementCreateRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(inventoryWriteService.recordMovement(request)));
+  }
+
+  @PostMapping("/dispense")
+  @PreAuthorize("@rbac.hasPermission(authentication, 'INVENTORY_MANAGE')")
+  public ResponseEntity<ApiResponse<InventoryDispenseResponse>> dispenseMedication(@Valid @RequestBody InventoryDispenseRequest request) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.ok(inventoryWriteService.dispenseMedication(request)));
   }
 }

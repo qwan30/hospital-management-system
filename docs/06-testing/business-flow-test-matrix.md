@@ -3,7 +3,7 @@
 **Status:** canonical BA/QA end-to-end business-flow testing document for the current HMS repository.
 **Generated:** 2026-05-21.
 **Repository status refresh:** 2026-05-27.
-**Evidence level:** source code, existing tests, and the 2026-05-22 release-readiness verification artifacts.
+**Evidence level:** source code, existing tests, and the 2026-06-01 release-readiness verification artifacts.
 **GitNexus source:** `hospital-management-system`, indexed commit `c255231`, status up to date on 2026-05-27.
 
 Use this document to test the system from public discovery through booking, queue, clinical care, patient portal, operations, finance, and administration. It expands the previous flow matrix into a full business-flow, exception, module, and button/action inspection reference.
@@ -18,7 +18,7 @@ Use this document to test the system from public discovery through booking, queu
 | Reference prototype | `frontend/` | Historical/design reference only | Not active runtime |
 | Backend API | `backend/controller`, `backend/application`, `backend/domain`, `backend/infrastructure`, `backend/start` | Spring Boot modular monolith with controllers, services, DTOs, repositories, migrations, and security filters | Working |
 | Database | `backend/start/src/main/resources/db/migration` | Flyway-managed PostgreSQL schema | Working |
-| Automated tests | `backend/application/src/test`, `backend/start/src/test`, `web/src/**/__tests__`, `web/e2e` | Unit, integration, component, route, visual, and workflow coverage | Working; latest recorded final pass is in `full-hms-production-readiness-report-2026-05-22.md` |
+| Automated tests | `backend/application/src/test`, `backend/start/src/test`, `web/src/**/__tests__`, `web/e2e` | Unit, integration, component, route, visual, and workflow coverage | Working; latest recorded final pass is in `full-hms-production-readiness-report-2026-06-01.md` |
 
 ### Business Modules
 
@@ -113,7 +113,7 @@ Status labels:
 | Patient portal messages | Patient message threads | `/portal/messages` | `GET /api/v1/patient-portal/messages` | `patient_message_threads`, `patient_messages` | Patient | Working read-only; patient reply/send is Missing API |
 | Patient portal profile | Read/update patient profile | `/portal/profile` | `GET/PUT /api/v1/patient-portal/profile` | `patients`, `patient_accounts` | Patient | Working |
 | Patient portal records/support/other | Records, billing, pharmacy, staff, support, admit, inventory, patients, scheduling | `/portal/records`, `/portal/billing`, `/portal/pharmacy`, `/portal/staff`, `/portal/support`, `/portal/admit`, `/portal/inventory`, `/portal/patients`, `/portal/scheduling` | Mixed or no direct service functions visible | Mostly read models from `patients`, `appointments`, `invoices`, `lab_results` | Patient | Unclear; many are route-file screens with static/reference content |
-| Staff inventory | Inventory operations workspace | `/staff/inventory` | `GET/POST/PUT/DELETE /api/v1/inventory/items`, `GET/POST /lots`, `GET/POST /movements`, `GET /alerts` | `inventory_items`, `inventory_lots`, `inventory_movements`, `audit_logs` | Admin, Pharmacist | Working; delete item lacks confirmation dialog |
+| Staff inventory | Inventory operations workspace | `/staff/inventory` | `GET/POST/PUT/DELETE /api/v1/inventory/items`, `GET/POST /lots`, `GET/POST /movements`, `POST /dispense`, `GET /alerts` | `inventory_items`, `inventory_lots`, `inventory_movements`, `audit_logs` | Admin, Pharmacist | Working; delete item now requires browser confirmation |
 | Admin inventory | Admin inventory variant | `/admin/inventory` | Same inventory APIs where wired | `inventory_items`, `inventory_lots`, `inventory_movements` | Admin | Working for item create/edit; some view/export buttons need review |
 | Invoices | Invoice creation/payment/void | `/staff/invoices` | `GET/POST /api/v1/invoices`, `POST /{invoiceId}/payments`, `POST /{invoiceId}/void` | `invoices`, `appointments`, `patients`, `audit_logs` | Admin, Accountant | Working; void action lacks explicit confirmation |
 | Pricing | Service pricing management | `/staff/pricing`, `/admin/pricing` | `GET/POST /api/v1/pricing`, `PUT /api/v1/pricing/{pricingId}` | `service_pricing`, `departments`, `audit_logs` | Admin, Accountant | Working for create/update; delete button in admin pricing is Missing API/handler |
@@ -445,15 +445,15 @@ Status labels:
 
 ### BF-09 Inventory And Pharmacy
 
-**Business objective:** Manage inventory items, lots, movements, low-stock/expiry alerts, and prescription access for pharmacy operations.
+**Business objective:** Manage inventory items, lots, movements, low-stock/expiry alerts, prescription access, and medication dispensing for pharmacy operations.
 **Primary actor:** Pharmacist.
 **Secondary actors:** Admin, doctor.
 **Start condition:** Staff user has inventory permission.
-**End condition:** Inventory state is created/updated/deleted and alerts/movements reflect stock state.
+**End condition:** Inventory state is created/updated/deleted, dispense actions reduce the selected item/lot, and alerts/movements reflect stock state.
 **Screens involved:** `/staff/inventory`, `/admin/inventory`, `/staff/prescriptions/preview`.
-**APIs called:** `GET/POST/PUT/DELETE /api/v1/inventory/items`, `GET/POST /api/v1/inventory/lots`, `GET/POST /api/v1/inventory/movements`, `GET /api/v1/inventory/alerts`, prescription PDF APIs.
+**APIs called:** `GET/POST/PUT/DELETE /api/v1/inventory/items`, `GET/POST /api/v1/inventory/lots`, `GET/POST /api/v1/inventory/movements`, `POST /api/v1/inventory/dispense`, `GET /api/v1/inventory/alerts`, prescription PDF APIs.
 **Data created/updated:** `inventory_items`, `inventory_lots`, `inventory_movements`, `medical_records`, `prescription_items`, `audit_logs`.
-**Status changes:** Inventory item status such as `IN_STOCK`/`LOW_STOCK`; lot quantity remaining changes; movement quantity delta mutates item stock.
+**Status changes:** Inventory item status such as `IN_STOCK`/`LOW_STOCK`; lot quantity remaining changes; movement quantity delta mutates item stock; dispense records link item, lot, patient, and medical record.
 
 **End-to-end steps:**
 1. Pharmacist opens inventory workspace.
@@ -461,25 +461,31 @@ Status labels:
 3. Pharmacist creates or edits item.
 4. Pharmacist creates lot for real item.
 5. Pharmacist records stock movement.
-6. UI reloads inventory and shows success.
-7. Pharmacist opens prescription preview/PDF where permitted.
+6. Pharmacist selects a prescription-backed medical record, lot, and quantity, then dispenses medication.
+7. UI reloads inventory and shows success.
+8. Pharmacist opens prescription preview/PDF where permitted.
 
-**Expected result:** Item, lot, movement, and alert state remains consistent and negative stock constraints are enforced by backend/database.
+**Expected result:** Item, lot, movement, dispense, and alert state remains consistent; negative stock constraints and prescription/lot mismatch rules are enforced by backend/database.
 
 **Exception cases:**
 - Missing SKU/item/category/unit.
 - Lot without existing item.
 - Movement without existing item or movement type.
 - Negative quantity violating DB constraints.
-- Delete item without confirmation.
+- Dispense from a lot belonging to another item.
+- Dispense medication not present on the selected prescription.
+- Dispense quantity exceeding lot or item stock.
+- Delete item requires explicit browser confirmation.
 - Role without inventory permission.
 
 **Suggested test cases:**
 - `P0-BF09-01`: create item, lot, and movement.
 - `P0-BF09-02`: stock-out movement updates quantity and movement history.
-- `P1-BF09-03`: low stock alert renders.
-- `P1-BF09-04`: delete item conflict if lots/movements exist.
-- `P1-BF09-05`: pharmacist can access prescription PDF, receptionist cannot.
+- `P0-BF09-03`: dispense medication against a matching prescription item and stocked lot.
+- `P0-BF09-04`: reject dispense when prescription item, lot ownership, or stock quantity is invalid.
+- `P1-BF09-05`: low stock alert renders.
+- `P1-BF09-06`: delete item conflict if lots/movements exist.
+- `P1-BF09-07`: pharmacist can access prescription PDF, receptionist cannot.
 
 **Priority:** High.
 
@@ -531,18 +537,19 @@ Status labels:
 **Primary actor:** System scheduler.
 **Secondary actors:** Doctor, patient.
 **Start condition:** Medical record with follow-up date exists or due reminders exist.
-**End condition:** Reminder status/delivery attempt is recorded; patient notification is attempted.
+**End condition:** Reminder status/delivery attempt is recorded; patient notification is attempted or safely recorded by the local provider.
 **Screens involved:** No active reminder management UI.
 **APIs called:** No current public reminder API; service invoked through medical record/follow-up workflows.
-**Data created/updated:** `appointment_follow_ups`, possible reminder state in service layer, email side effects.
-**Status changes:** Follow-up/reminder planned and dispatched/retry state where implemented.
+**Data created/updated:** `appointment_follow_ups`, `email_delivery_attempts`, email side effects.
+**Status changes:** Follow-up/reminder planned; successful local-record or external-provider attempt marks the reminder sent; failed external delivery leaves it pending for retry.
 
 **End-to-end steps:**
 1. Doctor creates record with follow-up date.
 2. Backend records follow-up and plans reminder.
 3. Scheduler finds due reminder.
-4. Email service attempts delivery.
-5. Failure is logged without rolling back clinical record.
+4. Email service attempts delivery through Gmail when configured or the safe `LOCAL_RECORD` provider when not configured.
+5. Delivery attempt is recorded.
+6. Failure is logged without rolling back clinical record and leaves the reminder pending for retry.
 
 **Expected result:** Clinical data remains correct and reminder side effects are auditable.
 
@@ -554,8 +561,9 @@ Status labels:
 
 **Suggested test cases:**
 - `P1-BF11-01`: medical record follow-up plans reminder.
-- `P1-BF11-02`: email failure does not fail record creation.
-- `P2-BF11-03`: scheduler retry behavior.
+- `P1-BF11-02`: local-record provider records safe delivery attempt.
+- `P1-BF11-03`: email failure does not fail record creation.
+- `P2-BF11-04`: scheduler retry behavior.
 
 **Priority:** Medium.
 
@@ -634,7 +642,7 @@ Status labels:
 | API exists but UI missing | Patient cancel/update if future self-service wanted, reminder management, some admin assignment APIs | Mark `Missing UI`; decide product scope. |
 | Invalid data status | Appointment, slot, invoice, room, inventory item, lab result | Backend rejects invalid transition/status; UI disables invalid action where possible. |
 | Wrong business order | Queue start before check-in, complete before start, invoice before completed appointment, record before consultation | Backend rejects and UI shows business-rule error. |
-| Dangerous action without confirmation | Inventory delete, invoice void, user deactivate, room/dept deactivate, lab delete | Confirmation required for destructive actions; lab delete has confirmation, some others need review. |
+| Dangerous action without confirmation | Invoice void, user deactivate, room/dept deactivate, slot delete/block | Confirmation required for destructive actions; inventory delete and lab delete have confirmation, remaining actions need review. |
 | Data isolation failure | Patient portal, doctor schedule, doctor appointment detail | User must not read another patient's or doctor's data. |
 | Accessibility selector failure | Dialogs/search/selects/buttons | Fields have labels and buttons have unique names; prior critical pattern says duplicate labels and hidden dialogs need careful tests. |
 
@@ -665,11 +673,12 @@ Status labels:
 | BF-08-T03 | Patient portal | Message reply | Patient | Thread exists | Try reply/send | No unsupported write should happen | No patient message write API | `patient_messages` read only | `/portal/messages` | P2 | Missing API | Keep read-only until contract exists |
 | BF-08-T04 | Patient portal | Cancel/reschedule | Patient | Appointment exists | Try cancel/reschedule | Disabled/informational only | No patient cancel/reschedule API | `appointments` | `/portal/appointments` | P1 | Missing API | Product decision needed |
 | BF-09-T01 | Inventory | Create item/lot/movement | Pharmacist/Admin | Authenticated inventory role | Add item, add lot, record movement | Lists reload, success shown | Inventory item/lot/movement APIs | `inventory_*` | `/staff/inventory` | P0 | Ready | Component tests exist |
-| BF-09-T02 | Inventory | Delete item | Pharmacist/Admin | Item exists | Click Delete | Item deleted or conflict shown | `DELETE /inventory/items/{id}` | `inventory_items` | `/staff/inventory` | P1 | Potential issue | Needs confirmation dialog |
+| BF-09-T02 | Inventory | Delete item | Pharmacist/Admin | Item exists | Click Delete | Confirmation shown; item deleted or conflict shown | `DELETE /inventory/items/{id}` | `inventory_items` | `/staff/inventory` | P1 | Ready | Browser confirmation added |
+| BF-09-T03 | Inventory | Dispense medication | Pharmacist/Admin | Medical record has matching prescription and lot has stock | Submit dispense form | Item/lot stock decrements and dispense movement is audited | `POST /inventory/dispense` | `inventory_items`, `inventory_lots`, `inventory_movements`, `medical_records`, `prescription_items` | `/staff/inventory` | P0 | Ready | Backend, component, API, and Playwright coverage added |
 | BF-10-T01 | Finance | Invoice and payment | Accountant/Admin | Completed appointment exists | Create invoice, record payment | Invoice `PAID`, revenue updated | `/invoices`, `/payments`, `/reports/revenue/*` | `invoices`, `appointments` | `/staff/invoices`, `/staff/revenue` | P0 | Ready | Component/backend tests exist |
 | BF-10-T02 | Finance | Void invoice | Accountant/Admin | Unpaid invoice exists | Click Void | Invoice `CANCELLED` | `POST /invoices/{id}/void` | `invoices` | `/staff/invoices` | P1 | Potential issue | Needs confirmation dialog |
 | BF-10-T03 | Pricing | Create/update pricing | Accountant/Admin | Authenticated finance role | Create and edit pricing | Pricing persists | `/pricing`, `/pricing/{id}` | `service_pricing` | `/staff/pricing`, `/admin/pricing` | P1 | Ready | Delete button in admin pricing not backed |
-| BF-11-T01 | Reminders | Follow-up reminder planning | Doctor/System | Record includes follow-up date | Save record, run reminder service | Reminder/email attempt recorded | Service-level only | `appointment_follow_ups` | No UI | P1 | Backend-only | Existing ReminderService tests |
+| BF-11-T01 | Reminders | Follow-up reminder planning and delivery evidence | Doctor/System | Record includes follow-up date | Save record, run reminder service | Reminder/email attempt recorded; failed external delivery remains retryable | Service-level only | `appointment_follow_ups`, `email_delivery_attempts` | No UI | P1 | Ready backend-only | ReminderService and delivery integration tests |
 | BF-12-T01 | UAT seed | Synthetic UAT readiness | Demo operator | Seed enabled | Start app, login each role | Representative objects visible | Normal APIs after seed | All major tables | Key public/staff/admin/portal screens | P0 | Ready | Final release-demo verification evidence exists; rerun before a new production sign-off |
 
 ## 7. Button And Action Inspection Checklist
@@ -994,10 +1003,11 @@ Button statuses:
 - Admin user, room, content/news, schedule template, slot, monitoring, and audit-log read workflows.
 - Doctor schedule read through `GET /api/v1/me/schedule`.
 - Medical record creation and prescription PDF backend path.
-- Staff inventory item/lot/movement/alert workflow.
+- Staff inventory item/lot/movement/dispense/alert workflow.
 - Invoice create/payment/void, pricing create/update, and revenue reporting.
 - Patient portal overview, appointments read, lab results read, messages read, and profile update.
-- Staff lab result list/detail/delete are now wired in source, although the create route is still missing.
+- Staff lab result list/detail/delete/create are wired in source.
+- Backend reminder delivery attempts are auditable through `email_delivery_attempts` with local-record staging behavior.
 
 ### Flows Likely Missing APIs Or Handlers
 
@@ -1022,7 +1032,7 @@ Button statuses:
 - Should patients be allowed to cancel or reschedule appointments, and what are status/slot-release rules?
 - Should patients be allowed to send portal messages, or are messages intentionally read-only?
 - Should lab result creation also be embedded inside the appointment or medical-record workflow, or is the standalone `/staff/lab-results/new` screen sufficient?
-- Should destructive actions require a modal confirmation across inventory delete, invoice void, user deactivate, room/dept deactivate, slot delete/block?
+- Should destructive actions require a modal confirmation across invoice void, user deactivate, room/dept deactivate, and slot delete/block? Inventory delete and lab delete now have confirmation coverage.
 - Should clinical records become locked after signing, with addendum-only edits?
 - Is drug/allergy interaction checking in scope for prescriptions?
 - Which export/print actions are required for release versus visual placeholders?
@@ -1034,7 +1044,7 @@ Button statuses:
 - Patient privacy risk if portal and doctor schedule scoping are not integration-tested with multiple patients/doctors.
 - Clinical safety risk around prescriptions: no visible allergy/drug interaction checks and no full locked-encounter/addendum workflow.
 - Business-order risk: queue, medical-record, invoice, and slot actions must reject invalid statuses.
-- Dangerous-action risk: several destructive actions lack explicit confirmation.
+- Dangerous-action risk: several destructive actions still lack explicit confirmation outside inventory and lab delete.
 - Environment risk: Docker/Testcontainers availability is required for full backend integration proof.
 - Documentation drift risk: older gap docs may say staff lab/schedule are static, but live source now includes API wiring.
 

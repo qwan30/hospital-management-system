@@ -12,17 +12,24 @@ public class EmailService {
   private static final Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
 
   private final GmailApiClient gmailApiClient;
+  private final EmailDeliveryAttemptRepository deliveryAttemptRepository;
   private final HospitalProfileProperties hospitalProfileProperties;
 
-  public EmailService(GmailApiClient gmailApiClient, HospitalProfileProperties hospitalProfileProperties) {
+  public EmailService(
+      GmailApiClient gmailApiClient,
+      EmailDeliveryAttemptRepository deliveryAttemptRepository,
+      HospitalProfileProperties hospitalProfileProperties) {
     this.gmailApiClient = gmailApiClient;
+    this.deliveryAttemptRepository = deliveryAttemptRepository;
     this.hospitalProfileProperties = hospitalProfileProperties;
   }
 
-  public void sendAppointmentConfirmation(String recipient, String confirmationCode) {
-    var sent = gmailApiClient.sendHtmlEmail(
+  public boolean sendAppointmentConfirmation(String recipient, String confirmationCode) {
+    var subject = "Your HMS appointment is confirmed";
+    var sent = deliver(
+        "APPOINTMENT_CONFIRMATION",
         recipient,
-        "Your HMS appointment is confirmed",
+        subject,
         """
             <h2>Appointment confirmed</h2>
             <p>Your confirmation code is <strong>%s</strong>.</p>
@@ -39,12 +46,15 @@ public class EmailService {
         null,
         null);
     LOGGER.info("email_confirmation recipient={} confirmationCode={} sent={}", recipient, confirmationCode, sent);
+    return sent;
   }
 
-  public void sendFollowUpReminder(String recipient, String patientName, LocalDate followUpDate, String doctorName) {
-    var sent = gmailApiClient.sendHtmlEmail(
+  public boolean sendFollowUpReminder(String recipient, String patientName, LocalDate followUpDate, String doctorName) {
+    var subject = "Follow-up reminder for " + followUpDate;
+    var sent = deliver(
+        "FOLLOW_UP_REMINDER",
         recipient,
-        "Follow-up reminder for " + followUpDate,
+        subject,
         """
             <h2>Follow-up reminder</h2>
             <p>Patient: <strong>%s</strong></p>
@@ -66,9 +76,10 @@ public class EmailService {
         followUpDate,
         doctorName,
         sent);
+    return sent;
   }
 
-  public void sendVisitResult(
+  public boolean sendVisitResult(
       String recipient,
       String patientName,
       String diagnosis,
@@ -79,9 +90,11 @@ public class EmailService {
     var followUpLine = followUpDate == null
         ? "<p>No follow-up visit was scheduled.</p>"
         : "<p>Follow-up date: <strong>" + followUpDate + "</strong></p>";
-    var sent = gmailApiClient.sendHtmlEmail(
+    var subject = "Visit result from " + valueOrDefault(hospitalProfileProperties.name(), "Hospital Management System");
+    var sent = deliver(
+        "VISIT_RESULT",
         recipient,
-        "Visit result from " + valueOrDefault(hospitalProfileProperties.name(), "Hospital Management System"),
+        subject,
         """
             <h2>Visit result</h2>
             <p>Patient: <strong>%s</strong></p>
@@ -94,9 +107,67 @@ public class EmailService {
         prescriptionFileName,
         "application/pdf");
     LOGGER.info("email_visit_result recipient={} patientName={} sent={}", recipient, patientName, sent);
+    return sent;
+  }
+
+  private boolean deliver(
+      String messageType,
+      String recipient,
+      String subject,
+      String htmlBody,
+      byte[] attachmentBytes,
+      String attachmentFileName,
+      String attachmentMimeType) {
+    if (!gmailApiClient.isReadyForExternalDelivery()) {
+      recordAttempt(messageType, recipient, subject, "LOCAL_RECORD", "RECORDED", attachmentFileName, null);
+      return true;
+    }
+
+    var sent = gmailApiClient.sendHtmlEmail(
+        recipient,
+        subject,
+        htmlBody,
+        attachmentBytes,
+        attachmentFileName,
+        attachmentMimeType);
+    recordAttempt(
+        messageType,
+        recipient,
+        subject,
+        "GMAIL",
+        sent ? "SENT" : "FAILED",
+        attachmentFileName,
+        sent ? null : "Gmail transport returned false");
+    return sent;
+  }
+
+  private void recordAttempt(
+      String messageType,
+      String recipient,
+      String subject,
+      String provider,
+      String status,
+      String attachmentFileName,
+      String failureReason) {
+    var attempt = new EmailDeliveryAttemptEntity();
+    attempt.setMessageType(messageType);
+    attempt.setRecipient(truncate(valueOrDefault(recipient, "unknown"), 255));
+    attempt.setSubject(truncate(valueOrDefault(subject, "HMS notification"), 255));
+    attempt.setProvider(provider);
+    attempt.setStatus(status);
+    attempt.setAttachmentFileName(truncate(attachmentFileName, 255));
+    attempt.setFailureReason(truncate(failureReason, 500));
+    deliveryAttemptRepository.save(attempt);
   }
 
   private String valueOrDefault(String value, String fallback) {
     return Objects.requireNonNullElse(value, fallback);
+  }
+
+  private String truncate(String value, int maxLength) {
+    if (value == null || value.length() <= maxLength) {
+      return value;
+    }
+    return value.substring(0, maxLength);
   }
 }

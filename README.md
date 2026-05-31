@@ -5,16 +5,16 @@ A comprehensive hospital management platform with appointment scheduling, clinic
 ## Stack
 
 - **Backend**: Java 17 / Spring Boot 3.3, multi-module Maven project (`domain`, `infrastructure`, `application`, `controller`, `start`)
-- **Database**: PostgreSQL 15, managed by Flyway (`V1` through `V17`; includes removal of historical assistant tables plus current clinical, RBAC, and inventory constraint schema catch-up)
+- **Database**: PostgreSQL 15, managed by Flyway (`V1` through `V20`; includes current clinical, RBAC, inventory, pharmacy dispense traceability, and email-delivery evidence schema)
 - **Email**: Gmail API for transactional emails (confirmation, prescriptions, reminders)
 - **API Docs**: SpringDoc OpenAPI, with 117 method-level controller mappings plus SpringDoc/Actuator support endpoints
 - **Frontend**: Next.js 16 / React 19 / TypeScript in `web/`; static design prototypes remain in `frontend/`
 
 ## Current Status
 
-Current repository status is tracked in [docs/reference/repository-status.md](docs/reference/repository-status.md). The 2026-05-31 refresh verified `HEAD` at `c2552311544ac16441e8a7d3af4f62d35dbb8a86`, GitNexus up to date at the same commit, and `master` ahead of `origin/master` by 36 local commits.
+Current repository status is tracked in [docs/reference/repository-status.md](docs/reference/repository-status.md). The 2026-06-01 readiness pass started from `HEAD` `dc7051d3123127ccccc04c38a2a874cf53a26ca2` with GitNexus up to date at the same commit.
 
-Release-readiness status remains **Demo Ready Only**. The executable 2026-05-22 hardening gates passed against synthetic release-demo data, and W-01/BF-07 lab-result creation was closed in the working tree on 2026-05-31. Production sign-off still requires W-02/BF-09 pharmacy dispensing and W-03/BF-11 external notification delivery to be implemented or explicitly waived, followed by final release verification on the current code.
+Release-readiness status is **Release Candidate / Ship with fixes** after the 2026-06-01 waiver-closure pass. W-01/BF-07 lab-result creation, W-02/BF-09 pharmacy dispensing, and W-03/BF-11 notification delivery evidence are closed with backend, frontend, Docker, and Playwright verification. Production sign-off still requires release-owner acceptance of the remaining P1/P2 product and safety backlog tracked in the readiness report.
 
 The backend API exposes 117 method-level controller mappings covering:
 - Authentication (Staff JWT + Patient portal)
@@ -22,7 +22,7 @@ The backend API exposes 117 method-level controller mappings covering:
 - Clinical Workflow (medical records, prescriptions, PDF generation)
 - Administration (users, departments, rooms, schedules, content)
 - Finance (invoices, payments, revenue reports)
-- Inventory Management (items, lots, movements)
+- Inventory Management (items, lots, movements, medication dispensing)
 - Patient Portal (profile, appointments, messages, lab results)
 
 The `web/` app contains the canonical Next.js route tree for public, staff, admin, and patient portal screens. The `frontend/` directory is retained as migrated design-reference HTML/PNG prototypes, not as the runnable frontend.

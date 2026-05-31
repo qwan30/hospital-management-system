@@ -55,6 +55,8 @@ class ReminderServiceTest {
   @Test
   void sendsImmediatelyWhenFollowUpDateIsTodayAfterEightAm() {
     var record = record(LocalDate.of(2026, 3, 15));
+    when(emailService.sendFollowUpReminder("patient@example.com", "Nguyen Van Test", LocalDate.of(2026, 3, 15), "Dr. Test"))
+        .thenReturn(true);
     reminderService.planReminder(record);
 
     reminderService.sendReminderIfDue(record);
@@ -74,6 +76,8 @@ class ReminderServiceTest {
     record.setReminderScheduledAt(Instant.parse("2026-03-15T01:00:00Z"));
     when(medicalRecordRepository.findByReminderSentFalseAndReminderScheduledAtLessThanEqualOrderByReminderScheduledAtAsc(any()))
         .thenReturn(List.of(record));
+    when(emailService.sendFollowUpReminder("patient@example.com", "Nguyen Van Test", LocalDate.of(2026, 3, 15), "Dr. Test"))
+        .thenReturn(true);
 
     var sentCount = reminderService.dispatchDueReminders();
 
@@ -84,6 +88,20 @@ class ReminderServiceTest {
         "Nguyen Van Test",
         LocalDate.of(2026, 3, 15),
         "Dr. Test");
+  }
+
+  @Test
+  void keepsReminderPendingWhenDeliveryFailsForRetry() {
+    var record = record(LocalDate.of(2026, 3, 15));
+    reminderService.planReminder(record);
+    when(emailService.sendFollowUpReminder("patient@example.com", "Nguyen Van Test", LocalDate.of(2026, 3, 15), "Dr. Test"))
+        .thenReturn(false);
+
+    var sent = reminderService.sendReminderIfDue(record);
+
+    assertThat(sent).isFalse();
+    assertThat(record.isReminderSent()).isFalse();
+    assertThat(record.getReminderSentAt()).isNull();
   }
 
   @Test

@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InventoryMovementRepository extends JpaRepository<InventoryMovementEntity, UUID> {
-  @EntityGraph(attributePaths = {"item"})
+  @EntityGraph(attributePaths = {"item", "lot", "medicalRecord", "medicalRecord.appointment", "medicalRecord.appointment.patient"})
   List<InventoryMovementEntity> findTop20ByOrderByCreatedAtDesc();
 }

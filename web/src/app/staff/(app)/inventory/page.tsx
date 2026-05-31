@@ -5,6 +5,7 @@ import {
   createInventoryItem,
   createInventoryLot,
   deleteInventoryItem,
+  dispenseMedication,
   listInventoryAlerts,
   listInventoryItems,
   listInventoryLots,
@@ -12,6 +13,7 @@ import {
   recordInventoryMovement,
   updateInventoryItem,
   type InventoryAlertResponse,
+  type InventoryDispenseResponse,
   type InventoryItemResponse,
   type InventoryLotResponse,
   type InventoryMovementResponse,
@@ -20,9 +22,9 @@ import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { DataPanel } from "@/components/ui/data-panel";
 import { HcIcon } from "@/components/ui/hc-icon";
-import { Package, AlertTriangle, AlertCircle, Clock } from "lucide-react";
+import { Package, AlertTriangle, AlertCircle } from "lucide-react";
 
-type InventoryDialog = "item" | "lot" | "movement" | null;
+type InventoryDialog = "item" | "lot" | "movement" | "dispense" | null;
 
 interface ItemFormState {
   sku: string;
@@ -46,6 +48,15 @@ interface MovementFormState {
   itemId: string;
   movementType: string;
   quantityDelta: string;
+  note: string;
+}
+
+interface DispenseFormState {
+  itemId: string;
+  lotId: string;
+  medicalRecordId: string;
+  prescriptionItemName: string;
+  quantity: string;
   note: string;
 }
 
@@ -74,6 +85,15 @@ const emptyMovementForm: MovementFormState = {
   note: "",
 };
 
+const emptyDispenseForm: DispenseFormState = {
+  itemId: "",
+  lotId: "",
+  medicalRecordId: "",
+  prescriptionItemName: "",
+  quantity: "1",
+  note: "",
+};
+
 export default function InventoryPage() {
   const [items, setItems] = useState<InventoryItemResponse[]>([]);
   const [lots, setLots] = useState<InventoryLotResponse[]>([]);
@@ -88,6 +108,7 @@ export default function InventoryPage() {
   const [itemForm, setItemForm] = useState<ItemFormState>(emptyItemForm);
   const [lotForm, setLotForm] = useState<LotFormState>(emptyLotForm);
   const [movementForm, setMovementForm] = useState<MovementFormState>(emptyMovementForm);
+  const [dispenseForm, setDispenseForm] = useState<DispenseFormState>(emptyDispenseForm);
 
   const loadInventory = useCallback(async () => {
     setIsLoading(true);
@@ -172,6 +193,20 @@ export default function InventoryPage() {
     setError(null);
     setSuccess(null);
     setDialog("movement");
+  }
+
+  function openDispenseForm(item?: InventoryItemResponse) {
+    const itemId = item?.itemId ?? items[0]?.itemId ?? "";
+    const matchingLot = lots.find((lot) => lot.itemId === itemId && lot.quantityRemaining > 0);
+    setDispenseForm({
+      ...emptyDispenseForm,
+      itemId,
+      lotId: matchingLot?.lotId ?? "",
+      prescriptionItemName: item?.itemName ?? "",
+    });
+    setError(null);
+    setSuccess(null);
+    setDialog("dispense");
   }
 
   async function handleItemSubmit(event: FormEvent<HTMLFormElement>) {
@@ -274,7 +309,41 @@ export default function InventoryPage() {
     }
   }
 
+  async function handleDispenseSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    if (!dispenseForm.itemId || !dispenseForm.lotId || !dispenseForm.medicalRecordId.trim() || !dispenseForm.prescriptionItemName.trim()) {
+      setError("A real item, lot, medical record, and prescription item are required.");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const saved = await dispenseMedication({
+        itemId: dispenseForm.itemId,
+        lotId: dispenseForm.lotId,
+        medicalRecordId: dispenseForm.medicalRecordId.trim(),
+        prescriptionItemName: dispenseForm.prescriptionItemName.trim(),
+        quantity: Number(dispenseForm.quantity),
+        note: nullableText(dispenseForm.note),
+      });
+      setSuccess(dispenseSuccessMessage(saved));
+      setDialog(null);
+      await loadInventory();
+    } catch (caught) {
+      setError(errorMessage(caught, "Unable to dispense medication."));
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   async function handleDeleteItem(item: InventoryItemResponse) {
+    const confirmed = window.confirm(`Delete inventory item ${item.itemName}? This cannot be undone.`);
+    if (!confirmed) {
+      return;
+    }
     setError(null);
     setSuccess(null);
     setIsSaving(true);
@@ -295,7 +364,7 @@ export default function InventoryPage() {
         title="Inventory Workspace"
         description="Operations Center • Monitor stock levels, lots, and movements"
         action={
-          <div className="flex gap-2">
+          <div className="flex flex-wrap justify-end gap-2">
             <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[var(--hc-primary)] px-4 text-[12px] font-bold uppercase tracking-widest text-white transition-colors hover:bg-[var(--hc-blue-700)] disabled:opacity-60 shadow-sm" onClick={openCreateItem} type="button">
               <HcIcon name="add" className="text-sm" />
               Add Item
@@ -307,6 +376,10 @@ export default function InventoryPage() {
             <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-white px-4 text-[12px] font-bold uppercase tracking-widest text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60 shadow-sm" disabled={items.length === 0} onClick={() => openMovementForm()} type="button">
               <HcIcon name="sync_alt" className="text-sm" />
               Movement
+            </button>
+            <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-white px-4 text-[12px] font-bold uppercase tracking-widest text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60 shadow-sm" disabled={items.length === 0 || lots.length === 0} onClick={() => openDispenseForm()} type="button">
+              <HcIcon name="medication" className="text-sm" />
+              Dispense
             </button>
             <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-white px-4 text-[12px] font-bold uppercase tracking-widest text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60 shadow-sm" onClick={loadInventory} disabled={isLoading} type="button">
               <HcIcon name="refresh" className="text-sm" />
@@ -385,6 +458,9 @@ export default function InventoryPage() {
                       <button className="text-[var(--hc-primary)] hover:underline disabled:opacity-40" disabled={isSaving} onClick={() => openMovementForm(item)} type="button">
                         Move
                       </button>
+                      <button className="text-[var(--hc-primary)] hover:underline disabled:opacity-40" disabled={isSaving || !lots.some((lot) => lot.itemId === item.itemId && lot.quantityRemaining > 0)} onClick={() => openDispenseForm(item)} type="button">
+                        Dispense
+                      </button>
                       <button className="text-[var(--hc-danger)] hover:underline disabled:opacity-40" disabled={isSaving} onClick={() => handleDeleteItem(item)} type="button">
                         Delete
                       </button>
@@ -461,6 +537,11 @@ export default function InventoryPage() {
       {dialog === "movement" ? (
         <Dialog title="Record Inventory Movement" onClose={() => setDialog(null)}>
           <MovementForm form={movementForm} isSaving={isSaving} items={items} onChange={setMovementForm} onSubmit={handleMovementSubmit} />
+        </Dialog>
+      ) : null}
+      {dialog === "dispense" ? (
+        <Dialog title="Dispense Medication" onClose={() => setDialog(null)}>
+          <DispenseForm form={dispenseForm} isSaving={isSaving} items={items} lots={lots} onChange={setDispenseForm} onSubmit={handleDispenseSubmit} />
         </Dialog>
       ) : null}
     </main>
@@ -574,6 +655,53 @@ function MovementForm({
   );
 }
 
+function DispenseForm({
+  form,
+  isSaving,
+  items,
+  lots,
+  onChange,
+  onSubmit,
+}: {
+  form: DispenseFormState;
+  isSaving: boolean;
+  items: InventoryItemResponse[];
+  lots: InventoryLotResponse[];
+  onChange: (form: DispenseFormState) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+}) {
+  const availableLots = lots.filter((lot) => lot.itemId === form.itemId && lot.quantityRemaining > 0);
+
+  return (
+    <form className="grid gap-4" onSubmit={onSubmit}>
+      <ItemSelect
+        itemId={form.itemId}
+        items={items}
+        onChange={(itemId) => {
+          const nextLot = lots.find((lot) => lot.itemId === itemId && lot.quantityRemaining > 0);
+          const selectedItem = items.find((item) => item.itemId === itemId);
+          onChange({
+            ...form,
+            itemId,
+            lotId: nextLot?.lotId ?? "",
+            prescriptionItemName: selectedItem?.itemName ?? form.prescriptionItemName,
+          });
+        }}
+      />
+      <LotSelect lotId={form.lotId} lots={availableLots} onChange={(lotId) => onChange({ ...form, lotId })} />
+      <TextField label="Medical Record ID" onChange={(value) => onChange({ ...form, medicalRecordId: value })} required value={form.medicalRecordId} />
+      <TextField label="Prescription Item Name" onChange={(value) => onChange({ ...form, prescriptionItemName: value })} required value={form.prescriptionItemName} />
+      <TextField label="Quantity To Dispense" onChange={(value) => onChange({ ...form, quantity: value })} required type="number" value={form.quantity} />
+      <TextField label="Note" onChange={(value) => onChange({ ...form, note: value })} value={form.note} />
+      <div className="mt-4 flex justify-end">
+        <button className="bg-[var(--hc-primary)] rounded-[var(--radius-md)] px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-white disabled:opacity-60 transition-colors hover:bg-[var(--hc-blue-700)]" disabled={isSaving || items.length === 0 || availableLots.length === 0} type="submit">
+          {isSaving ? "Saving..." : "Dispense Medication"}
+        </button>
+      </div>
+    </form>
+  );
+}
+
 function ItemSelect({
   itemId,
   items,
@@ -590,6 +718,30 @@ function ItemSelect({
         <option value="">Select real item</option>
         {items.map((item) => (
           <option key={item.itemId} value={item.itemId}>{item.itemName}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function LotSelect({
+  lotId,
+  lots,
+  onChange,
+}: {
+  lotId: string;
+  lots: InventoryLotResponse[];
+  onChange: (lotId: string) => void;
+}) {
+  return (
+    <label className="grid gap-2 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
+      Lot
+      <select className="h-10 rounded-md border border-[var(--hc-border-soft)] bg-white px-3 text-[13px] font-medium text-[var(--hc-text)] focus:border-[var(--hc-blue-500)] focus:outline-none focus:ring-1 focus:ring-[var(--hc-blue-500)]" onChange={(event) => onChange(event.target.value)} required value={lotId}>
+        <option value="">Select lot with stock</option>
+        {lots.map((lot) => (
+          <option key={lot.lotId} value={lot.lotId}>
+            {lot.lotCode} - {lot.quantityRemaining} remaining
+          </option>
         ))}
       </select>
     </label>
@@ -682,6 +834,14 @@ function pluralize(count: number, label: string) {
 function nullableText(value: string) {
   const trimmed = value.trim();
   return trimmed ? trimmed : null;
+}
+
+function dispenseSuccessMessage(response: InventoryDispenseResponse | null) {
+  if (!response) {
+    return "Medication dispensed.";
+  }
+
+  return `Dispensed ${response.quantityDispensed} ${response.itemName} from ${response.lotCode}.`;
 }
 
 function errorMessage(caught: unknown, fallback: string) {

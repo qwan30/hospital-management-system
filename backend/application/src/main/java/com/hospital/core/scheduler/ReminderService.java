@@ -88,11 +88,15 @@ public class ReminderService {
     }
 
     try {
-      emailService.sendFollowUpReminder(
+      var delivered = emailService.sendFollowUpReminder(
           recipient,
           record.getAppointment().getPatient().getFullName(),
           record.getFollowUpDate(),
           record.getAppointment().getDoctor().getFullName());
+      if (!delivered) {
+        LOGGER.warn("follow_up_reminder_delivery_not_confirmed recordId={}", record.getId());
+        return false;
+      }
       record.setReminderSent(true);
       record.setReminderSentAt(clock.instant());
       return true;

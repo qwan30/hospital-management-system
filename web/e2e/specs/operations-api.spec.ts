@@ -18,6 +18,7 @@ test.describe("@ui live operations API screens", () => {
   test("renders inventory items, lots, movements, and alerts from API responses", async ({
     page,
   }) => {
+    let dispensePayload: Record<string, unknown> | null = null;
     await seedStaffSession(page, "PHARMACIST");
     await page.route("**/api/v1/inventory/items", async (route) => {
       await route.fulfill({
@@ -116,6 +117,30 @@ test.describe("@ui live operations API screens", () => {
         }),
       });
     });
+    await page.route("**/api/v1/inventory/dispense", async (route) => {
+      dispensePayload = route.request().postDataJSON() as Record<string, unknown>;
+      await route.fulfill({
+        status: 201,
+        contentType: "application/json",
+        body: JSON.stringify({
+          success: true,
+          data: {
+            movementId: "movement-dispense-1",
+            itemId: "item-1",
+            itemName: "Normal Saline 500ml",
+            lotId: "lot-1",
+            lotCode: "LOT-SAL-2401",
+            medicalRecordId: "record-1",
+            prescriptionItemName: "Normal Saline 500ml",
+            quantityDispensed: 1,
+            itemQuantityOnHand: 17,
+            lotQuantityRemaining: 17,
+            note: "Prescription pickup",
+            createdAt: "2026-04-26T08:05:00Z",
+          },
+        }),
+      });
+    });
 
     await page.goto("/staff/inventory");
 
@@ -125,6 +150,22 @@ test.describe("@ui live operations API screens", () => {
     await expect(page.getByText("Ward usage")).toBeVisible();
     await expect(page.getByText("1 low-stock item")).toBeVisible();
     await expect(page.getByText("1 expiring lot")).toBeVisible();
+
+    await page.getByRole("button", { name: "Dispense" }).last().click();
+    await page.getByLabel("Medical Record ID").fill("record-1");
+    await page.getByLabel("Quantity To Dispense").fill("1");
+    await page.getByLabel("Note").fill("Prescription pickup");
+    await page.getByRole("button", { name: "Dispense Medication" }).click();
+
+    await expect(page.getByRole("status")).toContainText("Dispensed 1 Normal Saline 500ml from LOT-SAL-2401.");
+    expect(dispensePayload).toMatchObject({
+      itemId: "item-1",
+      lotId: "lot-1",
+      medicalRecordId: "record-1",
+      prescriptionItemName: "Normal Saline 500ml",
+      quantity: 1,
+      note: "Prescription pickup",
+    });
   });
 
   test("renders monitoring snapshot and audit log rows from admin APIs", async ({

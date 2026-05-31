@@ -1,5 +1,6 @@
 package com.hospital.core.inventory;
 
+import com.hospital.core.medicalrecord.MedicalRecordEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,11 +28,25 @@ public class InventoryMovementEntity {
   @JoinColumn(name = "item_id", nullable = false)
   private InventoryItemEntity item;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "lot_id")
+  private InventoryLotEntity lot;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "medical_record_id")
+  private MedicalRecordEntity medicalRecord;
+
   @Column(name = "movement_type", nullable = false, length = 32)
   private String movementType;
 
   @Column(name = "quantity_delta", nullable = false)
   private int quantityDelta;
+
+  @Column(name = "prescription_item_name", length = 255)
+  private String prescriptionItemName;
+
+  @Column(name = "dispensed_to_patient", length = 255)
+  private String dispensedToPatient;
 
   @Column(columnDefinition = "text")
   private String note;

@@ -9,7 +9,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.hospital.core.medicalrecord.MedicalRecordEntity;
+import com.hospital.core.medicalrecord.MedicalRecordRepository;
+import com.hospital.core.prescription.PrescriptionItemEntity;
+import com.hospital.shared.enums.AppointmentStatus;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -28,6 +35,8 @@ import org.junit.jupiter.api.TestInstance;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class InventoryIntegrationTest extends AbstractIntegrationTest {
+  @Autowired
+  private MedicalRecordRepository medicalRecordRepository;
 
   // ── Items ─────────────────────────────────────────────────────────────
 
@@ -202,6 +211,82 @@ class InventoryIntegrationTest extends AbstractIntegrationTest {
   // ── Alerts ────────────────────────────────────────────────────────────
 
   @Test
+  void pharmacistDispensesMedicationAgainstPrescriptionLotAndAuditTrail() throws Exception {
+    var lot = inventoryLotRepository.findAll().stream()
+        .filter(candidate -> candidate.getQuantityRemaining() > 0
+            && candidate.getItem().getQuantityOnHand() > 0)
+        .findFirst()
+        .orElseThrow();
+    var item = lot.getItem();
+    var originalItemQuantity = item.getQuantityOnHand();
+    var originalLotQuantity = lot.getQuantityRemaining();
+    var doctorId = doctorOneId();
+    var slot = createSlot(doctorId, LocalDate.now().plusDays(3), LocalTime.of(11, 0));
+    var appointmentJson = createAppointment(doctorId.toString(), slot.getId().toString());
+    var appointmentId = UUID.fromString(appointmentJson.get("data").get("id").asText());
+    var appointment = appointmentRepository.findById(appointmentId).orElseThrow();
+    appointment.setStatus(AppointmentStatus.DONE);
+    appointmentRepository.save(appointment);
+
+    var savedRecord = medicalRecordRepository.save(prescriptionRecord(appointment, item.getItemName()));
+
+    mockMvc.perform(post("/api/v1/inventory/dispense")
+            .header("Authorization", "Bearer " + pharmacistToken())
+            .contentType("application/json")
+            .content("""
+                {
+                  "itemId": "%s",
+                  "lotId": "%s",
+                  "medicalRecordId": "%s",
+                  "prescriptionItemName": "%s",
+                  "quantity": 1,
+                  "note": "Pharmacist pickup verification"
+                }
+                """.formatted(item.getId(), lot.getId(), savedRecord.getId(), item.getItemName())))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.data.itemId").value(item.getId().toString()))
+        .andExpect(jsonPath("$.data.lotId").value(lot.getId().toString()))
+        .andExpect(jsonPath("$.data.medicalRecordId").value(savedRecord.getId().toString()))
+        .andExpect(jsonPath("$.data.prescriptionItemName").value(item.getItemName()))
+        .andExpect(jsonPath("$.data.quantityDispensed").value(1))
+        .andExpect(jsonPath("$.data.itemQuantityOnHand").value(originalItemQuantity - 1))
+        .andExpect(jsonPath("$.data.lotQuantityRemaining").value(originalLotQuantity - 1));
+  }
+
+  @Test
+  void dispenseRejectsPrescriptionMismatch() throws Exception {
+    var lot = inventoryLotRepository.findAll().stream()
+        .filter(candidate -> candidate.getQuantityRemaining() > 0)
+        .findFirst()
+        .orElseThrow();
+    var doctorId = doctorOneId();
+    var slot = createSlot(doctorId, LocalDate.now().plusDays(4), LocalTime.of(11, 30));
+    var appointmentJson = createAppointment(doctorId.toString(), slot.getId().toString());
+    var appointmentId = UUID.fromString(appointmentJson.get("data").get("id").asText());
+    var appointment = appointmentRepository.findById(appointmentId).orElseThrow();
+    appointment.setStatus(AppointmentStatus.DONE);
+    appointmentRepository.save(appointment);
+
+    var savedRecord = medicalRecordRepository.save(prescriptionRecord(appointment, "Different medication"));
+
+    mockMvc.perform(post("/api/v1/inventory/dispense")
+            .header("Authorization", "Bearer " + pharmacistToken())
+            .contentType("application/json")
+            .content("""
+                {
+                  "itemId": "%s",
+                  "lotId": "%s",
+                  "medicalRecordId": "%s",
+                  "prescriptionItemName": "%s",
+                  "quantity": 1
+                }
+                """.formatted(lot.getItem().getId(), lot.getId(), savedRecord.getId(), lot.getItem().getItemName())))
+        .andExpect(status().isConflict())
+        .andExpect(jsonPath("$.error.message").value("Prescription item is not present on the selected medical record"));
+  }
+
+  @Test
   void alertsListReturnsProperly() throws Exception {
     mockMvc.perform(get("/api/v1/inventory/alerts")
             .header("Authorization", "Bearer " + pharmacistToken()))
@@ -227,5 +312,22 @@ class InventoryIntegrationTest extends AbstractIntegrationTest {
                 }
                 """))
         .andExpect(status().isForbidden());
+  }
+
+  private MedicalRecordEntity prescriptionRecord(com.hospital.core.appointment.AppointmentEntity appointment, String medicineName) {
+    var record = new MedicalRecordEntity();
+    record.setAppointment(appointment);
+    record.setDiagnosis("Medication pickup test");
+    record.setClinicalNotes("Prescription dispense integration coverage.");
+
+    var prescription = new PrescriptionItemEntity();
+    prescription.setMedicalRecord(record);
+    prescription.setMedicineName(medicineName);
+    prescription.setDosage("1 unit");
+    prescription.setFrequency("Once");
+    prescription.setDurationDays(1);
+    prescription.setSortOrder(0);
+    record.getPrescriptionItems().add(prescription);
+    return record;
   }
 }

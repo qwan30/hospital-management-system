@@ -9,9 +9,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.hospital.core.audit.AuditLogService;
+import com.hospital.core.appointment.AppointmentEntity;
 import com.hospital.core.common.NotFoundException;
 import com.hospital.core.department.DepartmentEntity;
 import com.hospital.core.department.DepartmentRepository;
+import com.hospital.core.medicalrecord.MedicalRecordEntity;
+import com.hospital.core.medicalrecord.MedicalRecordRepository;
+import com.hospital.core.patient.PatientEntity;
+import com.hospital.core.prescription.PrescriptionItemEntity;
+import com.hospital.core.user.UserEntity;
+import com.hospital.shared.inventory.InventoryDispenseRequest;
 import com.hospital.shared.inventory.InventoryItemCreateRequest;
 import com.hospital.shared.inventory.InventoryItemUpdateRequest;
 import com.hospital.shared.inventory.InventoryLotCreateRequest;
@@ -34,6 +41,7 @@ class InventoryWriteServiceTest {
   @Mock private InventoryLotRepository lotRepository;
   @Mock private InventoryMovementRepository movementRepository;
   @Mock private DepartmentRepository departmentRepository;
+  @Mock private MedicalRecordRepository medicalRecordRepository;
   @Mock private AuditLogService auditLogService;
 
   private InventoryWriteService service;
@@ -45,6 +53,7 @@ class InventoryWriteServiceTest {
         lotRepository,
         movementRepository,
         departmentRepository,
+        medicalRecordRepository,
         auditLogService);
   }
 
@@ -344,6 +353,109 @@ class InventoryWriteServiceTest {
         .isInstanceOf(NotFoundException.class);
   }
 
+  @Test
+  void dispenseMedication_validPrescriptionAndLot_updatesStockAndAudits() {
+    var itemId = UUID.randomUUID();
+    var lotId = UUID.randomUUID();
+    var recordId = UUID.randomUUID();
+    var item = buildItemEntity(itemId, "MED-001", "Paracetamol");
+    item.setQuantityOnHand(20);
+    item.setReorderLevel(5);
+    var lot = buildLot(lotId, item, 12);
+    var record = buildMedicalRecord(recordId, "Paracetamol 500mg");
+    when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+    when(lotRepository.findById(lotId)).thenReturn(Optional.of(lot));
+    when(medicalRecordRepository.findDetailedById(recordId)).thenReturn(Optional.of(record));
+    when(movementRepository.save(any(InventoryMovementEntity.class))).thenAnswer(inv -> {
+      var e = inv.getArgument(0, InventoryMovementEntity.class);
+      e.prePersist();
+      return e;
+    });
+    when(lotRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+    when(itemRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+    var response = service.dispenseMedication(new InventoryDispenseRequest(
+        itemId,
+        lotId,
+        recordId,
+        "Paracetamol 500mg",
+        4,
+        "Prescription pickup"));
+
+    assertThat(response.movementId()).isNotNull();
+    assertThat(response.quantityDispensed()).isEqualTo(4);
+    assertThat(response.itemQuantityOnHand()).isEqualTo(16);
+    assertThat(response.lotQuantityRemaining()).isEqualTo(8);
+    assertThat(response.prescriptionItemName()).isEqualTo("Paracetamol 500mg");
+    assertThat(item.getQuantityOnHand()).isEqualTo(16);
+    assertThat(lot.getQuantityRemaining()).isEqualTo(8);
+    verify(auditLogService).record(eq("PHARMACY_MEDICATION_DISPENSED"), eq("INVENTORY_ITEM"), eq(itemId), anyMap());
+  }
+
+  @Test
+  void dispenseMedication_wrongLotItem_throwsConflict() {
+    var itemId = UUID.randomUUID();
+    var otherItem = buildItemEntity(UUID.randomUUID(), "MED-OTHER", "Other");
+    var lot = buildLot(UUID.randomUUID(), otherItem, 10);
+    when(itemRepository.findById(itemId)).thenReturn(Optional.of(buildItemEntity(itemId, "MED-001", "Paracetamol")));
+    when(lotRepository.findById(lot.getId())).thenReturn(Optional.of(lot));
+
+    assertThatThrownBy(() -> service.dispenseMedication(new InventoryDispenseRequest(
+        itemId,
+        lot.getId(),
+        UUID.randomUUID(),
+        "Paracetamol 500mg",
+        1,
+        null)))
+        .isInstanceOf(com.hospital.core.common.ConflictException.class)
+        .hasMessageContaining("lot does not belong");
+  }
+
+  @Test
+  void dispenseMedication_missingPrescriptionItem_throwsConflict() {
+    var itemId = UUID.randomUUID();
+    var lotId = UUID.randomUUID();
+    var recordId = UUID.randomUUID();
+    var item = buildItemEntity(itemId, "MED-001", "Paracetamol");
+    when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+    when(lotRepository.findById(lotId)).thenReturn(Optional.of(buildLot(lotId, item, 10)));
+    when(medicalRecordRepository.findDetailedById(recordId))
+        .thenReturn(Optional.of(buildMedicalRecord(recordId, "Amoxicillin")));
+
+    assertThatThrownBy(() -> service.dispenseMedication(new InventoryDispenseRequest(
+        itemId,
+        lotId,
+        recordId,
+        "Paracetamol 500mg",
+        1,
+        null)))
+        .isInstanceOf(com.hospital.core.common.ConflictException.class)
+        .hasMessageContaining("Prescription item");
+  }
+
+  @Test
+  void dispenseMedication_insufficientLotQuantity_throwsConflict() {
+    var itemId = UUID.randomUUID();
+    var lotId = UUID.randomUUID();
+    var recordId = UUID.randomUUID();
+    var item = buildItemEntity(itemId, "MED-001", "Paracetamol");
+    item.setQuantityOnHand(20);
+    when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+    when(lotRepository.findById(lotId)).thenReturn(Optional.of(buildLot(lotId, item, 2)));
+    when(medicalRecordRepository.findDetailedById(recordId))
+        .thenReturn(Optional.of(buildMedicalRecord(recordId, "Paracetamol 500mg")));
+
+    assertThatThrownBy(() -> service.dispenseMedication(new InventoryDispenseRequest(
+        itemId,
+        lotId,
+        recordId,
+        "Paracetamol 500mg",
+        3,
+        null)))
+        .isInstanceOf(com.hospital.core.common.ConflictException.class)
+        .hasMessageContaining("lot does not have enough");
+  }
+
   // ── helpers ─────────────────────────────────────────────────────────────
 
   private InventoryItemEntity buildItemEntity(UUID id, String sku, String name) {
@@ -359,5 +471,45 @@ class InventoryWriteServiceTest {
     entity.setCreatedAt(Instant.now());
     entity.setUpdatedAt(Instant.now());
     return entity;
+  }
+
+  private InventoryLotEntity buildLot(UUID id, InventoryItemEntity item, int quantityRemaining) {
+    var lot = new InventoryLotEntity();
+    lot.setId(id);
+    lot.setItem(item);
+    lot.setLotCode("LOT-" + id.toString().substring(0, 8));
+    lot.setSupplierName("Test Supplier");
+    lot.setQuantityReceived(20);
+    lot.setQuantityRemaining(quantityRemaining);
+    lot.setExpiresOn(LocalDate.of(2027, 1, 31));
+    return lot;
+  }
+
+  private MedicalRecordEntity buildMedicalRecord(UUID id, String medicineName) {
+    var patient = new PatientEntity();
+    patient.setId(UUID.randomUUID());
+    patient.setFullName("Nguyen Van Test");
+
+    var doctor = new UserEntity();
+    doctor.setId(UUID.randomUUID());
+    doctor.setFullName("Dr. Test");
+
+    var appointment = new AppointmentEntity();
+    appointment.setId(UUID.randomUUID());
+    appointment.setPatient(patient);
+    appointment.setDoctor(doctor);
+
+    var record = new MedicalRecordEntity();
+    record.setId(id);
+    record.setAppointment(appointment);
+
+    var prescription = new PrescriptionItemEntity();
+    prescription.setId(UUID.randomUUID());
+    prescription.setMedicalRecord(record);
+    prescription.setMedicineName(medicineName);
+    prescription.setDosage("500mg");
+    prescription.setSortOrder(0);
+    record.getPrescriptionItems().add(prescription);
+    return record;
   }
 }

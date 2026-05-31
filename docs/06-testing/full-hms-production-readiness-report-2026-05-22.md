@@ -1,5 +1,7 @@
 # Full HMS Production Readiness Report - 2026-05-22
 
+> Successor update: the 2026-06-01 readiness pass closes W-02 pharmacy dispensing and W-03 notification delivery evidence. See [Full HMS Production Readiness Report - 2026-06-01](full-hms-production-readiness-report-2026-06-01.md) for current release-candidate status and remaining P1/P2 backlog.
+
 ## 1. Executive Verdict
 
 **Final decision: Demo Ready Only.**

@@ -1,0 +1,6 @@
+{
+    "backendStatus":  "UP",
+    "frontendStatusCode":  200,
+    "departmentsContainReleaseSeed":  true,
+    "doctorsContainReleaseSeed":  true
+}

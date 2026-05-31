@@ -34,6 +34,30 @@ export interface InventoryMovementResponse {
   createdAt: string;
 }
 
+export interface InventoryDispenseRequest {
+  itemId: string;
+  lotId: string;
+  medicalRecordId: string;
+  prescriptionItemName: string;
+  quantity: number;
+  note: string | null;
+}
+
+export interface InventoryDispenseResponse {
+  movementId: string;
+  itemId: string;
+  itemName: string;
+  lotId: string;
+  lotCode: string;
+  medicalRecordId: string;
+  prescriptionItemName: string;
+  quantityDispensed: number;
+  itemQuantityOnHand: number;
+  lotQuantityRemaining: number;
+  note: string | null;
+  createdAt: string;
+}
+
 export interface InventoryAlertResponse {
   alertType: "LOW_STOCK" | "EXPIRING_SOON" | "EXPIRED" | string;
   severity: "WARNING" | "CRITICAL" | string;
@@ -509,6 +533,18 @@ export async function recordInventoryMovement(
 ) {
   const response = await apiRequest<InventoryMovementResponse>(
     "/inventory/movements",
+    {
+      method: "POST",
+      body: JSON.stringify(request),
+    },
+    { authScope: "staff" },
+  );
+  return response.data ?? null;
+}
+
+export async function dispenseMedication(request: InventoryDispenseRequest) {
+  const response = await apiRequest<InventoryDispenseResponse>(
+    "/inventory/dispense",
     {
       method: "POST",
       body: JSON.stringify(request),

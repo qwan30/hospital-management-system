@@ -1,20 +1,17 @@
 # Repository Status
 
-**Status refresh:** 2026-05-31 23:44:10 +07:00.
-**Scope:** Git state, GitNexus index state, source-derived metrics, and current release-readiness label.
+**Status refresh:** 2026-06-01 00:00 +07:00.
+**Scope:** Git state, GitNexus index state, source-derived metrics, release-readiness label, and waiver-closure evidence.
 
 ## Current Git State
 
 | Check | Result |
 | --- | --- |
 | Branch | `master` |
-| HEAD | `c2552311544ac16441e8a7d3af4f62d35dbb8a86` |
-| HEAD subject | `docs(onboarding): add interactive codebase guide` |
-| HEAD commit time | 2026-05-25 10:46:05 +0700 |
-| Upstream comparison | `origin/master...HEAD` = 0 behind, 36 ahead |
-| Working tree at refresh | dirty; contains uncommitted W-01 lab-result creation code/tests plus documentation refresh changes |
-
-Until these changes are committed, `git status` will show the W-01 code/test files plus refreshed documentation files as modified or added.
+| HEAD before this pass | `dc7051d3123127ccccc04c38a2a874cf53a26ca2` |
+| HEAD subject before this pass | `feat(lab-results): add staff result creation flow` |
+| Post-pass commit | This status document is included in the waiver-closure commit; use `git log -1 --oneline` for the exact commit id |
+| Working tree at refresh | Clean after the waiver-closure commit |
 
 ## GitNexus State
 
@@ -22,14 +19,10 @@ Until these changes are committed, `git status` will show the W-01 code/test fil
 | --- | --- |
 | Command | `npx.cmd gitnexus status` |
 | Repository | `D:\projects\hospital-management-system` |
-| Indexed commit | `c255231` |
-| Current commit | `c255231` |
-| Freshness | up to date for committed `HEAD`; current W-01 working-tree code is not yet committed/indexed |
-| Indexed at | 2026-05-25 10:46:21 +0700 |
-| Graph size | 705 files, 5,380 nodes, 12,297 edges, 240 communities, 300 execution flows |
-| Embeddings | 0 |
-
-GitNexus CLI commands verified in this refresh include `status`, `query`, `context`, and `impact`. The local CLI help does not expose the documented `detect_changes` command, so scope checks use GitNexus `status` plus Git status/diff checks.
+| Indexed commit before this pass | `dc7051d` |
+| Current commit before this pass | `dc7051d` |
+| Freshness | Up to date after the waiver-closure commit and `npx.cmd gitnexus analyze` closeout |
+| CLI note | Local CLI exposes `status`, `query`, `context`, and `impact`; documented `detect_changes` remains unavailable, so scope checks use GitNexus status plus Git status/diff checks |
 
 ## Source-Derived Metrics
 
@@ -37,25 +30,43 @@ GitNexus CLI commands verified in this refresh include `status`, `query`, `conte
 | --- | ---: | --- |
 | Backend Maven modules | 5 | `backend/pom.xml` |
 | Controller Java files | 41 | `backend/controller/src/main/java` |
-| Method-level controller mappings | 117 | `rg "@(GetMapping|PostMapping|PutMapping|PatchMapping|DeleteMapping)\b"` |
-| Total controller mapping annotations | 148 | method mappings plus `@RequestMapping` |
-| Flyway migrations | 18 | `backend/start/src/main/resources/db/migration` |
+| Method-level controller mappings | 118 | `rg "@(GetMapping|PostMapping|PutMapping|PatchMapping|DeleteMapping)\b"`; new mapping is `POST /api/v1/inventory/dispense` |
+| Flyway migrations | 20 | `backend/start/src/main/resources/db/migration` |
 | Frontend page files | 72 | `web/src/app/**/page.tsx` |
-| Frontend page/layout/route files | 78 | `web/src/app` |
-| Backend test classes | 32 | `backend/application/src/test`, `backend/start/src/test` |
+| Backend test classes | 33 | `backend/application/src/test`, `backend/start/src/test` |
 | Playwright specs | 24 | `web/e2e/specs/*.ts` |
 
 ## Release-Readiness Label
 
-**Current label: Demo Ready Only.**
+**Current label: Release Candidate / Ship with fixes.**
 
-The executable 2026-05-22 hardening pass recorded green backend, frontend lint/unit/coverage/build, dependency security, Docker release-demo smoke, Playwright release-data/CI/integrated/UI/visual, backup/restore smoke, health/monitoring, and patient privacy/RBAC checks using synthetic release-demo data.
+The 2026-06-01 waiver-closure pass implemented and verified:
 
-The system must not be labeled Production Ready until the release owner approves or closes the remaining waiver items and reruns the final release verification sequence on the current code. W-01 was closed in the working tree on 2026-05-31 by adding `/staff/lab-results/new`, backend DTO normalization, route RBAC, unit tests, and Playwright route coverage.
-
-| ID | Flow | Required decision |
+| ID | Flow | Status |
 | --- | --- | --- |
-| W-02 | BF-09 Inventory/pharmacy | Approve waiver or define and test a true medication dispensing workflow |
-| W-03 | BF-11 Notifications/reminders | Approve waiver or verify external email/SMS delivery through a safe provider |
+| W-01 | BF-07 Lab results | Closed 2026-05-31 by `/staff/lab-results/new` and supporting test coverage |
+| W-02 | BF-09 Inventory/pharmacy | Closed 2026-06-01 by pharmacy dispense workflow, stock/audit traceability, UI, and regression coverage |
+| W-03 | BF-11 Notifications/reminders | Closed 2026-06-01 by delivery-attempt persistence, safe local-record staging provider, and retry-preserving failure handling |
 
-Primary evidence: [Full HMS Production Readiness Report - 2026-05-22](../06-testing/full-hms-production-readiness-report-2026-05-22.md).
+The label remains conservative because the broader P1/P2 product backlog is still open: static or unclear UI actions, destructive confirmations outside inventory/lab delete, patient self-service scope decisions, clinical record locking/addendum policy, and drug/allergy interaction scope.
+
+## Verification Snapshot
+
+| Gate | Result |
+| --- | --- |
+| Backend `mvn.cmd verify` | PASS, 148 tests |
+| Frontend lint | PASS, 29 existing warnings |
+| Frontend unit coverage | PASS, branch coverage 80.48% |
+| Frontend build | PASS |
+| npm audit / production audit | PASS, 0 vulnerabilities |
+| Docker release-demo rebuild and smoke | PASS on `hmsprod20260601` |
+| Playwright release-data | PASS, 2 passed |
+| Playwright chromium CI | PASS, 183 passed, 1 skipped |
+| Playwright integrated | PASS serialized, 92 passed, 3 expected skips |
+| Playwright UI | PASS, 323 passed, 1 skipped |
+| Playwright visual | PASS, 14 passed |
+| High-confidence secret scan | PASS, 0 findings |
+| Backup/restore smoke | PASS |
+| Git diff check | PASS with line-ending warnings only |
+
+Primary evidence: [Full HMS Production Readiness Report - 2026-06-01](../06-testing/full-hms-production-readiness-report-2026-06-01.md).
