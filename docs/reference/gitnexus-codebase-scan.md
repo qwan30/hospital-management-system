@@ -1,6 +1,6 @@
 # GitNexus Codebase Scan
 
-**Status:** current code-intelligence snapshot for the May 13, 2026 working tree.
+**Status:** code-intelligence snapshot for committed `HEAD` plus source metrics refreshed on 2026-05-31.
 **Primary source:** GitNexus index for `hospital-management-system`, verified with source, config, and test inventories.
 
 ## 1. GitNexus Index
@@ -8,16 +8,16 @@
 | Field | Current value |
 | --- | --- |
 | Repository | `D:\projects\hospital-management-system` |
-| Indexed commit | `9ae36bf6771ba47aa5b5ba2d6ac1efa7a70498b9` |
+| Indexed commit | `c2552311544ac16441e8a7d3af4f62d35dbb8a86` |
 | Index freshness | up to date with the current commit |
-| Indexed files | 561 |
-| Graph nodes | 4,057 |
-| Graph edges | 9,640 |
-| Communities | 152 |
+| Indexed files | 705 |
+| Graph nodes | 5,380 |
+| Graph edges | 12,297 |
+| Communities | 240 |
 | Execution flows | 300 |
 | Embeddings | 0 |
 
-The local checkout contains uncommitted changes. Treat this scan as a current local working-tree reference, not a release tag.
+At refresh time, `master` was ahead of `origin/master` by 36 commits and the working tree contained the uncommitted W-01 lab-result creation slice. Treat the GitNexus graph as committed-HEAD evidence and the source metrics below as current local working-tree evidence, not a release tag.
 
 ## 2. Current Architecture Shape
 
@@ -55,32 +55,35 @@ GitNexus query and context passes show these central surfaces:
 | Medical records | `MedicalRecordController` exposes create-record plus prescription PDF preview/download surfaces. |
 | Inventory | `InventoryController` exposes item, lot, movement, alert, and movement-recording surfaces through read and write services. |
 | Finance | `InvoiceController` exposes invoice list/create, payment recording, and voiding surfaces. |
-| Seed data | `SeedDataService` owns demo departments, users, pricing, inventory, patient portal data, and related repository-backed bootstrap routines. |
+| Seed data | `SeedDataService` owns default demo bootstrap data; `ReleaseDemoSeedService` and `ReleaseDemoSeedCatalog` own optional synthetic UAT/release-demo top-up data. |
 
 ## 4. Current Source Metrics
 
 | Metric | Current value | Source |
 | --- | --- | --- |
 | Backend Maven modules | 5 | `backend/pom.xml` |
-| Controller Java files | 38 | `backend/controller/src/main/java/com/hospital/api` |
+| Controller Java files | 41 | `backend/controller/src/main/java/com/hospital/api` |
 | Method-level controller mappings | 117 | `@GetMapping`, `@PostMapping`, `@PutMapping`, `@PatchMapping`, `@DeleteMapping` annotations |
 | Total controller mapping annotations | 148 | method-level mappings plus `@RequestMapping` annotations |
-| Flyway migrations | 17, `V1` through `V17` | `backend/start/src/main/resources/db/migration` |
-| Frontend page files | 65 | `web/src/app/**/page.tsx` |
-| Frontend page/layout/route files | 71 | `web/src/app` |
-| Backend test classes | 29 | `backend/application/src/test`, `backend/start/src/test` |
-| Tracked Playwright specs | 16 | `git ls-files web/e2e/specs/*.ts` |
-| Current working-tree Playwright specs | 21 | `web/e2e/specs/*.ts` |
+| Flyway migrations | 18, `V1` through `V18` | `backend/start/src/main/resources/db/migration` |
+| Frontend page files | 72 | `web/src/app/**/page.tsx` |
+| Frontend page/layout/route files | 78 | `web/src/app` |
+| Backend test classes | 32 | `backend/application/src/test`, `backend/start/src/test` |
+| Tracked Playwright specs | 24 | `git ls-files web/e2e/specs/*.ts` |
+| Current working-tree Playwright specs | 24 | `web/e2e/specs/*.ts` |
 
 ## 5. Verification Commands
 
 ```powershell
 npx.cmd gitnexus status
-npx.cmd gitnexus query -r hospital-management-system -l 10 "system architecture authentication authorization appointments patient portal medical records billing pharmacy inventory frontend routes"
+npx.cmd gitnexus query "production readiness verification repository status documentation" -r hospital-management-system
+npx.cmd gitnexus query "release demo smoke test business flow test matrix" -r hospital-management-system
 npx.cmd gitnexus context -r hospital-management-system AuthController
 npx.cmd gitnexus context -r hospital-management-system PatientAuthController
 npx.cmd gitnexus context -r hospital-management-system AppointmentWorkflowService
 npx.cmd gitnexus context -r hospital-management-system InventoryController
+npx.cmd gitnexus context ReleaseDemoSeedCatalog -r hospital-management-system
+npx.cmd gitnexus context ReleaseDemoSeedIntegrationTest -r hospital-management-system
 npx.cmd gitnexus impact -r hospital-management-system AppointmentWorkflowService
 ```
 

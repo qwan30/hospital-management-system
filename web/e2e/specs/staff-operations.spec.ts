@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { installUiApiMocks } from '../helpers/ui-api-mocks';
+import { mockMedicalRecordAppointmentId } from '../helpers/routes';
 
 test.describe('Staff Operations Pages (@ui)', () => {
   test.beforeEach(async ({ page }) => {
@@ -74,6 +75,21 @@ test.describe('Staff Operations Pages (@ui)', () => {
       const reviewLink = page.getByRole('link', { name: /Review/i }).first();
       await expect(reviewLink).toBeVisible();
       await expect(reviewLink).toHaveAttribute('href', /\/staff\/lab-results\/staff-lr-1/);
+    });
+
+    test('records a new lab result through the create route', async ({ page }) => {
+      await page.goto('/staff/lab-results/new', { waitUntil: 'domcontentloaded' });
+
+      await expect(page.getByRole('heading', { name: /Record Lab Result/i })).toBeVisible();
+      await page.getByLabel(/Appointment/i).selectOption(mockMedicalRecordAppointmentId);
+      await page.getByLabel(/Test Name/i).fill('Lipid Panel');
+      await page.getByLabel(/Result Value/i).fill('Total cholesterol 185 mg/dL');
+      await page.getByLabel(/Reference Range/i).fill('Desirable: <200 mg/dL');
+      await page.getByLabel(/Status/i).selectOption('COMPLETED');
+      await page.getByLabel(/Notes/i).fill('No immediate intervention required.');
+      await page.getByRole('button', { name: /Save Lab Result/i }).click();
+
+      await expect(page).toHaveURL(/\/staff\/lab-results\/staff-lr-new/);
     });
   });
 

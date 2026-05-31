@@ -1,8 +1,8 @@
 # Integration Gaps
 
-**Status:** GitNexus-backed integration audit for documentation and implementation follow-up.
+**Status:** historical GitNexus-backed integration audit retained for documentation and implementation follow-up.
 **Generated:** 2026-05-18.
-**Scope:** frontend-backend integration gaps visible from current source, tests, and docs. This file lists actionable gaps; it is not a claim that the whole system is broken.
+**Scope:** frontend-backend integration gaps visible from source, tests, and docs at the 2026-05-18 audit point. This file is not the current open-gap register.
 
 ## Audit Evidence
 
@@ -24,15 +24,14 @@ npx.cmd gitnexus query "admin schedule templates slots doctor availability front
 npx.cmd gitnexus query "appointment cancel reschedule reminder notification email frontend API" -r hospital-management-system
 ```
 
-The index is up to date at commit `60eada8`.
+The 2026-05-31 repository refresh verified the GitNexus index is up to date for committed `HEAD` at `c255231`. Use `docs/06-testing/business-flow-test-matrix.md` and `docs/06-testing/full-hms-production-readiness-report-2026-05-22.md` for the current flow status; this file preserves the original gap audit context.
 
-## Gap Table
+## Original Gap Table
 
 | Component or flow | Issue | Root cause | Fix |
 | --- | --- | --- | --- |
 | `BookingWizard` | Stale name in audit prompt; GitNexus cannot find this symbol | Current public booking route is `PublicBookingPage` in `web/src/app/(public)/booking/page.tsx` | Update docs/tests to reference `PublicBookingPage`; keep `booking-wizard.spec.ts` only as E2E file name |
-| `/staff/lab-results` | Staff lab result page uses local static data and hard-coded detail link | Backend lab API exists, but no staff lab service functions are wired in `web/src/lib` | Add staff lab API functions for create/get/list-by-appointment/delete; wire list/detail pages; add RTL and Playwright coverage |
-| `/staff/lab-results/[id]` | Detail page is not mapped to `/api/v1/lab-results/{resultId}` | Detail route is present but not backed by a service function | Add `getLabResult(resultId)` and page loading/error states |
+| `/staff/lab-results` and `/staff/lab-results/[id]` | Previous static staff lab shell is now API-backed | `listLabResultsByAppointment`, `getLabResult`, `createLabResult`, and `deleteLabResult` are wired in `web/src/lib/clinical-api.ts` | Keep final release verification current after W-01 changes; export remains intentionally unsupported until an export contract exists |
 | `/staff/schedule` | Staff schedule page is static | Backend doctor schedule endpoint exists at `/api/v1/me/schedule`, but no frontend wrapper/page integration exists | Add `getMySchedule({ date | week })` in a clinical or schedule API module and replace static page data |
 | Patient appointment cancellation/rescheduling | Portal UI disables actions; no patient write API is exposed | Backend has staff/admin appointment cancel/update metadata APIs, but no patient self-service cancel/reschedule contract | Keep disabled UI until backend contract is designed; document as unsupported in user-facing flows |
 | Notification/reminder visibility | Reminder planning/dispatch exists only as backend side effect | `ReminderService` is triggered through medical record follow-up and scheduled dispatch, not exposed as a UI/API workflow | Document as backend side effect; add operational visibility only if product requires it |
@@ -58,7 +57,7 @@ Use this checklist for every missing business flow or frontend integration gap:
 - [ ] Error scenarios documented in `docs/04-api/ERROR_HANDLING_MATRIX.md`
 - [ ] Role mapping checked against `docs/reference/role-screen-api-matrix.md`
 
-## Priority Fix List
+## Original Priority Fix List
 
 1. Staff lab-result integration: backend exists, patient read exists, but staff UI is still static.
 2. Staff doctor schedule integration: backend exists, admin availability management exists, but staff schedule page is static.

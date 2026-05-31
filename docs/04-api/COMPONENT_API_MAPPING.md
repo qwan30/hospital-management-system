@@ -2,7 +2,7 @@
 
 **Status:** GitNexus-backed integration map for the current `web/` frontend and Spring Boot API.
 **Generated:** 2026-05-18.
-**GitNexus index:** `hospital-management-system`, commit `60eada8`, status up to date.
+**GitNexus status refresh:** `hospital-management-system`, commit `c255231`, status up to date on 2026-05-27.
 
 This document maps user-facing frontend pages and service modules to backend API endpoints. It should be updated with `docs/reference/role-screen-api-matrix.md` whenever a route, service function, or controller endpoint changes.
 
@@ -50,12 +50,12 @@ This document maps user-facing frontend pages and service modules to backend API
 | Frontend route/component | Service function | API endpoint | Method | Request payload | Expected response |
 | --- | --- | --- | --- | --- | --- |
 | `/portal/lab-results` / `PatientLabResultsPage` | `listPatientPortalLabResults()` | `/api/v1/patient-portal/lab-results` | GET | patient bearer token | `PatientPortalLabResultResponse[]` |
-| `/staff/lab-results` | none currently wired | `/api/v1/lab-results` | POST | `LabResultCreateRequest` | `LabResultResponse` |
-| `/staff/lab-results/[id]` | none currently wired | `/api/v1/lab-results/{resultId}` | GET | result id | `LabResultResponse` |
-| appointment clinical view | none currently wired | `/api/v1/appointments/{appointmentId}/lab-results` | GET | appointment id | `LabResultResponse[]` |
-| staff lab result actions | none currently wired | `/api/v1/lab-results/{resultId}` | DELETE | result id | no content |
+| `/staff/lab-results/new` | `createLabResult()` | `/api/v1/lab-results` | POST | `LabResultCreateRequest` (`appointmentId`, `testName`, `resultValue`, `referenceRange`, `status`, `notes`) | `LabResultResponse` |
+| `/staff/lab-results/[id]` | `getLabResult()` | `/api/v1/lab-results/{resultId}` | GET | result id | `LabResultResponse` |
+| `/staff/lab-results` | `listAppointments()` + `listLabResultsByAppointment()` | `/api/v1/appointments/{appointmentId}/lab-results` | GET | appointment id | `LabResultResponse[]` |
+| staff lab result actions | `deleteLabResult()` | `/api/v1/lab-results/{resultId}` | DELETE | result id | no content |
 
-The backend lab API exists and has integration tests. The current staff lab-results pages are static UI shells; patient portal lab-result read is API-backed.
+The backend lab API exists and has integration tests. Staff lab list/detail/create/delete flows are now API-backed in `web/`; patient portal lab-result read is API-backed.
 
 ## Patient Portal
 

@@ -1,6 +1,6 @@
 # Frontend Route Inventory
 
-**Status:** current route inventory for `web/src/app` on May 13, 2026.
+**Status:** current route inventory for `web/src/app` as refreshed on 2026-05-31.
 **Canonical frontend:** `web/`
 **Reference-only frontend prototypes:** `frontend/`
 
@@ -19,7 +19,7 @@ Use [current-system-flows.md](current-system-flows.md) for the cross-role workfl
 | Auth/system routes | Implemented route files | `web/src/app/auth`, `web/src/app/forbidden`, public session pages |
 | Classic/variant routes | Reference-only comparison routes where files exist | route directories containing `classic` or `variant` |
 
-Current file count: 65 `page.tsx` files and 71 total route/layout files under `web/src/app`.
+Current file count: 71 `page.tsx` files and 77 total route/layout files under `web/src/app`.
 
 ## 2. Public Routes
 
@@ -54,6 +54,7 @@ Current file count: 65 `page.tsx` files and 71 total route/layout files under `w
 | `/staff/inventory` | `staff/(app)/inventory/page.tsx` | Implemented | pharmacist/admin inventory workspace with item, lot, movement, and alert APIs |
 | `/staff/invoices` | `staff/(app)/invoices/page.tsx` | Implemented route file | finance workspace |
 | `/staff/lab-results` | `staff/(app)/lab-results/page.tsx` | Implemented route file | lab result list |
+| `/staff/lab-results/new` | `staff/(app)/lab-results/new/page.tsx` | Implemented route file | lab result creation |
 | `/staff/lab-results/[id]` | `staff/(app)/lab-results/[id]/page.tsx` | Implemented route file | lab result detail |
 | `/staff/medical-records/[id]/edit` | `staff/(app)/medical-records/[id]/edit/page.tsx` | Implemented route file | record editor |
 | `/staff/nurse-intake` | `staff/(app)/nurse-intake/page.tsx` | Implemented route file | nurse intake |

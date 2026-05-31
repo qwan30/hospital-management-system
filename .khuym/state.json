@@ -3,8 +3,8 @@
   "feature_slug": "hms-production-readiness-hardening-2026-05-22",
   "mode": "degraded-direct-execution",
   "active_skill": "verification-loop",
-  "phase": "production-readiness-report-complete",
-  "phase_number": 8,
+  "phase": "post-report-w01-complete",
+  "phase_number": 9,
   "epic_id": "",
   "approved_gates": {
     "context": true,
@@ -18,12 +18,12 @@
   "blockers": [
     "GKG CLI is missing from PATH and the GKG server is not reachable/indexed; GitNexus CLI and direct source inspection were used.",
     "GitNexus detect_changes is unavailable in the installed CLI surface; gitnexus status and git diff checks were used.",
-    "Global git diff --check still fails on pre-existing dirty-tree whitespace outside this production-readiness slice; scoped check over touched files passed.",
-    "Production Ready cannot be claimed until release-owner waivers are approved for BF-07 lab creation depth, BF-09 pharmacy dispensing depth, and BF-11 external notification delivery."
+    "Global git diff --check passes for the current working tree with only line-ending warnings.",
+    "Production Ready cannot be claimed until W-02 pharmacy dispensing and W-03 external notification delivery are fully implemented or explicitly waived, and the final release verification suite is rerun."
   ],
   "focus": "production-readiness-hardening",
-  "summary": "Completed HMS production-readiness hardening pass with synthetic release-demo data. Visual diffs were reviewed route-by-route, snapshots updated after acceptance, npm vulnerabilities remediated to zero, branch coverage raised to 80.08%, production ops smoke/backup-restore/privacy checks passed, and final backend/frontend/Docker/Playwright verification passed. Final report decision is Demo Ready Only pending release-owner waiver approval.",
-  "next_action": "Release owner should approve or reject waivers W-01, W-02, and W-03 in docs/06-testing/full-hms-production-readiness-report-2026-05-22.md before any Production Ready claim.",
+  "summary": "Completed the post-report W-01 lab-result creation slice in the working tree. Staff can create lab results through /staff/lab-results/new against POST /api/v1/lab-results, RBAC now limits creation to Admin/Doctor, unit and Playwright coverage were added, backend lab integration tests passed, and readiness docs now mark W-01 closed. Final release decision remains Demo Ready Only until W-02/W-03 and final release verification are complete.",
+  "next_action": "Implement and verify W-02 pharmacy dispensing and W-03 external notification delivery, then rerun the full release verification suite before any Production Ready claim.",
   "deferred_beads": [],
   "last_compounding_run": {
     "feature": "hms-production-readiness-hardening-2026-05-22",
@@ -31,5 +31,5 @@
     "learnings_file": "",
     "critical_promotions": 0
   },
-  "last_updated": "2026-05-22T12:59:00+07:00"
+  "last_updated": "2026-05-31T23:42:03+07:00"
 }

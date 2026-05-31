@@ -53,6 +53,11 @@ const routePolicies: RoutePolicyCase[] = [
     denied: ["RECEPTIONIST", "PHARMACIST", "ACCOUNTANT"],
   },
   {
+    path: "/staff/lab-results/new",
+    allowed: ["ADMIN", "DOCTOR"],
+    denied: ["NURSE", "RECEPTIONIST", "PHARMACIST", "ACCOUNTANT"],
+  },
+  {
     path: "/staff/patients",
     allowed: ["ADMIN", "DOCTOR"],
     denied: ["NURSE", "RECEPTIONIST", "PHARMACIST", "ACCOUNTANT"],

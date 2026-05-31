@@ -35,6 +35,7 @@ export const staffRoutes: RouteCase[] = [
   { path: "/staff/inventory", label: "staff inventory" },
   { path: "/staff/invoices", label: "staff invoices" },
   { path: "/staff/lab-results", label: "staff lab results" },
+  { path: "/staff/lab-results/new", label: "staff lab result create" },
   { path: "/staff/lab-results/1", label: "staff lab result detail" },
   { path: `/staff/medical-records/${mockMedicalRecordAppointmentId}/edit`, label: "staff medical record edit" },
   { path: "/staff/nurse-intake", label: "staff nurse intake" },

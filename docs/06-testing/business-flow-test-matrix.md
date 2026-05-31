@@ -2,8 +2,9 @@
 
 **Status:** canonical BA/QA end-to-end business-flow testing document for the current HMS repository.
 **Generated:** 2026-05-21.
-**Evidence level:** source code and existing tests only; no live UI click audit was run in this pass.
-**GitNexus source:** `hospital-management-system`, indexed commit `60eada8`, status up to date on 2026-05-21.
+**Repository status refresh:** 2026-05-27.
+**Evidence level:** source code, existing tests, and the 2026-05-22 release-readiness verification artifacts.
+**GitNexus source:** `hospital-management-system`, indexed commit `c255231`, status up to date on 2026-05-27.
 
 Use this document to test the system from public discovery through booking, queue, clinical care, patient portal, operations, finance, and administration. It expands the previous flow matrix into a full business-flow, exception, module, and button/action inspection reference.
 
@@ -17,7 +18,7 @@ Use this document to test the system from public discovery through booking, queu
 | Reference prototype | `frontend/` | Historical/design reference only | Not active runtime |
 | Backend API | `backend/controller`, `backend/application`, `backend/domain`, `backend/infrastructure`, `backend/start` | Spring Boot modular monolith with controllers, services, DTOs, repositories, migrations, and security filters | Working |
 | Database | `backend/start/src/main/resources/db/migration` | Flyway-managed PostgreSQL schema | Working |
-| Automated tests | `backend/application/src/test`, `backend/start/src/test`, `web/src/**/__tests__`, `web/e2e` | Unit, integration, component, route, visual, and workflow coverage | Working, with known unrelated frontend unit failures from prior Khuym state |
+| Automated tests | `backend/application/src/test`, `backend/start/src/test`, `web/src/**/__tests__`, `web/e2e` | Unit, integration, component, route, visual, and workflow coverage | Working; latest recorded final pass is in `full-hms-production-readiness-report-2026-05-22.md` |
 
 ### Business Modules
 
@@ -105,7 +106,7 @@ Status labels:
 | Patient records | Staff patient search/detail | `/staff/patients` | `GET /api/v1/patient-records`, `GET /api/v1/patient-records/{patientId}`, `GET /api/v1/patients/{cccd}/history` | `patients`, `appointments`, `medical_records`, `lab_results` | Admin, Doctor | Working |
 | Medical record editor | Consultation documentation | `/staff/medical-records/[id]/edit` | `GET /api/v1/appointments/{id}`, `POST /api/v1/medical-records`, `POST /api/v1/medical-records/preview.pdf` | `medical_records`, `prescription_items`, `appointment_follow_ups`, `appointments` | Admin, Doctor | Working; addendum/locked encounter policy is not fully modeled |
 | Prescription preview/PDF | Prescription PDF preview and retrieval | `/staff/prescriptions/preview` | `POST /api/v1/medical-records/preview.pdf`, `GET /api/v1/medical-records/{recordId}/prescription.pdf` | `medical_records`, `prescription_items` | Admin, Doctor, Pharmacist | Working for backend PDF; route needs review for full UX |
-| Staff lab results | Staff lab list/detail/delete | `/staff/lab-results`, `/staff/lab-results/[id]` | `GET /api/v1/appointments/{id}/lab-results`, `GET /api/v1/lab-results/{id}`, `POST /api/v1/lab-results`, `DELETE /api/v1/lab-results/{id}` | `lab_results`, `appointments`, `patients` | Read: Admin/Doctor/Nurse; Write: Admin/Doctor | Working for list/detail/delete; "Record New Result" route `/staff/lab-results/new` is Missing UI/API route in `web/src/app` |
+| Staff lab results | Staff lab list/detail/create/delete | `/staff/lab-results`, `/staff/lab-results/new`, `/staff/lab-results/[id]` | `GET /api/v1/appointments/{id}/lab-results`, `GET /api/v1/lab-results/{id}`, `POST /api/v1/lab-results`, `DELETE /api/v1/lab-results/{id}` | `lab_results`, `appointments`, `patients` | Read: Admin/Doctor/Nurse; Write: Admin/Doctor | Working; create route added 2026-05-31 with backend DTO alignment and route-level write-role guard |
 | Patient portal overview | Portal dashboard | `/portal/overview` | `GET /api/v1/patient-portal/overview`, `GET /api/v1/patient-portal/lab-results` | `patients`, `appointments`, `lab_results`, `patient_messages` | Patient | Working |
 | Patient portal appointments | Patient appointment reads | `/portal/appointments`, `/portal/appointments/2` | `GET /api/v1/patient-portal/appointments` | `appointments`, `patients`, `users` | Patient | Working for list; detail route `/portal/appointments/2` is reference/static |
 | Patient portal lab results | Patient lab reads | `/portal/lab-results`, `/portal/diagnostics` | `GET /api/v1/patient-portal/lab-results` | `lab_results`, `patients` | Patient | Working for lab list; diagnostics route needs review |
@@ -372,7 +373,7 @@ Status labels:
 **Secondary actors:** Patient.
 **Start condition:** Appointment exists.
 **End condition:** Lab result is created/read/deleted where permitted and appears in patient portal read model.
-**Screens involved:** `/staff/lab-results`, `/staff/lab-results/[id]`, `/portal/lab-results`, `/portal/diagnostics`.
+**Screens involved:** `/staff/lab-results`, `/staff/lab-results/new`, `/staff/lab-results/[id]`, `/portal/lab-results`, `/portal/diagnostics`.
 **APIs called:** `POST /api/v1/lab-results`, `GET /api/v1/lab-results/{id}`, `GET /api/v1/appointments/{id}/lab-results`, `DELETE /api/v1/lab-results/{id}`, `GET /api/v1/patient-portal/lab-results`.
 **Data created/updated:** `lab_results`, `appointments`, `patients`.
 **Status changes:** Lab result status is stored as text in `lab_results.status`; UI classifies critical/pending/verified-like statuses.
@@ -389,8 +390,8 @@ Status labels:
 
 **Exception cases:**
 - Result belongs to another patient.
-- Missing appointment or test name.
-- Staff route points to `/staff/lab-results/new`, but no route file currently exists.
+- Missing appointment, test name, or result value.
+- `/staff/lab-results/new` requires a real appointment and posts the backend `LabResultCreateRequest` DTO.
 - Delete confirmation uses browser `confirm`; verify UX and audit policy.
 - Attachment URL fails or leaks unsafe URL.
 
@@ -399,7 +400,7 @@ Status labels:
 - `P1-BF07-02`: staff detail loads result by ID.
 - `P1-BF07-03`: delete result confirms and calls API.
 - `P1-BF07-04`: patient A cannot read patient B lab result.
-- `P1-BF07-05`: missing `/staff/lab-results/new` route is captured as release gap.
+- `P1-BF07-05`: create lab result from `/staff/lab-results/new` and navigate to the created detail route.
 
 **Priority:** High.
 
@@ -630,7 +631,7 @@ Status labels:
 | Network disconnection | All API-backed screens | Loading ends, retry available where critical. |
 | Button click does not respond | Static dashboard/support/export/read/print buttons | Mark `Missing handler` or `Need review`; add handler or remove action. |
 | Button exists but no API | Export CSV, public news read, portal reply/send, patient cancel/reschedule, admin pricing delete | Mark `Missing API` or `Missing handler`; do not fake success. |
-| API exists but UI missing | Patient cancel/update if future self-service wanted, reminder management, some admin assignment APIs, lab create route | Mark `Missing UI`; decide product scope. |
+| API exists but UI missing | Patient cancel/update if future self-service wanted, reminder management, some admin assignment APIs | Mark `Missing UI`; decide product scope. |
 | Invalid data status | Appointment, slot, invoice, room, inventory item, lab result | Backend rejects invalid transition/status; UI disables invalid action where possible. |
 | Wrong business order | Queue start before check-in, complete before start, invoice before completed appointment, record before consultation | Backend rejects and UI shows business-rule error. |
 | Dangerous action without confirmation | Inventory delete, invoice void, user deactivate, room/dept deactivate, lab delete | Confirmation required for destructive actions; lab delete has confirmation, some others need review. |
@@ -658,7 +659,7 @@ Status labels:
 | BF-06-T02 | Prescription | Preview/download PDF | Doctor/Pharmacist | Record/prescription exists | Generate preview or open PDF | PDF response returned | `POST /medical-records/preview.pdf`, `GET /medical-records/{id}/prescription.pdf` | `medical_records`, `prescription_items` | `/staff/prescriptions/preview` | P1 | Need review | Backend tests exist; UI path should be verified |
 | BF-07-T01 | Lab results | Staff lab list | Doctor/Nurse/Admin | Appointments have lab results | Open list | Results load by appointment | `GET /appointments/{id}/lab-results` | `lab_results`, `appointments` | `/staff/lab-results` | P1 | Ready | Current page wired |
 | BF-07-T02 | Lab results | Staff lab detail/delete | Doctor/Admin | Result exists | Open result, confirm delete | Delete API called, route returns list | `GET/DELETE /lab-results/{id}` | `lab_results` | `/staff/lab-results/[id]` | P1 | Ready | Delete has confirmation |
-| BF-07-T03 | Lab results | Record new result route | Doctor/Admin | Appointment exists | Click Record New Result | Route should exist and create result | `POST /lab-results` | `lab_results` | `/staff/lab-results/new` | P1 | Missing UI | Service exists; route file not found |
+| BF-07-T03 | Lab results | Record new result route | Doctor/Admin | Appointment exists | Click Record New Result | Route exists, validates required fields, posts `LabResultCreateRequest`, and opens created detail | `POST /lab-results` | `lab_results` | `/staff/lab-results/new` | P1 | Ready | Added 2026-05-31; frontend unit, UI Playwright, route contract, and backend integration coverage exist |
 | BF-08-T01 | Patient portal | Patient login and overview | Patient | Account exists | Login and open overview | Own overview data visible | `/patient-auth/login`, `/patient-portal/overview` | `patient_accounts`, `patients`, related read tables | `/portal/login`, `/portal/overview` | P0 | Ready | Existing portal tests |
 | BF-08-T02 | Patient portal | Profile update | Patient | Patient logged in | Edit profile and save | Profile persists | `PUT /patient-portal/profile` | `patients` | `/portal/profile` | P1 | Ready | Component tests exist |
 | BF-08-T03 | Patient portal | Message reply | Patient | Thread exists | Try reply/send | No unsupported write should happen | No patient message write API | `patient_messages` read only | `/portal/messages` | P2 | Missing API | Keep read-only until contract exists |
@@ -669,7 +670,7 @@ Status labels:
 | BF-10-T02 | Finance | Void invoice | Accountant/Admin | Unpaid invoice exists | Click Void | Invoice `CANCELLED` | `POST /invoices/{id}/void` | `invoices` | `/staff/invoices` | P1 | Potential issue | Needs confirmation dialog |
 | BF-10-T03 | Pricing | Create/update pricing | Accountant/Admin | Authenticated finance role | Create and edit pricing | Pricing persists | `/pricing`, `/pricing/{id}` | `service_pricing` | `/staff/pricing`, `/admin/pricing` | P1 | Ready | Delete button in admin pricing not backed |
 | BF-11-T01 | Reminders | Follow-up reminder planning | Doctor/System | Record includes follow-up date | Save record, run reminder service | Reminder/email attempt recorded | Service-level only | `appointment_follow_ups` | No UI | P1 | Backend-only | Existing ReminderService tests |
-| BF-12-T01 | UAT seed | Synthetic UAT readiness | Demo operator | Seed enabled | Start app, login each role | Representative objects visible | Normal APIs after seed | All major tables | Key public/staff/admin/portal screens | P0 | Ready | Docker may block full verification |
+| BF-12-T01 | UAT seed | Synthetic UAT readiness | Demo operator | Seed enabled | Start app, login each role | Representative objects visible | Normal APIs after seed | All major tables | Key public/staff/admin/portal screens | P0 | Ready | Final release-demo verification evidence exists; rerun before a new production sign-off |
 
 ## 7. Button And Action Inspection Checklist
 
@@ -720,7 +721,7 @@ Button statuses:
 | `/staff/schedule` | Refresh | Reload doctor schedule | `GET /me/schedule` | Yes | Yes | N/A | Yes | N/A | OK |
 | `/staff/schedule` | Day/Week toggle | Change query mode and reload | `GET /me/schedule?date or week` | Yes | Yes | N/A | Yes | N/A | OK |
 | `/staff/schedule` | Search/status controls | Filter schedule rows | Local state/API not fully applied to source rows | N/A | No | N/A | No | N/A | Need review |
-| `/staff/lab-results` | Record New Result | Navigate to create lab result route | `POST /lab-results` should be used by create screen | API yes, route missing | No | No | No | N/A | Missing handler |
+| `/staff/lab-results` | Record New Result | Navigate to create lab result route | `POST /lab-results` through `/staff/lab-results/new` | Yes | Yes | Navigates to created detail | Yes | N/A | OK |
 | `/staff/lab-results` | Export | Export lab result list | No export endpoint visible | No | No | No | No | N/A | Missing handler |
 | `/staff/lab-results/[id]` | Delete Result | Delete lab result | `DELETE /lab-results/{id}` | Yes | Yes | Redirect/list | Yes | Yes | OK |
 | `/staff/lab-results/[id]` | View Attachment | Open attachment URL | External/file URL from result | N/A | No | N/A | Browser handles | N/A | Need review |
@@ -1000,7 +1001,6 @@ Button statuses:
 
 ### Flows Likely Missing APIs Or Handlers
 
-- `/staff/lab-results/new` create-result route: service/API exists but route file was not found.
 - Patient appointment cancel/reschedule from portal: no patient write API.
 - Patient message send/reply: no patient write API.
 - Change password and forgot password: no visible UI/API.
@@ -1021,7 +1021,7 @@ Button statuses:
 
 - Should patients be allowed to cancel or reschedule appointments, and what are status/slot-release rules?
 - Should patients be allowed to send portal messages, or are messages intentionally read-only?
-- Should lab result creation have a new `/staff/lab-results/new` screen or happen inside appointment/medical-record workflow?
+- Should lab result creation also be embedded inside the appointment or medical-record workflow, or is the standalone `/staff/lab-results/new` screen sufficient?
 - Should destructive actions require a modal confirmation across inventory delete, invoice void, user deactivate, room/dept deactivate, slot delete/block?
 - Should clinical records become locked after signing, with addendum-only edits?
 - Is drug/allergy interaction checking in scope for prescriptions?

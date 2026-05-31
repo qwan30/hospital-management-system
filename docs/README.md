@@ -1,6 +1,6 @@
 # Hospital Management System Documentation Map
 
-**Status:** current documentation map for the May 13, 2026 repository baseline.
+**Status:** current documentation map for the 2026-05-31 repository status refresh.
 **Scope:** documentation navigation, ownership, source-of-truth rules, and maintenance checks.
 
 ## 1. How To Read This Documentation Set
@@ -22,16 +22,17 @@ Use repository source reality as the tie-breaker when documents disagree:
 | Topic | Primary document | Supporting documents |
 | --- | --- | --- |
 | Repository overview | [`../README.md`](../README.md) | this map |
+| Repository status | [`reference/repository-status.md`](reference/repository-status.md) | [`reference/gitnexus-codebase-scan.md`](reference/gitnexus-codebase-scan.md), [`reference/engineering-metrics.md`](reference/engineering-metrics.md), GitNexus index under `../.gitnexus` |
 | Product scope | [`HMS_PRD.md`](HMS_PRD.md) | [`HMS_ProjectPlan.md`](HMS_ProjectPlan.md), [`HMS_UserManual.md`](HMS_UserManual.md) |
 | System requirements | [`HMS_SRS.md`](HMS_SRS.md) | [`reference/role-screen-api-matrix.md`](reference/role-screen-api-matrix.md) |
 | Technical design | [`HMS_TDD.md`](HMS_TDD.md) | [`HMS_ArchitectureDiagrams.html`](HMS_ArchitectureDiagrams.html), [`03-architecture/FRONTEND_ARCHITECTURE.md`](03-architecture/FRONTEND_ARCHITECTURE.md) |
-| Code intelligence scan | [`reference/gitnexus-codebase-scan.md`](reference/gitnexus-codebase-scan.md) | [`reference/engineering-metrics.md`](reference/engineering-metrics.md), GitNexus index under `../.gitnexus` |
+| Code intelligence scan | [`reference/gitnexus-codebase-scan.md`](reference/gitnexus-codebase-scan.md) | [`reference/repository-status.md`](reference/repository-status.md), [`reference/engineering-metrics.md`](reference/engineering-metrics.md), GitNexus index under `../.gitnexus` |
 | Current system flows | [`reference/current-system-flows.md`](reference/current-system-flows.md) | [`reference/frontend-route-inventory.md`](reference/frontend-route-inventory.md), [`reference/role-screen-api-matrix.md`](reference/role-screen-api-matrix.md) |
 | API contract | [`../API_CONTRACT.md`](../API_CONTRACT.md) | [`API_ENDPOINTS_COMPREHENSIVE.md`](API_ENDPOINTS_COMPREHENSIVE.md), [`04-api/COMPONENT_API_MAPPING.md`](04-api/COMPONENT_API_MAPPING.md), [`04-api/DATA_FLOW_SPECIFICATION.md`](04-api/DATA_FLOW_SPECIFICATION.md), [`04-api/ERROR_HANDLING_MATRIX.md`](04-api/ERROR_HANDLING_MATRIX.md), [`reference/removed-endpoints.md`](reference/removed-endpoints.md) |
 | Database migrations | [`HMS_DBMigrationPlan.md`](HMS_DBMigrationPlan.md) | migration files under `../backend/start/src/main/resources/db/migration` |
 | Deployment and setup | [`HMS_DeploymentGuide.md`](HMS_DeploymentGuide.md) | [`../README.md`](../README.md), [`reference/demo-accounts-and-seed-data.md`](reference/demo-accounts-and-seed-data.md) |
-| Testing | [`HMS_TestPlan.md`](HMS_TestPlan.md) | [`06-testing/business-flow-test-matrix.md`](06-testing/business-flow-test-matrix.md), `../backend/application/src/test`, `../backend/start/src/test`, `../web/e2e` |
-| Stabilization readiness | [`audits/stabilization-readiness-2026-05-13.md`](audits/stabilization-readiness-2026-05-13.md) | [`HMS_TestPlan.md`](HMS_TestPlan.md), GitNexus index, Khuym onboarding state |
+| Testing | [`HMS_TestPlan.md`](HMS_TestPlan.md) | [`06-testing/business-flow-test-matrix.md`](06-testing/business-flow-test-matrix.md), [`06-testing/full-hms-production-readiness-report-2026-05-22.md`](06-testing/full-hms-production-readiness-report-2026-05-22.md), `../backend/application/src/test`, `../backend/start/src/test`, `../web/e2e` |
+| Release readiness | [`06-testing/full-hms-production-readiness-report-2026-05-22.md`](06-testing/full-hms-production-readiness-report-2026-05-22.md) | [`06-testing/business-flow-test-matrix.md`](06-testing/business-flow-test-matrix.md), [`reference/repository-status.md`](reference/repository-status.md), Khuym onboarding state |
 | Frontend routes | [`reference/frontend-route-inventory.md`](reference/frontend-route-inventory.md) | [`design_brief.md`](design_brief.md), `../web/e2e/helpers/routes.ts` |
 | Design direction | [`design_brief.md`](design_brief.md) | [`DESIGN.md`](DESIGN.md) |
 | Documentation audit | [`audits/documentation-review-and-improvement-plan.md`](audits/documentation-review-and-improvement-plan.md) | [`INTEGRATION_GAPS.md`](INTEGRATION_GAPS.md), [`audits/verification-checklist.md`](audits/verification-checklist.md), [`audits/final-documentation-review-notes.md`](audits/final-documentation-review-notes.md) |
@@ -80,6 +81,7 @@ The long-term documentation category structure is present as a navigation layer:
 | `reference/agent-workflow-governance.md` | current/reference | classifies agent assets as workflow tooling, not product features |
 | `reference/current-system-flows.md` | current/reference | active public, staff, admin, finance, inventory, and patient portal flow map |
 | `reference/gitnexus-codebase-scan.md` | current/reference | GitNexus graph snapshot, key code surfaces, and source metrics |
+| `reference/repository-status.md` | current/reference | current Git, GitNexus, source metrics, and release-readiness label |
 
 ## 4. Status Labels
 

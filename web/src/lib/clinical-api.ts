@@ -291,23 +291,32 @@ export interface LabResultResponse {
   labResultId: string;
   appointmentId: string;
   testName: string;
+  resultValue?: string | null;
+  referenceRange?: string | null;
   status: string;
+  notes?: string | null;
+  deleted?: boolean;
+  createdAt?: string;
   resultSummary: string | null;
   doctorComment: string | null;
   attachmentUrl: string | null;
   collectedAt: string;
 }
 
-type LabResultApiResponse = Omit<LabResultResponse, "labResultId"> & {
+type LabResultApiResponse = Partial<Omit<LabResultResponse, "labResultId">> & {
   labResultId?: string;
+  id?: string;
+  appointmentId: string;
+  testName: string;
 };
 
 export interface LabResultCreateRequest {
   appointmentId: string;
   testName: string;
-  resultSummary?: string;
-  doctorComment?: string;
-  attachmentUrl?: string;
+  resultValue: string;
+  referenceRange?: string | null;
+  status?: string | null;
+  notes?: string | null;
 }
 
 export async function listLabResultsByAppointment(appointmentId: string) {
@@ -352,9 +361,22 @@ export async function createLabResult(request: LabResultCreateRequest) {
 }
 
 function normalizeLabResult(result: LabResultApiResponse): LabResultResponse {
+  const resultValue = result.resultValue ?? result.resultSummary ?? null;
+  const notes = result.notes ?? result.doctorComment ?? null;
+  const createdAt = result.createdAt ?? result.collectedAt ?? "";
+
   return {
     ...result,
     labResultId: result.labResultId ?? result.id ?? "",
+    status: result.status ?? "PENDING",
+    resultValue,
+    referenceRange: result.referenceRange ?? null,
+    notes,
+    resultSummary: result.resultSummary ?? resultValue,
+    doctorComment: result.doctorComment ?? notes,
+    attachmentUrl: result.attachmentUrl ?? null,
+    collectedAt: result.collectedAt ?? createdAt,
+    createdAt,
   };
 }
 

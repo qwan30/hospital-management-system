@@ -1,6 +1,6 @@
 # Role To Screen And API Matrix
 
-**Status:** current role map for the May 13, 2026 repository baseline.
+**Status:** current role map for the 2026-05-31 repository status refresh.
 **Verification sources:** `backend/domain/src/main/java/com/hospital/shared/enums/UserRole.java`, `backend/application/src/main/java/com/hospital/core/security/RbacAuthorizationService.java`, `backend/controller/src/main/java`, and `web/src/lib/rbac.ts`.
 
 ## 1. Role Summary
@@ -9,7 +9,7 @@
 | --- | --- | --- | --- |
 | Guest | `/`, `/departments`, `/departments/[id]`, `/doctors`, `/news`, `/booking`, legal/security pages | public content, departments, doctors, public appointment create, chatbot | No authentication |
 | Patient | `/portal/login`, `/portal/claim`, `/portal/overview`, `/portal/appointments`, `/portal/lab-results`, `/portal/messages`, `/portal/profile`, related portal pages | `/patient-auth`, `/patient-portal` | Portal messages are read-only from the patient side |
-| Doctor | `/staff/dashboard`, `/staff/doctor/dashboard`, `/staff/doctor/[id]`, `/staff/schedule`, `/staff/patients`, `/staff/medical-records/[id]/edit`, `/staff/prescriptions/preview`, clinical read pages | `/appointments`, `/me/schedule`, `/patient-records`, `/patients`, `/medical-records`, `/lab-results`, `/vital-signs` | Own clinical workflow emphasis |
+| Doctor | `/staff/dashboard`, `/staff/doctor/dashboard`, `/staff/doctor/[id]`, `/staff/schedule`, `/staff/patients`, `/staff/medical-records/[id]/edit`, `/staff/prescriptions/preview`, `/staff/lab-results/new`, clinical read pages | `/appointments`, `/me/schedule`, `/patient-records`, `/patients`, `/medical-records`, `/lab-results`, `/vital-signs` | Own clinical workflow emphasis |
 | Nurse | `/staff/dashboard`, `/staff/queue`, `/staff/nurse-intake`, `/staff/vital-signs`, `/staff/lab-results`, selected booking/support pages | `/queue`, `/appointments/today`, `/appointments/{id}/checkin`, queue manage actions, `/vital-signs`, lab-result read | Queue assign-room is implemented; no separate live room-board API |
 | Receptionist | `/staff/dashboard`, `/staff/booking`, `/staff/queue`, `/staff/support` | appointment read/write/cancel, queue read/check-in/manage | Seeded demo account exists |
 | Pharmacist | `/staff/dashboard`, `/staff/inventory`, `/staff/prescriptions/preview`, `/staff/support` | inventory read/manage including alerts, prescription PDF read | Seeded demo account exists |
@@ -43,6 +43,7 @@
 | `/admin/audit-logs` | `ADMIN`, `ACCOUNTANT` |
 | `/staff/booking`, `/staff/queue` | `ADMIN`, `NURSE`, `RECEPTIONIST` |
 | `/staff/nurse-intake` | `ADMIN`, `NURSE` |
+| `/staff/lab-results/new` | `ADMIN`, `DOCTOR` |
 | `/staff/vital-signs`, `/staff/lab-results` | `ADMIN`, `DOCTOR`, `NURSE` |
 | `/staff/patients`, `/staff/medical-records`, `/staff/doctor` | `ADMIN`, `DOCTOR` |
 | `/staff/prescriptions` | `ADMIN`, `DOCTOR`, `PHARMACIST` |

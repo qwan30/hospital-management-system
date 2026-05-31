@@ -56,6 +56,7 @@ const staffRouteText = new Map<string, RegExp>([
   ["/staff/inventory", /Normal Saline 500ml/i],
   ["/staff/invoices", /Invoices|Billing/i],
   ["/staff/lab-results", /Lab Results|Diagnostics/i],
+  ["/staff/lab-results/new", /Record Lab Result/i],
   ["/staff/lab-results/1", /Complete Blood Count|Lab Result/i],
   [`/staff/medical-records/${mockMedicalRecordAppointmentId}/edit`, /Patient Record Entry/i],
   ["/staff/nurse-intake", /Daily Intake Schedule|Intake/i],
@@ -132,6 +133,7 @@ const apiRequestsByPath = new Map<string, RegExp[]>([
   ],
   ["/admin/audit-logs", [/\/api\/v1\/admin\/audit-logs(?:\?|$)/]],
   ["/admin/monitoring", [/\/api\/v1\/admin\/monitoring(?:\?|$)/]],
+  ["/staff/lab-results/new", [/\/api\/v1\/appointments(?:\?|$)/]],
 ]);
 
 function buildContracts(

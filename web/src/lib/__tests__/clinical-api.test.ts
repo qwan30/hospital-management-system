@@ -375,7 +375,15 @@ describe("clinical-api", () => {
         {},
         { authScope: "staff" },
       );
-      expect(result).toEqual(mockLabResults);
+      expect(result).toEqual([
+        expect.objectContaining({
+          ...mockLabResults[0],
+          resultValue: "Normal",
+          notes: null,
+          referenceRange: null,
+          createdAt: "2026-05-10T08:00:00Z",
+        }),
+      ]);
     });
 
     it("returns empty array if no data", async () => {
@@ -409,7 +417,15 @@ describe("clinical-api", () => {
         {},
         { authScope: "staff" },
       );
-      expect(result).toEqual(mockResult);
+      expect(result).toEqual(
+        expect.objectContaining({
+          ...mockResult,
+          resultValue: "Normal",
+          notes: "All good",
+          referenceRange: null,
+          createdAt: "2026-05-10T08:00:00Z",
+        }),
+      );
     });
 
     it("throws if lab result not found", async () => {
@@ -421,20 +437,28 @@ describe("clinical-api", () => {
   });
 
   describe("createLabResult", () => {
-    it("creates a lab result", async () => {
+    it("creates a lab result with the backend lab result contract", async () => {
       const mockResult = {
-        labResultId: "lr-new",
+        id: "lr-new",
         appointmentId: "123",
         testName: "Lipid Panel",
-        status: "Pending",
-        resultSummary: null,
-        doctorComment: null,
-        attachmentUrl: null,
-        collectedAt: "2026-05-15T10:00:00Z",
+        resultValue: "Total cholesterol 185 mg/dL",
+        referenceRange: "Desirable: <200 mg/dL",
+        status: "COMPLETED",
+        notes: "No immediate intervention required.",
+        deleted: false,
+        createdAt: "2026-05-15T10:00:00Z",
       };
       vi.mocked(apiRequest).mockResolvedValueOnce({ data: mockResult });
 
-      const request = { appointmentId: "123", testName: "Lipid Panel" };
+      const request = {
+        appointmentId: "123",
+        testName: "Lipid Panel",
+        resultValue: "Total cholesterol 185 mg/dL",
+        referenceRange: "Desirable: <200 mg/dL",
+        status: "COMPLETED",
+        notes: "No immediate intervention required.",
+      };
       const { createLabResult } = await import("../clinical-api");
       const result = await createLabResult(request);
 
@@ -443,7 +467,12 @@ describe("clinical-api", () => {
         { method: "POST", body: JSON.stringify(request) },
         { authScope: "staff" },
       );
-      expect(result).toEqual(mockResult);
+      expect(result).toMatchObject({
+        labResultId: "lr-new",
+        resultSummary: "Total cholesterol 185 mg/dL",
+        doctorComment: "No immediate intervention required.",
+        collectedAt: "2026-05-15T10:00:00Z",
+      });
     });
 
     it("throws if creation returns no data", async () => {
@@ -451,7 +480,7 @@ describe("clinical-api", () => {
 
       const { createLabResult } = await import("../clinical-api");
       await expect(
-        createLabResult({ appointmentId: "123", testName: "CBC" }),
+        createLabResult({ appointmentId: "123", testName: "CBC", resultValue: "Normal" }),
       ).rejects.toThrow("Lab result creation did not return a result");
     });
   });

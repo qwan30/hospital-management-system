@@ -6,11 +6,12 @@
 
 All executable engineering gates in this hardening pass are green: backend, frontend lint/unit/coverage/build, dependency security, Docker release-demo smoke, Playwright release-data/CI/integrated/UI/visual, backup/restore smoke, health/monitoring, and patient privacy/RBAC smoke all passed with synthetic release-demo data.
 
+Post-report update on 2026-05-31: W-01 lab-result creation UX was implemented in the active `web/` app as `/staff/lab-results/new`, aligned to the backend `LabResultCreateRequest` DTO, and covered by frontend unit tests, the staff operations Playwright flow, the exhaustive route contract, and the existing backend `LabResultIntegrationTest`.
+
 The system is **not marked Production Ready** because the following release-owner waivers still need explicit approval before production sign-off:
 
 | Waiver ID | Flow | Scope | Reason production approval is still required |
 | --- | --- | --- | --- |
-| W-01 | BF-07 Lab results | Lab result creation UX | Staff lab read/detail/delete and portal read paths pass, but the full lab-result creation workflow is not proven as a release-critical end-to-end browser flow. |
 | W-02 | BF-09 Inventory/pharmacy | Pharmacy dispensing | Inventory item/lot/movement/alert flows pass, but a true medication dispensing workflow is not implemented/proven. |
 | W-03 | BF-11 Notifications/reminders | External delivery | Reminder data/messages are seeded and visible, but external email/SMS delivery was not verified in this local synthetic environment. |
 
@@ -19,9 +20,10 @@ The system is **not marked Production Ready** because the following release-owne
 | Item | Value |
 | --- | --- |
 | Repo | `D:\projects\hospital-management-system` |
-| Current date | 2026-05-22 |
-| Git commit | `60eada8e6c8297a9f390379580bd2dfdcfb0a7b4` |
-| GitNexus | Up to date at `60eada8`; `detect_changes` unavailable in this CLI surface |
+| Verification date | 2026-05-22 |
+| Verification evidence commit | `60eada8e6c8297a9f390379580bd2dfdcfb0a7b4` |
+| Repository status refresh | 2026-05-27 15:33 +07:00; `HEAD` `c2552311544ac16441e8a7d3af4f62d35dbb8a86`; `master` 36 commits ahead of `origin/master`; working tree clean before this documentation refresh |
+| GitNexus | Up to date at `c255231`; local CLI exposes `status`, `query`, `context`, `impact`, and `cypher`, but no `detect_changes` command |
 | Data policy | Synthetic/release-demo data only |
 | Isolated Compose project | `hmsprod20260522` |
 | Frontend URL | `http://localhost:13002` |
@@ -30,7 +32,7 @@ The system is **not marked Production Ready** because the following release-owne
 | Postgres host port | `15434` |
 | Prior baseline | P0 demo flow pass; visual 14/14 fail; branch coverage 73.59%; npm vulnerabilities 7 |
 
-Dirty worktree was preserved. The global `git diff --check` still reports pre-existing whitespace issues across many user-owned dirty files; the scoped check for files changed in this pass passed.
+The 2026-05-22 hardening pass preserved the then-dirty worktree. The global `git diff --check` reported pre-existing whitespace issues across many user-owned dirty files; the scoped check for files changed in that pass passed. The 2026-05-27 repository refresh started from a clean working tree and changes only documentation.
 
 ## 3. Backend Result
 
@@ -124,7 +126,7 @@ Full visual decision log: `visual-review-decisions-2026-05-22.md`.
 | BF-04 Scheduling/availability | Passed | Schedule templates, slots, doctor schedule, and booking availability checks passed in release-data/CI/UI suites. |
 | BF-05 Queue/check-in/vitals | Passed | Queue check-in, call, room assignment, start/complete, nurse intake, and vitals paths passed. |
 | BF-06 Doctor consultation/medical record/prescription | Passed | Doctor dashboard, medical record editor, clinical API branches, and prescription preview route smoke passed. |
-| BF-07 Lab results | Waived | Staff/portal lab read paths pass; full create workflow requires release-owner waiver W-01. |
+| BF-07 Lab results | Passed in post-report W-01 slice | Staff/portal lab read paths pass; `/staff/lab-results/new` now creates results through `POST /api/v1/lab-results` with write access limited to Admin/Doctor. Full final release verification still needs rerun after this code change. |
 | BF-08 Patient portal | Passed | Patient login, overview, appointments, messages, lab results, profile, route guards, and privacy smoke passed. |
 | BF-09 Inventory/pharmacy | Waived | Inventory operations pass; pharmacy dispense workflow requires release-owner waiver W-02. |
 | BF-10 Finance | Passed | Invoice list/status/detail, pricing, revenue, and seeded paid/unpaid invoices passed. |
@@ -165,24 +167,24 @@ Full visual decision log: `visual-review-decisions-2026-05-22.md`.
 | Coverage | Added focused tests for booking, clinical/public/operations API wrappers, top nav, DataPanel, and patient records |
 | Documentation/evidence | Added production-readiness artifacts and this final report |
 
-## 13. Open Risks And Waivers
+## 13. Waiver Status
 
 | ID | Risk | Priority | Required action |
 | --- | --- | --- | --- |
-| W-01 | Full lab-result creation flow is not production-proven end to end | P1 | Approve waiver or add a release-critical create-result browser flow |
+| W-01 | Lab-result creation UX gap | Closed 2026-05-31 | Added `/staff/lab-results/new`, backend DTO normalization, route RBAC, unit/UI route coverage, and verified existing backend integration coverage |
 | W-02 | Pharmacy dispensing workflow is not implemented/proven beyond inventory operations | P1 | Approve waiver or define and test dispense workflow |
 | W-03 | External reminder delivery provider was not verified | P1 | Approve waiver or test email/SMS delivery in a safe staging provider |
 | R-01 | Global dirty-tree whitespace check fails outside this pass | P3 | Clean in a separate formatting-only branch if desired |
 
 ## 14. Recommended Next Actions
 
-1. Product/release owner should approve or reject W-01, W-02, and W-03.
-2. If production sign-off is required, either implement/test those waived depths or formally approve them as out of scope.
+1. Product/release owner should approve or reject W-02 and W-03.
+2. If production sign-off is required, implement/test W-02 and W-03 or formally approve them as out of scope.
 3. Keep visual snapshots tied to the reviewed route decision artifact.
-4. Run the final verification sequence again after any waiver-closing code change.
+4. Run the final verification sequence again after any waiver-closing code change, including the W-01 code added after this report's original 2026-05-22 evidence run.
 
 ## 15. Release Decision
 
 **Demo Ready Only.**
 
-The system is ready for synthetic release-demo/UAT demonstration. It should not be called **Production Ready** until the release owner explicitly approves the three remaining BF waivers or those business flows are fully implemented and verified.
+The system is ready for synthetic release-demo/UAT demonstration. It should not be called **Production Ready** until the release owner explicitly approves or closes the remaining BF-09 and BF-11 waivers and the final verification sequence is rerun on the current code.

@@ -1,4 +1,4 @@
-import type { Page, Route } from '@playwright/test';
+import type { Page, Request, Route } from '@playwright/test';
 import { mockAdminUserId, mockMedicalRecordAppointmentId } from './routes';
 
 const adminUsers = [
@@ -365,6 +365,22 @@ export async function installUiApiMocks(page: Page) {
       return fulfillJson(route, staffLabResults[0] ?? null);
     }
 
+    // Staff lab result create
+    if (method === 'POST' && apiPath === '/lab-results') {
+      const body = safePostDataJson(request);
+      return fulfillJson(route, {
+        id: 'staff-lr-new',
+        appointmentId: body.appointmentId ?? mockMedicalRecordAppointmentId,
+        testName: body.testName ?? 'Recorded Lab Result',
+        resultValue: body.resultValue ?? 'Recorded value',
+        referenceRange: body.referenceRange ?? null,
+        status: body.status ?? 'COMPLETED',
+        notes: body.notes ?? null,
+        deleted: false,
+        createdAt: '2026-05-15T10:00:00Z',
+      });
+    }
+
     // Staff appointments list (for lab results page loading)
     if (method === 'GET' && apiPath === '/appointments') {
       return fulfillJson(route, staffAppointmentsList);
@@ -379,4 +395,12 @@ async function fulfillJson(route: Route, data: unknown) {
     contentType: 'application/json',
     body: JSON.stringify({ success: true, data }),
   });
+}
+
+function safePostDataJson(request: Request) {
+  try {
+    return request.postDataJSON() as Record<string, string | null>;
+  } catch {
+    return {};
+  }
 }

@@ -42,6 +42,7 @@ const ROUTE_POLICIES: Array<{ prefix: string; roles: AppRole[]; loginPath: strin
   { prefix: "/staff/queue", roles: SCHEDULING_ROLES, loginPath: "/staff/login" },
   { prefix: "/staff/nurse-intake", roles: ["ADMIN", "NURSE"], loginPath: "/staff/login" },
   { prefix: "/staff/vital-signs", roles: CLINICAL_READ_ROLES, loginPath: "/staff/login" },
+  { prefix: "/staff/lab-results/new", roles: ["ADMIN", "DOCTOR"], loginPath: "/staff/login" },
   { prefix: "/staff/lab-results", roles: CLINICAL_READ_ROLES, loginPath: "/staff/login" },
   { prefix: "/staff/patients", roles: ["ADMIN", "DOCTOR"], loginPath: "/staff/login" },
   { prefix: "/staff/medical-records", roles: ["ADMIN", "DOCTOR"], loginPath: "/staff/login" },

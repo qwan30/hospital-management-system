@@ -12,7 +12,11 @@ A comprehensive hospital management platform with appointment scheduling, clinic
 
 ## Current Status
 
-The backend API is fully functional with 117 method-level controller mappings covering:
+Current repository status is tracked in [docs/reference/repository-status.md](docs/reference/repository-status.md). The 2026-05-31 refresh verified `HEAD` at `c2552311544ac16441e8a7d3af4f62d35dbb8a86`, GitNexus up to date at the same commit, and `master` ahead of `origin/master` by 36 local commits.
+
+Release-readiness status remains **Demo Ready Only**. The executable 2026-05-22 hardening gates passed against synthetic release-demo data, and W-01/BF-07 lab-result creation was closed in the working tree on 2026-05-31. Production sign-off still requires W-02/BF-09 pharmacy dispensing and W-03/BF-11 external notification delivery to be implemented or explicitly waived, followed by final release verification on the current code.
+
+The backend API exposes 117 method-level controller mappings covering:
 - Authentication (Staff JWT + Patient portal)
 - Smart Reservation System (booking and clinical triage intake)
 - Clinical Workflow (medical records, prescriptions, PDF generation)
@@ -56,7 +60,7 @@ POSTGRES_PASSWORD=hospital_pass
 JWT_SECRET=this-is-a-very-secure-secret-key-123456
 PATIENT_IDENTIFIER_SECRET=another-very-secure-secret-key-123456
 SPRING_PROFILES_ACTIVE=dev
-HMS_NON_BILLING_DEMO_SEED_ENABLED=true
+HMS_RELEASE_DEMO_SEED_ENABLED=false
 ```
 
 #### Step 3 — Build & Run Backend
@@ -78,7 +82,7 @@ $env:POSTGRES_PASSWORD='hospital_pass'
 $env:JWT_SECRET='this-is-a-very-secure-secret-key-123456'
 $env:PATIENT_IDENTIFIER_SECRET='another-very-secure-secret-key-123456'
 $env:SPRING_PROFILES_ACTIVE='dev'
-$env:HMS_NON_BILLING_DEMO_SEED_ENABLED='true'
+$env:HMS_RELEASE_DEMO_SEED_ENABLED='false'
 $env:HMS_ALLOW_CREDENTIALS='true'
 
 # Build all modules
@@ -139,6 +143,7 @@ Secrets are required. External integrations are disabled by default and degrade 
 | `JWT_SECRET` | required | JWT signing secret; use a long random value |
 | `PATIENT_IDENTIFIER_SECRET` | required | Separate patient identifier hashing secret; do not reuse `JWT_SECRET` |
 | `GMAIL_ENABLED` | `false` | Enable email notifications |
+| `HMS_RELEASE_DEMO_SEED_ENABLED` | `false` | Enable synthetic UAT/release-demo data only for demos and verification |
 
 ## Project Structure
 
@@ -152,7 +157,7 @@ backend/
 docs/                # Documentation map, product, architecture, API, test, deployment, and reference docs
 web/                 # Canonical Next.js frontend
 frontend/            # Static design-reference prototypes
-docker-compose.yml   # PostgreSQL + backend services
+docker-compose.yml   # PostgreSQL + backend + frontend services
 ```
 
 ## Backend Architecture
@@ -179,7 +184,7 @@ domain + infrastructure + application + controller <- start
 
 ## Quality Gates
 
-- 80%+ test coverage target; this is a target, not a current measured coverage claim unless a fresh report is generated
+- 80%+ frontend coverage gate; the latest recorded release-readiness evidence is 80.08% branch coverage in `docs/06-testing/full-hms-production-readiness-report-2026-05-22.md`
 - Backend unit and integration tests include application service tests and Testcontainers-backed Spring Boot tests
 - Playwright E2E suites live under `web/e2e`
 - Double-booking prevention via transactional slot locking

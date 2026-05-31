@@ -157,7 +157,7 @@ Commands:
 Covered route families:
 
 - public: home, departments, department detail, doctors, news, booking, privacy, terms, security, session-expired
-- staff: login, dashboard, patients, queue, schedule, booking, slots/review/success/symptoms, inventory, invoices, lab results, medical record editor, nurse intake, doctor dashboard/detail, prescription preview, pricing, revenue, support, vital signs
+- staff: login, dashboard, patients, queue, schedule, booking, slots/review/success/symptoms, inventory, invoices, lab results, lab result create, medical record editor, nurse intake, doctor dashboard/detail, prescription preview, pricing, revenue, support, vital signs
 - patient portal: login, overview, records, appointments, lab results, messages, profile, claim, billing, diagnostics, inventory, patients, pharmacy, scheduling, staff, support, admit
 - admin: dashboard, appointments, audit logs, departments, monitoring, news, public content, rooms, users, user detail
 
