@@ -76,6 +76,18 @@ args = ["--app", "desktop"]
 command = "npx"
 args = ["-y", "@playwright/mcp@latest", "--extension"]
 
+[mcp_servers.chrome-devtools]
+command = "cmd"
+args = [
+  "/c",
+  "npx",
+  "-y",
+  "chrome-devtools-mcp@latest",
+  "--no-usage-statistics",
+]
+env = { SystemRoot = "C:\\Windows", PROGRAMFILES = "C:\\Program Files" }
+startup_timeout_ms = 20_000
+
 [mcp_servers.sequential-thinking]
 command = "npx"
 args = ["-y", "@modelcontextprotocol/server-sequential-thinking"]
