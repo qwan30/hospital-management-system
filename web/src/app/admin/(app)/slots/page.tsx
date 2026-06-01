@@ -123,6 +123,13 @@ export default function AdminSlotsPage() {
   }
 
   async function handleBlock(slot: AdminSlotResponse) {
+    const confirmed = window.confirm(
+      `Confirm blocking ${slot.doctorName}'s slot on ${slot.slotDate} from ${slot.startTime} to ${slot.endTime}. Patients will not be able to book it.`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
     setError(null);
     setSuccess(null);
     setIsSaving(true);
@@ -138,6 +145,13 @@ export default function AdminSlotsPage() {
   }
 
   async function handleDelete(slot: AdminSlotResponse) {
+    const confirmed = window.confirm(
+      `Confirm deleting ${slot.doctorName}'s slot on ${slot.slotDate} from ${slot.startTime} to ${slot.endTime}. This cannot be undone from the UI.`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
     setError(null);
     setSuccess(null);
     setIsSaving(true);

@@ -1,8 +1,7 @@
-import { Calendar, CheckCircle, AlertTriangle, Users, Plus, Download, ArrowUp, ArrowDown, Search, Building2, ChevronDown, Clock, Activity, MoreVertical, DoorClosed, HeartPulse, Brain, Bone, ArrowRight, UserCheck, type LucideIcon } from "lucide-react";
+import { Calendar, CheckCircle, AlertTriangle, Plus, Download, ArrowUp, ArrowDown, Search, Building2, ChevronDown, Clock, Activity, MoreVertical, DoorClosed, HeartPulse, Brain, Bone, ArrowRight, UserCheck, type LucideIcon } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { Badge } from "@/components/ui/badge";
-import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from "@/components/ui/pagination";
 
 const upcomingAppointments: {
     id: string;
@@ -256,19 +255,30 @@ export default function AdminAppointmentsPage() {
                         <div className="p-4 border-t border-[var(--hc-border-soft)] flex items-center justify-between mt-auto bg-white">
                             <p className="text-sm text-[var(--hc-text-secondary)]">Showing 4 of 4 appointments</p>
                             <div className="flex items-center gap-4">
-                                <Pagination className="justify-end">
-                                    <PaginationContent>
-                                        <PaginationItem>
-                                            <PaginationPrevious href="#" size="default" className="h-8 px-3 text-xs" />
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#" isActive size="icon" className="h-8 w-8 text-xs bg-[var(--hc-blue-600)] text-white hover:bg-[var(--hc-blue-700)] hover:text-white">1</PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationNext href="#" size="default" className="h-8 px-3 text-xs" />
-                                        </PaginationItem>
-                                    </PaginationContent>
-                                </Pagination>
+                                <nav aria-label="appointments pagination" className="flex items-center justify-end gap-1">
+                                    <button
+                                        className="h-8 rounded-md px-3 text-xs font-medium opacity-60"
+                                        disabled
+                                        title="Appointment pagination is not exposed by the current backend API."
+                                        type="button"
+                                    >
+                                        Previous
+                                    </button>
+                                    <span
+                                        aria-current="page"
+                                        className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-xs font-medium text-white"
+                                    >
+                                        1
+                                    </span>
+                                    <button
+                                        className="h-8 rounded-md px-3 text-xs font-medium opacity-60"
+                                        disabled
+                                        title="Appointment pagination is not exposed by the current backend API."
+                                        type="button"
+                                    >
+                                        Next
+                                    </button>
+                                </nav>
 
                                 <div className="flex items-center gap-2 text-sm text-[var(--hc-text-secondary)] ml-4">
                                     <span>Rows per page</span>

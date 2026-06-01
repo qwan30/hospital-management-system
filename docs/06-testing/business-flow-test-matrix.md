@@ -81,25 +81,25 @@ Status labels:
 
 | Module | Related screens | Front-end route | Related APIs | Related DB tables | Roles allowed | Current status |
 | --- | --- | --- | --- | --- | --- | --- |
-| Public home/content | Home, news, legal/security | `/`, `/news`, `/privacy`, `/terms`, `/security` | `GET /api/v1/content/home`, `GET /api/v1/news` | `hospital_content_sections`, `news_articles` | Guest, all roles | Working; some public news "Read" buttons look static and need review |
+| Public home/content | Home, news, legal/security | `/`, `/news`, `/privacy`, `/terms`, `/security` | `GET /api/v1/content/home`, `GET /api/v1/news` | `hospital_content_sections`, `news_articles` | Guest, all roles | Working; public news detail/archive actions are disabled honestly until a detail/archive contract exists |
 | Departments | Department list/detail | `/departments`, `/departments/[id]` | `GET /api/v1/departments`, `GET /api/v1/departments/{id}`, `GET /api/v1/departments/{id}/doctors` | `departments`, `users` | Guest, all roles | Working |
 | Doctors | Doctor list and public slot lookup | `/doctors`, `/booking` | `GET /api/v1/doctors`, `GET /api/v1/doctors/{id}`, `GET /api/v1/doctors/{id}/slots` | `users`, `departments`, `time_slots` | Guest, all roles | Working |
 | Public booking | Booking form, slot selection, confirmation | `/booking` | `POST /api/v1/appointments` plus doctor/slot APIs | `patients`, `appointments`, `time_slots`, `audit_logs` | Guest, all roles | Working |
 | Staff login/logout | Staff login, logout, forbidden, session expired | `/staff/login`, `/auth/logout`, `/forbidden`, `/session-expired` | `POST /api/v1/auth/login`, `/refresh`, `/logout` | `users`, `audit_logs` | Staff roles | Working; automatic refresh replay remains a separate policy gap |
 | Patient auth | Portal login and claim | `/portal/login`, `/portal/claim` | `POST /api/v1/patient-auth/claim`, `/login`, `/refresh`, `/logout` | `patients`, `patient_accounts` | Patient | Working |
-| Admin dashboard/stats | Admin landing, metrics | `/admin/dashboard` | `GET /api/v1/admin/stats` | `appointments`, `users`, `invoices`, `inventory_items` | Admin | Potential issue: several dashboard action buttons are visual/static |
-| Admin users | Staff directory, user detail | `/admin/users`, `/admin/users/[id]` | `GET/POST /api/v1/admin/users`, `GET/PUT/DELETE /{id}`, `POST /{id}/activate`, `POST /{id}/deactivate`, `PUT /{id}/role` | `users`, `departments`, `audit_logs` | Admin | Working; export CSV is missing handler |
-| Admin departments | Department CRUD, doctor assignment | `/admin/departments` | `GET/POST /api/v1/admin/departments`, `GET/PUT/DELETE /{id}`, `POST /{id}/assign-doctor`, `DELETE /{id}/remove-doctor/{doctorId}` | `departments`, `users`, `audit_logs` | Admin | Working for CRUD; doctor assignment UI needs review |
-| Admin rooms | Room CRUD/status management | `/admin/rooms` | `GET/POST /api/v1/admin/rooms`, `GET/PUT/DELETE /{id}`, `PUT /{id}/status` | `rooms`, `departments`, `audit_logs` | Admin | Working |
+| Admin dashboard/stats | Admin landing, metrics | `/admin/dashboard` | `GET /api/v1/admin/stats` | `appointments`, `users`, `invoices`, `inventory_items` | Admin | Working; priority drilldowns route to real monitoring/inventory/audit screens and unsupported settings/chart actions are disabled honestly |
+| Admin users | Staff directory, user detail | `/admin/users`, `/admin/users/[id]` | `GET/POST /api/v1/admin/users`, `GET/PUT/DELETE /{id}`, `POST /{id}/activate`, `POST /{id}/deactivate`, `PUT /{id}/role` | `users`, `departments`, `audit_logs` | Admin | Working; local CSV export and activate/deactivate confirmation added |
+| Admin departments | Department CRUD, doctor assignment | `/admin/departments` | `GET/POST /api/v1/admin/departments`, `GET/PUT/DELETE /{id}`, `POST /{id}/assign-doctor`, `DELETE /{id}/remove-doctor/{doctorId}` | `departments`, `users`, `audit_logs` | Admin | Working for CRUD/export/deactivation confirmation; doctor assignment UI needs review |
+| Admin rooms | Room CRUD/status management | `/admin/rooms` | `GET/POST /api/v1/admin/rooms`, `GET/PUT/DELETE /{id}`, `PUT /{id}/status` | `rooms`, `departments`, `audit_logs` | Admin | Working; local CSV export and deactivate confirmation added |
 | Admin public content | Content section management | `/admin/public-content` | `GET/POST /api/v1/admin/content/sections`, `PUT /{id}`; also `/api/v1/admin/public-content` exists | `hospital_content_sections`, `audit_logs` | Admin | Working, but two admin content API families should be kept documented distinctly |
 | Admin news | News article management | `/admin/news` | `GET/POST /api/v1/admin/news`, `PUT /{articleId}` | `news_articles`, `audit_logs` | Admin | Working |
 | Admin monitoring | Health snapshot and alerts | `/admin/monitoring` | `GET /api/v1/admin/monitoring` | Aggregate read over operations tables | Admin | Working; "View all" drilldowns need review |
-| Admin audit logs | Audit history | `/admin/audit-logs` | `GET /api/v1/admin/audit-logs?limit=` | `audit_logs` | Admin, Accountant | Working; export/filter dropdown buttons need review |
+| Admin audit logs | Audit history | `/admin/audit-logs` | `GET /api/v1/admin/audit-logs?limit=` | `audit_logs` | Admin, Accountant | Working read-only; fake pagination links removed, export/filter dropdown buttons still need review |
 | Schedule templates | Doctor work schedule masters | `/admin/schedule-templates` | `GET/POST /api/v1/admin/schedule-templates`, `PUT /{templateId}` | `doctor_work_schedules`, `users`, `rooms` | Admin | Working |
-| Special closures | Closure calendar | `/admin/special-closures`, `/staff/closures` | `GET/POST /api/v1/admin/special-closures`, `PUT /{closureId}` | `special_closures`, `users`, `rooms` | Admin | Working in admin route; staff route needs review |
-| Slot management | Slot list/generation/block/delete | `/admin/slots`, `/staff/slots` | `GET /api/v1/admin/slots`, `POST /generate`, `PUT /{slotId}/block`, `DELETE /{slotId}` | `time_slots`, `doctor_work_schedules`, `special_closures` | Admin | Working in admin route; staff slot route appears static/execution-only and needs review |
+| Special closures | Closure calendar | `/admin/special-closures`, `/staff/closures` | `GET/POST /api/v1/admin/special-closures`, `PUT /{closureId}` | `special_closures`, `users`, `rooms` | Admin | Working in admin route; status filter wired and unsupported export/row-more actions disabled; staff route needs review |
+| Slot management | Slot list/generation/block/delete | `/admin/slots`, `/staff/slots` | `GET /api/v1/admin/slots`, `POST /generate`, `PUT /{slotId}/block`, `DELETE /{slotId}` | `time_slots`, `doctor_work_schedules`, `special_closures` | Admin | Working in admin route; block/delete now require confirmation; staff slot route appears static/execution-only and needs review |
 | Staff booking wizard | Receptionist/nurse booking screens | `/staff/booking`, `/staff/booking/symptoms`, `/staff/booking/slots`, `/staff/booking/review`, `/staff/booking/success` | Public appointment APIs should be reused where wired | `patients`, `appointments`, `time_slots` | Admin, Nurse, Receptionist | Potential issue: route files exist, but several step buttons look static |
-| Staff queue | Today queue, check-in, call, skip, room, start, complete | `/staff/queue` | `GET /api/v1/queue/today`, `GET /api/v1/appointments/today`, `POST /api/v1/appointments/{id}/checkin`, `POST /api/v1/queue/{id}/call / skip / assign-room / start-consultation / complete` | `appointments`, `audit_logs`, `rooms` | Admin, Nurse, Receptionist | Working |
+| Staff queue | Today queue, check-in, call, skip, room, start, complete | `/staff/queue` | `GET /api/v1/queue/today`, `GET /api/v1/appointments/today`, `POST /api/v1/appointments/{id}/checkin`, `POST /api/v1/queue/{id}/call / skip / assign-room / start-consultation / complete` | `appointments`, `audit_logs`, `rooms` | Admin, Nurse, Receptionist | Working; terminal skip/complete actions now require confirmation |
 | Nurse intake/vitals | Intake list and vital signs | `/staff/nurse-intake`, `/staff/vital-signs` | `POST/GET/PUT/DELETE /api/v1/vital-signs`, `POST/GET /api/v1/appointments/{id}/vital-signs` | `appointment_vital_signs`, `appointments`, `patients` | Admin, Nurse, Doctor for read/write where permitted | Potential issue: vital signs route has visible buttons that need handler/API verification |
 | Doctor dashboard | Doctor appointment workflow | `/staff/doctor/dashboard`, `/staff/doctor/[id]` | `GET /api/v1/appointments`, `PUT /api/v1/appointments/{id}/status`, doctor APIs | `appointments`, `users`, `departments` | Admin, Doctor | Working for dashboard status actions; doctor detail route needs review |
 | Doctor schedule | Doctor's own schedule | `/staff/schedule` | `GET /api/v1/me/schedule?date=... or week=...` | `appointments`, `time_slots`, `users` | Doctor | Working |
@@ -115,11 +115,11 @@ Status labels:
 | Patient portal records/support/other | Records, billing, pharmacy, staff, support, admit, inventory, patients, scheduling | `/portal/records`, `/portal/billing`, `/portal/pharmacy`, `/portal/staff`, `/portal/support`, `/portal/admit`, `/portal/inventory`, `/portal/patients`, `/portal/scheduling` | Mixed or no direct service functions visible | Mostly read models from `patients`, `appointments`, `invoices`, `lab_results` | Patient | Unclear; many are route-file screens with static/reference content |
 | Staff inventory | Inventory operations workspace | `/staff/inventory` | `GET/POST/PUT/DELETE /api/v1/inventory/items`, `GET/POST /lots`, `GET/POST /movements`, `POST /dispense`, `GET /alerts` | `inventory_items`, `inventory_lots`, `inventory_movements`, `audit_logs` | Admin, Pharmacist | Working; delete item now requires browser confirmation |
 | Admin inventory | Admin inventory variant | `/admin/inventory` | Same inventory APIs where wired | `inventory_items`, `inventory_lots`, `inventory_movements` | Admin | Working for item create/edit; some view/export buttons need review |
-| Invoices | Invoice creation/payment/void | `/staff/invoices` | `GET/POST /api/v1/invoices`, `POST /{invoiceId}/payments`, `POST /{invoiceId}/void` | `invoices`, `appointments`, `patients`, `audit_logs` | Admin, Accountant | Working; void action lacks explicit confirmation |
-| Pricing | Service pricing management | `/staff/pricing`, `/admin/pricing` | `GET/POST /api/v1/pricing`, `PUT /api/v1/pricing/{pricingId}` | `service_pricing`, `departments`, `audit_logs` | Admin, Accountant | Working for create/update; delete button in admin pricing is Missing API/handler |
+| Invoices | Invoice creation/payment/void | `/staff/invoices` | `GET/POST /api/v1/invoices`, `POST /{invoiceId}/payments`, `POST /{invoiceId}/void` | `invoices`, `appointments`, `patients`, `audit_logs` | Admin, Accountant | Working; void action now requires explicit confirmation |
+| Pricing | Service pricing management | `/staff/pricing`, `/admin/pricing` | `GET/POST /api/v1/pricing`, `PUT /api/v1/pricing/{pricingId}` | `service_pricing`, `departments`, `audit_logs` | Admin, Accountant | Working for create/update and local export; admin delete is disabled honestly because no delete pricing API exists |
 | Revenue | Revenue reports | `/staff/revenue` | `GET /api/v1/reports/revenue/daily`, `GET /api/v1/reports/revenue/monthly` | `invoices`, `service_pricing`, `appointments` | Admin, Accountant | Working |
 | Chatbot/internal assistant | Booking guidance or internal assistant remnants | Public chatbot API only | `POST /api/v1/chatbot/messages`; knowledge tables exist | `knowledge_documents`, `knowledge_chunks`, `internal_assistant_*` | Public chatbot; internal assistant no current UI | Missing UI/Unclear; `V11` removed AI assistant features, but safe-rollout tables remain |
-| Support pages | Staff/admin/portal support | `/staff/support`, `/admin/support`, `/portal/support` | No dedicated support-ticket API visible | None or future support tables absent | Staff/Admin/Patient by route | Unclear/static |
+| Support pages | Staff/admin/portal support | `/staff/support`, `/admin/support`, `/portal/support` | No dedicated support-ticket API visible | None or future support tables absent | Staff/Admin/Patient by route | Read-only/unsupported states; staff/admin create/export/drilldown actions are disabled until a support-ticket API exists |
 | Release-demo seed | Synthetic UAT data | No user route; affects all screens | Seed service in backend startup | All major tables | Demo operator/developer | Working when enabled by environment |
 
 ## 3. Main Business Flows
@@ -695,38 +695,38 @@ Button statuses:
 | `/booking` | Select slot | Select available slot before form submit | `GET /doctors/{id}/slots` for slot source | Yes | Yes for slots | N/A | Yes | N/A | OK |
 | `/booking` | Submit booking | Create confirmed appointment | `POST /appointments` | Yes | Yes | Confirmation shown | Yes | N/A | OK |
 | `/departments`, `/doctors` | Retry load | Reload public data | Department/doctor GET APIs | Yes | Yes | N/A | Yes | N/A | OK |
-| `/news` | Read buttons | Open article/detail | Public news detail API or route | Partial/list only | No | No | No | N/A | Missing handler |
+| `/news` | Read buttons | Show unsupported detail/archive state | Public news detail API or route | Partial/list only | N/A | N/A | N/A | N/A | OK - disabled honestly |
 | `/staff/login` | Toggle password | Show/hide password | None | N/A | N/A | N/A | N/A | N/A | OK |
 | `/staff/login` | Login | Authenticate staff | `POST /auth/login` | Yes | Yes | Navigates/stores role | Yes | N/A | OK |
 | `/auth/logout` | Logout side effect | Logout and clear session | `POST /auth/logout` | Yes | N/A | Redirect | Safe fallback | N/A | OK |
-| `/admin/users` | Export CSV | Export user list | No export endpoint visible | No | No | No | No | N/A | Missing handler |
+| `/admin/users` | Export CSV | Export filtered user list locally | Client-side CSV from loaded users | N/A | N/A | Download generated | N/A | N/A | OK |
 | `/admin/users` | Add User | Open modal and create user | `POST /admin/users` | Yes | Yes | Yes | Yes | N/A | OK |
 | `/admin/users` | Edit User | Open modal and update user | `PUT /admin/users/{id}` | Yes | Yes | Yes | Yes | N/A | OK |
-| `/admin/users` | Activate/Deactivate | Toggle user active state | `POST /admin/users/{id}/activate or deactivate` | Yes | Yes | Yes | Yes | No | Need review |
+| `/admin/users` | Activate/Deactivate | Toggle user active state | `POST /admin/users/{id}/activate or deactivate` | Yes | Yes | Yes | Yes | Yes | OK |
 | `/admin/users/[id]` | Save user detail | Update user | `PUT /admin/users/{id}` | Yes | Yes | Yes | Yes | N/A | OK |
 | `/admin/departments` | Create/Edit | Manage department | `POST/PUT /admin/departments` | Yes | Yes | Yes | Yes | N/A | OK |
-| `/admin/departments` | Deactivate | Deactivate/delete department | `DELETE /admin/departments/{id}` | Yes | Yes | Yes | Yes | No | Need review |
+| `/admin/departments` | Deactivate | Deactivate/delete department | `DELETE /admin/departments/{id}` | Yes | Yes | Yes | Yes | Yes | OK |
 | `/admin/departments` | Assign/remove doctor | Manage department doctors | `POST /assign-doctor`, `DELETE /remove-doctor/{doctorId}` | Yes | Need review | Need review | Need review | N/A | Need review |
 | `/admin/rooms` | Add/Edit Room | Manage room | `POST/PUT /admin/rooms` | Yes | Yes | Yes | Yes | N/A | OK |
 | `/admin/rooms` | Change room status | Set room status | `PUT /admin/rooms/{id}/status` | Yes | Yes | Yes | Yes | N/A | OK |
-| `/admin/rooms` | Deactivate room | Deactivate/delete room | `DELETE /admin/rooms/{id}` | Yes | Yes | Yes | Yes | No | Need review |
+| `/admin/rooms` | Deactivate room | Deactivate/delete room | `DELETE /admin/rooms/{id}` | Yes | Yes | Yes | Yes | Yes | OK |
 | `/admin/news` | Add/Edit Article | Manage news | `POST/PUT /admin/news` | Yes | Yes | Yes | Yes | N/A | OK |
 | `/admin/public-content` | Add/Edit Section | Manage public content | `POST /admin/content/sections`, `PUT /admin/content/sections/{id}` | Yes | Yes | Yes | Yes | N/A | OK |
-| `/admin/audit-logs` | Refresh/export/filter buttons | Reload/export/filter audit logs | `GET /admin/audit-logs` for reload/list | Yes for list | Need review | N/A | Yes for load | N/A | Need review |
+| `/admin/audit-logs` | Refresh/export/filter buttons | Reload/export/filter audit logs | `GET /admin/audit-logs` for reload/list | Yes for list | Need review | N/A | Yes for load | N/A | Need review; fake hash pagination removed |
 | `/admin/monitoring` | Auto refresh toggle | Toggle polling | `GET /admin/monitoring` | Yes | Yes | N/A | Yes | N/A | OK |
 | `/admin/monitoring` | View all/drilldown | Navigate to detailed list | Unknown | No/unclear | No | No | No | N/A | Missing handler |
 | `/admin/schedule-templates` | Create/Edit Template | Manage templates | `POST/PUT /admin/schedule-templates` | Yes | Yes | Yes | Yes | N/A | OK |
 | `/admin/special-closures` | Create/Edit Closure | Manage closure | `POST/PUT /admin/special-closures` | Yes | Yes | Yes | Yes | N/A | OK |
-| `/admin/special-closures` | Delete/deactivate icon | Remove/deactivate closure | No delete endpoint visible; update active may be intended | Partial | No | No | No | No | Need review |
+| `/admin/special-closures` | Export/status/row actions | Filter locally and avoid unsupported export/detail actions | No export/detail endpoint visible | Partial | N/A | N/A | N/A | N/A | OK - unsupported actions disabled |
 | `/admin/slots` | Generate slots | Generate availability | `POST /admin/slots/generate` | Yes | Yes | Yes | Yes | N/A | OK |
-| `/admin/slots` | Block slot | Block availability | `PUT /admin/slots/{id}/block` | Yes | Yes | Yes | Yes | No | Need review |
-| `/admin/slots` | Delete slot | Delete availability | `DELETE /admin/slots/{id}` | Yes | Yes | Yes | Yes | No | Need review |
+| `/admin/slots` | Block slot | Block availability | `PUT /admin/slots/{id}/block` | Yes | Yes | Yes | Yes | Yes | OK |
+| `/admin/slots` | Delete slot | Delete availability | `DELETE /admin/slots/{id}` | Yes | Yes | Yes | Yes | Yes | OK |
 | `/staff/queue` | Check in | Check in patient | `POST /appointments/{id}/checkin` | Yes | Yes | State updates | Row/page error | N/A | OK |
 | `/staff/queue` | Call | Call patient | `POST /queue/{id}/call` | Yes | Yes | State updates | Row/page error | N/A | OK |
 | `/staff/queue` | Assign room | Assign room name | `POST /queue/{id}/assign-room` | Yes | Yes | State updates | Row/page error | N/A | OK |
 | `/staff/queue` | Start consultation | Move to in progress | `POST /queue/{id}/start-consultation` | Yes | Yes | State updates | Row/page error | N/A | OK |
-| `/staff/queue` | Complete | Complete visit | `POST /queue/{id}/complete` | Yes | Yes | State updates | Row/page error | No | Need review |
-| `/staff/queue` | Skip | Skip operationally | `POST /queue/{id}/skip` | Yes | Yes | State updates | Row/page error | No | Need review |
+| `/staff/queue` | Complete | Complete visit | `POST /queue/{id}/complete` | Yes | Yes | State updates | Row/page error | Yes | OK |
+| `/staff/queue` | Skip | Skip operationally | `POST /queue/{id}/skip` | Yes | Yes | State updates | Row/page error | Yes | OK |
 | `/staff/schedule` | Refresh | Reload doctor schedule | `GET /me/schedule` | Yes | Yes | N/A | Yes | N/A | OK |
 | `/staff/schedule` | Day/Week toggle | Change query mode and reload | `GET /me/schedule?date or week` | Yes | Yes | N/A | Yes | N/A | OK |
 | `/staff/schedule` | Search/status controls | Filter schedule rows | Local state/API not fully applied to source rows | N/A | No | N/A | No | N/A | Need review |
@@ -739,13 +739,13 @@ Button statuses:
 | `/staff/inventory` | Add Lot | Create lot | `POST /inventory/lots` | Yes | Yes | Yes | Yes | N/A | OK |
 | `/staff/inventory` | Movement | Record movement | `POST /inventory/movements` | Yes | Yes | Yes | Yes | N/A | OK |
 | `/staff/inventory` | Refresh | Reload inventory | Inventory GET APIs | Yes | Yes | N/A | Yes | N/A | OK |
-| `/staff/inventory` | Delete item | Delete item | `DELETE /inventory/items/{id}` | Yes | Yes | Yes | Yes | No | Need review |
+| `/staff/inventory` | Delete item | Delete item | `DELETE /inventory/items/{id}` | Yes | Yes | Yes | Yes | Yes | OK |
 | `/staff/invoices` | Refresh | Reload invoices | `GET /invoices` | Yes | Yes | N/A | Yes | N/A | OK |
 | `/staff/invoices` | Create Invoice | Create invoice | `POST /invoices` | Yes | Yes | Yes | Yes | N/A | OK |
 | `/staff/invoices` | Pay | Record payment | `POST /invoices/{id}/payments` | Yes | Yes | Yes | Yes | N/A | OK |
-| `/staff/invoices` | Void | Cancel invoice | `POST /invoices/{id}/void` | Yes | Yes | Yes | Yes | No | Need review |
+| `/staff/invoices` | Void | Cancel invoice | `POST /invoices/{id}/void` | Yes | Yes | Yes | Yes | Yes | OK |
 | `/staff/pricing`, `/admin/pricing` | Create/update pricing | Manage service price | `POST/PUT /pricing` | Yes | Yes | Yes | Yes | N/A | OK |
-| `/admin/pricing` | Delete pricing | Delete service price | No delete pricing API visible | No | No | No | No | No | Missing API |
+| `/admin/pricing` | Delete pricing | Delete service price | No delete pricing API visible | No | N/A | N/A | N/A | N/A | OK - disabled honestly |
 | `/staff/revenue` | Date/month filters | Load revenue report | `GET /reports/revenue/daily or monthly` | Yes | Yes | N/A | Yes | N/A | OK |
 | `/staff/medical-records/[id]/edit` | Save record | Create medical record | `POST /medical-records` | Yes | Yes | Yes | Yes | N/A | OK |
 | `/staff/prescriptions/preview` | Preview/download prescription | Generate/open PDF | PDF medical-record APIs | Yes | Need review | Need review | Need review | N/A | Need review |
@@ -758,7 +758,7 @@ Button statuses:
 | `/portal/messages` | Send/reply | Send portal message | No write API visible | No | No | No | No | N/A | Missing API |
 | `/portal/profile` | Save profile | Update patient profile | `PUT /patient-portal/profile` | Yes | Yes | Yes | Yes | N/A | OK |
 | `/portal/records` | Edit/print/update record buttons | Patient record actions | No patient record write/print API visible | No/unclear | No | No | No | Need review | Missing API |
-| `/staff/support`, `/admin/support`, `/portal/support` | Ticket actions | Create/resolve support request | No support API visible | No | No | No | No | N/A | Missing API |
+| `/staff/support`, `/admin/support`, `/portal/support` | Ticket actions | Create/resolve support request | No support API visible | No | N/A | N/A | N/A | N/A | OK - read-only/unsupported state |
 | `/staff/booking/*` | Step buttons | Staff-assisted booking wizard | Public booking APIs should be used if wired | API yes | Need review | Need review | Need review | N/A | Need review |
 | `/staff/vital-signs` | Record/Export buttons | Record/export vital signs | Vital-sign APIs exist | Yes | Need review | Need review | Need review | N/A | Need review |
 
@@ -1013,18 +1013,18 @@ Button statuses:
 
 - Patient appointment cancel/reschedule from portal: no patient write API.
 - Patient message send/reply: no patient write API.
-- Change password and forgot password: no visible UI/API.
-- Support ticket actions: no support API visible.
-- Export CSV/export lab/audit/public actions: mostly missing handlers.
-- Admin pricing delete: visible delete button but no delete pricing API visible.
-- Public news `Read` buttons and several dashboard/support buttons: likely static/no handler.
+- Change password and forgot password: no backend reset API; staff/patient login now shows disabled reset-unavailable state.
+- Support ticket actions: no support API visible; staff/admin actions now show read-only/disabled state.
+- Export CSV/export lab/audit/public actions: mixed support; admin users/departments/rooms/pricing have local CSV, lab/audit/public exports remain product decisions.
+- Admin pricing delete: no delete pricing API visible; action is disabled honestly.
+- Public news `Read` buttons: disabled honestly until a detail route/API exists.
 
 ### UI With Unclear Business Logic
 
 - Portal auxiliary routes: `/portal/billing`, `/portal/diagnostics`, `/portal/inventory`, `/portal/patients`, `/portal/pharmacy`, `/portal/scheduling`, `/portal/staff`, `/portal/admit`.
 - Staff booking sub-step routes under `/staff/booking/*`.
 - `/staff/vital-signs` and `/staff/nurse-intake` need a deeper source pass before marking every action as API-backed.
-- Dashboard cards/drilldowns and admin audit-log filters/export actions.
+- Admin audit-log filters/export actions.
 - Internal assistant/chatbot tables versus current UI surface.
 
 ### Clarifications Needed From Product Owner / BA
@@ -1032,7 +1032,7 @@ Button statuses:
 - Should patients be allowed to cancel or reschedule appointments, and what are status/slot-release rules?
 - Should patients be allowed to send portal messages, or are messages intentionally read-only?
 - Should lab result creation also be embedded inside the appointment or medical-record workflow, or is the standalone `/staff/lab-results/new` screen sufficient?
-- Should destructive actions require a modal confirmation across invoice void, user deactivate, room/dept deactivate, and slot delete/block? Inventory delete and lab delete now have confirmation coverage.
+- Should destructive confirmations be upgraded from browser `confirm` to first-class modal components for invoice void, user deactivate, room/dept deactivate, slot delete/block, inventory delete, lab delete, and queue terminal actions?
 - Should clinical records become locked after signing, with addendum-only edits?
 - Is drug/allergy interaction checking in scope for prescriptions?
 - Which export/print actions are required for release versus visual placeholders?

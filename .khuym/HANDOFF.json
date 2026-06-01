@@ -1,15 +1,15 @@
 {
   "schema_version": "1.0",
   "feature": "hms-production-readiness-hardening-2026-05-22",
-  "skill": "verification-loop",
-  "phase": "post-report-waivers-closed",
-  "next_action": "Continue the P1/P2 backlog before any unconstrained Production Ready claim.",
+  "skill": "browser-qa",
+  "phase": "p1-ui-truthfulness-hardening",
+  "next_action": "Continue remaining P1/P2 backlog: patient self-service scope, support-ticket contracts, audit-log export/filter behavior, staff booking/vital-sign click-path validation, clinical locking/addendum policy, and drug/allergy interaction scope.",
   "context_pct": "medium",
   "blockers": [
     "GKG CLI unavailable; GitNexus/source fallback used.",
     "GitNexus detect_changes unavailable in installed CLI; gitnexus status used.",
     "Global git diff --check passes cleanly after artifact normalization.",
-    "W-01/W-02/W-03 are closed with release-gate evidence; remaining blocker is release-owner acceptance or implementation of the broader P1/P2 product and safety backlog."
+    "W-01/W-02/W-03 are closed with release-gate evidence; P1 fake/hash-link controls and listed destructive confirmations are hardened; remaining blocker is release-owner acceptance or implementation of the broader P1/P2 product and safety backlog."
   ],
   "completed": [
     "Reviewed route-by-route visual diffs and accepted current UI snapshots after live-stack evidence.",
@@ -25,7 +25,8 @@
     "Closed W-02/BF-09 by adding prescription-backed inventory dispense, lot/medical-record traceability, audit movement evidence, staff UI, and backend/frontend/Playwright coverage.",
     "Closed W-03/BF-11 by adding email delivery attempt persistence, safe LOCAL_RECORD staging provider behavior, Gmail delivery attempt audit, and retry-preserving reminder failure handling.",
     "Refreshed docs/06-testing/full-hms-production-readiness-report-2026-06-01.md and repository status with Release Candidate / Ship with fixes verdict.",
-    "Committed the waiver-closure implementation and evidence as feat: close HMS pharmacy and notification waivers."
+    "Committed the waiver-closure implementation and evidence as feat: close HMS pharmacy and notification waivers.",
+    "Completed the P1 UI truthfulness slice: disabled unsupported actions, routed priority dashboard actions, removed fake hash links from the audited route set, added destructive confirmations, added Playwright actionable-control manifest, and recorded real-user Chrome QA evidence."
   ],
   "verification": [
     "mvn.cmd verify: PASS, 145 tests",
@@ -52,6 +53,11 @@
     "2026-06-01 Playwright integrated serialized: PASS, 92 passed, 3 expected skips",
     "2026-06-01 Playwright UI: PASS, 323 passed, 1 skipped",
     "2026-06-01 Playwright visual: PASS, 14 passed",
-    "2026-06-01 secret scan and backup/restore smoke: PASS"
+    "2026-06-01 secret scan and backup/restore smoke: PASS",
+    "2026-06-01 focused UI confirmation unit tests: PASS, 32 tests",
+    "2026-06-01 Playwright ui-truthfulness chromium: PASS, 2 tests, actionable-control manifest bugs=0",
+    "2026-06-01 real-user Chrome browser QA: PASS, 23 checks, 0 unfiltered console errors, 0 4xx/5xx app/API requests",
+    "2026-06-01 frontend lint after P1 slice: PASS, 24 existing warnings",
+    "2026-06-01 frontend build after P1 slice: PASS"
   ]
 }

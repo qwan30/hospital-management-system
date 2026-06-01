@@ -56,6 +56,7 @@ export default function AdminSpecialClosuresPage() {
   const [doctors, setDoctors] = useState<AdminUserResponse[]>([]);
   const [rooms, setRooms] = useState<AdminRoomResponse[]>([]);
   const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "INACTIVE">("ALL");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -108,17 +109,19 @@ export default function AdminSpecialClosuresPage() {
 
   const filteredClosures = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) {
-      return closures;
-    }
-
-    return closures.filter((closure) =>
-      [closure.title, closure.reason, closure.doctorName, closure.roomName, closure.closureDate]
-        .join(" ")
-        .toLowerCase()
-        .includes(normalizedQuery),
-    );
-  }, [closures, query]);
+    return closures.filter((closure) => {
+      const matchesStatus =
+        statusFilter === "ALL" ||
+        (statusFilter === "ACTIVE" ? closure.active : !closure.active);
+      const matchesQuery =
+        !normalizedQuery ||
+        [closure.title, closure.reason, closure.doctorName, closure.roomName, closure.closureDate]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedQuery);
+      return matchesStatus && matchesQuery;
+    });
+  }, [closures, query, statusFilter]);
 
   function openCreateForm() {
     setEditingClosure(null);
@@ -225,14 +228,19 @@ export default function AdminSpecialClosuresPage() {
         </div>
 
         <div className="flex-none">
-          <select className="h-9 px-3 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] text-[var(--hc-text-secondary)]">
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+          <select
+            aria-label="Filter closures by status"
+            className="h-9 px-3 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] text-[var(--hc-text-secondary)]"
+            onChange={(event) => setStatusFilter(event.target.value as "ALL" | "ACTIVE" | "INACTIVE")}
+            value={statusFilter}
+          >
+            <option value="ALL">All Status</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
           </select>
         </div>
 
-        <button className="hc-button-secondary flex items-center gap-2 h-9 px-4 ml-auto">
+        <button className="hc-button-secondary flex items-center gap-2 h-9 px-4 ml-auto opacity-60" disabled title="Special closure export is not exposed by the current backend API." type="button">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10M11.3333 7.33333L8 10.6667M8 10.6667L4.66667 7.33333M8 10.6667V2" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
@@ -361,7 +369,7 @@ function ClosuresTable({
                   >
                     Edit
                   </button>
-                  <button className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-md transition-colors">
+                  <button className="w-8 h-8 flex items-center justify-center text-slate-400 rounded-md transition-colors opacity-60" disabled title="Closure row actions are limited to edit until a delete/deactivate API contract is exposed." type="button">
                     <MoreVertical className="w-4 h-4" />
                   </button>
                 </div>
@@ -376,13 +384,13 @@ function ClosuresTable({
           Showing 1 to {closures.length} of {closures.length} closures
         </span>
         <div className="flex items-center gap-2">
-          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50" disabled type="button">
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium" type="button">
             1
           </button>
-          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50" disabled type="button">
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>

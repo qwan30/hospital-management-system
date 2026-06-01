@@ -115,11 +115,13 @@ describe("AdminDepartmentsPage", () => {
     render(<AdminDepartmentsPage />);
 
     await screen.findByText("Cardiology");
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
     await userEvent.click(screen.getAllByRole("button", { name: "Deactivate" })[0]);
 
     await waitFor(() => {
       expect(deactivateAdminDepartment).toHaveBeenCalledWith("department-1");
     });
+    expect(confirmSpy).toHaveBeenCalledWith(expect.stringContaining("Confirm deactivation"));
   });
 
   it("shows empty and error states without mock fallback", async () => {

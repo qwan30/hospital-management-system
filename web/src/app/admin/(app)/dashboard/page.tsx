@@ -1,4 +1,5 @@
 import { Users, DollarSign, Bed, Stethoscope, RefreshCw, ClipboardList, AlertTriangle, Activity, Package, FileText, ChevronRight, Shield, Lock, Settings, CheckCircle2 } from "lucide-react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
@@ -18,9 +19,9 @@ export default function AdminDashboardPage() {
           </>
         }
         action={
-          <button className="flex items-center gap-2 text-sm font-semibold text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] transition-colors">
+          <Link className="flex items-center gap-2 text-sm font-semibold text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] transition-colors" href="/admin/dashboard" aria-label="Refresh admin dashboard">
             <RefreshCw className="w-5 h-5" />
-          </button>
+          </Link>
         }
       />
 
@@ -65,11 +66,11 @@ export default function AdminDashboardPage() {
                 Appointment Velocity
               </h3>
               <div className="flex gap-4">
-                <button className="text-[10px] font-bold uppercase tracking-widest border-b-2 border-[var(--hc-blue-600)] pb-1 text-[var(--hc-text)]">
+                <button className="text-[10px] font-bold uppercase tracking-widest border-b-2 border-[var(--hc-blue-600)] pb-1 text-[var(--hc-text)]" disabled title="Daily chart is the only dashboard chart view currently available." type="button">
                   Daily
                 </button>
-                <button className="text-[10px] font-bold uppercase tracking-widest border-b-2 border-transparent pb-1 text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] transition-colors">
-                  Weekly
+                <button className="text-[10px] font-bold uppercase tracking-widest border-b-2 border-transparent pb-1 text-[var(--hc-text-secondary)] opacity-60" disabled title="Weekly dashboard chart data is not exposed by the current admin stats API." type="button">
+                  Weekly unavailable
                 </button>
               </div>
             </div>
@@ -112,13 +113,14 @@ export default function AdminDashboardPage() {
             </h3>
             <ul className="flex flex-col gap-3">
               {[
-                { icon: Activity, label: "Live Monitoring", desc: "Real-time system health" },
-                { icon: Package, label: "Inventory Audit", desc: "Check stock levels" },
-                { icon: FileText, label: "Audit Log Export", desc: "Download system logs" },
-                { icon: Settings, label: "System Settings", desc: "Configure preferences" },
+                { icon: Activity, label: "Live Monitoring", desc: "Real-time system health", href: "/admin/monitoring" },
+                { icon: Package, label: "Inventory Audit", desc: "Check stock levels", href: "/admin/inventory" },
+                { icon: FileText, label: "Audit Logs", desc: "Review system history", href: "/admin/audit-logs" },
+                { icon: Settings, label: "System Settings", desc: "Settings API is not available" },
               ].map((item, i) => (
                 <li key={i}>
-                  <button className="w-full flex items-center justify-between p-4 rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] hover:border-[var(--hc-blue-600)] transition-all group">
+                  {item.href ? (
+                  <Link className="w-full flex items-center justify-between p-4 rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] hover:border-[var(--hc-blue-600)] transition-all group" href={item.href}>
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] flex items-center justify-center">
                         <item.icon className="w-5 h-5" />
@@ -129,7 +131,21 @@ export default function AdminDashboardPage() {
                       </div>
                     </div>
                     <ChevronRight className="w-4 h-4 text-[var(--hc-text-secondary)] group-hover:text-[var(--hc-blue-600)]" />
+                  </Link>
+                  ) : (
+                  <button className="w-full flex items-center justify-between p-4 rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] opacity-60" disabled title="System settings are not exposed by the current admin API." type="button">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] flex items-center justify-center">
+                        <item.icon className="w-5 h-5" />
+                      </div>
+                      <div className="text-left">
+                        <div className="text-[13px] font-bold text-[var(--hc-text)] mb-0.5">{item.label}</div>
+                        <div className="text-[12px] text-[var(--hc-text-secondary)]">{item.desc}</div>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-[var(--hc-text-secondary)]" />
                   </button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -141,9 +157,9 @@ export default function AdminDashboardPage() {
               <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--hc-text)]">
                 Critical Inventory
               </h3>
-              <button className="text-[13px] font-bold text-[var(--hc-blue-600)] hover:underline">
+              <Link className="text-[13px] font-bold text-[var(--hc-blue-600)] hover:underline" href="/admin/inventory">
                 View all
-              </button>
+              </Link>
             </div>
             <ul className="space-y-5">
               <li className="flex items-center justify-between">
@@ -201,16 +217,16 @@ export default function AdminDashboardPage() {
           <div className="md:w-2/3 flex flex-col w-full h-full">
             <div className="flex items-center justify-between border-b border-[var(--hc-border-soft)] w-full mb-4">
               <div className="flex gap-4">
-                 <button className="text-[13px] font-bold text-[var(--hc-blue-600)] border-b-2 border-[var(--hc-blue-600)] pb-2 px-1">
+                 <button className="text-[13px] font-bold text-[var(--hc-blue-600)] border-b-2 border-[var(--hc-blue-600)] pb-2 px-1" disabled title="Recent alerts are the current dashboard view." type="button">
                    Recent Alerts
                  </button>
-                 <button className="text-[13px] font-bold text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] border-b-2 border-transparent pb-2 px-1 transition-colors">
-                   System Events
+                 <button className="text-[13px] font-bold text-[var(--hc-text-secondary)] border-b-2 border-transparent pb-2 px-1 opacity-60" disabled title="System event switching is not exposed by the current admin dashboard API." type="button">
+                   System Events unavailable
                  </button>
               </div>
-              <button className="flex items-center gap-1 text-[13px] font-bold text-[var(--hc-blue-600)] hover:underline mb-2">
+              <Link className="flex items-center gap-1 text-[13px] font-bold text-[var(--hc-blue-600)] hover:underline mb-2" href="/admin/audit-logs">
                  View all logs <ChevronRight className="w-3 h-3" />
-              </button>
+              </Link>
             </div>
             <div className="grid grid-cols-1 gap-2 w-full">
               <div className="border border-transparent hover:border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] p-3 flex items-center justify-between transition-colors cursor-pointer group">

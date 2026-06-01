@@ -59,6 +59,9 @@ export default function StaffSupportPage() {
             <h2 className="text-sm font-bold text-[var(--hc-text)]">Open Request</h2>
           </div>
           <div className="p-6">
+            <div className="mb-5 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)] p-4 text-sm font-medium text-[var(--hc-text-secondary)]" role="note">
+              Support ticket submission is read-only in this release because no support-ticket API is available.
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="station-id" className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Station or Staff ID</label>
@@ -97,9 +100,11 @@ export default function StaffSupportPage() {
             </div>
             <button
               type="button"
-              className="mt-5 hc-button-primary flex items-center gap-2"
+              className="mt-5 hc-button-primary flex items-center gap-2 disabled:opacity-60"
+              disabled
+              title="Support ticket submission is not exposed by the current backend API."
             >
-              <Send className="w-4 h-4" /> Submit Request
+              <Send className="w-4 h-4" /> Request submission unavailable
             </button>
           </div>
         </div>

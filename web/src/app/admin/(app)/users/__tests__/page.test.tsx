@@ -153,11 +153,13 @@ describe("AdminUsersPage", () => {
       );
     });
 
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
     await userEvent.click(screen.getByRole("button", { name: "Deactivate" }));
 
     await waitFor(() => {
       expect(deactivateAdminUser).toHaveBeenCalledWith("user-1");
     });
+    expect(confirmSpy).toHaveBeenCalledWith(expect.stringContaining("Confirm deactivate"));
   });
 
   it("shows empty and error states without mock fallback", async () => {

@@ -12,7 +12,7 @@ The three previously blocking waiver items are now closed in source:
 | W-02 | BF-09 Inventory/pharmacy | Closed 2026-06-01 | `POST /api/v1/inventory/dispense`, item/lot/medical-record traceability, audit movement, staff UI, unit/integration/Playwright coverage |
 | W-03 | BF-11 Notifications/reminders | Closed 2026-06-01 | `email_delivery_attempts`, safe `LOCAL_RECORD` staging provider, Gmail send-attempt recording, retry-preserving reminder failure behavior |
 
-This report does **not** call HMS fully Production Ready because the broader P1 product and UX backlog remains open: fake/static UI actions, destructive confirmations outside inventory/lab delete, patient self-service scope decisions, signed-record/addendum policy, and drug/allergy interaction scope. The system is suitable as a release candidate after waiver closure, with release-owner sign-off required before a production claim.
+This report does **not** call HMS fully Production Ready because the broader P1/P2 product and safety backlog remains open: patient self-service scope decisions, support-ticket contracts, remaining click-path review items, signed-record/addendum policy, and drug/allergy interaction scope. The system is suitable as a release candidate after waiver closure, with release-owner sign-off required before a production claim.
 
 ## 2. Environment
 
@@ -47,11 +47,14 @@ This report does **not** call HMS fully Production Ready because the broader P1 
 | Secret scan | PASS, 0 high-confidence findings | `high-confidence-secret-scan-2026-06-01.log` |
 | Backup/restore smoke | PASS | `postgres-backup-restore-check-2026-06-01.json` |
 | Git diff whitespace check | PASS with line-ending warnings only | `git-diff-check-2026-06-01.log` |
+| P1 UI truthfulness regression | PASS, actionable-control manifest has 0 fake/hash-link bugs | `web/test-results/actionable-control-manifest/summary.md` |
+| Real-user Chrome browser QA | PASS, 23 checks, 11 screenshots, 0 unfiltered console errors, 0 4xx/5xx app/API requests | `web/test-results/real-user-browser-qa-2026-06-01/summary.md` |
 
 Notes:
 - The first integrated pass exposed origin mismatch when Playwright used `127.0.0.1` while the production bundle targeted `localhost`; rerun used `localhost` consistently.
 - Parallel integrated runs showed isolated mobile timing/rate noise; the final serialized integrated run passed.
 - Visual inventory baseline was intentionally updated because the real Dispense action is now visible.
+- The post-waiver P1 UI truthfulness slice removed verified fake/hash-link controls, disabled unsupported public/support/pricing actions, routed priority dashboard drilldowns, and added browser confirmations for destructive staff/admin actions.
 
 ## 4. BF-01 To BF-12 Status
 
@@ -59,14 +62,14 @@ Notes:
 | --- | --- | --- |
 | BF-01 Public discovery/booking | Passed | Public APIs, booking, and release-data checks passed. |
 | BF-02 Staff auth/RBAC | Passed | Auth, logout, RBAC, and route guards passed. |
-| BF-03 Admin operations | Passed with follow-up | Core pages pass; dashboard/export/static actions still need product cleanup. |
-| BF-04 Scheduling/availability | Passed with follow-up | Core slot/template gates pass; destructive slot actions still need confirmation review. |
-| BF-05 Queue/check-in/vitals | Passed | Queue and clinical intake UI gates pass. |
+| BF-03 Admin operations | Passed with follow-up | Core pages pass; priority dashboard drilldowns, local CSV exports, fake pagination, and destructive confirmations were hardened; remaining audit/filter and assignment actions need review. |
+| BF-04 Scheduling/availability | Passed with follow-up | Core slot/template gates pass; slot block/delete now require confirmation; staff slot route still needs product review. |
+| BF-05 Queue/check-in/vitals | Passed with follow-up | Queue and clinical intake UI gates pass; skip/complete now require confirmation; vital-sign route still needs deeper click-path verification. |
 | BF-06 Doctor consultation/medical record/prescription | Passed with follow-up | Core record/PDF paths pass; signed-record and addendum policy remains open. |
 | BF-07 Lab results | Passed | W-01 closed. |
 | BF-08 Patient portal | Passed with follow-up | Read/profile flows pass; cancel/reschedule, messaging writes, support tickets remain product decisions. |
 | BF-09 Inventory/pharmacy | Passed | W-02 closed with dispense workflow and stock/audit traceability. |
-| BF-10 Finance | Passed with follow-up | Invoice/payment flows pass; void confirmation and admin pricing delete remain open. |
+| BF-10 Finance | Passed with follow-up | Invoice/payment flows pass; void now requires confirmation and admin pricing delete is disabled because no delete API exists. |
 | BF-11 Notifications/reminders | Passed backend-only | W-03 closed with delivery-attempt evidence and retry-preserving failure handling. |
 | BF-12 Release-demo UAT readiness | Passed | Docker release-demo smoke and release-data gate passed. |
 
@@ -74,8 +77,8 @@ Notes:
 
 | Priority | Area | Required action |
 | --- | --- | --- |
-| P1 | UI truthfulness | Audit remaining `Missing API`, `Missing handler`, `Need review`, `Potential issue`, and `Unclear` rows in `business-flow-test-matrix.md`; disable, remove, or wire each visible action. |
-| P1 | Destructive safety | Add explicit confirmation and conflict handling for invoice void, slot delete/block, user deactivate, department/room delete, and queue terminal actions. |
+| P1 | UI truthfulness | Continue reducing the actionable-control manifest `needs review` list with flow-specific click validation; fake/hash-link bugs are currently 0 after the P1 truthfulness slice. |
+| P1 | Destructive safety | Browser confirmations are now present for invoice void, slot delete/block, user deactivate, department/room delete, inventory/lab delete, and queue terminal actions; replace `window.confirm` with first-class modal confirmations before polished production UX sign-off. |
 | P1 | Patient portal scope | Decide whether cancel/reschedule, message send/reply, record export/print, and support tickets are in or out of scope; enforce read-only states if out. |
 | P2 | Clinical safety | Define signed-record locking/addendum behavior and explicitly document drug/allergy interaction scope. |
 | P2 | Operations | Keep health, backup/restore, audit, privacy, and release-demo seed gates as recurring release checks. |

@@ -278,24 +278,26 @@ export default function PublicDoctorsPage() {
               HOSPITAL CORE
             </span>
             <nav className="flex flex-col items-start lg:items-end gap-3">
-              <a
+              <Link
                 className="text-slate-400 hover:text-white text-sm font-medium transition-colors"
-                href="#"
+                href="/privacy"
               >
                 Privacy Policy
-              </a>
-              <a
+              </Link>
+              <Link
                 className="text-slate-400 hover:text-white text-sm font-medium transition-colors"
-                href="#"
+                href="/terms"
               >
                 Terms of Service
-              </a>
-              <a
-                className="text-slate-400 hover:text-white text-sm font-medium transition-colors"
-                href="#"
+              </Link>
+              <button
+                className="text-left text-slate-500 text-sm font-medium opacity-70"
+                disabled
+                title="Public administration contact is not exposed by the current backend API."
+                type="button"
               >
-                Contact Administration
-              </a>
+                Contact unavailable
+              </button>
             </nav>
           </div>
         </div>

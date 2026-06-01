@@ -12,7 +12,6 @@ import {
 } from "@/lib/operations-api";
 
 import { PageHeader } from "@/components/ui/page-header";
-import { KpiCard } from "@/components/ui/kpi-card";
 import { Dialog } from "@/components/ui/dialog";
 import {
   ChevronLeft,
@@ -126,6 +125,18 @@ export default function AdminPricingPage() {
   const totalCatalogValue = pricing.reduce((s, p) => s + p.amount, 0);
   const activeServices = pricing.length;
 
+  function handleExportCSV() {
+    const headers = ["Pricing ID", "Department", "Service", "Amount", "Effective Date"];
+    const rows = filtered.map((item) => [
+      item.pricingId,
+      item.departmentName ?? "Global",
+      item.serviceName,
+      item.amount,
+      item.effectiveDate,
+    ]);
+    downloadCsv(`service_pricing_${new Date().toISOString().slice(0, 10)}.csv`, [headers, ...rows]);
+  }
+
   /* ─── Form ─── */
   function openCreate() {
     setEditingItem(null);
@@ -202,7 +213,12 @@ export default function AdminPricingPage() {
         description="Manage standard billing rates and service protocols for global billing."
         action={
           <div className="flex items-center gap-3">
-            <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors">
+            <button
+              type="button"
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors disabled:opacity-60"
+              disabled={filtered.length === 0}
+              onClick={handleExportCSV}
+            >
               <Download className="w-4 h-4" /> Export CSV
             </button>
             <button type="button" onClick={openCreate} className="hc-button-primary flex items-center gap-2">
@@ -229,6 +245,7 @@ export default function AdminPricingPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
               type="search"
+              aria-label="Search pricing"
               placeholder="Search services or departments…"
               value={query}
               onChange={(e) => { setQuery(e.target.value); setPage(1); }}
@@ -283,7 +300,13 @@ export default function AdminPricingPage() {
                                 <button type="button" onClick={() => openEdit(p)} className="p-1.5 hover:bg-slate-100 rounded-[var(--radius-md)] transition-colors" title="Edit">
                                   <Edit3 className="w-4 h-4 text-slate-500" />
                                 </button>
-                                <button type="button" className="p-1.5 hover:bg-slate-100 rounded-[var(--radius-md)] transition-colors" title="Delete">
+                                <button
+                                  type="button"
+                                  aria-label="Delete pricing unavailable"
+                                  className="p-1.5 rounded-[var(--radius-md)] transition-colors opacity-50"
+                                  disabled
+                                  title="Delete is not exposed by the current pricing API."
+                                >
                                   <Trash2 className="w-4 h-4 text-slate-400" />
                                 </button>
                               </div>
@@ -408,4 +431,16 @@ function SortHeader({ label, field, current, dir, onSort }: { label: string; fie
       </span>
     </th>
   );
+}
+
+function downloadCsv(fileName: string, rows: Array<Array<string | number>>) {
+  const body = rows
+    .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(","))
+    .join("\n");
+  const link = document.createElement("a");
+  link.href = `data:text/csv;charset=utf-8,${encodeURIComponent(body)}`;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }

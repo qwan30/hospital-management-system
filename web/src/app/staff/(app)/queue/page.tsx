@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
-  AlertTriangle,
   CheckCircle2,
   ChevronRight,
   Clock,
@@ -138,6 +137,13 @@ export default function QueueBoardPage() {
     execute: () => Promise<ClinicalAppointmentResponse>,
     nextFilter?: QueueFilter,
   ) => {
+    if (action === "skip" || action === "complete") {
+      const confirmed = window.confirm(confirmationCopy(action, appointment));
+      if (!confirmed) {
+        return;
+      }
+    }
+
     setPendingAction({ appointmentId: appointment.appointmentId, action });
     setRowErrors((c) => removeRecordKey(c, appointment.appointmentId));
     try {
@@ -439,6 +445,14 @@ function ActionBtn({
 }
 
 /* ─── Physician Allocation ─── */
+function confirmationCopy(action: QueueAction, appointment: ClinicalAppointmentResponse) {
+  if (action === "skip") {
+    return `Confirm skipping ${appointment.patientFullName} in the queue. This changes their operational queue status immediately.`;
+  }
+
+  return `Confirm completing ${appointment.patientFullName}'s visit. This closes the active queue item and cannot be undone from the queue board.`;
+}
+
 function PhysicianAllocation({ loads }: { loads: PhysicianLoad[] }) {
   if (loads.length === 0) return null;
 

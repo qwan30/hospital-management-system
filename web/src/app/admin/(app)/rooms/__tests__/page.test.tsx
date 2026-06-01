@@ -124,11 +124,13 @@ describe("AdminRoomsPage", () => {
       expect(updateAdminRoomStatus).toHaveBeenCalledWith("room-1", "MAINTENANCE");
     });
 
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
     await userEvent.click(screen.getByRole("button", { name: /deactivate room/i }));
 
     await waitFor(() => {
       expect(deactivateAdminRoom).toHaveBeenCalledWith("room-1");
     });
+    expect(confirmSpy).toHaveBeenCalledWith(expect.stringContaining("Confirm deactivation"));
   });
 
   it("shows empty and error states without mock fallback", async () => {

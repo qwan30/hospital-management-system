@@ -20,7 +20,6 @@ import {
   Plus,
   Search,
   X,
-  MoreVertical,
   ChevronsUpDown,
   ChevronLeft,
   ChevronRight,
@@ -46,6 +45,7 @@ const emptyForm: DepartmentFormState = {
 export default function AdminDepartmentsPage() {
   const [departments, setDepartments] = useState<AdminDepartmentResponse[]>([]);
   const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "INACTIVE">("ALL");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -90,19 +90,34 @@ export default function AdminDepartmentsPage() {
 
   const filteredDepartments = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) {
-      return departments;
-    }
-
-    return departments.filter((department) =>
-      [department.name, department.description, department.phone]
-        .join(" ")
-        .toLowerCase()
-        .includes(normalizedQuery),
-    );
-  }, [departments, query]);
+    return departments.filter((department) => {
+      const matchesStatus =
+        statusFilter === "ALL" ||
+        (statusFilter === "ACTIVE" ? department.active : !department.active);
+      const matchesQuery =
+        !normalizedQuery ||
+        [department.name, department.description, department.phone]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedQuery);
+      return matchesStatus && matchesQuery;
+    });
+  }, [departments, query, statusFilter]);
 
   const activeCount = departments.filter((department) => department.active).length;
+
+  function handleExportCSV() {
+    const headers = ["Department ID", "Name", "Phone", "Description", "Image URL", "Status"];
+    const rows = filteredDepartments.map((department) => [
+      department.departmentId,
+      department.name,
+      department.phone ?? "",
+      department.description ?? "",
+      department.imageUrl ?? "",
+      department.active ? "Active" : "Inactive",
+    ]);
+    downloadCsv(`departments_${new Date().toISOString().slice(0, 10)}.csv`, [headers, ...rows]);
+  }
 
   function openCreateForm() {
     setEditingDepartment(null);
@@ -155,6 +170,13 @@ export default function AdminDepartmentsPage() {
   }
 
   async function handleDeactivate(department: AdminDepartmentResponse) {
+    const confirmed = window.confirm(
+      `Confirm deactivation for ${department.name}. Public department discovery and scheduling references may change immediately.`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
     setFormError(null);
     setSuccess(null);
     setIsSaving(true);
@@ -220,14 +242,24 @@ export default function AdminDepartmentsPage() {
         </div>
 
         <div className="flex-none">
-          <select className="h-9 px-3 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] text-[var(--hc-text-secondary)]">
-            <option value="all">All Status</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+          <select
+            aria-label="Filter departments by status"
+            className="h-9 px-3 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] text-[var(--hc-text-secondary)]"
+            onChange={(event) => setStatusFilter(event.target.value as "ALL" | "ACTIVE" | "INACTIVE")}
+            value={statusFilter}
+          >
+            <option value="ALL">All Status</option>
+            <option value="ACTIVE">Active</option>
+            <option value="INACTIVE">Inactive</option>
           </select>
         </div>
 
-        <button className="hc-button-secondary flex items-center gap-2 h-9 px-4 ml-auto">
+        <button
+          className="hc-button-secondary flex items-center gap-2 h-9 px-4 ml-auto disabled:opacity-60"
+          disabled={filteredDepartments.length === 0}
+          onClick={handleExportCSV}
+          type="button"
+        >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10M11.3333 7.33333L8 10.6667M8 10.6667L4.66667 7.33333M8 10.6667V2" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
@@ -369,13 +401,13 @@ function DepartmentsTable({
           Showing 1 to {departments.length} of {departments.length} departments
         </span>
         <div className="flex items-center gap-2">
-          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50" disabled type="button">
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium" type="button">
             1
           </button>
-          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50" disabled type="button">
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -481,6 +513,18 @@ function toRequest(form: DepartmentFormState): AdminDepartmentUpsertRequest {
 function nullableTrim(value: string) {
   const nextValue = value.trim();
   return nextValue ? nextValue : null;
+}
+
+function downloadCsv(fileName: string, rows: Array<Array<string | number>>) {
+  const body = rows
+    .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(","))
+    .join("\n");
+  const link = document.createElement("a");
+  link.href = `data:text/csv;charset=utf-8,${encodeURIComponent(body)}`;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 function errorMessage(caught: unknown, fallback: string) {

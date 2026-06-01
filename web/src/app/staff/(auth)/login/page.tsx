@@ -177,9 +177,14 @@ export default function StaffLoginPage() {
                     <label className="text-[11px] font-extrabold uppercase tracking-wider text-[#0a2540]" htmlFor="staff-password">
                       Password
                     </label>
-                    <a className="text-[12px] font-bold text-[var(--hc-primary)] hover:underline" href="#">
-                      Forgot password?
-                    </a>
+                    <button
+                      className="text-[12px] font-bold text-[var(--hc-text-secondary)] opacity-70"
+                      disabled
+                      title="Staff password reset is not exposed by the current authentication API."
+                      type="button"
+                    >
+                      Reset unavailable
+                    </button>
                   </div>
                   <span className="flex h-12 items-center gap-3 rounded-lg border border-[var(--hc-border)] bg-white px-4 transition focus-within:border-[var(--hc-primary)] focus-within:ring-2 focus-within:ring-[rgba(15,98,254,0.12)]">
                     <LockKeyhole className="size-5 shrink-0 text-[#9bb9da]" aria-hidden="true" />

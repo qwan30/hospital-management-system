@@ -138,6 +138,10 @@ export default function AdminSupportPage() {
         description="Track staff help desk requests, operational incidents, access issues, and escalation response."
       />
 
+      <section className="mt-6 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)] p-4 text-sm font-medium text-[var(--hc-text-secondary)]" role="note">
+        Support tickets are reference-only in this release. Ticket create, update, export, and drilldown actions remain disabled until a support-ticket API is introduced.
+      </section>
+
       {/* KPI Cards */}
       <section className="mt-8 hc-kpi-grid">
         <KpiCard label="Total Active Tickets" value={totalActive} helper={<span className="text-[var(--hc-success)]">+12 from yesterday ↑</span>} icon={Layers} tone="blue" />
@@ -183,11 +187,11 @@ export default function AdminSupportPage() {
                 {[...new Set(tickets.map((t) => t.ownerName))].map((n) => <option key={n} value={n}>{n}</option>)}
               </select>
             </div>
-            <button type="button" className="flex items-center gap-2 px-3 py-2 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-colors">
-              <Filter className="w-4 h-4" /> Filters
+            <button type="button" className="flex items-center gap-2 px-3 py-2 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] opacity-60" disabled title="Saved filter presets are not exposed by the current support API.">
+              <Filter className="w-4 h-4" /> Filter presets unavailable
             </button>
-            <button type="button" className="flex items-center gap-2 px-3 py-2 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-colors">
-              <Download className="w-4 h-4" /> Export
+            <button type="button" className="flex items-center gap-2 px-3 py-2 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] opacity-60" disabled title="Support export is not exposed by the current backend API.">
+              <Download className="w-4 h-4" /> Export unavailable
             </button>
           </div>
 
@@ -212,7 +216,7 @@ export default function AdminSupportPage() {
                 <option>Priority (High → Low)</option>
                 <option>Newest First</option>
               </select>
-              <button type="button" className="p-1.5 hover:bg-slate-100 rounded-[var(--radius-md)]">
+              <button type="button" className="p-1.5 rounded-[var(--radius-md)] opacity-60" disabled title="Support refresh is local-only until ticket APIs are available.">
                 <RefreshCw className="w-4 h-4" />
               </button>
             </div>
@@ -279,10 +283,10 @@ export default function AdminSupportPage() {
                         </td>
                         <td className="hc-td text-right">
                           <div className="flex items-center justify-end gap-1">
-                            <button type="button" className="px-3 py-1.5 text-xs font-semibold border border-[var(--hc-primary)] text-[var(--hc-primary)] rounded-[var(--radius-md)] hover:bg-[#E8F0FF] transition-colors">
-                              View
+                            <button type="button" className="px-3 py-1.5 text-xs font-semibold border border-[var(--hc-primary)] text-[var(--hc-primary)] rounded-[var(--radius-md)] opacity-60" disabled title="Ticket detail drilldown is not exposed by the current support API.">
+                              View unavailable
                             </button>
-                            <button type="button" className="p-1.5 hover:bg-slate-100 rounded-[var(--radius-md)] transition-colors">
+                            <button type="button" className="p-1.5 rounded-[var(--radius-md)] transition-colors opacity-60" disabled title="Ticket row actions are not exposed by the current support API.">
                               <MoreVertical className="w-4 h-4 text-slate-400" />
                             </button>
                           </div>
@@ -322,7 +326,7 @@ export default function AdminSupportPage() {
           <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold text-[var(--hc-text)]">SLA HEALTH</h3>
-              <button type="button" className="text-xs font-semibold text-[var(--hc-primary)] hover:underline">View all →</button>
+              <button type="button" className="text-xs font-semibold text-[var(--hc-primary)] opacity-60" disabled title="SLA detail drilldown is not exposed by the current support API.">View all unavailable</button>
             </div>
             {/* Donut */}
             <div className="flex items-center justify-center mb-4">
@@ -367,7 +371,7 @@ export default function AdminSupportPage() {
 
 function EscalationItem({ icon: Icon, color, bg, title, desc }: { icon: React.ElementType; color: string; bg: string; title: string; desc: string }) {
   return (
-    <button type="button" className="w-full flex items-center gap-3 text-left group hover:bg-slate-50/50 p-2 -mx-2 rounded-[var(--radius-md)] transition-colors">
+    <div className="w-full flex items-center gap-3 text-left p-2 -mx-2 rounded-[var(--radius-md)] opacity-80">
       <div className={`grid size-8 shrink-0 place-items-center rounded-full ${bg}`}>
         <Icon className={`w-4 h-4 ${color}`} />
       </div>
@@ -375,7 +379,7 @@ function EscalationItem({ icon: Icon, color, bg, title, desc }: { icon: React.El
         <p className={`text-sm font-semibold ${color}`}>{title}</p>
         <p className="text-xs text-slate-500">{desc}</p>
       </div>
-      <ExternalLink className="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-500 transition-colors shrink-0" />
-    </button>
+      <ExternalLink className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+    </div>
   );
 }

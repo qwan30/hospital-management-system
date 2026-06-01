@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { listAuditLogs, type AuditLogResponse } from "@/lib/operations-api";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
-import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext, PaginationEllipsis } from "@/components/ui/pagination";
 
 export default function AdminAuditLogsPage() {
   const [logs, setLogs] = useState<AuditLogResponse[]>([]);
@@ -296,37 +295,47 @@ export default function AdminAuditLogsPage() {
                     </div>
                 </div>
 
-                <Pagination className="justify-end">
-                    <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious href="#" size="default" className="h-8 px-3 text-xs" />
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#" isActive size="icon" className="h-8 w-8 text-xs bg-[var(--hc-blue-600)] text-white hover:bg-[var(--hc-blue-700)] hover:text-white">1</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#" size="icon" className="h-8 w-8 text-xs">2</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#" size="icon" className="h-8 w-8 text-xs">3</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#" size="icon" className="h-8 w-8 text-xs">4</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#" size="icon" className="h-8 w-8 text-xs">5</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationEllipsis className="h-8 w-8" />
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#" size="icon" className="h-8 px-2 text-xs w-auto min-w-8">2,486</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationNext href="#" size="default" className="h-8 px-3 text-xs" />
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
+                <nav aria-label="audit log pagination" className="flex items-center justify-end gap-1">
+                    <button
+                        className="h-8 rounded-md px-3 text-xs font-medium opacity-60"
+                        disabled
+                        title="Audit-log pagination is not exposed by the current backend API."
+                        type="button"
+                    >
+                        Previous
+                    </button>
+                    {[1, 2, 3, 4, 5].map((pageNumber) => (
+                        <button
+                            aria-current={pageNumber === 1 ? "page" : undefined}
+                            className={`h-8 w-8 rounded-md text-xs font-medium opacity-60 ${pageNumber === 1 ? "bg-[var(--hc-blue-600)] text-white" : ""}`}
+                            disabled
+                            key={pageNumber}
+                            title="Audit-log pagination is not exposed by the current backend API."
+                            type="button"
+                        >
+                            {pageNumber}
+                        </button>
+                    ))}
+                    <span className="inline-flex h-8 w-8 items-center justify-center text-xs text-[var(--hc-text-secondary)]">
+                        ...
+                    </span>
+                    <button
+                        className="h-8 min-w-8 rounded-md px-2 text-xs font-medium opacity-60"
+                        disabled
+                        title="Audit-log pagination is not exposed by the current backend API."
+                        type="button"
+                    >
+                        2,486
+                    </button>
+                    <button
+                        className="h-8 rounded-md px-3 text-xs font-medium opacity-60"
+                        disabled
+                        title="Audit-log pagination is not exposed by the current backend API."
+                        type="button"
+                    >
+                        Next
+                    </button>
+                </nav>
             </div>
         </div>
       </div>

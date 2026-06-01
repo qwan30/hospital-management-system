@@ -140,6 +140,7 @@ describe("AdminSlotsPage", () => {
     render(<AdminSlotsPage />);
 
     await screen.findByText("08:00");
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
     await userEvent.click(screen.getAllByRole("button", { name: "Block" })[0]);
 
     await waitFor(() => {
@@ -151,6 +152,7 @@ describe("AdminSlotsPage", () => {
     await waitFor(() => {
       expect(deleteAdminSlot).toHaveBeenCalledWith("slot-1");
     });
+    expect(confirmSpy).toHaveBeenCalledTimes(2);
 
     expect(screen.getAllByRole("button", { name: "Block" })[1]).toBeDisabled();
     expect(screen.getAllByRole("button", { name: "Delete" })[1]).toBeDisabled();

@@ -117,6 +117,13 @@ export default function InvoicesPage() {
   }
 
   async function handleVoidInvoice(invoice: InvoiceResponse) {
+    const confirmed = window.confirm(
+      `Confirm voiding invoice ${invoice.invoiceId} for ${invoice.patientFullName}. This changes the billing status to cancelled.`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
     setMutationError(null);
     setSuccess(null);
     setIsMutating(true);

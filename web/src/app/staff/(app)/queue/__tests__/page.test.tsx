@@ -6,8 +6,10 @@ import { ApiClientError } from "@/lib/api-client";
 import {
   callQueuePatient,
   checkInAppointment,
+  completeQueueVisit,
   getTodayAppointments,
   getTodayQueue,
+  skipQueuePatient,
   type ClinicalAppointmentResponse,
 } from "@/lib/clinical-api";
 
@@ -20,8 +22,10 @@ vi.mock("@/lib/clinical-api", async () => {
     ...actual,
     callQueuePatient: vi.fn(),
     checkInAppointment: vi.fn(),
+    completeQueueVisit: vi.fn(),
     getTodayAppointments: vi.fn(),
     getTodayQueue: vi.fn(),
+    skipQueuePatient: vi.fn(),
   };
 });
 
@@ -59,11 +63,21 @@ const completedAppointment: ClinicalAppointmentResponse = {
   patientFullName: "Completed Patient",
 };
 
+const inProgressAppointment: ClinicalAppointmentResponse = {
+  ...readyAppointment,
+  appointmentId: "appt-progress",
+  confirmationCode: "PROG-001",
+  status: "IN_PROGRESS",
+  patientFullName: "Pham In Room",
+};
+
 describe("QueueBoardPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(getTodayAppointments).mockResolvedValue([waitingAppointment, completedAppointment]);
     vi.mocked(getTodayQueue).mockResolvedValue([readyAppointment]);
+    vi.mocked(skipQueuePatient).mockResolvedValue({ ...readyAppointment, status: "CANCELLED" });
+    vi.mocked(completeQueueVisit).mockResolvedValue({ ...inProgressAppointment, status: "DONE" });
   });
 
   it("loads and merges today's appointments and queue while hiding terminal appointments", async () => {
@@ -142,5 +156,24 @@ describe("QueueBoardPage", () => {
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Call failed");
     expect(screen.getByTestId("queue-board")).toBeInTheDocument();
+  });
+
+  it("requires confirmation before skipping or completing queue visits", async () => {
+    vi.mocked(getTodayQueue).mockResolvedValueOnce([readyAppointment, inProgressAppointment]);
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValueOnce(false).mockReturnValue(true);
+
+    render(<QueueBoardPage />);
+
+    await userEvent.click(await screen.findByRole("button", { name: /ready/i }));
+    await userEvent.click(screen.getByRole("button", { name: /skip tran thi b/i }));
+    expect(skipQueuePatient).not.toHaveBeenCalled();
+
+    await userEvent.click(screen.getByRole("button", { name: /skip tran thi b/i }));
+    await waitFor(() => expect(skipQueuePatient).toHaveBeenCalledWith("appt-ready"));
+
+    await userEvent.click(screen.getByRole("button", { name: /in progress/i }));
+    await userEvent.click(screen.getByRole("button", { name: /complete visit pham in room/i }));
+    await waitFor(() => expect(completeQueueVisit).toHaveBeenCalledWith("appt-progress"));
+    expect(confirmSpy).toHaveBeenCalledTimes(3);
   });
 });

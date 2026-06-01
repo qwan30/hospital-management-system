@@ -116,6 +116,18 @@ export default function AdminRoomsPage() {
   const readyCount = rooms.filter((room) => room.status === "READY" && room.active).length;
   const inUseCount = rooms.filter((room) => room.status === "IN_USE" && room.active).length;
 
+  function handleExportCSV() {
+    const headers = ["Room ID", "Name", "Department", "Status", "Active"];
+    const rows = filteredRooms.map((room) => [
+      room.roomId,
+      room.name,
+      room.departmentName ?? "Unassigned",
+      room.status,
+      room.active ? "Active" : "Inactive",
+    ]);
+    downloadCsv(`rooms_${new Date().toISOString().slice(0, 10)}.csv`, [headers, ...rows]);
+  }
+
   function openCreateForm() {
     setEditingRoom(null);
     setForm(emptyForm);
@@ -181,6 +193,13 @@ export default function AdminRoomsPage() {
   }
 
   async function deactivateRoom(room: AdminRoomResponse) {
+    const confirmed = window.confirm(
+      `Confirm deactivation for ${room.name}. This room will no longer be available for scheduling until reactivated.`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
     setFormError(null);
     setSuccess(null);
     setIsSaving(true);
@@ -202,7 +221,12 @@ export default function AdminRoomsPage() {
         description="API-backed monitoring & allocation of clinical rooms and spaces."
         action={
           <div className="flex gap-3">
-            <button className="flex items-center justify-center gap-2 h-10 px-4 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] bg-white text-[var(--hc-text)] hover:bg-slate-50 transition-colors shadow-sm">
+            <button
+              className="flex items-center justify-center gap-2 h-10 px-4 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] bg-white text-[var(--hc-text)] hover:bg-slate-50 transition-colors shadow-sm disabled:opacity-60"
+              disabled={filteredRooms.length === 0}
+              onClick={handleExportCSV}
+              type="button"
+            >
               <Download className="w-4 h-4" />
               <span className="font-bold text-[11px] uppercase tracking-widest">Export CSV</span>
             </button>
@@ -275,6 +299,7 @@ export default function AdminRoomsPage() {
                   setStatusFilter("ALL");
                   setDepartmentFilter("ALL");
                 }}
+                type="button"
               >
                 <Filter className="w-4 h-4" />
                 Clear All Filters
@@ -299,13 +324,13 @@ export default function AdminRoomsPage() {
                     Showing 1 to {filteredRooms.length} of {rooms.length} rooms
                   </span>
                   <div className="flex items-center gap-2">
-                    <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+                    <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50" disabled type="button">
                       <ChevronLeft className="w-4 h-4" />
                     </button>
-                    <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium">
+                    <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium" type="button">
                       1
                     </button>
-                    <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+                    <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50" disabled type="button">
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -695,6 +720,18 @@ function toRequest(form: RoomFormState): AdminRoomUpsertRequest {
 function nullableTrim(value: string) {
   const nextValue = value.trim();
   return nextValue ? nextValue : null;
+}
+
+function downloadCsv(fileName: string, rows: Array<Array<string | number>>) {
+  const body = rows
+    .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(","))
+    .join("\n");
+  const link = document.createElement("a");
+  link.href = `data:text/csv;charset=utf-8,${encodeURIComponent(body)}`;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 function errorMessage(caught: unknown, fallback: string) {

@@ -2,8 +2,8 @@
   "schema_version": "1.1",
   "feature_slug": "hms-production-readiness-hardening-2026-05-22",
   "mode": "degraded-direct-execution",
-  "active_skill": "verification-loop",
-  "phase": "post-report-waivers-closed",
+  "active_skill": "browser-qa",
+  "phase": "p1-ui-truthfulness-hardening",
   "phase_number": 10,
   "epic_id": "",
   "approved_gates": {
@@ -22,8 +22,8 @@
     "W-01, W-02, and W-03 are closed with verification evidence; release-owner sign-off is still needed for remaining P1/P2 product and safety backlog before an unconstrained Production Ready claim."
   ],
   "focus": "production-readiness-hardening",
-  "summary": "Completed and committed W-02 pharmacy dispensing and W-03 notification delivery evidence after the prior W-01 lab-result slice. Staff inventory now supports prescription-backed dispense against item/lot/medical-record data, inventory delete has browser confirmation, email delivery attempts are persisted, and ReminderService keeps failed external delivery retryable. Backend, frontend, Docker, Playwright, audit, secret-scan, and backup/restore release gates passed on 2026-06-01. Current verdict is Release Candidate / Ship with fixes because the wider P1/P2 UX and safety backlog remains.",
-  "next_action": "Continue the P1 backlog: remaining fake/static UI actions, destructive confirmations outside inventory/lab delete, patient self-service scope decisions, and clinical safety policy.",
+  "summary": "Completed the P1 UI truthfulness and destructive-confirmation slice after waiver closure. Public/news/auth/support/pricing/dashboard/admin pagination actions no longer expose enabled fake hash links; unsupported actions are disabled honestly; local CSV export was added where data is already loaded; user/dept/room deactivate, slot block/delete, queue skip/complete, invoice void, inventory delete, and lab delete now have browser confirmation coverage. Playwright UI truthfulness manifest reports 0 fake/hash-link bugs, and the real-user Chrome browser pass completed 23 checks with 0 unfiltered console errors and 0 4xx/5xx app/API requests. Current verdict remains Release Candidate / Ship with fixes because product scope and clinical safety decisions remain.",
+  "next_action": "Continue remaining P1/P2 backlog: patient self-service scope, support-ticket contracts, audit-log export/filter behavior, staff booking/vital-sign click-path validation, clinical locking/addendum policy, and drug/allergy interaction scope.",
   "deferred_beads": [],
   "last_compounding_run": {
     "feature": "hms-production-readiness-hardening-2026-05-22",
@@ -31,5 +31,5 @@
     "learnings_file": "",
     "critical_promotions": 0
   },
-  "last_updated": "2026-06-01T00:00:00+07:00"
+  "last_updated": "2026-06-01T13:05:00+07:00"
 }

@@ -28,9 +28,14 @@ export default function NewsListPage() {
                             Medicore's research division announces a successful pilot for autonomous nerve regeneration using bio-compatible synthetic scaffolding.
                         </p>
 </div>
-<a className="flex items-center gap-2 text-primary font-semibold hover:gap-4 transition-all duration-300" href="#">
-                        Read full article <HcIcon name="arrow_forward" />
-</a>
+<button
+  className="flex items-center gap-2 text-primary font-semibold opacity-60"
+  disabled
+  title="Article detail pages are not exposed by the current public news API."
+  type="button"
+>
+                        Article detail unavailable <HcIcon name="arrow_forward" />
+</button>
 </div>
 </div>
 </section>
@@ -48,7 +53,7 @@ export default function NewsListPage() {
 <p className="text-on-surface-variant max-w-2xl">Integrating the next generation of haptic-feedback surgical units to increase precision in minimally invasive cardiac procedures.</p>
 </div>
 <div className="md:col-span-2 flex justify-end">
-<button className="text-primary font-semibold py-2 px-6 border-b-2 border-transparent hover:border-primary transition-all">Read</button>
+<button className="text-primary font-semibold py-2 px-6 border-b-2 border-transparent opacity-60" disabled title="Article detail pages are not exposed by the current public news API." type="button">Read unavailable</button>
 </div>
 </div>
 </div>
@@ -64,7 +69,7 @@ export default function NewsListPage() {
 <p className="text-on-surface-variant max-w-2xl">New architectural standards implemented across our North Wing to optimize natural light and patient recovery cycles.</p>
 </div>
 <div className="md:col-span-2 flex justify-end">
-<button className="text-primary font-semibold py-2 px-6 border-b-2 border-transparent hover:border-primary transition-all">Read</button>
+<button className="text-primary font-semibold py-2 px-6 border-b-2 border-transparent opacity-60" disabled title="Article detail pages are not exposed by the current public news API." type="button">Read unavailable</button>
 </div>
 </div>
 </div>
@@ -80,7 +85,7 @@ export default function NewsListPage() {
 <p className="text-on-surface-variant max-w-2xl">Expanding radiology review capacity with updated imaging worklists, clearer escalation paths, and faster result handoff.</p>
 </div>
 <div className="md:col-span-2 flex justify-end">
-<button className="text-primary font-semibold py-2 px-6 border-b-2 border-transparent hover:border-primary transition-all">Read</button>
+<button className="text-primary font-semibold py-2 px-6 border-b-2 border-transparent opacity-60" disabled title="Article detail pages are not exposed by the current public news API." type="button">Read unavailable</button>
 </div>
 </div>
 </div>
@@ -96,15 +101,15 @@ export default function NewsListPage() {
 <p className="text-on-surface-variant max-w-2xl">Key findings from the 2024 Medicore Global Health Summit on sustainable healthcare delivery in urban environments.</p>
 </div>
 <div className="md:col-span-2 flex justify-end">
-<button className="text-primary font-semibold py-2 px-6 border-b-2 border-transparent hover:border-primary transition-all">Read</button>
+<button className="text-primary font-semibold py-2 px-6 border-b-2 border-transparent opacity-60" disabled title="Article archive browsing is not exposed by the current public news API." type="button">Read unavailable</button>
 </div>
 </div>
 </div>
 </section>
 {/* Pagination / Load More */}
 <div className="flex justify-center py-24 bg-surface">
-<button className="bg-on-surface text-white px-12 py-4 font-semibold uppercase tracking-widest text-sm hover:bg-primary transition-colors">
-                Load Archive
+<button className="bg-on-surface text-white px-12 py-4 font-semibold uppercase tracking-widest text-sm opacity-60" disabled title="Article archive browsing is not exposed by the current public news API." type="button">
+                Archive unavailable
             </button>
 </div>
 

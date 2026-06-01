@@ -133,11 +133,13 @@ describe("InvoicesPage", () => {
       expect(recordInvoicePayment).toHaveBeenCalledWith("invoice-1", { paymentMethod: "CASH" });
     });
 
+    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
     await userEvent.click(screen.getAllByRole("button", { name: "Void" })[0]);
 
     await waitFor(() => {
       expect(voidInvoice).toHaveBeenCalledWith("invoice-1");
     });
+    expect(confirmSpy).toHaveBeenCalledWith(expect.stringContaining("Confirm voiding invoice invoice-1"));
   });
 
   it("shows empty and error states without mock fallback", async () => {

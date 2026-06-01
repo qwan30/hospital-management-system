@@ -203,9 +203,14 @@ export default function PortalLoginPage() {
                     <input type="checkbox" className="size-4 rounded border-[#9bb9da] text-[var(--hc-primary)] focus:ring-[var(--hc-primary)]" />
                     <span className="text-[13px] font-bold text-[#0a2540]">Remember me</span>
                   </label>
-                  <a className="text-[13px] font-bold text-[var(--hc-primary)] hover:underline" href="#">
-                    Forgot password?
-                  </a>
+                  <button
+                    className="text-[13px] font-bold text-[var(--hc-text-secondary)] opacity-70"
+                    disabled
+                    title="Patient password reset is not exposed by the current portal authentication API."
+                    type="button"
+                  >
+                    Reset unavailable
+                  </button>
                 </div>
 
                 {error ? (

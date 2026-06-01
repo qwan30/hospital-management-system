@@ -1,7 +1,6 @@
 "use client";
 
 import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import {
   activateAdminUser,
   createAdminUser,
@@ -135,6 +134,21 @@ export default function AdminUsersPage() {
     return { total: users.length, medical, administration, active };
   }, [users]);
 
+  function handleExportCSV() {
+    const headers = ["User ID", "Full Name", "Email", "Phone", "Role", "Department", "Specialty", "Status"];
+    const rows = filteredUsers.map((user) => [
+      user.userId,
+      user.fullName,
+      user.email,
+      user.phone ?? "",
+      user.role,
+      user.departmentName ?? "",
+      user.specialty ?? "",
+      user.active ? "Active" : "Inactive",
+    ]);
+    downloadCsv(`staff_users_${new Date().toISOString().slice(0, 10)}.csv`, [headers, ...rows]);
+  }
+
   function openCreateForm() {
     setEditingUser(null);
     setForm(emptyForm);
@@ -192,6 +206,14 @@ export default function AdminUsersPage() {
   }
 
   async function toggleUserActive(user: AdminUserResponse) {
+    const action = user.active ? "deactivate" : "activate";
+    const confirmed = window.confirm(
+      `Confirm ${action} for ${user.fullName}. This changes staff access immediately.`,
+    );
+    if (!confirmed) {
+      return;
+    }
+
     setFormError(null);
     setSuccess(null);
     setIsSaving(true);
@@ -215,7 +237,12 @@ export default function AdminUsersPage() {
         description="System Administration • Manage user roles and access"
         action={
           <div className="flex gap-3">
-            <button className="flex items-center justify-center gap-2 h-10 px-4 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] bg-white text-[var(--hc-text)] hover:bg-slate-50 transition-colors shadow-sm">
+            <button
+              className="flex items-center justify-center gap-2 h-10 px-4 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] bg-white text-[var(--hc-text)] hover:bg-slate-50 transition-colors shadow-sm disabled:opacity-60"
+              disabled={filteredUsers.length === 0}
+              onClick={handleExportCSV}
+              type="button"
+            >
               <Download className="w-4 h-4" />
               <span className="font-bold text-[11px] uppercase tracking-widest">Export CSV</span>
             </button>
@@ -342,6 +369,7 @@ export default function AdminUsersPage() {
                   <button
                     aria-label="Previous staff page"
                     className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                    disabled
                     type="button"
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -356,6 +384,7 @@ export default function AdminUsersPage() {
                   <button
                     aria-label="Next staff page"
                     className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                    disabled
                     type="button"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -673,6 +702,18 @@ function initials(name: string) {
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
     .join("");
+}
+
+function downloadCsv(fileName: string, rows: Array<Array<string | number>>) {
+  const body = rows
+    .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(","))
+    .join("\n");
+  const link = document.createElement("a");
+  link.href = `data:text/csv;charset=utf-8,${encodeURIComponent(body)}`;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 function errorMessage(caught: unknown, fallback: string) {
