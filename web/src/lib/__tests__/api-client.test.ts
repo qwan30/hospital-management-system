@@ -173,6 +173,17 @@ describe('api-client', () => {
       });
     });
 
+    it('throws a friendly ApiClientError when the server cannot be reached', async () => {
+      fetchMock().mockRejectedValueOnce(new TypeError('Failed to fetch'));
+
+      await expect(apiRequest('/offline')).rejects.toMatchObject({
+        name: 'ApiClientError',
+        message: 'Unable to reach the hospital server. Check your connection and try again.',
+        status: 0,
+        code: 'NETWORK_ERROR',
+      });
+    });
+
     it('6. handles empty response body gracefully', async () => {
       fetchMock().mockResolvedValueOnce({
         ok: true,

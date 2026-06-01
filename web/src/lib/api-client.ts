@@ -52,11 +52,20 @@ export async function apiRequest<T>(
 ): Promise<ApiEnvelope<T>> {
   const headers = buildHeaders(init.headers, options.authScope);
 
-  const response = await fetch(`${getApiBaseUrl()}${path}`, {
-    ...init,
-    credentials: "include",
-    headers,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${getApiBaseUrl()}${path}`, {
+      ...init,
+      credentials: "include",
+      headers,
+    });
+  } catch {
+    throw new ApiClientError(
+      "Unable to reach the hospital server. Check your connection and try again.",
+      0,
+      "NETWORK_ERROR",
+    );
+  }
 
   const payload = await readJson<ApiEnvelope<T>>(response);
 
