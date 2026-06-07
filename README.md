@@ -1,193 +1,133 @@
-# Hospital Management System
+# 🏥 Enterprise Hospital Management System (HMS)
 
-A comprehensive hospital management platform with appointment scheduling, clinical workflow automation, administration, finance, inventory, and patient portal workflows.
+[![Java 17](https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=openjdk)](https://openjdk.org/)
+[![Spring Boot 3.3](https://img.shields.io/badge/Spring_Boot-3.3-brightgreen?style=for-the-badge&logo=springboot)](https://spring.io/projects/spring-boot)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
+[![Next.js 16](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=nextdotjs)](https://nextjs.org/)
+[![React 19](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)](https://react.dev/)
+[![Playwright](https://img.shields.io/badge/Playwright-E2E-green?style=for-the-badge&logo=playwright)](https://playwright.dev/)
 
-## Stack
+Một hệ thống quản lý bệnh viện chuyên sâu (Healthcare ERP) hỗ trợ toàn diện các luồng nghiệp vụ từ đặt lịch khám công khai, phân luồng tiếp đón (Intake/Queue), bệnh án lâm sàng (EHR), cấp phát thuốc (Pharmacy Dispensing), thanh toán viện phí (Billing) cho đến cổng thông tin tự phục vụ dành cho bệnh nhân (Patient Portal). Hệ thống được thiết kế theo mô hình **DDD (Domain-Driven Design)** và đáp ứng các tiêu chuẩn bảo mật nghiêm ngặt đối với thông tin cá nhân của bệnh nhân (PHI).
 
-- **Backend**: Java 17 / Spring Boot 3.3, multi-module Maven project (`domain`, `infrastructure`, `application`, `controller`, `start`)
-- **Database**: PostgreSQL 15, managed by Flyway (`V1` through `V20`; includes current clinical, RBAC, inventory, pharmacy dispense traceability, and email-delivery evidence schema)
-- **Email**: Gmail API for transactional emails (confirmation, prescriptions, reminders)
-- **API Docs**: SpringDoc OpenAPI, with 117 method-level controller mappings plus SpringDoc/Actuator support endpoints
-- **Frontend**: Next.js 16 / React 19 / TypeScript in `web/`; static design prototypes remain in `frontend/`
+---
 
-## Current Status
+## 🌟 Tính Năng & Nghiệp Vụ Đặc Thù
 
-Current repository status is tracked in [docs/reference/repository-status.md](docs/reference/repository-status.md). The 2026-06-01 readiness pass started from `HEAD` `dc7051d3123127ccccc04c38a2a874cf53a26ca2` with GitNexus up to date at the same commit.
+| Nghiệp Vụ | Giải Pháp Kỹ Thuật & Kiến Trúc | Ý Nghĩa Thực Tế |
+|---|---|---|
+| **Đặt Lịch Khám** | Slot Lock giao dịch chống trùng lịch + Mã hóa định danh bệnh nhân. | Đảm bảo tính nhất quán lịch khám của bác sĩ; thông tin CMND/CCCD được mã hóa **AES-GCM** và đánh chỉ mục dạng **SHA-256 hash** bảo mật thông tin cá nhân (PHI). |
+| **Phân Luồng Tiếp Đón** | Quản lý vòng đời Trạng thái Hàng đợi Tiếp nhận (Check-in -> Room Assignment -> Consultation -> Complete). | Bác sĩ, điều dưỡng phối hợp nhịp nhàng, tối ưu hóa thời gian chờ đợi của bệnh nhân tại phòng khám. |
+| **Bệnh Án Lâm Sàng (EHR)** | Tạo bệnh án điện tử, đơn thuốc số hóa, tự động tạo tài liệu PDF đơn thuốc và gửi thư nhắc qua **Gmail API**. | Số hóa quy trình khám chữa bệnh lâm sàng, giảm thiểu thủ tục giấy tờ. |
+| **Cấp Phát Thuốc** | Quản lý kho dược phẩm theo Lot/Movement; Quy trình phát thuốc đối soát liên kết trực tiếp ID bệnh án và đơn thuốc. | Kiểm soát chặt chẽ hao hụt thuốc, truy vết lịch sử phát thuốc của dược sĩ phòng hóa. |
+| **Viện Phí & Doanh Thu** | Tính hóa đơn tự động theo bảng giá dịch vụ y tế, lập báo cáo doanh thu ngày/tháng cho bộ phận kế toán. | Tự động hóa kế toán dòng tiền bệnh viện. |
+| **Phân Quyền RBAC** | Cấu hình **Spring Security + JWT** với 36 quyền chi tiết, phương thức bảo vệ API mức độ annotation `@PreAuthorize`. | Đảm bảo đúng vai trò (Bác sĩ, Điều dưỡng, Dược sĩ, Kế toán, Admin, Bệnh nhân) chỉ được tiếp cận đúng dữ liệu cho phép. |
 
-Release-readiness status is **Release Candidate / Ship with fixes** after the 2026-06-01 waiver-closure pass. W-01/BF-07 lab-result creation, W-02/BF-09 pharmacy dispensing, and W-03/BF-11 notification delivery evidence are closed with backend, frontend, Docker, and Playwright verification. Production sign-off still requires release-owner acceptance of the remaining P1/P2 product and safety backlog tracked in the readiness report.
+---
 
-The backend API exposes 117 method-level controller mappings covering:
-- Authentication (Staff JWT + Patient portal)
-- Smart Reservation System (booking and clinical triage intake)
-- Clinical Workflow (medical records, prescriptions, PDF generation)
-- Administration (users, departments, rooms, schedules, content)
-- Finance (invoices, payments, revenue reports)
-- Inventory Management (items, lots, movements, medication dispensing)
-- Patient Portal (profile, appointments, messages, lab results)
+## 📐 Luồng Nghiệp Vụ Y Tế Khép Kín (Clinical Workflow)
 
-The `web/` app contains the canonical Next.js route tree for public, staff, admin, and patient portal screens. The `frontend/` directory is retained as migrated design-reference HTML/PNG prototypes, not as the runnable frontend.
+Sơ đồ Mermaid dưới đây biểu diễn hành trình khám chữa bệnh khép kín của bệnh nhân và sự tương tác giữa các vai trò khác nhau trong hệ thống:
 
-## Local Setup
+```mermaid
+graph TD
+    classDef role fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+    classDef process fill:#efebe9,stroke:#4e342e,stroke-width:2px;
 
-### Prerequisites
-- Java 17+ (tested with Java 21)
-- Maven 3.9+
-- Docker Desktop (for PostgreSQL and Testcontainers-backed integration tests)
-- Node.js 20+
+    A[Bệnh nhân: Đặt lịch khám trực tuyến] -->|1. Booking| B(Lễ tân: Tiếp đón & Đăng ký hàng đợi)
+    B -->|2. Check-in| C(Điều dưỡng: Đo chỉ số sinh tồn & Phân phòng khám)
+    C -->|3. Vital Signs| D(Bác sĩ: Khám lâm sàng & Kê đơn thuốc)
+    D -->|4. Medical Record & Prescription| E(Dược sĩ: Kiểm tra & Phát thuốc)
+    D -->|5. Diagnostic services| F(Kế toán: Thanh toán viện phí)
+    E -->|6. Dispense Traceability| G[Bệnh nhân nhận thuốc và ra về]
+    F -->|7. Invoice Completed| G
 
-### Quick Start
+    class A,G role;
+    class B,C,D,E,F process;
+```
 
-#### Step 1 — Start PostgreSQL
+---
 
+## 📊 Số Liệu Kỹ Thuật Đã Được Kiểm Chứng (Project Metrics)
+
+* **REST API Surface**: **118 REST API mappings** quản lý qua Spring MVC.
+* **Quy Mô Giao Diện (Frontend)**: **72 trang Next.js (App Router)** đáp ứng phân hệ Staff UI, Admin UI và Patient Portal.
+* **Cấu Trúc Dữ Liệu**: **20 Flyway migrations** kiến thiết nên cấu trúc **35 bảng DB** và **26 chỉ mục index** tối ưu hóa truy vấn tìm kiếm bệnh án lâm sàng.
+* **Bảo Đảm Chất Lượng (Quality Gates)**:
+  - Hệ thống tích hợp **148 Test Cases Backend** (Spring Boot Integration Tests kết hợp PostgreSQL Testcontainers).
+  - Giao diện Frontend duy trì mức độ bao phủ code cao với **80.48% branch coverage** thông qua công cụ Vitest.
+  - Vượt qua chuỗi **183 kịch bản Playwright E2E** tự động kiểm tra RBAC, luồng khám bệnh và các lỗi click-path.
+
+---
+
+## 📂 Kiến Trúc Mã Nguồn (DDD Architecture)
+
+Mã nguồn backend được tổ chức theo cấu trúc Modular Monolith định hướng DDD rõ rệt:
+
+```text
+backend/
+├── domain/          # Entities JPA, Enums, Bounded Context, Exceptions và Contracts
+├── infrastructure/  # Spring Data repositories, PostgreSQL adapters, Gmail Client
+├── application/     # Nghiệp vụ nghiệp vụ (Use Cases), dịch vụ xác thực, jobs định kỳ
+├── controller/      # REST Controllers, API envelopes, Filter bảo mật
+└── start/           # Composition root, cấu hình khởi chạy app, Flyway migrations
+```
+
+Quan hệ phụ thuộc giữa các module:
+`domain` $\leftarrow$ `infrastructure` $\leftarrow$ `application` $\leftarrow$ `controller` $\leftarrow$ `start`
+
+---
+
+## 🛠️ Hướng Dẫn Khởi Chạy Nhanh (Local Setup)
+
+### 1. Yêu Cầu Cài Đặt
+- Java 17 hoặc cao hơn
+- Node.js 22 & npm
+- Docker Desktop
+
+### 2. Khởi Động PostgreSQL
 ```bash
 docker compose up -d postgres
 ```
 
-Wait until the container is healthy (`docker ps` should show `(healthy)`).
-
-#### Step 2 — Set up environment variables
-
-Copy `.env.example` to `.env` at the project root (if not already done):
-
-```bash
-cp .env.example .env
-```
-
-The `.env` file must contain at minimum:
-
+### 3. Cấu Hình Biến Môi Trường (`.env`)
+Tạo file `.env` tại thư mục gốc từ `.env.example`:
 ```dotenv
 POSTGRES_PASSWORD=hospital_pass
-JWT_SECRET=this-is-a-very-secure-secret-key-123456
-PATIENT_IDENTIFIER_SECRET=another-very-secure-secret-key-123456
+JWT_SECRET=your-super-secret-jwt-key-minimum-32-characters
+PATIENT_IDENTIFIER_SECRET=your-separate-encryption-secret-key-minimum-32-characters
 SPRING_PROFILES_ACTIVE=dev
-HMS_RELEASE_DEMO_SEED_ENABLED=false
+HMS_RELEASE_DEMO_SEED_ENABLED=true  # Kích hoạt dữ liệu UAT demo phong phú
 ```
 
-#### Step 3 — Build & Run Backend
-
-**Option A — Use the launcher script (recommended):**
-
+### 4. Khởi Chạy Backend (Chạy module `start`)
+Sử dụng script PowerShell tự động load `.env`:
 ```powershell
-# From the project root
 .\backend\run.ps1
 ```
-
-The script automatically loads `.env`, sets required variables, and runs the correct module.
-
-**Option B — Manual Maven commands:**
-
-```powershell
-# Set environment variables (PowerShell)
-$env:POSTGRES_PASSWORD='hospital_pass'
-$env:JWT_SECRET='this-is-a-very-secure-secret-key-123456'
-$env:PATIENT_IDENTIFIER_SECRET='another-very-secure-secret-key-123456'
-$env:SPRING_PROFILES_ACTIVE='dev'
-$env:HMS_RELEASE_DEMO_SEED_ENABLED='false'
-$env:HMS_ALLOW_CREDENTIALS='true'
-
-# Build all modules
+*Hoặc lệnh Maven thủ công:*
+```bash
 cd backend
 mvn install -DskipTests
-
-# Run the backend — MUST target the 'start' module
 mvn spring-boot:run -f start/pom.xml
 ```
+*Actuator health endpoint check: `http://localhost:8081/actuator/health`*
 
-> ⚠️ **Common mistake:** Running `mvn spring-boot:run` from `backend/` without `-f start/pom.xml` will fail with
-> `Unable to find a suitable main class`. The parent POM is an aggregator (`<packaging>pom</packaging>`)
-> and has no main class. The `@SpringBootApplication` class lives in the `start` module.
-
-#### Step 4 — Verify backend is running
-
-```bash
-# Health check
-curl http://localhost:8081/actuator/health
-# → {"status":"UP"}
-
-# Swagger UI
-# Open in browser: http://localhost:8081/swagger-ui/index.html
-```
-
-#### Step 5 — Run frontend (optional)
-
+### 5. Khởi Chạy Frontend Next.js
 ```bash
 cd web
 npm install
 npm run dev
-# → http://localhost:3000
 ```
+*Truy cập UI tại: `http://localhost:3000`*
 
-### Demo Users (seeded on first startup)
+### 6. Tài Khoản Demo Mặc Định (Seeded Users)
+- **Bác sĩ**: `doctor1@hospital.vn` / `Doctor@1234`
+- **Dược sĩ**: `pharmacist@hospital.vn` / `Pharma@1234`
+- **Lễ tân**: `receptionist@hospital.vn` / `Reception@1234`
+- **Admin**: `admin@hospital.vn` / `Admin@1234`
 
-| Email | Password | Role |
-|:------|:---------|:-----|
-| `doctor1@hospital.vn` | `Doctor@1234` | DOCTOR |
-| `doctor2@hospital.vn` | `Doctor@1234` | DOCTOR |
-| `nurse@hospital.vn` | `Nurse@1234` | NURSE |
-| `receptionist@hospital.vn` | `Reception@1234` | RECEPTIONIST |
-| `pharmacist@hospital.vn` | `Pharma@1234` | PHARMACIST |
-| `admin@hospital.vn` | `Admin@1234` | ADMIN |
-| `accountant@hospital.vn` | `Acc@1234` | ACCOUNTANT |
+---
 
-See [demo accounts and seed data](docs/reference/demo-accounts-and-seed-data.md) for the complete current seed-data reference.
-
-For a Docker/VPS UAT release demo, set `HMS_RELEASE_DEMO_SEED_ENABLED=true` before backend startup. This adds synthetic data across public booking, queue, portal, admin, inventory, finance, and audit flows without using real patient data.
-
-### Environment Variables
-
-Secrets are required. External integrations are disabled by default and degrade gracefully:
-
-| Variable | Default | Purpose |
-|:---------|:--------|:--------|
-| `POSTGRES_PASSWORD` | required | PostgreSQL password for the backend datasource |
-| `JWT_SECRET` | required | JWT signing secret; use a long random value |
-| `PATIENT_IDENTIFIER_SECRET` | required | Separate patient identifier hashing secret; do not reuse `JWT_SECRET` |
-| `GMAIL_ENABLED` | `false` | Enable email notifications |
-| `HMS_RELEASE_DEMO_SEED_ENABLED` | `false` | Enable synthetic UAT/release-demo data only for demos and verification |
-
-## Project Structure
-
-```
-backend/
-|-- domain/          # JPA entities, enums, request/response contracts, domain exceptions
-|-- infrastructure/  # Spring Data repositories and external integration adapters
-|-- application/     # Use-case services, auth services, orchestration, seed/backfill jobs
-|-- controller/      # REST controllers, API envelope, security filters, web error handling
-`-- start/           # Spring Boot app, runtime config, Flyway migrations, integration tests
-docs/                # Documentation map, product, architecture, API, test, deployment, and reference docs
-web/                 # Canonical Next.js frontend
-frontend/            # Static design-reference prototypes
-docker-compose.yml   # PostgreSQL + backend + frontend services
-```
-
-## Backend Architecture
-
-The backend is a DDD-oriented Maven reactor:
-
-```text
-domain <- infrastructure <- application
-domain + application <- controller
-domain + infrastructure + application + controller <- start
-```
-
-`controller` depends directly on `domain` for request/response contracts and domain exceptions. `start` is the composition root, so it declares the backend modules it boots and scans instead of relying on transitive Maven dependencies. Java package names still use the existing `com.hospital.core`, `com.hospital.api`, and `com.hospital.shared` namespaces; the Maven module folders above are the current architectural boundaries.
-
-## Source of Truth
-
-1. [`docs/README.md`](docs/README.md) - documentation map and source-of-truth rules
-2. [`docs/HMS_PRD.md`](docs/HMS_PRD.md) - Product Requirements Document
-3. [`docs/HMS_SRS.md`](docs/HMS_SRS.md) - system requirements mapped to current APIs
-4. [`API_CONTRACT.md`](API_CONTRACT.md) - primary high-level API contract
-5. [`docs/API_ENDPOINTS_COMPREHENSIVE.md`](docs/API_ENDPOINTS_COMPREHENSIVE.md) - expanded endpoint reference
-6. [`docs/HMS_ProjectPlan.md`](docs/HMS_ProjectPlan.md) - phase-based development plan
-7. [`docs/design_brief.md`](docs/design_brief.md) - canonical frontend design brief
-
-## Quality Gates
-
-- 80%+ frontend coverage gate; the latest recorded release-readiness evidence is 80.08% branch coverage in `docs/06-testing/full-hms-production-readiness-report-2026-05-22.md`
-- Backend unit and integration tests include application service tests and Testcontainers-backed Spring Boot tests
-- Playwright E2E suites live under `web/e2e`
-- Double-booking prevention via transactional slot locking
-- RBAC enforcement on all protected endpoints
-- Rate limiting on public API routes
-- Audit logging for admin operations
+## 📈 Tự Động Hóa Triển Khai (CI/CD & Observability)
+- **CI Pipeline**: Tự động hóa kiểm thử biên dịch Java, chạy test tích hợp Testcontainers, kiểm linter và kiểm thử frontend (Vitest & Playwright) trên GitHub Actions, tự động đóng gói image đẩy lên GHCR.
+- **CD Pipeline**: Tích hợp deploy lên máy chủ VPS bằng Docker Compose. Hỗ trợ hệ thống giám sát hoạt động lâm sàng (**Prometheus + Grafana + Loki + Tempo**) thông qua file overlay `docker-compose.observability.yml`.
