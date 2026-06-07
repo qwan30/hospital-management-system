@@ -4,6 +4,7 @@ import com.hospital.core.common.NotFoundException;
 import com.hospital.core.content.ContentAdminService;
 import com.hospital.core.department.DepartmentRepository;
 import com.hospital.core.inventory.InventoryService;
+import com.hospital.core.appointment.AppointmentRepository;
 import com.hospital.core.user.UserRepository;
 import com.hospital.shared.admin.AdminPublicContentResponse;
 import com.hospital.shared.admin.AdminRoomResponse;
@@ -16,10 +17,15 @@ import com.hospital.shared.admin.SpecialClosureUpsertRequest;
 import com.hospital.shared.admin.SystemMonitoringSnapshotResponse;
 import com.hospital.shared.enums.RoomStatus;
 import com.hospital.shared.enums.UserRole;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import javax.sql.DataSource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +38,11 @@ public class OperationsAdminService {
   private final SpecialClosureRepository specialClosureRepository;
   private final UserRepository userRepository;
   private final InventoryService inventoryService;
+  private final AppointmentRepository appointmentRepository;
+  private final DataSource dataSource;
+  private final Environment environment;
+  private final Clock clock;
+  private final Instant startedAt;
 
   public OperationsAdminService(
       ContentAdminService contentAdminService,
@@ -40,7 +51,11 @@ public class OperationsAdminService {
       DoctorScheduleTemplateRepository doctorScheduleTemplateRepository,
       SpecialClosureRepository specialClosureRepository,
       UserRepository userRepository,
-      InventoryService inventoryService) {
+      InventoryService inventoryService,
+      AppointmentRepository appointmentRepository,
+      DataSource dataSource,
+      Environment environment,
+      Clock clock) {
     this.contentAdminService = contentAdminService;
     this.departmentRepository = departmentRepository;
     this.roomRepository = roomRepository;
@@ -48,6 +63,11 @@ public class OperationsAdminService {
     this.specialClosureRepository = specialClosureRepository;
     this.userRepository = userRepository;
     this.inventoryService = inventoryService;
+    this.appointmentRepository = appointmentRepository;
+    this.dataSource = dataSource;
+    this.environment = environment;
+    this.clock = clock;
+    this.startedAt = Instant.now(clock);
   }
 
   @Transactional(readOnly = true)
@@ -178,22 +198,81 @@ public class OperationsAdminService {
 
   @Transactional(readOnly = true)
   public SystemMonitoringSnapshotResponse getMonitoringSnapshot() {
+    var today = LocalDate.now(clock);
     var scheduleAlertCount = (int) specialClosureRepository.findAllByOrderByClosureDateDescTitleAsc().stream()
         .filter(SpecialClosureEntity::isActive)
         .count();
-    var inventoryAlertCount = inventoryService.listAlerts(LocalDate.now()).size();
+    var inventoryAlertCount = inventoryService.listAlerts(today).size();
     var activeAlerts = scheduleAlertCount + inventoryAlertCount;
+    var databaseStatus = databaseStatus();
+    var queueSnapshot = queueSnapshot(today);
+    var metricsStatus = metricsStatus();
+    var tracingStatus = tracingStatus();
+    var loggingStatus = loggingStatus();
+    var observabilityStatus = observabilityStatus(metricsStatus, tracingStatus, loggingStatus);
+    var healthy = activeAlerts == 0
+        && "UP".equals(databaseStatus)
+        && "UP".equals(queueSnapshot.status())
+        && "UP".equals(observabilityStatus);
 
     return new SystemMonitoringSnapshotResponse(
-        Instant.now(),
-        0L,
-        activeAlerts == 0,
+        Instant.now(clock),
+        java.time.Duration.between(startedAt, Instant.now(clock)).toSeconds(),
+        healthy,
         activeAlerts,
         scheduleAlertCount,
         inventoryAlertCount,
-        "UP",
-        "UP");
+        databaseStatus,
+        queueSnapshot.status(),
+        queueSnapshot.todayQueueCount(),
+        metricsStatus,
+        tracingStatus,
+        loggingStatus,
+        observabilityStatus);
   }
+
+  private String databaseStatus() {
+    try (Connection connection = dataSource.getConnection()) {
+      return connection.isValid(2) ? "UP" : "DEGRADED";
+    } catch (SQLException exception) {
+      return "DOWN";
+    }
+  }
+
+  private QueueSnapshot queueSnapshot(LocalDate today) {
+    try {
+      return new QueueSnapshot("UP", appointmentRepository.countByAppointmentDate(today));
+    } catch (RuntimeException exception) {
+      return new QueueSnapshot("DEGRADED", -1L);
+    }
+  }
+
+  private String metricsStatus() {
+    var exposure = environment.getProperty("management.endpoints.web.exposure.include", "");
+    return exposure.contains("prometheus") ? "UP" : "MISSING";
+  }
+
+  private String tracingStatus() {
+    if (!environment.getProperty("management.tracing.enabled", Boolean.class, true)) {
+      return "DISABLED";
+    }
+    var endpoint = environment.getProperty("management.otlp.tracing.endpoint", "");
+    return endpoint == null || endpoint.isBlank() ? "MISSING" : "UP";
+  }
+
+  private String loggingStatus() {
+    return environment.getProperty("hms.observability.structured-logging-enabled", Boolean.class, true)
+        ? "UP"
+        : "TEXT_ONLY";
+  }
+
+  private String observabilityStatus(String metricsStatus, String tracingStatus, String loggingStatus) {
+    return "UP".equals(metricsStatus) && "UP".equals(tracingStatus) && "UP".equals(loggingStatus)
+        ? "UP"
+        : "DEGRADED";
+  }
+
+  private record QueueSnapshot(String status, long todayQueueCount) {}
 
   private void applyRoom(RoomEntity room, AdminRoomUpsertRequest request) {
     room.setName(request.name().trim());

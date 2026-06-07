@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import io.micrometer.core.instrument.Metrics;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -376,6 +377,11 @@ public class AppointmentWorkflowService {
   }
 
   private void recordQueueAudit(AppointmentEntity appointment, String action, Map<String, Object> metadata) {
+    Metrics.counter(
+            "hms.queue.transitions",
+            "action", action,
+            "status", appointment.getStatus().name())
+        .increment();
     auditLogService.record(action, "APPOINTMENT", appointment.getId(), metadata);
   }
 

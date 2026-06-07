@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import io.micrometer.core.instrument.Metrics;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -192,70 +193,84 @@ public class InventoryWriteService {
 
   @Transactional
   public InventoryDispenseResponse dispenseMedication(InventoryDispenseRequest request) {
-    if (request.quantity() == null || request.quantity() <= 0) {
-      throw new ConflictException("Dispense quantity must be greater than zero");
+    try {
+      if (request.quantity() == null || request.quantity() <= 0) {
+        throw new ConflictException("Dispense quantity must be greater than zero");
+      }
+
+      var item = itemRepository.findById(request.itemId())
+          .orElseThrow(() -> new NotFoundException("Inventory item not found"));
+      var lot = lotRepository.findById(request.lotId())
+          .orElseThrow(() -> new NotFoundException("Inventory lot not found"));
+      if (!lot.getItem().getId().equals(item.getId())) {
+        throw new ConflictException("Inventory lot does not belong to the selected item");
+      }
+
+      var record = medicalRecordRepository.findDetailedById(request.medicalRecordId())
+          .orElseThrow(() -> new NotFoundException("Medical record not found"));
+      var prescriptionItem = findPrescriptionItem(record, request.prescriptionItemName());
+
+      if (lot.getQuantityRemaining() < request.quantity()) {
+        throw new ConflictException("Inventory lot does not have enough quantity remaining");
+      }
+      if (item.getQuantityOnHand() < request.quantity()) {
+        throw new ConflictException("Inventory item does not have enough quantity on hand");
+      }
+
+      lot.setQuantityRemaining(lot.getQuantityRemaining() - request.quantity());
+      item.setQuantityOnHand(item.getQuantityOnHand() - request.quantity());
+      item.setStatus(toStockStatus(item.getQuantityOnHand(), item.getReorderLevel()));
+
+      var movement = new InventoryMovementEntity();
+      movement.setItem(item);
+      movement.setLot(lot);
+      movement.setMedicalRecord(record);
+      movement.setMovementType("DISPENSE");
+      movement.setQuantityDelta(-request.quantity());
+      movement.setPrescriptionItemName(prescriptionItem.getMedicineName());
+      movement.setDispensedToPatient(record.getAppointment().getPatient().getFullName());
+      movement.setNote(dispenseNote(request, lot, record));
+      movementRepository.save(movement);
+      lotRepository.save(lot);
+      itemRepository.save(item);
+
+      recordInventoryAudit("PHARMACY_MEDICATION_DISPENSED", item, Map.of(
+          "movementId", movement.getId().toString(),
+          "lotId", lot.getId().toString(),
+          "lotCode", lot.getLotCode(),
+          "medicalRecordId", record.getId().toString(),
+          "prescriptionItemName", prescriptionItem.getMedicineName(),
+          "quantityDispensed", request.quantity(),
+          "quantityOnHand", item.getQuantityOnHand(),
+          "lotQuantityRemaining", lot.getQuantityRemaining(),
+          "status", item.getStatus()));
+
+      Metrics.counter(
+              "hms.inventory.dispense.requests",
+              "status", "SUCCESS",
+              "stockStatus", item.getStatus())
+          .increment();
+      return new InventoryDispenseResponse(
+          movement.getId(),
+          item.getId(),
+          item.getItemName(),
+          lot.getId(),
+          lot.getLotCode(),
+          record.getId(),
+          prescriptionItem.getMedicineName(),
+          request.quantity(),
+          item.getQuantityOnHand(),
+          lot.getQuantityRemaining(),
+          movement.getNote(),
+          movement.getCreatedAt());
+    } catch (RuntimeException exception) {
+      Metrics.counter(
+              "hms.inventory.dispense.requests",
+              "status", "FAILED",
+              "stockStatus", "UNKNOWN")
+          .increment();
+      throw exception;
     }
-
-    var item = itemRepository.findById(request.itemId())
-        .orElseThrow(() -> new NotFoundException("Inventory item not found"));
-    var lot = lotRepository.findById(request.lotId())
-        .orElseThrow(() -> new NotFoundException("Inventory lot not found"));
-    if (!lot.getItem().getId().equals(item.getId())) {
-      throw new ConflictException("Inventory lot does not belong to the selected item");
-    }
-
-    var record = medicalRecordRepository.findDetailedById(request.medicalRecordId())
-        .orElseThrow(() -> new NotFoundException("Medical record not found"));
-    var prescriptionItem = findPrescriptionItem(record, request.prescriptionItemName());
-
-    if (lot.getQuantityRemaining() < request.quantity()) {
-      throw new ConflictException("Inventory lot does not have enough quantity remaining");
-    }
-    if (item.getQuantityOnHand() < request.quantity()) {
-      throw new ConflictException("Inventory item does not have enough quantity on hand");
-    }
-
-    lot.setQuantityRemaining(lot.getQuantityRemaining() - request.quantity());
-    item.setQuantityOnHand(item.getQuantityOnHand() - request.quantity());
-    item.setStatus(toStockStatus(item.getQuantityOnHand(), item.getReorderLevel()));
-
-    var movement = new InventoryMovementEntity();
-    movement.setItem(item);
-    movement.setLot(lot);
-    movement.setMedicalRecord(record);
-    movement.setMovementType("DISPENSE");
-    movement.setQuantityDelta(-request.quantity());
-    movement.setPrescriptionItemName(prescriptionItem.getMedicineName());
-    movement.setDispensedToPatient(record.getAppointment().getPatient().getFullName());
-    movement.setNote(dispenseNote(request, lot, record));
-    movementRepository.save(movement);
-    lotRepository.save(lot);
-    itemRepository.save(item);
-
-    recordInventoryAudit("PHARMACY_MEDICATION_DISPENSED", item, Map.of(
-        "movementId", movement.getId().toString(),
-        "lotId", lot.getId().toString(),
-        "lotCode", lot.getLotCode(),
-        "medicalRecordId", record.getId().toString(),
-        "prescriptionItemName", prescriptionItem.getMedicineName(),
-        "quantityDispensed", request.quantity(),
-        "quantityOnHand", item.getQuantityOnHand(),
-        "lotQuantityRemaining", lot.getQuantityRemaining(),
-        "status", item.getStatus()));
-
-    return new InventoryDispenseResponse(
-        movement.getId(),
-        item.getId(),
-        item.getItemName(),
-        lot.getId(),
-        lot.getLotCode(),
-        record.getId(),
-        prescriptionItem.getMedicineName(),
-        request.quantity(),
-        item.getQuantityOnHand(),
-        lot.getQuantityRemaining(),
-        movement.getNote(),
-        movement.getCreatedAt());
   }
 
   private PrescriptionItemEntity findPrescriptionItem(MedicalRecordEntity record, String medicineName) {

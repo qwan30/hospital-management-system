@@ -114,6 +114,11 @@ export interface SystemMonitoringSnapshotResponse {
   inventoryAlertCount: number;
   databaseStatus: string;
   queueStatus: string;
+  todayQueueCount: number;
+  metricsStatus: string;
+  tracingStatus: string;
+  loggingStatus: string;
+  observabilityStatus: string;
 }
 
 export interface AuditLogResponse {

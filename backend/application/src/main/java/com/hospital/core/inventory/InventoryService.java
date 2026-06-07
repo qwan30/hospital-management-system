@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Stream;
+import io.micrometer.core.instrument.Metrics;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,7 +87,16 @@ public class InventoryService {
         .map(lot -> toExpiryAlert(lot, effectiveDate))
         .toList();
 
-    return Stream.concat(lowStockAlerts.stream(), expiryAlerts.stream()).toList();
+    var alerts = Stream.concat(lowStockAlerts.stream(), expiryAlerts.stream()).toList();
+    recordAlertMetrics(alerts);
+    return alerts;
+  }
+
+  private void recordAlertMetrics(List<InventoryAlertResponse> alerts) {
+    var criticalCount = alerts.stream().filter(alert -> "CRITICAL".equalsIgnoreCase(alert.severity())).count();
+    var warningCount = alerts.stream().filter(alert -> "WARNING".equalsIgnoreCase(alert.severity())).count();
+    Metrics.counter("hms.inventory.alerts.evaluated", "severity", "CRITICAL").increment(criticalCount);
+    Metrics.counter("hms.inventory.alerts.evaluated", "severity", "WARNING").increment(warningCount);
   }
 
   private boolean isLowStock(InventoryItemEntity item) {

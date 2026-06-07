@@ -1,0 +1,15 @@
+{
+  "uid": "hms-frontend-ux",
+  "title": "HMS Frontend UX",
+  "schemaVersion": 39,
+  "refresh": "10s",
+  "panels": [
+    {
+      "type": "logs",
+      "title": "Client Events",
+      "datasource": { "type": "loki", "uid": "loki" },
+      "targets": [{ "expr": "{service=\"frontend\"} |= \"client_event\"" }],
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 }
+    }
+  ]
+}

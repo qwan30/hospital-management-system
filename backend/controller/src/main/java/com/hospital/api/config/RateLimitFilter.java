@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import io.micrometer.core.instrument.Metrics;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -59,6 +60,11 @@ public class RateLimitFilter extends OncePerRequestFilter {
         : current);
 
     if (counter.incrementAndGet() > limit) {
+      Metrics.counter(
+              "hms.security.rate_limit.rejections",
+              "endpoint", "public_api",
+              "status", "429")
+          .increment();
       securityErrorResponseWriter.write(response, 429, "rate_limited", "Rate limit exceeded");
       return;
     }

@@ -32,6 +32,7 @@
     <jjwt.version>0.12.6</jjwt.version>
     <springdoc.version>2.6.0</springdoc.version>
     <testcontainers.version>1.20.4</testcontainers.version>
+    <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
   </properties>
 
   <dependencyManagement>

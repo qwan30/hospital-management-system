@@ -48,7 +48,15 @@ class AdminOperationsIntegrationTest extends AbstractIntegrationTest {
     mockMvc.perform(get("/api/v1/admin/monitoring")
             .header("Authorization", "Bearer " + adminToken()))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.success").value(true));
+        .andExpect(jsonPath("$.success").value(true))
+        .andExpect(jsonPath("$.data.uptimeSeconds").isNumber())
+        .andExpect(jsonPath("$.data.databaseStatus").value("UP"))
+        .andExpect(jsonPath("$.data.queueStatus").exists())
+        .andExpect(jsonPath("$.data.todayQueueCount").isNumber())
+        .andExpect(jsonPath("$.data.metricsStatus").exists())
+        .andExpect(jsonPath("$.data.tracingStatus").exists())
+        .andExpect(jsonPath("$.data.loggingStatus").exists())
+        .andExpect(jsonPath("$.data.observabilityStatus").exists());
   }
 
   // ── Audit Logs ────────────────────────────────────────────────────────

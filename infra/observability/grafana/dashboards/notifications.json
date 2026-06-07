@@ -1,0 +1,15 @@
+{
+  "uid": "hms-notifications",
+  "title": "HMS Notifications",
+  "schemaVersion": 39,
+  "refresh": "10s",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Email Delivery Attempts",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "sum by (messageType, provider, status) (rate(hms_email_delivery_attempts_total[5m]))" }],
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 }
+    }
+  ]
+}

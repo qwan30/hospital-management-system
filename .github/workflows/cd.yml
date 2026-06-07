@@ -1,0 +1,51 @@
+name: CD
+
+on:
+  workflow_run:
+    workflows: ["HMS CI"]
+    types:
+      - completed
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Copy deployment configurations to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: "docker-compose.yml,docker-compose.observability.yml,infra/observability"
+          target: "~/apps/hospital-management"
+
+      - name: SSH and deploy via Docker Compose
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            cd ~/apps/hospital-management
+            # Log in to GHCR on target server
+            echo "${{ secrets.GHCR_PAT || secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            
+            # Pull new images
+            docker compose pull
+            
+            # Recreate containers (include observability if file exists)
+            if [ -f docker-compose.observability.yml ]; then
+              docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d --remove-orphans
+            else
+              docker compose up -d --remove-orphans
+            fi
+            
+            # Clean up dangling images
+            docker image prune -f

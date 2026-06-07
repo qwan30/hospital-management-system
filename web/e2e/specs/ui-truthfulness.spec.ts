@@ -143,6 +143,11 @@ async function installTruthfulnessApiMocks(page: Page) {
             inventoryAlertCount: 0,
             databaseStatus: "UP",
             queueStatus: "UP",
+            todayQueueCount: 0,
+            metricsStatus: "UP",
+            tracingStatus: "UP",
+            loggingStatus: "UP",
+            observabilityStatus: "UP",
           },
         }),
       });

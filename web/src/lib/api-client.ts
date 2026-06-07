@@ -24,11 +24,22 @@ export interface StaffLoginResponse {
 export type PatientLoginResponse = StaffLoginResponse;
 type AuthScope = "staff" | "patient";
 
+export interface ApiRequestMetric {
+  path: string;
+  method: string;
+  status: number;
+  ok: boolean;
+  requestId: string;
+  durationMs: number;
+}
+
 export class ApiClientError extends Error {
   constructor(
     message: string,
     readonly status: number,
     readonly code?: string,
+    readonly requestId?: string,
+    readonly durationMs?: number,
   ) {
     super(message);
     this.name = "ApiClientError";
@@ -36,9 +47,12 @@ export class ApiClientError extends Error {
 }
 
 const DEFAULT_API_BASE_URL = "http://localhost:8081/api/v1";
+const REQUEST_ID_HEADER = "X-Request-Id";
+const SAFE_REQUEST_ID = /^[A-Za-z0-9._:-]{8,128}$/;
 
 export interface ApiRequestOptions {
   authScope?: AuthScope;
+  requestId?: string;
 }
 
 export function getApiBaseUrl() {
@@ -50,7 +64,11 @@ export async function apiRequest<T>(
   init: RequestInit = {},
   options: ApiRequestOptions = {},
 ): Promise<ApiEnvelope<T>> {
-  const headers = buildHeaders(init.headers, options.authScope);
+  const headers = buildHeaders(init.headers, options.authScope, options.requestId);
+  const requestId = headers.get(REQUEST_ID_HEADER) ?? createRequestId();
+  headers.set(REQUEST_ID_HEADER, requestId);
+  const startedAt = nowMs();
+  const method = (init.method ?? "GET").toUpperCase();
 
   let response: Response;
   try {
@@ -60,20 +78,43 @@ export async function apiRequest<T>(
       headers,
     });
   } catch {
+    const durationMs = elapsedMs(startedAt);
+    recordApiRequestMetric({
+      path: sanitizeMetricPath(path),
+      method,
+      status: 0,
+      ok: false,
+      requestId,
+      durationMs,
+    });
     throw new ApiClientError(
       "Unable to reach the hospital server. Check your connection and try again.",
       0,
       "NETWORK_ERROR",
+      requestId,
+      durationMs,
     );
   }
 
+  const durationMs = elapsedMs(startedAt);
+  const responseRequestId = response.headers?.get(REQUEST_ID_HEADER) || requestId;
   const payload = await readJson<ApiEnvelope<T>>(response);
+  recordApiRequestMetric({
+    path: sanitizeMetricPath(path),
+    method,
+    status: response.status,
+    ok: response.ok,
+    requestId: responseRequestId,
+    durationMs,
+  });
 
   if (!response.ok) {
     throw new ApiClientError(
       payload.error?.message || payload.message || "Request failed",
       response.status,
       payload.error?.code,
+      responseRequestId,
+      durationMs,
     );
   }
 
@@ -83,6 +124,7 @@ export async function apiRequest<T>(
 function buildHeaders(
   initHeaders: HeadersInit | undefined,
   authScope: AuthScope | undefined,
+  requestId: string | undefined,
 ) {
   const headers = new Headers({
     "Content-Type": "application/json",
@@ -99,7 +141,42 @@ function buildHeaders(
     headers.set("Authorization", `Bearer ${token}`);
   }
 
+  if (requestId && SAFE_REQUEST_ID.test(requestId)) {
+    headers.set(REQUEST_ID_HEADER, requestId);
+  }
+
   return headers;
+}
+
+export function createRequestId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+
+  return `hms-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function nowMs() {
+  return typeof performance === "undefined" ? Date.now() : performance.now();
+}
+
+function elapsedMs(startedAt: number) {
+  return Math.max(0, Math.round((nowMs() - startedAt) * 100) / 100);
+}
+
+function sanitizeMetricPath(path: string) {
+  return path
+    .replace(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/g, "{id}")
+    .replace(/\d{6,}/g, "{id}")
+    .split("?")[0];
+}
+
+function recordApiRequestMetric(metric: ApiRequestMetric) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.dispatchEvent(new CustomEvent("hms:api-request", { detail: metric }));
 }
 
 function getStoredAccessToken(authScope: AuthScope | undefined) {

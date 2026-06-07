@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import io.micrometer.core.instrument.Metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,6 +45,11 @@ public class AuthorizationDenialAuditFilter extends OncePerRequestFilter {
     }
 
     try {
+      Metrics.counter(
+              "hms.security.authorization_denials",
+              "status", Integer.toString(status),
+              "reason", status == 401 ? "unauthorized" : "forbidden")
+          .increment();
       auditLogService.record(
           actorId().orElse(null),
           "SECURITY_ACCESS_DENIED",
@@ -51,6 +57,11 @@ public class AuthorizationDenialAuditFilter extends OncePerRequestFilter {
           null,
           denialMetadata(request, status));
     } catch (RuntimeException exception) {
+      Metrics.counter(
+              "hms.audit_log.write.failures",
+              "action", "SECURITY_ACCESS_DENIED",
+              "entityType", "PROTECTED_API")
+          .increment();
       LOGGER.warn("Unable to record protected API authorization denial", exception);
     }
   }
@@ -67,7 +78,11 @@ public class AuthorizationDenialAuditFilter extends OncePerRequestFilter {
     metadata.put("reason", reason(request, status));
     role().ifPresent(value -> metadata.put("role", value));
     actorId().ifPresent(value -> metadata.put("actorId", value.toString()));
-    var requestId = request.getHeader("X-Request-Id");
+    var requestId = request.getHeader(RequestCorrelationFilter.REQUEST_ID_HEADER);
+    if ((requestId == null || requestId.isBlank())
+        && request.getAttribute(RequestCorrelationFilter.REQUEST_ID_ATTRIBUTE) instanceof String generatedRequestId) {
+      requestId = generatedRequestId;
+    }
     if (requestId != null && !requestId.isBlank()) {
       metadata.put("requestId", requestId);
     }

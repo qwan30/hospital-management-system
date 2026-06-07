@@ -1,0 +1,15 @@
+{
+  "uid": "hms-queue-clinical-ops",
+  "title": "HMS Queue And Clinical Ops",
+  "schemaVersion": 39,
+  "refresh": "10s",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Queue Transitions",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "sum by (action, status) (rate(hms_queue_transitions_total[5m]))" }],
+      "gridPos": { "x": 0, "y": 0, "w": 24, "h": 8 }
+    }
+  ]
+}

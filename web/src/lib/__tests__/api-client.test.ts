@@ -5,6 +5,7 @@ import {
   persistSession,
   clearSessions,
   getStoredRole,
+  type ApiRequestMetric,
 } from '../api-client';
 
 describe('api-client', () => {
@@ -89,18 +90,20 @@ describe('api-client', () => {
   describe('apiRequest', () => {
     const fetchMock = () => vi.mocked(global.fetch);
 
-    const mockSuccessResponse = (body: unknown = {}) => {
+    const mockSuccessResponse = (body: unknown = {}, requestId?: string) => {
       fetchMock().mockResolvedValueOnce({
         ok: true,
         status: 200,
+        headers: new Headers(requestId ? { 'X-Request-Id': requestId } : {}),
         text: () => Promise.resolve(JSON.stringify(body)),
       } as Response);
     };
 
-    const mockErrorResponse = (status: number, body: unknown) => {
+    const mockErrorResponse = (status: number, body: unknown, requestId?: string) => {
       fetchMock().mockResolvedValueOnce({
         ok: false,
         status,
+        headers: new Headers(requestId ? { 'X-Request-Id': requestId } : {}),
         text: () => Promise.resolve(JSON.stringify(body)),
       } as Response);
     };
@@ -146,19 +149,50 @@ describe('api-client', () => {
       expect(headers.get('Authorization')).toBe('Bearer pat-token-123');
     });
 
+    it('sends X-Request-Id and records sanitized request timing metadata', async () => {
+      const metrics: ApiRequestMetric[] = [];
+      const handler = (event: Event) => {
+        metrics.push((event as CustomEvent<ApiRequestMetric>).detail);
+      };
+      window.addEventListener('hms:api-request', handler);
+      mockSuccessResponse({ data: 'ok' }, 'backend-request-001');
+
+      await apiRequest(
+        '/patients/550e8400-e29b-41d4-a716-446655440000?accessToken=secret',
+        {},
+        { requestId: 'frontend-request-001' },
+      );
+
+      const calledInit = fetchMock().mock.calls[0][1] as RequestInit;
+      const headers = calledInit.headers as Headers;
+      expect(headers.get('X-Request-Id')).toBe('frontend-request-001');
+      expect(metrics).toMatchObject([
+        {
+          path: '/patients/{id}',
+          method: 'GET',
+          status: 200,
+          ok: true,
+          requestId: 'backend-request-001',
+        },
+      ]);
+      expect(metrics[0].durationMs).toBeGreaterThanOrEqual(0);
+      window.removeEventListener('hms:api-request', handler);
+    });
+
     it('4. throws ApiClientError on 4xx with error envelope', async () => {
       mockErrorResponse(400, {
         error: {
           code: 'VALIDATION_ERROR',
           message: 'Invalid input',
         }
-      });
+      }, 'backend-error-001');
 
       await expect(apiRequest('/bad-request')).rejects.toMatchObject({
         name: 'ApiClientError',
         message: 'Invalid input',
         status: 400,
-        code: 'VALIDATION_ERROR'
+        code: 'VALIDATION_ERROR',
+        requestId: 'backend-error-001',
       });
     });
 
@@ -181,6 +215,8 @@ describe('api-client', () => {
         message: 'Unable to reach the hospital server. Check your connection and try again.',
         status: 0,
         code: 'NETWORK_ERROR',
+        requestId: expect.any(String),
+        durationMs: expect.any(Number),
       });
     });
 

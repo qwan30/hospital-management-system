@@ -10,5 +10,10 @@ public record SystemMonitoringSnapshotResponse(
     int scheduleAlertCount,
     int inventoryAlertCount,
     String databaseStatus,
-    String queueStatus
+    String queueStatus,
+    long todayQueueCount,
+    String metricsStatus,
+    String tracingStatus,
+    String loggingStatus,
+    String observabilityStatus
 ) {}

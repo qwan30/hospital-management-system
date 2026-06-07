@@ -60,7 +60,7 @@ public class SecurityConfig {
             .accessDeniedHandler((request, response, accessDeniedException) ->
                 securityErrorResponseWriter.write(request, response, 403, "forbidden", "Access is denied")))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/actuator/health", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+            .requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/prometheus", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
             .requestMatchers("/api/v1/auth/**").permitAll()
             .requestMatchers("/api/v1/patient-auth/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/v1/departments/**", "/api/v1/doctors/**", "/api/v1/content/**", "/api/v1/news").permitAll()
@@ -80,8 +80,8 @@ public class SecurityConfig {
         ? List.of("http://localhost:3000", "http://localhost:4173")
         : securityHttpProperties.allowedOrigins());
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin"));
-    configuration.setExposedHeaders(List.of("Set-Cookie"));
+    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", RequestCorrelationFilter.REQUEST_ID_HEADER));
+    configuration.setExposedHeaders(List.of("Set-Cookie", RequestCorrelationFilter.REQUEST_ID_HEADER));
     configuration.setAllowCredentials(securityHttpProperties.allowCredentials());
     configuration.setMaxAge(3600L);
     var source = new UrlBasedCorsConfigurationSource();

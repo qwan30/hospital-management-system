@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -138,10 +139,36 @@ class SecurityHardeningIntegrationTest extends AbstractIntegrationTest {
     mockMvc.perform(options("/api/v1/me/schedule")
             .header(HttpHeaders.ORIGIN, "http://localhost:4173")
             .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET")
-            .header(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "Authorization,Content-Type"))
+            .header(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "Authorization,Content-Type,X-Request-Id"))
         .andExpect(status().isOk())
         .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:4173"))
+        .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, containsString("X-Request-Id")))
         .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"));
+  }
+
+  @Test
+  void exposesRequestIdHeaderForAllowedOrigins() throws Exception {
+    mockMvc.perform(get("/actuator/health")
+            .header(HttpHeaders.ORIGIN, "http://localhost:4173")
+            .header("X-Request-Id", "hms-test-request-001"))
+        .andExpect(status().isOk())
+        .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:4173"))
+        .andExpect(header().string(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, containsString("X-Request-Id")))
+        .andExpect(header().string("X-Request-Id", "hms-test-request-001"));
+  }
+
+  @Test
+  void generatesRequestIdWhenClientDoesNotProvideOne() throws Exception {
+    mockMvc.perform(get("/actuator/health"))
+        .andExpect(status().isOk())
+        .andExpect(header().exists("X-Request-Id"));
+  }
+
+  @Test
+  void prometheusEndpointIsExposedForReleaseMonitoring() throws Exception {
+    mockMvc.perform(get("/actuator/prometheus"))
+        .andExpect(status().isOk())
+        .andExpect(header().exists("X-Request-Id"));
   }
 
   private void assertLatestSecurityDenial(int status, String method, String path) {

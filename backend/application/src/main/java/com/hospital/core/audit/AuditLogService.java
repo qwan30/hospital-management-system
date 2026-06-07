@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hospital.core.user.UserRepository;
 import com.hospital.shared.admin.AuditLogResponse;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import io.micrometer.core.instrument.Metrics;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
@@ -33,15 +35,24 @@ public class AuditLogService {
 
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void record(UUID actorId, String action, String entityType, UUID entityId, Map<String, Object> metadata) {
-    var entity = new AuditLogEntity();
-    if (actorId != null) {
-      userRepository.findById(actorId).ifPresent(entity::setActor);
+    try {
+      var entity = new AuditLogEntity();
+      if (actorId != null) {
+        userRepository.findById(actorId).ifPresent(entity::setActor);
+      }
+      entity.setAction(action);
+      entity.setEntityType(entityType);
+      entity.setEntityId(entityId);
+      entity.setMetadata(serialize(metadata));
+      auditLogRepository.save(entity);
+    } catch (RuntimeException exception) {
+      Metrics.counter(
+              "hms.audit_log.write.failures",
+              "action", safeTag(action),
+              "entityType", safeTag(entityType))
+          .increment();
+      throw exception;
     }
-    entity.setAction(action);
-    entity.setEntityType(entityType);
-    entity.setEntityId(entityId);
-    entity.setMetadata(serialize(metadata));
-    auditLogRepository.save(entity);
   }
 
   @Transactional(readOnly = true)
@@ -82,5 +93,14 @@ public class AuditLogService {
     } catch (Exception exception) {
       return Map.of("raw", metadata);
     }
+  }
+
+  private String safeTag(String value) {
+    if (value == null || value.isBlank()) {
+      return "UNKNOWN";
+    }
+    return value.trim()
+        .replaceAll("[^A-Za-z0-9_.-]", "_")
+        .toUpperCase(Locale.ROOT);
   }
 }

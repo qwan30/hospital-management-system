@@ -186,6 +186,11 @@ test.describe("@ui live operations API screens", () => {
             inventoryAlertCount: 1,
             databaseStatus: "UP",
             queueStatus: "DEGRADED",
+            todayQueueCount: 12,
+            metricsStatus: "UP",
+            tracingStatus: "UP",
+            loggingStatus: "UP",
+            observabilityStatus: "UP",
           },
         }),
       });

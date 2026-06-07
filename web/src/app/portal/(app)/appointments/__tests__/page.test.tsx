@@ -21,7 +21,7 @@ vi.mock("@/lib/operations-api", async () => {
 const upcomingAppointment: PatientPortalAppointmentResponse = {
   appointmentId: "appointment-1",
   confirmationCode: "HMS-1001",
-  appointmentDate: "2026-06-01",
+  appointmentDate: "2026-07-01",
   startTime: "09:00:00",
   endTime: "09:30:00",
   doctorName: "Dr. Lan Tran",

@@ -7,6 +7,10 @@ on:
       - master
   pull_request:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -42,6 +46,10 @@ jobs:
         working-directory: web
         run: npm run lint
 
+      - name: Run frontend unit tests with coverage
+        working-directory: web
+        run: npm run test:unit:coverage
+
       - name: Frontend production build
         working-directory: web
         env:
@@ -58,10 +66,37 @@ jobs:
           NEXT_PUBLIC_API_BASE_URL: http://localhost:8081/api/v1
         run: npm run test:e2e:ci
 
-      - name: Docker build verification
-        env:
-          NEXT_PUBLIC_API_BASE_URL: http://localhost:8081/api/v1
-        run: docker compose build backend frontend
+      - name: Log in to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Backend image
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          file: backend/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/backend:latest
+            ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+
+      - name: Build and push Frontend image
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v6
+        with:
+          context: ./web
+          file: web/Dockerfile
+          build-args: |
+            NEXT_PUBLIC_API_BASE_URL=http://localhost:8081/api/v1
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/frontend:latest
+            ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
 
       - name: Upload Playwright reports
         if: always()
@@ -72,3 +107,4 @@ jobs:
             web/playwright-report
             web/test-results
           if-no-files-found: ignore
+

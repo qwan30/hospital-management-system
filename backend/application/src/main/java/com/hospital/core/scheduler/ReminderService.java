@@ -81,7 +81,7 @@ public class ReminderService {
   private boolean sendReminder(MedicalRecordEntity record) {
     var recipient = record.getAppointment().getPatient().getEmail();
     if (!isDeliverableEmail(recipient)) {
-      LOGGER.warn("follow_up_reminder_skipped recordId={} recipient={}", record.getId(), recipient);
+      LOGGER.warn("follow_up_reminder_skipped reason=undeliverable_recipient");
       record.setReminderSent(true);
       record.setReminderSentAt(clock.instant());
       return false;
@@ -94,14 +94,14 @@ public class ReminderService {
           record.getFollowUpDate(),
           record.getAppointment().getDoctor().getFullName());
       if (!delivered) {
-        LOGGER.warn("follow_up_reminder_delivery_not_confirmed recordId={}", record.getId());
+        LOGGER.warn("follow_up_reminder_delivery_not_confirmed");
         return false;
       }
       record.setReminderSent(true);
       record.setReminderSentAt(clock.instant());
       return true;
     } catch (RuntimeException exception) {
-      LOGGER.warn("follow_up_reminder_failed recordId={}", record.getId(), exception);
+      LOGGER.warn("follow_up_reminder_failed", exception);
       return false;
     }
   }

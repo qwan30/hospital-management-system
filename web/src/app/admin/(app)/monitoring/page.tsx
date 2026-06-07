@@ -24,7 +24,6 @@ import {
   Package,
   RefreshCw,
   Server,
-  Settings,
   Shield,
   Zap,
 } from "lucide-react";
@@ -168,7 +167,7 @@ export default function AdminMonitoringPage() {
       ) : null}
 
       {/* ── Status Banner Row ── */}
-      <section className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <section className="mt-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <StatusBanner
           label="DATABASE"
           status={snapshot?.databaseStatus ?? "Loading"}
@@ -179,9 +178,16 @@ export default function AdminMonitoringPage() {
         <StatusBanner
           label="QUEUE"
           status={snapshot?.queueStatus ?? "Loading"}
-          description="Staff queue workflow"
+          description={snapshot ? pluralize(snapshot.todayQueueCount, "appointment today") : "Staff queue workflow"}
           healthy={snapshot?.queueStatus === "UP"}
           icon={Server}
+        />
+        <StatusBanner
+          label="OBSERVABILITY"
+          status={snapshot?.observabilityStatus ?? "Loading"}
+          description={snapshot ? `Metrics ${snapshot.metricsStatus}, traces ${snapshot.tracingStatus}` : "Release telemetry targets"}
+          healthy={snapshot?.observabilityStatus === "UP"}
+          icon={Activity}
         />
         <StatusBanner
           label="SYSTEM"
@@ -198,23 +204,30 @@ export default function AdminMonitoringPage() {
         <KpiCard
           label="Active Alerts"
           value={snapshot?.activeAlerts ?? "—"}
-          helper={<TrendIndicator value={12} label="vs yesterday" />}
+          helper="Current release snapshot"
           icon={Bell}
           tone="blue"
         />
         <KpiCard
           label="Inventory Alerts"
           value={snapshot?.inventoryAlertCount ?? "—"}
-          helper={<TrendIndicator value={-5} label="vs yesterday" />}
+          helper="Low stock and expiry checks"
           icon={Package}
           tone="amber"
         />
         <KpiCard
           label="Schedule Alerts"
           value={snapshot?.scheduleAlertCount ?? "—"}
-          helper={<TrendIndicator value={0} label="vs yesterday" />}
+          helper="Active closure conflicts"
           icon={Activity}
           tone="green"
+        />
+        <KpiCard
+          label="Today Queue"
+          value={snapshot?.todayQueueCount ?? "—"}
+          helper={snapshot?.queueStatus ?? "Pending"}
+          icon={Server}
+          tone="blue"
         />
         <KpiCard
           label="Uptime"
@@ -229,6 +242,27 @@ export default function AdminMonitoringPage() {
           helper="Today"
           icon={Clock}
           tone="purple"
+        />
+      </section>
+
+      <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <ObservabilityTarget
+          label="Metrics"
+          status={snapshot?.metricsStatus ?? "Loading"}
+          description="/actuator/prometheus"
+          healthy={snapshot?.metricsStatus === "UP"}
+        />
+        <ObservabilityTarget
+          label="Traces"
+          status={snapshot?.tracingStatus ?? "Loading"}
+          description="OTLP exporter"
+          healthy={snapshot?.tracingStatus === "UP"}
+        />
+        <ObservabilityTarget
+          label="Logs"
+          status={snapshot?.loggingStatus ?? "Loading"}
+          description="JSON console logs"
+          healthy={snapshot?.loggingStatus === "UP"}
         />
       </section>
 
@@ -373,13 +407,29 @@ function StatusBanner({
   );
 }
 
-function TrendIndicator({ value, label }: { value: number; label: string }) {
-  if (value === 0) return <span className="text-slate-400">— 0% {label}</span>;
-  const isUp = value > 0;
+function ObservabilityTarget({
+  label,
+  status,
+  description,
+  healthy,
+}: {
+  label: string;
+  status: string;
+  description: string;
+  healthy: boolean;
+}) {
   return (
-    <span className={isUp ? "text-[var(--hc-success)]" : "text-[var(--hc-danger)]"}>
-      {isUp ? "↑" : "↓"} {Math.abs(value)}% {label}
-    </span>
+    <div className="rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-white p-4 shadow-sm">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">{label}</p>
+          <p className="mt-1 text-sm text-slate-500">{description}</p>
+        </div>
+        <span className={`rounded-full px-3 py-1 text-xs font-bold ${healthy ? "bg-[var(--hc-success-bg)] text-[var(--hc-success)]" : "bg-amber-100 text-amber-700"}`}>
+          {status}
+        </span>
+      </div>
+    </div>
   );
 }
 

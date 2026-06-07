@@ -46,7 +46,7 @@ public class GmailApiClient {
       String attachmentFileName,
       String attachmentMimeType) {
     if (!isConfigured()) {
-      LOGGER.warn("gmail_send_skipped recipient={} reason=not_configured", recipient);
+      LOGGER.warn("gmail_send_skipped reason=not_configured");
       return false;
     }
 
@@ -69,7 +69,7 @@ public class GmailApiClient {
       }
       return true;
     } catch (Exception exception) {
-      LOGGER.warn("gmail_send_failed recipient={} subject={}", recipient, subject, exception);
+      LOGGER.warn("gmail_send_failed", exception);
       return false;
     }
   }

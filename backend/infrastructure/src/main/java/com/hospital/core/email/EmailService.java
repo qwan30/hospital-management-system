@@ -3,6 +3,7 @@ package com.hospital.core.email;
 import com.hospital.core.shared.HospitalProfileProperties;
 import java.time.LocalDate;
 import java.util.Objects;
+import io.micrometer.core.instrument.Metrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,7 @@ public class EmailService {
         null,
         null,
         null);
-    LOGGER.info("email_confirmation recipient={} confirmationCode={} sent={}", recipient, confirmationCode, sent);
+    LOGGER.info("email_delivery messageType=APPOINTMENT_CONFIRMATION sent={}", sent);
     return sent;
   }
 
@@ -69,13 +70,7 @@ public class EmailService {
         null,
         null,
         null);
-    LOGGER.info(
-        "email_follow_up recipient={} patientName={} followUpDate={} doctorName={} sent={}",
-        recipient,
-        patientName,
-        followUpDate,
-        doctorName,
-        sent);
+    LOGGER.info("email_delivery messageType=FOLLOW_UP_REMINDER sent={}", sent);
     return sent;
   }
 
@@ -106,7 +101,7 @@ public class EmailService {
         prescriptionPdf,
         prescriptionFileName,
         "application/pdf");
-    LOGGER.info("email_visit_result recipient={} patientName={} sent={}", recipient, patientName, sent);
+    LOGGER.info("email_delivery messageType=VISIT_RESULT sent={}", sent);
     return sent;
   }
 
@@ -158,6 +153,12 @@ public class EmailService {
     attempt.setAttachmentFileName(truncate(attachmentFileName, 255));
     attempt.setFailureReason(truncate(failureReason, 500));
     deliveryAttemptRepository.save(attempt);
+    Metrics.counter(
+            "hms.email.delivery.attempts",
+            "messageType", messageType,
+            "provider", provider,
+            "status", status)
+        .increment();
   }
 
   private String valueOrDefault(String value, String fallback) {

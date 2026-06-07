@@ -1,0 +1,22 @@
+{
+  "uid": "hms-inventory-pharmacy",
+  "title": "HMS Inventory And Pharmacy",
+  "schemaVersion": 39,
+  "refresh": "10s",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Inventory Alerts Evaluated",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "sum by (severity) (rate(hms_inventory_alerts_evaluated_total[5m]))" }],
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Dispense Requests",
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "sum by (status, stockStatus) (rate(hms_inventory_dispense_requests_total[5m]))" }],
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 }
+    }
+  ]
+}
