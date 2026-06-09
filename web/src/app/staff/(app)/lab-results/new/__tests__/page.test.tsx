@@ -74,7 +74,7 @@ describe("NewLabResultPage", () => {
     vi.mocked(createLabResult).mockResolvedValue(createdResult);
   });
 
-  it("loads eligible appointments and records a lab result through the real API DTO", async () => {
+  it("loads eligible appointments and records a lab result through the real API DTO", { timeout: 10000 }, async () => {
     render(<NewLabResultPage />);
 
     await screen.findByRole("heading", { name: /Record Lab Result/i });

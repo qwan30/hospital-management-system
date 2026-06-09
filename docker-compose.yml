@@ -16,6 +16,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
   backend:
+    image: ghcr.io/tranhquan099-commits/hospital-management-system/backend:latest
     build:
       context: ./backend
     environment:
@@ -44,6 +45,7 @@ services:
       - "${HMS_BACKEND_HOST_PORT:-8081}:8081"
 
   frontend:
+    image: ghcr.io/tranhquan099-commits/hospital-management-system/frontend:latest
     build:
       context: ./web
       dockerfile: Dockerfile

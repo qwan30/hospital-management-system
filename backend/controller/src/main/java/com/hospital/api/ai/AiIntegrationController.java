@@ -1,22 +1,15 @@
 package com.hospital.api.ai;
 
+import com.hospital.core.ai.AiIntegrationService;
 import com.hospital.core.appointment.AppointmentEntity;
-import com.hospital.core.appointment.AppointmentRepository;
-import com.hospital.core.medicalrecord.MedicalRecordEntity;
-import com.hospital.core.medicalrecord.MedicalRecordRepository;
-import com.hospital.core.patient.PatientEntity;
-import com.hospital.core.patient.PatientRepository;
 import com.hospital.core.patientrecord.PatientRecordService;
-import com.hospital.core.patientportal.PatientPortalLabResultRepository;
 import com.hospital.core.patientportal.LabResultEntity;
 import com.hospital.core.user.UserEntity;
-import com.hospital.core.user.UserRepository;
 import com.hospital.shared.api.ApiResponse;
 import com.hospital.shared.enums.UserRole;
 import com.hospital.shared.patientrecord.PatientRecordDetailResponse;
 import com.hospital.shared.patientrecord.PatientRecordListItemResponse;
 
-import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -33,29 +26,14 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize("@rbac.hasPermission(authentication, 'PATIENT_RECORD_READ')")
 public class AiIntegrationController {
 
-    private final PatientRepository patientRepository;
     private final PatientRecordService patientRecordService;
-    private final AppointmentRepository appointmentRepository;
-    private final MedicalRecordRepository medicalRecordRepository;
-    private final PatientPortalLabResultRepository labResultRepository;
-    private final UserRepository userRepository;
-    private final EntityManager entityManager;
+    private final AiIntegrationService aiIntegrationService;
 
     public AiIntegrationController(
-            PatientRepository patientRepository,
             PatientRecordService patientRecordService,
-            AppointmentRepository appointmentRepository,
-            MedicalRecordRepository medicalRecordRepository,
-            PatientPortalLabResultRepository labResultRepository,
-            UserRepository userRepository,
-            EntityManager entityManager) {
-        this.patientRepository = patientRepository;
+            AiIntegrationService aiIntegrationService) {
         this.patientRecordService = patientRecordService;
-        this.appointmentRepository = appointmentRepository;
-        this.medicalRecordRepository = medicalRecordRepository;
-        this.labResultRepository = labResultRepository;
-        this.userRepository = userRepository;
-        this.entityManager = entityManager;
+        this.aiIntegrationService = aiIntegrationService;
     }
 
     // Inner records for response objects
@@ -111,7 +89,7 @@ public class AiIntegrationController {
     @GetMapping("/patients/{patientId}/snapshot")
     public ApiResponse<SnapshotResponse> getSnapshot(@PathVariable UUID patientId) {
         PatientRecordDetailResponse detail = patientRecordService.getDetail(patientId);
-        
+
         List<AllergyInfo> allergies = new ArrayList<>();
         if (detail.drugAllergies() != null && !detail.drugAllergies().isBlank()) {
             allergies.add(new AllergyInfo(detail.drugAllergies(), "Allergy reaction", "High"));
@@ -127,7 +105,7 @@ public class AiIntegrationController {
         });
 
         List<LabInfo> labs = new ArrayList<>();
-        List<LabResultEntity> labEntities = labResultRepository.findByPatientIdOrderByCollectedAtDesc(patientId);
+        List<LabResultEntity> labEntities = aiIntegrationService.getPatientLabs(patientId);
         labEntities.forEach(lab -> {
             labs.add(new LabInfo(lab.getTestName(), lab.getResultSummary(), "", lab.getCollectedAt()));
         });
@@ -150,7 +128,7 @@ public class AiIntegrationController {
         List<TimelineEvent> events = new ArrayList<>();
 
         // Add appointments
-        List<AppointmentEntity> appointments = appointmentRepository.findByPatientIdOrderByAppointmentDateDescFirstSlotStartTimeDesc(patientId);
+        List<AppointmentEntity> appointments = aiIntegrationService.getPatientAppointments(patientId);
         appointments.forEach(app -> {
             Instant timestamp = app.getAppointmentDate()
                     .atTime(app.getFirstSlot().getStartTime())
@@ -166,7 +144,7 @@ public class AiIntegrationController {
         });
 
         // Add labs
-        List<LabResultEntity> labs = labResultRepository.findByPatientIdOrderByCollectedAtDesc(patientId);
+        List<LabResultEntity> labs = aiIntegrationService.getPatientLabs(patientId);
         labs.forEach(lab -> {
             events.add(new TimelineEvent(
                     lab.getId(),
@@ -185,7 +163,7 @@ public class AiIntegrationController {
     public ApiResponse<PermissionResponse> getPermissions(
             @PathVariable UUID patientId,
             @RequestParam UUID userId) {
-        Optional<UserEntity> userOpt = userRepository.findById(userId);
+        Optional<UserEntity> userOpt = aiIntegrationService.getUser(userId);
         if (userOpt.isEmpty()) {
             return ApiResponse.ok(new PermissionResponse(userId, patientId, false, "none", null));
         }
@@ -193,7 +171,7 @@ public class AiIntegrationController {
         if (user.getRole() == UserRole.ADMIN) {
             return ApiResponse.ok(new PermissionResponse(userId, patientId, true, "admin_role", Instant.now().plus(1, ChronoUnit.DAYS)));
         }
-        boolean hasAccess = appointmentRepository.existsByDoctorIdAndPatientId(userId, patientId);
+        boolean hasAccess = aiIntegrationService.hasAppointmentWith(userId, patientId);
         String scopeType = hasAccess ? "treatment_relationship" : "none";
         Instant expiresAt = hasAccess ? Instant.now().plus(1, ChronoUnit.DAYS) : null;
         return ApiResponse.ok(new PermissionResponse(userId, patientId, hasAccess, scopeType, expiresAt));
@@ -204,29 +182,17 @@ public class AiIntegrationController {
         Instant sinceInstant = since == null ? Instant.now().minus(24, ChronoUnit.HOURS) : Instant.parse(since);
         List<ChangeItem> changes = new ArrayList<>();
 
-        List<UUID> patientIds = entityManager.createQuery(
-                "select p.id from PatientEntity p where p.updatedAt >= :since", UUID.class)
-                .setParameter("since", sinceInstant)
-                .getResultList();
-        patientIds.forEach(id -> changes.add(new ChangeItem("patient", id, "UPDATE")));
+        aiIntegrationService.getChangedPatientIds(sinceInstant)
+                .forEach(id -> changes.add(new ChangeItem("patient", id, "UPDATE")));
 
-        List<UUID> appointmentIds = entityManager.createQuery(
-                "select a.id from AppointmentEntity a where a.updatedAt >= :since", UUID.class)
-                .setParameter("since", sinceInstant)
-                .getResultList();
-        appointmentIds.forEach(id -> changes.add(new ChangeItem("appointment", id, "UPDATE")));
+        aiIntegrationService.getChangedAppointmentIds(sinceInstant)
+                .forEach(id -> changes.add(new ChangeItem("appointment", id, "UPDATE")));
 
-        List<UUID> labIds = entityManager.createQuery(
-                "select l.id from PatientPortalLabResultEntity l where l.updatedAt >= :since", UUID.class)
-                .setParameter("since", sinceInstant)
-                .getResultList();
-        labIds.forEach(id -> changes.add(new ChangeItem("lab_result", id, "UPDATE")));
+        aiIntegrationService.getChangedLabResultIds(sinceInstant)
+                .forEach(id -> changes.add(new ChangeItem("lab_result", id, "UPDATE")));
 
-        List<UUID> recordIds = entityManager.createQuery(
-                "select m.id from MedicalRecordEntity m where m.updatedAt >= :since", UUID.class)
-                .setParameter("since", sinceInstant)
-                .getResultList();
-        recordIds.forEach(id -> changes.add(new ChangeItem("medical_record", id, "UPDATE")));
+        aiIntegrationService.getChangedMedicalRecordIds(sinceInstant)
+                .forEach(id -> changes.add(new ChangeItem("medical_record", id, "UPDATE")));
 
         return ApiResponse.ok(new ChangesResponse(Instant.now(), changes));
     }

@@ -9,13 +9,26 @@ on:
       - main
       - master
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
+
+      - name: Resolve GHCR token
+        id: ghcr
+        run: |
+          if [ -n "${{ secrets.GHCR_PAT }}" ]; then
+            echo "token=${{ secrets.GHCR_PAT }}" >> $GITHUB_OUTPUT
+          else
+            echo "token=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_OUTPUT
+          fi
 
       - name: Copy deployment configurations to Server
         uses: appleboy/scp-action@v0.1.7
@@ -35,17 +48,36 @@ jobs:
           script: |
             cd ~/apps/hospital-management
             # Log in to GHCR on target server
-            echo "${{ secrets.GHCR_PAT || secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            
+            echo "${{ steps.ghcr.outputs.token }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
             # Pull new images
             docker compose pull
-            
+
             # Recreate containers (include observability if file exists)
             if [ -f docker-compose.observability.yml ]; then
               docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d --remove-orphans
             else
               docker compose up -d --remove-orphans
             fi
-            
+
             # Clean up dangling images
             docker image prune -f
+
+      - name: Post-deploy smoke check
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            for attempt in 1 2 3 4 5 6 7 8 9 10; do
+              echo "Smoke check attempt $attempt/10"
+              if curl -sSf http://localhost:8081/api/v1/public/health > /dev/null 2>&1; then
+                echo "✓ Backend healthy"
+                exit 0
+              fi
+              echo "Backend not ready, waiting 10s..."
+              sleep 10
+            done
+            echo "✗ Backend health check failed after 10 attempts"
+            exit 1
