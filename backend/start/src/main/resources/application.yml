@@ -49,10 +49,6 @@ management:
     tracing:
       endpoint: ${MANAGEMENT_OTLP_TRACING_ENDPOINT:${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4318}/v1/traces}
 
-hms:
-  observability:
-    structured-logging-enabled: ${HMS_STRUCTURED_LOGGING_ENABLED:true}
-
 springdoc:
   swagger-ui:
     path: /swagger-ui
@@ -95,6 +91,8 @@ hospital:
     youtube-url: ${HOSPITAL_YOUTUBE_URL:https://youtube.com}
 
 hms:
+  observability:
+    structured-logging-enabled: ${HMS_STRUCTURED_LOGGING_ENABLED:true}
   seed:
     non-billing-demo:
       enabled: ${HMS_NON_BILLING_DEMO_SEED_ENABLED:false}
