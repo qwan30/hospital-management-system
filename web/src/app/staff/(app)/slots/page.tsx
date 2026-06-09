@@ -90,8 +90,7 @@ export default function SlotGenerationPage() {
               </div>
               
               <div className="pt-4">
-                <button 
-                  onClick={() => setIsExecuting(true)}
+                <button
                   className="w-full bg-hc-primary hover:bg-hc-primary/90 text-white py-3 rounded-md font-semibold text-sm transition-colors flex items-center justify-center gap-2"
                 >
                   <Bolt className="w-4 h-4" />
