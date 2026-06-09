@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -60,7 +61,7 @@ public class SecurityConfig {
             .accessDeniedHandler((request, response, accessDeniedException) ->
                 securityErrorResponseWriter.write(request, response, 403, "forbidden", "Access is denied")))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/actuator/health", "/actuator/health/**", "/actuator/prometheus", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+            .requestMatchers(new AntPathRequestMatcher("/actuator/health"), new AntPathRequestMatcher("/actuator/health/**"), new AntPathRequestMatcher("/actuator/prometheus"), new AntPathRequestMatcher("/swagger-ui/**"), new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
             .requestMatchers("/api/v1/auth/**").permitAll()
             .requestMatchers("/api/v1/patient-auth/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/v1/departments/**", "/api/v1/doctors/**", "/api/v1/content/**", "/api/v1/news").permitAll()

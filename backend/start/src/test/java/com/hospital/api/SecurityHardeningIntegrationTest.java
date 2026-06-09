@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.test.context.TestPropertySource;
 
 /**
  * Security hardening tests: auth errors, CORS, and audit logging.
@@ -30,10 +29,6 @@ import org.springframework.test.context.TestPropertySource;
  * and rate-limit-disabled test properties.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestPropertySource(properties = {
-    "security.http.allow-credentials=true",
-    "management.endpoints.web.exposure.include=health,info,metrics,prometheus"
-})
 class SecurityHardeningIntegrationTest extends AbstractIntegrationTest {
 
   @Autowired

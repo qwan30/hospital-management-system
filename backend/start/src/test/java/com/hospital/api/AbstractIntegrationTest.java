@@ -36,7 +36,11 @@ import org.springframework.transaction.annotation.Transactional;
  * - MockMvc and ObjectMapper autowiring
  * - Common helper methods: login, create slot, create appointment
  */
-@SpringBootTest
+@SpringBootTest(properties = {
+    "management.endpoints.web.exposure.include=*",
+    "management.endpoint.prometheus.enabled=true",
+    "management.prometheus.metrics.export.enabled=true"
+})
 @AutoConfigureMockMvc
 @Transactional
 @Testcontainers(disabledWithoutDocker = true)
@@ -85,6 +89,7 @@ abstract class AbstractIntegrationTest {
     registry.add("security.patient-identifier.secret", () -> "test-patient-identifier-secret");
     // Disable rate limiting for integration tests
     registry.add("security.http.public-rate-limit-per-minute", () -> "0");
+    registry.add("security.http.allow-credentials", () -> "true");
   }
 
   // ── Auth helpers ──────────────────────────────────────────────────────
