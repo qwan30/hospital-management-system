@@ -422,7 +422,8 @@ export default function AdminPricingPage() {
 
 /* ─────────────────── SortHeader ─────────────────── */
 
-function SortHeader({ label, field, current, dir, onSort }: { label: string; field: SortField; current: SortField; dir: SortDir; onSort: (f: SortField) => void }) {
+function SortHeader({ label, field, current, dir, onSort }: { label: string; field: SortField; current: SortField; dir?: SortDir; onSort: (f: SortField) => void }) {
+  void dir;
   return (
     <th className="hc-th cursor-pointer select-none group" onClick={() => onSort(field)}>
       <span className="flex items-center gap-1">

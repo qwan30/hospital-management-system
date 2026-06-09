@@ -12,7 +12,7 @@ import {
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { Dialog } from "@/components/ui/dialog";
-import { Newspaper, CalendarClock, Edit3, Plus, Search, FileText, ChevronsUpDown, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
+import { Newspaper, CalendarClock, Plus, Search, FileText, ChevronsUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface NewsFormState {
   slug: string;

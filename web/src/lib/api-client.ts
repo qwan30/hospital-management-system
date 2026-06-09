@@ -172,7 +172,7 @@ function sanitizeMetricPath(path: string) {
 }
 
 function recordApiRequestMetric(metric: ApiRequestMetric) {
-  if (typeof window === "undefined") {
+  if (typeof window === "undefined" || typeof window.dispatchEvent !== "function") {
     return;
   }
 

@@ -4,8 +4,6 @@ import { useState, useMemo } from "react";
 import {
   Calendar,
   Search,
-  Users,
-  CheckCircle,
   AlertTriangle,
   Clock,
   UserCheck,

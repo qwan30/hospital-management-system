@@ -7,10 +7,8 @@ import {
   FileText,
   TrendingUp,
   Percent,
-  CheckCircle,
   Clock,
   AlertCircle,
-  Calendar,
   Download,
 } from "lucide-react";
 import Link from "next/link";

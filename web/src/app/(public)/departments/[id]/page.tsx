@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   getDepartment,
   listDepartments,
@@ -76,7 +76,7 @@ export default function DepartmentDetailPage() {
       .replace(/(^-|-$)/g, "");
   }
 
-  async function resolveDepartmentId(id: string): Promise<string> {
+  const resolveDepartmentId = useCallback(async (id: string): Promise<string> => {
     const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
     if (isUUID) {
       return id;
@@ -89,7 +89,7 @@ export default function DepartmentDetailPage() {
       throw new Error("Department not found");
     }
     return matched.id;
-  }
+  }, []);
 
   async function loadDepartment() {
     setIsLoading(true);
@@ -133,7 +133,7 @@ export default function DepartmentDetailPage() {
     return () => {
       isActive = false;
     };
-  }, [departmentId]);
+  }, [departmentId, resolveDepartmentId]);
 
   return (
     <main>

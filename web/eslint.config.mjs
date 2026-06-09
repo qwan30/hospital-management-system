@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     "test-results/**",
     "next-env.d.ts",
+    "refactor-badges.js",
+    "screenshot-each-page/**",
   ]),
   {
     rules: {

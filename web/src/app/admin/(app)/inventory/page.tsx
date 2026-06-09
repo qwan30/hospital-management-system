@@ -6,7 +6,6 @@ import {
   listInventoryAlerts,
   createInventoryItem,
   updateInventoryItem,
-  deleteInventoryItem,
   type InventoryItemResponse,
   type InventoryAlertResponse,
   type InventoryItemCreateRequest,
@@ -30,7 +29,6 @@ import {
   Plus,
   Search,
   ShoppingCart,
-  Trash2,
 } from "lucide-react";
 
 /* ─────────────────── Types ─────────────────── */
@@ -221,17 +219,6 @@ export default function AdminInventoryPage() {
       setFormError(err instanceof Error ? err.message : "Failed to save.");
     } finally {
       setIsSaving(false);
-    }
-  }
-
-  async function handleDelete(itemId: string) {
-    if (!confirm("Delete this inventory item?")) return;
-    try {
-      await deleteInventoryItem(itemId);
-      setSuccess("Item deleted.");
-      await loadData();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete.");
     }
   }
 
@@ -483,7 +470,8 @@ export default function AdminInventoryPage() {
 
 /* ─────────────────── SortHeader ─────────────────── */
 
-function SortHeader({ label, field, current, dir, onSort }: { label: string; field: SortField; current: SortField; dir: SortDir; onSort: (f: SortField) => void }) {
+function SortHeader({ label, field, current, dir, onSort }: { label: string; field: SortField; current: SortField; dir?: SortDir; onSort: (f: SortField) => void }) {
+  void dir;
   return (
     <th className="hc-th cursor-pointer select-none group" onClick={() => onSort(field)}>
       <span className="flex items-center gap-1">

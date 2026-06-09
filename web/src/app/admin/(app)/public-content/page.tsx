@@ -1,7 +1,6 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import {
   createAdminContentSection,
   listAdminContentSections,
@@ -13,7 +12,7 @@ import {
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
 
-import { LayoutTemplate, Edit3, Plus, Search, X, MonitorSmartphone, ChevronsUpDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { LayoutTemplate, Plus, Search, X, MonitorSmartphone, ChevronsUpDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface SectionFormState {
   slug: string;
@@ -40,7 +39,6 @@ const emptyForm: SectionFormState = {
 export default function AdminPublicContentPage() {
   const [sections, setSections] = useState<AdminContentSectionResponse[]>([]);
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "INACTIVE">("ALL");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);

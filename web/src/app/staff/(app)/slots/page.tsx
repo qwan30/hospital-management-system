@@ -2,15 +2,10 @@
 
 import { PageHeader } from "@/components/ui/page-header";
 import { DataPanel } from "@/components/ui/data-panel";
-import { KpiCard } from "@/components/ui/kpi-card";
-import { HcIcon } from "@/components/ui/hc-icon";
 
-import { useState } from "react";
 import { Bolt } from "lucide-react";
 
 export default function SlotGenerationPage() {
-  const [isExecuting, setIsExecuting] = useState(false);
-
   return (
     <main className="p-6 md:p-8 max-w-7xl mx-auto space-y-6">
       <PageHeader

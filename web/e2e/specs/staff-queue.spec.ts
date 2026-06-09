@@ -7,7 +7,7 @@ const confirmedAppointment = {
   appointmentId: confirmedAppointmentId,
   confirmationCode: "Q-1001",
   status: "CONFIRMED",
-  appointmentDate: "2026-04-26",
+  appointmentDate: "2026-11-15",
   startTime: "09:00:00",
   endTime: "09:30:00",
   checkedInAt: null,
@@ -23,10 +23,10 @@ const checkedInAppointment = {
   appointmentId: checkedInAppointmentId,
   confirmationCode: "Q-1002",
   status: "CHECKED_IN",
-  appointmentDate: "2026-04-26",
+  appointmentDate: "2026-11-15",
   startTime: "09:30:00",
   endTime: "10:00:00",
-  checkedInAt: "2026-04-26T09:28:00",
+  checkedInAt: "2026-11-15T09:28:00",
   doctorId: "55555555-5555-5555-5555-555555555555",
   doctorName: "Dr. Minh Pham",
   patientId: "66666666-6666-6666-6666-666666666666",
@@ -261,6 +261,10 @@ test.describe("@ui staff queue board", () => {
       "aria-pressed",
       "true",
     );
+
+    // Accept the confirmation dialog triggered by the complete action
+    page.once("dialog", (dialog) => dialog.accept());
+
     await page
       .getByTestId("queue-row")
       .filter({ hasText: "Bao Le" })

@@ -107,7 +107,7 @@ const pricingRules = [
     departmentName: 'Cardiology',
     serviceName: 'Consultation',
     amount: 125,
-    effectiveDate: '2026-05-01',
+    effectiveDate: '2026-09-01',
   },
 ];
 
@@ -115,10 +115,10 @@ const appointmentDetail = {
   appointmentId: mockMedicalRecordAppointmentId,
   confirmationCode: 'Q-1001',
   status: 'CHECKED_IN',
-  appointmentDate: '2026-05-15',
+  appointmentDate: '2026-09-15',
   startTime: '09:00:00',
   endTime: '09:30:00',
-  checkedInAt: '2026-05-15T08:50:00Z',
+  checkedInAt: '2026-09-15T08:50:00Z',
   aiDurationMinutes: 30,
   symptoms: 'Follow-up consultation',
   doctorId: 'doctor-1',
@@ -136,7 +136,7 @@ const portalAppointments = [
   {
     appointmentId: 'portal-appointment-1',
     confirmationCode: 'PC-1001',
-    appointmentDate: '2026-06-01',
+    appointmentDate: '2026-10-01',
     startTime: '10:00:00',
     endTime: '10:30:00',
     doctorName: 'Dr. Sarah Jenkins',
@@ -145,7 +145,7 @@ const portalAppointments = [
   {
     appointmentId: 'portal-appointment-2',
     confirmationCode: 'PC-1002',
-    appointmentDate: '2026-06-15',
+    appointmentDate: '2026-10-15',
     startTime: '13:00:00',
     endTime: '13:30:00',
     doctorName: 'Dr. Michael Chen',
@@ -154,7 +154,7 @@ const portalAppointments = [
   {
     appointmentId: 'portal-appointment-3',
     confirmationCode: 'PC-1003',
-    appointmentDate: '2026-07-02',
+    appointmentDate: '2026-11-02',
     startTime: '15:00:00',
     endTime: '15:30:00',
     doctorName: 'Dr. Elena Rodriguez',
@@ -169,13 +169,13 @@ const portalMessages = [
     channel: 'Internal Medicine',
     unreadCount: 1,
     lastMessagePreview: 'Please review your latest complete blood count results.',
-    updatedAt: '2026-05-15T09:00:00Z',
+    updatedAt: '2026-09-15T09:00:00Z',
     messages: [
       {
         messageId: 'message-1',
         senderRole: 'Dr. Alistair Vance',
         body: 'Your lab results are available for review.',
-        createdAt: '2026-05-15T09:00:00Z',
+        createdAt: '2026-09-15T09:00:00Z',
       },
     ],
   },
@@ -185,7 +185,7 @@ const portalMessages = [
     channel: 'System Administrator',
     unreadCount: 0,
     lastMessagePreview: 'Your profile security settings were reviewed.',
-    updatedAt: '2026-05-14T14:00:00Z',
+    updatedAt: '2026-09-14T14:00:00Z',
     messages: [],
   },
 ];
@@ -212,7 +212,7 @@ const portalLabResults = [
     resultSummary: 'Values are within the expected range.',
     doctorComment: 'Continue the current care plan.',
     attachmentUrl: '/demo-cbc.pdf',
-    collectedAt: '2026-05-10T08:00:00Z',
+    collectedAt: '2026-09-10T08:00:00Z',
   },
 ];
 
@@ -221,7 +221,7 @@ const staffScheduleAppointments = [
     appointmentId: 'sched-1',
     confirmationCode: 'SC-1001',
     status: 'CONFIRMED',
-    appointmentDate: '2026-05-18',
+    appointmentDate: '2026-09-18',
     startTime: '09:00:00',
     endTime: '09:30:00',
     checkedInAt: null,
@@ -236,7 +236,7 @@ const staffScheduleAppointments = [
     appointmentId: 'sched-2',
     confirmationCode: 'SC-1002',
     status: 'PENDING',
-    appointmentDate: '2026-05-18',
+    appointmentDate: '2026-09-18',
     startTime: '10:00:00',
     endTime: '10:30:00',
     checkedInAt: null,
@@ -258,7 +258,7 @@ const staffLabResults = [
     resultSummary: 'Hemoglobin within normal range.',
     doctorComment: 'Continue current treatment.',
     attachmentUrl: null,
-    collectedAt: '2026-05-15T08:00:00Z',
+    collectedAt: '2026-09-15T08:00:00Z',
   },
 ];
 
@@ -267,7 +267,7 @@ const staffAppointmentsList = [
     appointmentId: mockMedicalRecordAppointmentId,
     confirmationCode: 'Q-1001',
     status: 'DONE',
-    appointmentDate: '2026-05-15',
+    appointmentDate: '2026-09-15',
     startTime: '09:00:00',
     endTime: '09:30:00',
     doctorId: 'doctor-1',
@@ -276,7 +276,7 @@ const staffAppointmentsList = [
     patientName: 'Alexander Vance',
     patientPhone: '+84900000301',
     symptoms: null,
-    createdAt: '2026-05-14T10:00:00Z',
+    createdAt: '2026-09-14T10:00:00Z',
   },
 ];
 
@@ -296,7 +296,7 @@ const publicSlots = [
   {
     id: 'slot-1',
     doctorId: 'doctor-1',
-    slotDate: '2026-05-18',
+    slotDate: '2026-09-18',
     startTime: '09:00:00',
     endTime: '09:30:00',
     status: 'AVAILABLE',
@@ -377,7 +377,7 @@ export async function installUiApiMocks(page: Page) {
         status: body.status ?? 'COMPLETED',
         notes: body.notes ?? null,
         deleted: false,
-        createdAt: '2026-05-15T10:00:00Z',
+        createdAt: '2026-09-15T10:00:00Z',
       });
     }
 
