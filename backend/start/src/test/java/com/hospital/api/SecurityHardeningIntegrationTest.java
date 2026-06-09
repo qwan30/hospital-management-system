@@ -30,7 +30,10 @@ import org.springframework.test.context.TestPropertySource;
  * and rate-limit-disabled test properties.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestPropertySource(properties = "security.http.allow-credentials=true")
+@TestPropertySource(properties = {
+    "security.http.allow-credentials=true",
+    "management.endpoints.web.exposure.include=health,info,metrics,prometheus"
+})
 class SecurityHardeningIntegrationTest extends AbstractIntegrationTest {
 
   @Autowired
