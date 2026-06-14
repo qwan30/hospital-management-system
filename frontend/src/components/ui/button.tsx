@@ -1,5 +1,7 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
+import { Loader2 } from "lucide-react"
 import { cva, type VariantProps } from "class-variance-authority"
+import type { ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -43,20 +45,38 @@ const buttonVariants = cva(
   }
 )
 
-export type ButtonProps = ButtonPrimitive.Props & VariantProps<typeof buttonVariants>
+export type ButtonProps = ButtonPrimitive.Props &
+  VariantProps<typeof buttonVariants> & {
+    /** Show a loading spinner and disable the button. */
+    isLoading?: boolean
+    /** Icon rendered before the button text. */
+    leftIcon?: ReactNode
+  }
 
 function Button({
   className,
   variant = "default",
   size = "default",
+  isLoading = false,
+  leftIcon,
+  children,
+  disabled,
   ...props
 }: ButtonProps) {
   return (
     <ButtonPrimitive
       data-slot="button"
+      disabled={disabled || isLoading}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
-    />
+    >
+      {isLoading ? (
+        <Loader2 className="size-[18px] shrink-0 animate-spin" aria-hidden="true" />
+      ) : leftIcon ? (
+        leftIcon
+      ) : null}
+      {children}
+    </ButtonPrimitive>
   )
 }
 

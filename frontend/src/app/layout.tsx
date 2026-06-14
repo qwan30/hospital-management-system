@@ -5,7 +5,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "HOSPITAL CORE | Management System",
-  description: "Hospital Management System – Precision healthcare operations platform",
+  description: "Hospital Management System: Precision healthcare operations platform",
 };
 
 export default function RootLayout({

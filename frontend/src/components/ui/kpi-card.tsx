@@ -12,10 +12,12 @@ interface KpiCardProps {
   icon?: LucideIcon;
   tone?: KpiTone;
   className?: string;
+  /** When true, renders a skeleton placeholder matching the KPI card dimensions. */
+  isLoading?: boolean;
 }
 
 const toneClasses: Record<KpiTone, string> = {
-  blue: "bg-[#E8F0FF] text-[var(--hc-blue-600)]",
+  blue: "bg-hc-blue-50 text-[var(--hc-blue-600)]",
   green: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
   amber: "bg-[#FFF3E0] text-[var(--hc-warning)]",
   red: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
@@ -30,11 +32,31 @@ export function KpiCard({
   icon: Icon = Activity,
   tone = "blue",
   className,
+  isLoading = false,
 }: KpiCardProps) {
+  if (isLoading) {
+    return (
+      <section
+        aria-hidden="true"
+        className={cn(
+          "flex min-h-[112px] items-center gap-4 rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-white p-5",
+          className,
+        )}
+      >
+        <div className="size-10 shrink-0 animate-pulse rounded-full bg-[var(--hc-border-soft)]" />
+        <div className="min-w-0 flex-1 space-y-2">
+          <div className="h-3 w-20 animate-pulse rounded bg-[var(--hc-border-soft)]" />
+          <div className="h-8 w-24 animate-pulse rounded bg-[var(--hc-border-soft)]" />
+          <div className="h-3 w-32 animate-pulse rounded bg-[var(--hc-border-soft)]" />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section
       className={cn(
-        "hc-kpi-card flex min-h-[112px] items-center gap-4 rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-white p-5 shadow-[var(--shadow-card)] transition duration-150 hover:-translate-y-px hover:shadow-[var(--shadow-card-hover)]",
+        "flex min-h-[112px] items-center gap-4 rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-white p-5 shadow-[var(--shadow-card)] transition duration-150 hover:-translate-y-px hover:shadow-[var(--shadow-card-hover)]",
         className,
       )}
     >
