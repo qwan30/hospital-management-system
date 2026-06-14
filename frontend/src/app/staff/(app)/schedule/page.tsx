@@ -214,7 +214,7 @@ export default function DoctorSchedulePage() {
                     <tr key={appt.appointmentId} className="hover:bg-slate-50/50 transition-colors">
                       <td className="hc-td">
                         <span className="font-mono text-sm font-bold text-[var(--hc-primary)]">
-                          {formatTime(appt.startTime)} – {formatTime(appt.endTime)}
+                          {formatTime(appt.startTime)} to {formatTime(appt.endTime)}
                         </span>
                       </td>
                       <td className="hc-td">
