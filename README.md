@@ -17,7 +17,31 @@
 > **🟢 Production Status: Release Candidate 1.0 — June 14, 2026**
 > All 7 clinical workflows implemented and verified. 148 backend integration tests + 183+ Playwright E2E scenarios passing. 80.48% frontend branch coverage.
 >
-> 📚 **[Interactive Documentation Portal →](docs/HMS_DOCUMENTATION.html)** | 📂 **[Documentation Index →](docs/README.md)** | 📋 **[API Contract →](docs/05-api/api-contract.md)**
+> 📚 **[Interactive Documentation Portal →](docs/HMS_DOCUMENTATION.html)** | 📂 **[Documentation Index →](docs/README.md)** | 📋 **[API Contract →](docs/05-api/api-contract.md)** | 📝 **[Changelog →](CHANGELOG.md)**
+
+---
+
+## Why This Project Exists
+
+Healthcare digitization in emerging markets faces a critical gap: existing ERP systems are either too expensive or lack PHI compliance. This project demonstrates a production-grade hospital ERP built entirely with open-source technology while meeting strict healthcare data protection standards.
+
+## Key Architecture Decisions
+
+| Decision | Rationale | ADR |
+|----------|-----------|-----|
+| **Modular Monolith** (not microservices) | Healthcare workflows are tightly coupled (booking → queue → EHR → billing). DDD bounded contexts prevent coupling within a single deployable. No distributed transaction overhead. | [ADR-001](docs/04-architecture/adr/ADR-001-modular-monolith.md) |
+| **JWT + httpOnly Refresh Cookies** | Stateless auth avoids server-side session storage. httpOnly cookies prevent XSS token theft. 15-min access token TTL limits blast radius. | [ADR-003](docs/04-architecture/adr/ADR-003-jwt-auth.md) |
+| **AES-GCM PHI Encryption** | Patient identifiers encrypted at rest, indexed by SHA-256 hash for lookup without decryption. Plaintext never stored. | [ADR-004](docs/04-architecture/adr/ADR-004-phi-encryption.md) |
+| **Repositories in Domain Layer** | Domain owns data access contracts — infrastructure implements them. Strict Dependency Inversion prevents infrastructure concerns from leaking into business logic. | [ADR-002](docs/04-architecture/adr/ADR-002-repositories-in-domain.md) |
+
+## Technical Challenges Solved
+
+| Challenge | Solution | Implementation |
+|-----------|----------|----------------|
+| **Double-booking prevention** | Transactional slot locking with optimistic concurrency control | `AppointmentWriteService` in `appointment` bounded context |
+| **PHI compliance** | AES-GCM encrypt at rest + SHA-256 hash for indexing + TLS in transit | `PatientIdentifierProtector` in `patient` bounded context |
+| **Fine-grained RBAC** | 36 method-level `@PreAuthorize` permissions across 7 roles | `RbacAuthorizationService` in `security` bounded context |
+| **Queue state integrity** | Strict state machine: CHECKED_IN → IN_CONSULTATION → COMPLETED. Invalid transitions rejected at domain level. | `AppointmentWorkflowService` in `appointment` bounded context |
 
 ---
 
@@ -137,6 +161,40 @@ graph LR
     class PH pharma
     class AC finance
 ```
+
+---
+
+## 📸 System Screenshots
+
+<div align="center">
+
+### 🏠 Public Homepage
+<img src="docs/screenshots/01-homepage.png" alt="HMS Homepage" width="800">
+
+*Modern landing page with department search, doctor highlights, and appointment booking entry point*
+
+### 🏥 Departments & Doctors
+| Departments | Doctors Directory |
+|:-----------:|:-----------------:|
+| <img src="docs/screenshots/02-departments.png" alt="Departments" width="400"> | <img src="docs/screenshots/03-doctors.png" alt="Doctors" width="400"> |
+| *Browse active clinical departments* | *Find doctors by specialty* |
+
+### 📰 News & Content
+<img src="docs/screenshots/04-news.png" alt="HMS News" width="800">
+
+*Hospital news, health articles, and public announcements*
+
+### 🔐 Staff Login (Clinical Suite)
+<img src="docs/screenshots/06-staff-login.png" alt="Staff Login" width="800">
+
+*Professional clinical-suite login with system status, version info, and secure access controls*
+
+### 📊 Admin Dashboard
+<img src="docs/screenshots/05-admin-dashboard.png" alt="Admin Dashboard" width="800">
+
+*Real-time KPI cards — total patients, gross revenue, bed occupancy, active staff — with quick-action tiles*
+
+</div>
 
 ---
 
