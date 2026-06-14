@@ -136,8 +136,8 @@ const modules = [
 
 export default function PublicHomePage() {
   return (
-    <main className="bg-[#f8fbff] text-[#0f172a]">
-      <section className="relative overflow-hidden bg-[#020817] text-white">
+    <main className="bg-[var(--hc-surface-muted)] text-[var(--hc-text)]">
+      <section className="relative overflow-hidden bg-[var(--hc-navy-950)] text-white">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.08)_1px,transparent_1px)] bg-[size:48px_48px]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_66%_46%,rgba(14,165,233,0.28),transparent_34%),radial-gradient(circle_at_28%_70%,rgba(37,99,235,0.16),transparent_30%)]" />
         <div className="relative mx-auto grid min-h-[720px] max-w-[1440px] grid-cols-1 items-center gap-14 px-6 py-20 lg:grid-cols-[0.9fr_1.1fr] lg:px-9">
@@ -263,7 +263,7 @@ export default function PublicHomePage() {
         </div>
       </section>
 
-      <section className="bg-[#031023] px-6 py-12 text-white lg:px-9">
+      <section className="bg-[var(--hc-navy-950)] px-6 py-12 text-white lg:px-9">
         <div className="mx-auto grid max-w-[1360px] grid-cols-1 gap-10 lg:grid-cols-[0.46fr_0.54fr] lg:items-center">
           <div>
             <h2 className="text-[30px] font-semibold leading-tight tracking-normal">
@@ -738,7 +738,7 @@ function HomeFooter() {
   ];
 
   return (
-    <footer className="bg-[#020817] px-6 py-12 text-white lg:px-9">
+    <footer className="bg-[var(--hc-navy-950)] px-6 py-12 text-white lg:px-9">
       <div className="mx-auto grid max-w-[1360px] grid-cols-1 gap-12 lg:grid-cols-[0.9fr_1.55fr_0.7fr]">
         <div>
           <div className="flex items-center gap-3">

@@ -19,7 +19,7 @@ interface KpiCardProps {
 const toneClasses: Record<KpiTone, string> = {
   blue: "bg-hc-blue-50 text-[var(--hc-blue-600)]",
   green: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
-  amber: "bg-[#FFF3E0] text-[var(--hc-warning)]",
+  amber: "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
   red: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
   purple: "bg-[var(--hc-purple-bg)] text-[var(--hc-purple)]",
   teal: "bg-[#CCFBF1] text-[#0F766E]",

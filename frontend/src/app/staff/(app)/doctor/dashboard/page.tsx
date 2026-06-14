@@ -46,7 +46,7 @@ function statusClass(status: ClinicalAppointmentStatus) {
     return "bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]";
   }
   if (status === "CANCELLED") {
-    return "bg-[#FFF5F5] text-[var(--hc-danger)] border border-[var(--hc-danger-bg)]";
+    return "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)] border border-[var(--hc-danger-bg)]";
   }
   return "bg-[var(--hc-surface-soft)] text-[var(--hc-text)] border border-[var(--hc-border-soft)]";
 }
@@ -157,7 +157,7 @@ export default function DoctorDashboardPage() {
       </div>
 
       {successMessage ? (
-        <div className="mb-4 border border-[var(--hc-success-bg)] bg-[#F0FDF4] p-4 text-[13px] font-medium text-[var(--hc-success)] rounded-[var(--radius-lg)]" role="status">
+        <div className="mb-4 border border-[var(--hc-success-bg)] bg-[var(--hc-success-bg)] p-4 text-[13px] font-medium text-[var(--hc-success)] rounded-[var(--radius-lg)]" role="status">
           {successMessage}
         </div>
       ) : null}
@@ -217,7 +217,7 @@ export default function DoctorDashboardPage() {
             </p>
           </div>
         ) : error ? (
-          <div className="border-t border-[var(--hc-danger-bg)] bg-[#FFF5F5] p-12 text-center" role="alert">
+          <div className="border-t border-[var(--hc-danger-bg)] bg-[var(--hc-danger-bg)] p-12 text-center" role="alert">
             <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--hc-danger)]">
               Appointment schedule unavailable
             </p>
@@ -346,7 +346,7 @@ function AppointmentRow({
         </td>
       </tr>
       {rowError ? (
-        <tr className="bg-[#FFF5F5]">
+        <tr className="bg-[var(--hc-danger-bg)]">
           <td className="p-4 text-[13px] font-medium text-[var(--hc-danger)]" colSpan={6} role="alert">
             {rowError}
           </td>

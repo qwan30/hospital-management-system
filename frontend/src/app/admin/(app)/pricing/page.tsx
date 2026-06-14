@@ -345,7 +345,7 @@ export default function AdminPricingPage() {
         {/* Right: Sidebar KPIs */}
         <div className="space-y-4">
           <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6 text-center">
-            <div className="grid size-12 mx-auto place-items-center rounded-full bg-[#E8F0FF] text-[var(--hc-primary)] mb-3">
+            <div className="grid size-12 mx-auto place-items-center rounded-full bg-[var(--hc-blue-50)] text-[var(--hc-primary)] mb-3">
               <DollarSign className="w-6 h-6" />
             </div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">TOTAL CATALOG VALUE</p>

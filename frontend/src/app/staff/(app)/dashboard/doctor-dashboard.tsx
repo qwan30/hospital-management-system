@@ -47,7 +47,7 @@ function StatusBadge({ status }: { status: string }) {
   const c: Record<string, string> = {
     Critical: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
     Stable: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
-    Observation: "bg-[#E8F0FF] text-[var(--hc-primary)]",
+    Observation: "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]",
   };
   return (
     <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-bold rounded-full ${c[status] ?? "bg-slate-100 text-slate-600"}`}>
@@ -171,7 +171,7 @@ export function DoctorDashboardView() {
                   <tr key={patient.id} className="hover:bg-slate-50/50 transition-colors">
                     <td className="hc-td">
                       <div className="flex items-center gap-3">
-                        <div className={`grid size-8 shrink-0 place-items-center rounded-full text-[10px] font-bold ${patient.status === "Critical" ? "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]" : patient.status === "Stable" ? "bg-[var(--hc-success-bg)] text-[var(--hc-success)]" : "bg-[#E8F0FF] text-[var(--hc-primary)]"}`}>
+                        <div className={`grid size-8 shrink-0 place-items-center rounded-full text-[10px] font-bold ${patient.status === "Critical" ? "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]" : patient.status === "Stable" ? "bg-[var(--hc-success-bg)] text-[var(--hc-success)]" : "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]"}`}>
                           {patient.initials}
                         </div>
                         <div>
@@ -285,7 +285,7 @@ export function DoctorDashboardView() {
             <StaffRow label="Surgery Prep Unit" badge="OPTIMAL" badgeClass="bg-slate-100 text-slate-600" />
           </div>
           <div className="p-4">
-            <button type="button" className="w-full flex items-center justify-center gap-2 h-[42px] border border-[var(--hc-primary)] text-[var(--hc-primary)] rounded-[var(--radius-md)] text-sm font-bold hover:bg-[#E8F0FF] transition-all">
+            <button type="button" className="w-full flex items-center justify-center gap-2 h-[42px] border border-[var(--hc-primary)] text-[var(--hc-primary)] rounded-[var(--radius-md)] text-sm font-bold hover:bg-[var(--hc-blue-50)] transition-all">
               <Users className="w-4 h-4" /> Reassign Resources
             </button>
           </div>

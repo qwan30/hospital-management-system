@@ -324,7 +324,7 @@ export default function InvoicesPage() {
                       <td className="hc-td font-mono font-bold text-[var(--hc-primary)]">{invoice.invoiceId}</td>
                       <td className="hc-td">
                         <div className="flex items-center gap-3">
-                          <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#E8F0FF] text-[var(--hc-primary)] text-[10px] font-bold">
+                          <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[var(--hc-blue-50)] text-[var(--hc-primary)] text-[10px] font-bold">
                             {initials(invoice.patientFullName)}
                           </div>
                           <div>

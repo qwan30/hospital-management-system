@@ -209,7 +209,7 @@ export default function StaffLabResultsPage() {
                         </td>
                         <td className="hc-td">
                           <div className="flex items-center gap-3">
-                            <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#E8F0FF] text-[var(--hc-primary)] text-[10px] font-bold">
+                            <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[var(--hc-blue-50)] text-[var(--hc-primary)] text-[10px] font-bold">
                               {row.patientName.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                             </div>
                             <div>

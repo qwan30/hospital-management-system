@@ -219,7 +219,7 @@ export default function DoctorSchedulePage() {
                       </td>
                       <td className="hc-td">
                         <div className="flex items-center gap-3">
-                          <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#E8F0FF] text-[var(--hc-primary)] text-[10px] font-bold">
+                          <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[var(--hc-blue-50)] text-[var(--hc-primary)] text-[10px] font-bold">
                             {appt.patientFullName.split(" ").map((n) => n[0]).join("").slice(0, 2)}
                           </div>
                           <span className="font-medium text-[var(--hc-text)]">{appt.patientFullName}</span>
@@ -262,7 +262,7 @@ export default function DoctorSchedulePage() {
 
 function ScheduleStatusBadge({ status }: { status: string }) {
   const config: Record<string, { dot: string; bg: string }> = {
-    CONFIRMED: { dot: "bg-[var(--hc-primary)]", bg: "bg-[#E8F0FF] text-[var(--hc-primary)]" },
+    CONFIRMED: { dot: "bg-[var(--hc-primary)]", bg: "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]" },
     CHECKED_IN: { dot: "bg-[var(--hc-success)]", bg: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]" },
     IN_PROGRESS: { dot: "bg-amber-500", bg: "bg-amber-50 text-amber-700" },
     DONE: { dot: "bg-slate-400", bg: "bg-slate-100 text-slate-600" },

@@ -102,8 +102,8 @@ export default function AdminSupportPage() {
   function PriorityBadge({ priority }: { priority: string }) {
     const c: Record<string, string> = {
       Critical: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
-      High: "bg-[#FFF3E0] text-[var(--hc-warning)]",
-      Medium: "bg-[#E8F0FF] text-[var(--hc-primary)]",
+      High: "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
+      Medium: "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]",
       Low: "bg-slate-100 text-slate-500",
     };
     return (
@@ -118,8 +118,8 @@ export default function AdminSupportPage() {
   function StatusBadge({ status }: { status: string }) {
     const c: Record<string, string> = {
       Open: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
-      "In Progress": "bg-[#E8F0FF] text-[var(--hc-primary)]",
-      "Pending Info": "bg-[#FFF3E0] text-[var(--hc-warning)]",
+      "In Progress": "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]",
+      "Pending Info": "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
       Resolved: "bg-slate-100 text-slate-500",
     };
     return (
@@ -249,7 +249,7 @@ export default function AdminSupportPage() {
                         </td>
                         <td className="hc-td">
                           <div className="flex items-center gap-2">
-                            <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[#E8F0FF] text-[var(--hc-primary)] text-[10px] font-bold">
+                            <div className="grid size-8 shrink-0 place-items-center rounded-full bg-[var(--hc-blue-50)] text-[var(--hc-primary)] text-[10px] font-bold">
                               {t.requesterInitials}
                             </div>
                             <div>
@@ -332,10 +332,10 @@ export default function AdminSupportPage() {
             <div className="flex items-center justify-center mb-4">
               <div className="relative">
                 <svg viewBox="0 0 120 120" className="w-32 h-32">
-                  <circle cx="60" cy="60" r="50" fill="none" stroke="#E2E8F0" strokeWidth="12" />
-                  <circle cx="60" cy="60" r="50" fill="none" stroke="#059669" strokeWidth="12" strokeDasharray="209 105" strokeLinecap="round" transform="rotate(-90 60 60)" />
-                  <circle cx="60" cy="60" r="50" fill="none" stroke="#D97706" strokeWidth="12" strokeDasharray="66 248" strokeLinecap="round" transform="rotate(150 60 60)" />
-                  <circle cx="60" cy="60" r="50" fill="none" stroke="#DC2626" strokeWidth="12" strokeDasharray="25 289" strokeLinecap="round" transform="rotate(225 60 60)" />
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="var(--hc-border)" strokeWidth="12" />
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="var(--hc-success)" strokeWidth="12" strokeDasharray="209 105" strokeLinecap="round" transform="rotate(-90 60 60)" />
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="var(--hc-warning)" strokeWidth="12" strokeDasharray="66 248" strokeLinecap="round" transform="rotate(150 60 60)" />
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="var(--hc-danger)" strokeWidth="12" strokeDasharray="25 289" strokeLinecap="round" transform="rotate(225 60 60)" />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-2xl font-bold text-[var(--hc-text)]">{totalActive}</span>
@@ -356,8 +356,8 @@ export default function AdminSupportPage() {
             <h3 className="text-sm font-bold text-[var(--hc-text)] mb-4">ESCALATION GUIDE</h3>
             <div className="space-y-3">
               <EscalationItem icon={AlertTriangle} color="text-[var(--hc-danger)]" bg="bg-[var(--hc-danger-bg)]" title={`${urgentCount} urgent escalations`} desc="Require immediate attention" />
-              <EscalationItem icon={Clock} color="text-[var(--hc-warning)]" bg="bg-[#FFF3E0]" title="18 at risk tickets" desc="Review and act to avoid breach" />
-              <EscalationItem icon={Headphones} color="text-[var(--hc-primary)]" bg="bg-[#E8F0FF]" title="SLA policies" desc="Review response targets" />
+              <EscalationItem icon={Clock} color="text-[var(--hc-warning)]" bg="bg-[var(--hc-warning-bg)]" title="18 at risk tickets" desc="Review and act to avoid breach" />
+              <EscalationItem icon={Headphones} color="text-[var(--hc-primary)]" bg="bg-[var(--hc-blue-50)]" title="SLA policies" desc="Review response targets" />
               <EscalationItem icon={Users} color="text-[var(--hc-success)]" bg="bg-[var(--hc-success-bg)]" title="On-call contacts" desc="View team coverage" />
             </div>
           </div>

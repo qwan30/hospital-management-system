@@ -141,7 +141,7 @@ export default function RevenueDashboardPage() {
               {barValues(departmentBreakdown, activeReport?.totalRevenue ?? 0).map((height, i) => (
                 <div
                   key={`${height}-${i}`}
-                  className="flex-1 rounded-t-[var(--radius-sm)] bg-gradient-to-t from-[var(--hc-primary)] to-[#60a5fa] transition-all duration-500"
+                  className="flex-1 rounded-t-[var(--radius-sm)] bg-gradient-to-t from-[var(--hc-primary)] to-[var(--hc-blue-400)] transition-all duration-500"
                   style={{ height: `${height}%` }}
                 />
               ))}

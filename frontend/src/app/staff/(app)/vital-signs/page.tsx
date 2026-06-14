@@ -155,7 +155,7 @@ export default function VitalSignsEditorPage() {
       ) : null}
 
       {savedRecord ? (
-        <section className="mt-6 rounded-[var(--radius-lg)] border border-[var(--hc-success-bg)] bg-[#F0FDF4] p-4 text-sm font-semibold text-[var(--hc-success)]" role="status">
+        <section className="mt-6 rounded-[var(--radius-lg)] border border-[var(--hc-success-bg)] bg-[var(--hc-success-bg)] p-4 text-sm font-semibold text-[var(--hc-success)]" role="status">
           Vital signs saved for {selectedAppointment?.patientFullName ?? "selected patient"} at {new Date(savedRecord.recordedAt).toLocaleString()}.
         </section>
       ) : null}

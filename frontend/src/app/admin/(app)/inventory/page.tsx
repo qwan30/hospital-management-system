@@ -243,7 +243,7 @@ export default function AdminInventoryPage() {
   function StatusBadge({ status }: { status: string }) {
     const colors: Record<string, string> = {
       "In Stock": "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
-      "Low Stock": "bg-[#FFF3E0] text-[var(--hc-warning)]",
+      "Low Stock": "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
       Critical: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
       Reorder: "bg-purple-50 text-purple-600",
     };

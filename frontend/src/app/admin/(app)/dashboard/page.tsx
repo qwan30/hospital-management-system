@@ -89,7 +89,7 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
               </div>
-              <div className="p-5 border border-[var(--hc-danger-bg)] rounded-[var(--radius-lg)] bg-[#FFF5F5]">
+              <div className="p-5 border border-[var(--hc-danger-bg)] rounded-[var(--radius-lg)] bg-[var(--hc-danger-bg)]">
                 <span className="text-[10px] font-semibold uppercase tracking-widest block mb-2 text-[var(--hc-danger)]">
                   Emergency Slots
                 </span>
@@ -176,7 +176,7 @@ export default function AdminDashboardPage() {
                   <div className="bg-[var(--hc-blue-500)] h-full w-[45%]" />
                 </div>
                 <span className="text-[var(--hc-text)] font-bold text-[13px] w-12 text-right mr-4">45%</span>
-                <Badge variant="warning" className="w-24 justify-center bg-[#FEF3C7] text-[#B45309] hover:bg-[#FEF3C7]">Low Stock</Badge>
+                <Badge variant="warning" className="w-24 justify-center bg-[var(--hc-warning-bg)] text-[var(--hc-warning)] hover:bg-[var(--hc-warning-bg)]">Low Stock</Badge>
               </li>
               <li className="flex items-center justify-between">
                 <span className="font-semibold text-[var(--hc-text)] text-[13px] w-32">Saline Solution</span>

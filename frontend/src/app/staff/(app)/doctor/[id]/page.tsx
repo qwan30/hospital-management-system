@@ -189,7 +189,7 @@ export default function DoctorDetailPage() {
                 <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center shrink-0">
                   <HcIcon name="mail" className="text-[var(--hc-primary)] w-4 h-4" />
                 </div>
-                <span className="text-sm font-bold tracking-tight text-[var(--hc-text-secondary)]">concierge@medicore.hms</span>
+                <span className="text-sm font-bold tracking-tight text-[var(--hc-text-secondary)]">concierge@hospitalcore.hms</span>
               </div>
             </div>
           </aside>

@@ -161,7 +161,7 @@ export default function PricingManagementPage() {
                   {paged.map((rule) => (
                     <tr key={rule.pricingId} className="hover:bg-slate-50/50 transition-colors">
                       <td className="hc-td">
-                        <span className="inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-full bg-[#E8F0FF] text-[var(--hc-primary)]">
+                        <span className="inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-full bg-[var(--hc-blue-50)] text-[var(--hc-primary)]">
                           {rule.departmentName || "GLOBAL"}
                         </span>
                       </td>

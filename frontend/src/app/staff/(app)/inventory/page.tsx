@@ -397,12 +397,12 @@ export default function InventoryPage() {
       </div>
 
       {error ? (
-        <div className="mb-8 border border-[var(--hc-danger-bg)] bg-[#FFF5F5] p-6 rounded-[var(--radius-lg)]" role="alert">
+        <div className="mb-8 border border-[var(--hc-danger-bg)] bg-[var(--hc-danger-bg)] p-6 rounded-[var(--radius-lg)]" role="alert">
           <p className="text-[13px] font-semibold text-[var(--hc-danger)]">{error}</p>
         </div>
       ) : null}
       {success ? (
-        <div className="mb-8 border border-[var(--hc-success-bg)] bg-[#F0FDF4] p-6 rounded-[var(--radius-lg)]" role="status">
+        <div className="mb-8 border border-[var(--hc-success-bg)] bg-[var(--hc-success-bg)] p-6 rounded-[var(--radius-lg)]" role="status">
           <p className="text-[13px] font-semibold text-[var(--hc-success)]">{success}</p>
         </div>
       ) : null}
@@ -791,7 +791,7 @@ function StatusBadge({ label, warning }: { label: string; warning: boolean }) {
   return (
     <span
       className={`hc-badge ${
-        warning ? "bg-[#FFF5F5] text-[var(--hc-danger)] border-[var(--hc-danger-bg)]" : "bg-[var(--hc-success-bg)] text-[var(--hc-success)] border-[var(--hc-success-bg)]"
+        warning ? "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)] border-[var(--hc-danger-bg)]" : "bg-[var(--hc-success-bg)] text-[var(--hc-success)] border-[var(--hc-success-bg)]"
       }`}
     >
       {label.replaceAll("_", " ")}

@@ -279,7 +279,7 @@ export default function AdminMonitoringPage() {
           </div>
           <div className="p-6">
             <div className="flex items-center gap-6 text-xs mb-4">
-              <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-[#1E40AF] rounded-full inline-block" /> Active Alerts</span>
+              <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-[var(--hc-blue-700)] rounded-full inline-block" /> Active Alerts</span>
               <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-[var(--hc-success)] rounded-full inline-block" /> Inventory Alerts</span>
               <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-[var(--hc-warning)] rounded-full inline-block" /> Schedule Alerts</span>
             </div>
@@ -304,7 +304,7 @@ export default function AdminMonitoringPage() {
             ) : (
               recentAlerts.map((alert) => (
                 <div key={alert.id} className="px-5 py-3.5 flex items-start gap-3 hover:bg-slate-50/50 transition-colors">
-                  <div className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-full ${alert.severity === "HIGH" ? "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]" : alert.severity === "MEDIUM" ? "bg-[#FFF3E0] text-[var(--hc-warning)]" : "bg-[#E8F0FF] text-[var(--hc-primary)]"}`}>
+                  <div className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-full ${alert.severity === "HIGH" ? "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]" : alert.severity === "MEDIUM" ? "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]" : "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]"}`}>
                     {alert.severity === "INFO" ? <Info className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -313,7 +313,7 @@ export default function AdminMonitoringPage() {
                   </div>
                   <div className="shrink-0 text-right">
                     <span className="text-xs text-slate-400">{alert.time}</span>
-                    <span className={`block mt-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${alert.severity === "HIGH" ? "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]" : alert.severity === "MEDIUM" ? "bg-[#FFF3E0] text-[var(--hc-warning)]" : "bg-[#E8F0FF] text-[var(--hc-primary)]"}`}>
+                    <span className={`block mt-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${alert.severity === "HIGH" ? "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]" : alert.severity === "MEDIUM" ? "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]" : "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]"}`}>
                       {alert.severity}
                     </span>
                   </div>
@@ -472,7 +472,7 @@ function AlertsChart({ activeAlerts, inventoryAlerts, scheduleAlerts }: { active
       {/* Grid lines */}
       {yLabels.map((v) => (
         <g key={v}>
-          <line x1={padX} y1={yPos(v)} x2={w - padX} y2={yPos(v)} stroke="#E2E8F0" strokeWidth="0.5" />
+          <line x1={padX} y1={yPos(v)} x2={w - padX} y2={yPos(v)} stroke="var(--hc-border)" strokeWidth="0.5" />
           <text x={padX - 8} y={yPos(v) + 4} textAnchor="end" className="fill-slate-400" fontSize="10">{v}</text>
         </g>
       ))}
@@ -483,13 +483,13 @@ function AlertsChart({ activeAlerts, inventoryAlerts, scheduleAlerts }: { active
         </text>
       ))}
       {/* Lines */}
-      <path d={activePath} fill="none" stroke="#1E40AF" strokeWidth="2" strokeLinecap="round" />
-      <path d={inventoryPath} fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" />
-      <path d={schedulePath} fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" />
+      <path d={activePath} fill="none" stroke="var(--hc-blue-700)" strokeWidth="2" strokeLinecap="round" />
+      <path d={inventoryPath} fill="none" stroke="var(--hc-success)" strokeWidth="2" strokeLinecap="round" />
+      <path d={schedulePath} fill="none" stroke="var(--hc-warning)" strokeWidth="2" strokeLinecap="round" />
       {/* Current value dots */}
-      <circle cx={w - padX} cy={yPos(activeAlerts)} r="4" fill="#1E40AF" />
-      <circle cx={w - padX} cy={yPos(inventoryAlerts)} r="4" fill="#059669" />
-      <circle cx={w - padX} cy={yPos(scheduleAlerts)} r="4" fill="#D97706" />
+      <circle cx={w - padX} cy={yPos(activeAlerts)} r="4" fill="var(--hc-blue-700)" />
+      <circle cx={w - padX} cy={yPos(inventoryAlerts)} r="4" fill="var(--hc-success)" />
+      <circle cx={w - padX} cy={yPos(scheduleAlerts)} r="4" fill="var(--hc-warning)" />
     </svg>
   );
 }

@@ -262,7 +262,7 @@ export default function PatientPortalProfilePage() {
               Discard changes
             </button>
             <button
-              className="bg-[var(--hc-primary)] text-white text-xs font-bold uppercase tracking-widest px-12 py-4 shadow-[0_2px_0_0_#003da9] active:shadow-none active:translate-y-[2px] transition-all disabled:opacity-60"
+              className="bg-[var(--hc-primary)] text-white text-xs font-bold uppercase tracking-widest px-12 py-4 shadow-[0_2px_0_0_var(--hc-blue-700)] active:shadow-none active:translate-y-[2px] transition-all disabled:opacity-60"
               disabled={isSaving}
               type="submit"
             >

@@ -144,7 +144,7 @@ export default function SpecialClosuresPage() {
                   <div className={`w-14 h-14 shrink-0 rounded-[var(--radius-md)] flex flex-col items-center justify-center text-sm ${
                     closure.type === "holiday"
                       ? "bg-[var(--hc-primary)] text-white"
-                      : "bg-[#E8F0FF] text-[var(--hc-primary)]"
+                      : "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]"
                   }`}>
                     <span className="text-[9px] font-bold uppercase">{closure.date.split(" ")[0]}</span>
                     <span className="text-lg font-black leading-none">{closure.date.split(" ")[1]}</span>
