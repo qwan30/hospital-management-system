@@ -1,60 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hospital Management System — Frontend
+
+Next.js 16 (App Router) frontend for the Enterprise Hospital Management System.
+
+**Tech stack:** Next.js 16.2, React 19.2, Tailwind CSS 4, Playwright 1.59, Vitest.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 22+
+- Backend running at `http://localhost:8081` (see root [README](../README.md))
+- `.env.local` file with `NEXT_PUBLIC_API_BASE_URL=http://localhost:8081/api/v1`
 
+### Development
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev                    # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Frontend Quality Checks
-
+### Production Build
 ```bash
-npm run lint
 npm run build
-npm run test:e2e:ui
+npm start                     # http://localhost:3000
 ```
 
-The Playwright suite lives in `e2e/` and uses these environment variables:
+## Route Structure
 
-- `HMS_WEB_URL`: frontend base URL, default `http://localhost:3000`
-- `HMS_API_URL`: backend API base URL, default `http://localhost:8081/api/v1`
-- `NEXT_PUBLIC_API_BASE_URL`: client-side API base URL used by the app, default `http://localhost:8081/api/v1`
+The App Router is organized by role domain:
 
-Available E2E commands:
+| Route Group | Path | Purpose |
+|-------------|------|---------|
+| `(public)` | `/`, `/booking`, `/departments`, `/doctors`, `/news` | Public-facing pages |
+| `staff/(auth)` | `/staff/login` | Staff authentication |
+| `staff/(app)` | `/staff/dashboard`, `/staff/queue`, `/staff/appointments` | Clinical staff workflows |
+| `admin/(app)` | `/admin/dashboard`, `/admin/users`, `/admin/departments` | Administrative operations |
+| `portal/(auth)` | `/portal/login` | Patient portal authentication |
+| `portal/(app)` | `/portal/appointments`, `/portal/lab-results`, `/portal/profile` | Patient self-service |
 
-- `npm run test:e2e:ui`: route smoke, console/runtime, accessibility, responsive, and workflow smoke checks.
-- `npm run test:e2e:integrated`: backend-backed auth, claim, logout, public booking, and staff queue checks. It skips when the backend health endpoint is unavailable.
-- `npm run test:e2e:visual`: visual baseline snapshots for the highest-risk pages.
-- `npm run test:e2e:headed`: headed local debugging.
-- `npm run test:e2e:report`: open the last HTML report.
+## Quality Checks
 
-The UI route audit covers public, staff, patient portal, and admin route families. `/staff/queue` is backend-integrated: it reads nurse queue data, handles unauthorized staff sessions, and can post appointment check-ins. Tests prefer role, label, and link selectors; add `data-testid` only when semantic selectors are not practical.
+### Lint & Type Check
+```bash
+npm run lint                   # ESLint
+npm run build                  # Includes type checking
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Unit Tests (Vitest)
+```bash
+npm run test:unit              # Run unit tests
+npm run test:unit:coverage     # With coverage (target: 80%+)
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### E2E Tests (Playwright)
 
-## Learn More
+Environment variables:
+- `HMS_WEB_URL` — frontend base URL (default: `http://localhost:3000`)
+- `HMS_API_URL` — backend API base URL (default: `http://localhost:8081/api/v1`)
+- `NEXT_PUBLIC_API_BASE_URL` — client-side API base URL (default: `http://localhost:8081/api/v1`)
 
-To learn more about Next.js, take a look at the following resources:
+| Command | Description |
+|---------|-------------|
+| `npm run test:e2e:ui` | Route smoke, console/runtime, accessibility, responsive checks (323+ scenarios) |
+| `npm run test:e2e:integrated` | Backend-backed auth, claim, logout, booking, queue checks |
+| `npm run test:e2e:ci` | Full CI suite — RBAC, API client, operations, security, all routes |
+| `npm run test:e2e:visual` | Visual baseline snapshots for high-risk pages |
+| `npm run test:e2e:release-data` | Release demo data verification |
+| `npm run test:e2e:headed` | Headed local debugging |
+| `npm run test:e2e:report` | Open last HTML report |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The Playwright suite uses Page Object Models in `e2e/pages/` and specs in `e2e/specs/`. Tests prefer role, label, and link selectors; add `data-testid` only when semantic selectors are not practical.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture Notes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **App Router**: All routes use Next.js App Router with React Server Components where possible.
+- **API client**: Centralized in `src/lib/api-client.ts` with JWT token management and refresh flow.
+- **UI components**: Custom design system with CSS custom properties (`--hc-*` tokens) under `src/components/ui/`.
+- **Auth**: Staff auth via `/staff/login` (JWT in memory), patient auth via `/portal/login` (JWT + httpOnly refresh cookie).
+- **Route groups**: `(public)`, `(auth)`, `(app)` conventions separate public, auth-gated, and role-gated layouts.

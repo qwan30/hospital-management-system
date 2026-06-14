@@ -1,6 +1,6 @@
 # Current System Flows
 
-**Status:** current flow map for the May 14, 2026 repository baseline.
+**Status:** current flow map for the June 14, 2026 repository baseline.
 **Canonical runtime:** Spring Boot backend on `8081`, PostgreSQL on `5432`, and the Next.js app in `web/` on `3000`.
 
 This document summarizes the active product flows from source, route, and OpenAPI evidence. Use it with the route inventory and role matrix instead of treating route-file existence as proof that a workflow is fully backend-integrated.

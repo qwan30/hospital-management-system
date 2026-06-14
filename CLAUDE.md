@@ -4,61 +4,132 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a **Claude Code plugin** - a collection of production-ready agents, skills, hooks, commands, rules, and MCP configurations. The project provides battle-tested workflows for software development using Claude Code.
+This is an **Enterprise Hospital Management System (HMS)** — a full-stack healthcare ERP supporting clinical workflows, patient self-service, pharmacy dispensing, billing, and administrative operations.
 
-## Running Tests
+**Tech stack:** Java 17, Spring Boot 3.3, PostgreSQL 15 (with pgvector), Next.js 16 (App Router), React 19, Tailwind CSS 4, Playwright, Docker Compose.
 
-```bash
-# Run all tests
-node tests/run-all.js
-
-# Run individual test files
-node tests/lib/utils.test.js
-node tests/lib/package-manager.test.js
-node tests/hooks/hooks.test.js
-```
+The backend follows **Domain-Driven Design (DDD)** as a modular monolith. The frontend is a canonical Next.js App Router application under `web/`. The `frontend/` directory is design-reference prototype material only — not the active app.
 
 ## Architecture
 
-The project is organized into several core components:
+```
+backend/
+├── domain/          # JPA entities, enums, bounded-context exceptions, contracts
+├── infrastructure/  # Spring Data repositories, PostgreSQL adapters, Gmail client
+├── application/     # Use cases, auth services, scheduled jobs, seed data
+├── controller/      # REST controllers, API envelopes, security filters (40 controllers)
+└── start/           # Composition root, Flyway migrations, app config
 
-- **agents/** - Specialized subagents for delegation (planner, code-reviewer, tdd-guide, etc.)
-- **skills/** - Workflow definitions and domain knowledge (coding standards, patterns, testing)
-- **commands/** - Slash commands invoked by users (/tdd, /plan, /e2e, etc.)
-- **hooks/** - Trigger-based automations (session persistence, pre/post-tool hooks)
-- **rules/** - Always-follow guidelines (security, coding style, testing requirements)
-- **mcp-configs/** - MCP server configurations for external integrations
-- **scripts/** - Cross-platform Node.js utilities for hooks and setup
-- **tests/** - Test suite for scripts and utilities
+web/
+├── src/app/         # Next.js App Router — staff, admin, portal, public routes
+├── src/components/  # Shared UI components (hc-icon, data-panel, sidebar, etc.)
+├── src/lib/         # API client, auth helpers, utility modules
+└── e2e/             # Playwright specs + page objects (25 spec files, 183+ scenarios)
+```
 
-## Key Commands
+Dependency flow: `domain` ← `infrastructure` ← `application` ← `controller` ← `start`
 
-- `/tdd` - Test-driven development workflow
-- `/plan` - Implementation planning
-- `/e2e` - Generate and run E2E tests
-- `/code-review` - Quality review
-- `/build-fix` - Fix build errors
-- `/learn` - Extract patterns from sessions
-- `/skill-create` - Generate skills from git history
+## Running the System
+
+### Prerequisites
+- Java 17+, Node.js 22+, Docker Desktop
+- Copy `.env.example` to `.env` and fill in secrets
+
+### Quick Start (Docker Compose)
+```bash
+docker compose up -d          # postgres + backend + frontend
+docker compose down -v        # tear down with volume cleanup
+```
+Observability stack: `docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d` adds Prometheus, Grafana, Loki, and Tempo.
+
+### Backend (Development)
+```powershell
+.\backend\run.ps1              # PowerShell script — auto-loads .env, starts Spring Boot
+```
+Or manual:
+```bash
+cd backend
+mvn install -DskipTests
+mvn spring-boot:run -f start/pom.xml
+```
+Backend listens on `http://localhost:8081`. Actuator health: `http://localhost:8081/actuator/health`.
+
+### Frontend (Development)
+```bash
+cd web
+npm install
+npm run dev                    # http://localhost:3000
+```
+
+### Demo Accounts (seeded when HMS_RELEASE_DEMO_SEED_ENABLED=true)
+| Role | Email | Password |
+|------|-------|----------|
+| Doctor | `doctor1@hospital.vn` | `Doctor@1234` |
+| Pharmacist | `pharmacist@hospital.vn` | `Pharma@1234` |
+| Receptionist | `receptionist@hospital.vn` | `Reception@1234` |
+| Admin | `admin@hospital.vn` | `Admin@1234` |
+
+## Running Tests
+
+### Backend
+```bash
+cd backend
+mvn verify                     # 148 integration tests (Spring Boot + Testcontainers)
+```
+
+### Frontend
+```bash
+cd web
+npm run test:unit              # Vitest unit tests (80.48% branch coverage)
+npm run test:e2e:ui            # Playwright UI route smoke & accessibility (323+ scenarios)
+npm run test:e2e:integrated    # Backend-backed auth, claim, booking, queue checks
+npm run test:e2e:ci            # Full CI suite — RBAC, API client, operations, security
+npm run test:e2e:visual        # Visual baseline snapshots
+npm run lint                   # ESLint
+npm run build                  # Next.js production build
+```
+
+### ECC Agent Infrastructure
+```bash
+node .agents/tests/run-all.js  # ECC framework unit tests (hooks, lib, scripts)
+```
+
+## Key Project Metrics
+
+- **118 REST API mappings** across 40 controllers
+- **72 Next.js page files** covering staff, admin, patient portal, and public routes
+- **20 Flyway migrations** building 35 database tables with 26 indexes
+- **148 backend integration tests** + **80.48% frontend branch coverage**
+- **183+ Playwright E2E scenarios** covering RBAC, clinical workflows, and click-path safety
+
+## CI/CD
+
+GitHub Actions workflows in `.github/workflows/`:
+- `ci.yml` — Build, test (Java + frontend), lint, Docker image build/push to GHCR
+- `cd.yml` — Deploy to VPS via Docker Compose
+- `rollback.yml` — Automated rollback
+- `security-scan.yml` — Secret scanning and dependency audit
 
 ## Development Notes
 
-- Package manager detection: npm, pnpm, yarn, bun (configurable via `CLAUDE_PACKAGE_MANAGER` env var or project config)
-- Cross-platform: Windows, macOS, Linux support via Node.js scripts
-- Agent format: Markdown with YAML frontmatter (name, description, tools, model)
-- Skill format: Markdown with clear sections for when to use, how it works, examples
-- Skill placement: Curated in skills/; generated/imported under ~/.claude/skills/. See docs/SKILL-PLACEMENT-POLICY.md
-- Hook format: JSON with matcher conditions and command/notification hooks
+- **Frontend canonical source**: `web/` is the active app. `frontend/` is archived design-reference material only.
+- **Backend security**: Spring Security + JWT with 36 granular RBAC permissions via `@PreAuthorize`.
+- **PHI protection**: Patient identifiers (CCCD/CMND) encrypted with AES-GCM, indexed by SHA-256 hash.
+- **API envelope**: All responses use `{ success, data, message, error, pagination, timestamp }`.
+- **Rate limiting**: Public endpoints limited via `HMS_PUBLIC_RATE_LIMIT_PER_MINUTE` (default 30/min).
+- **Observability**: Structured logging, Prometheus metrics, OpenTelemetry tracing (configurable).
+- **Package manager**: npm (frontend). Maven (backend).
 
-## Contributing
+## ECC Agent Infrastructure
 
-Follow the formats in CONTRIBUTING.md:
-- Agents: Markdown with frontmatter (name, description, tools, model)
-- Skills: Clear sections (When to Use, How It Works, Examples)
-- Commands: Markdown with description frontmatter
-- Hooks: JSON with matcher and hooks array
+The `.agents/` directory contains ECC (Enterprise Claude Code) development tooling — skills, hooks, commands, and rules used for AI-assisted development of this HMS project. These are development utilities, not product features.
 
-File naming: lowercase with hyphens (e.g., `python-reviewer.md`, `tdd-workflow.md`)
+| Directory | Purpose |
+|-----------|---------|
+| `.agents/skills/` | Reusable AI workflows (tdd, code-review, e2e-testing, security-review, etc.) |
+| `.agents/scripts/` | CLI tools, hooks infrastructure, install automation |
+| `.agents/tests/` | ECC framework unit tests |
+| `.agents/rules/` | Always-follow development guidelines |
 
 ## Skills
 
@@ -68,6 +139,9 @@ Use the following skills when working on related files:
 |---------|-------|
 | `README.md` | `/readme` |
 | `.github/workflows/*.yml` | `/ci-workflow` |
+| `web/src/**` (frontend) | `/react-review`, `/e2e` |
+| `backend/**` (Java) | `/java-review`, `/springboot-tdd` |
+| `docs/**` | `/update-docs` |
 
 When spawning subagents, always pass conventions from the respective skill into the agent's prompt.
 

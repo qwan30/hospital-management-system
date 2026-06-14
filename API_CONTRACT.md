@@ -1,6 +1,6 @@
 # Hospital Management System API Contract
 
-Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
+Status: aligned with the repository on 2026-06-14. AI and internal assistant endpoints removed. Inventory dispense endpoint added.
 
 Base URL: `/api/v1`
 

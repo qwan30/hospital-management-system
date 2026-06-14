@@ -5,42 +5,192 @@ on:
     branches:
       - main
       - master
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
   pull_request:
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - ".gitignore"
+      - "LICENSE"
   workflow_dispatch:
 
 permissions:
   contents: read
   packages: write
+  security-events: write
+  actions: read
+
+# ── Concurrency: cancel redundant runs on same PR/branch ──────────
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  BACKEND_JDK: "17"
+  FRONTEND_NODE: "22"
 
 jobs:
-  # ── Job 1: Backend ─────────────────────────────────────────────
-  backend-test:
-    name: Backend Maven tests
+  # ═══════════════════════════════════════════════════════════════════
+  # Job 1: Detect what changed (for path-based skipping)
+  # ═══════════════════════════════════════════════════════════════════
+  changes:
+    name: Detect changed paths
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      infra: ${{ steps.filter.outputs.infra }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Path filter
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+              - '.github/workflows/ci.yml'
+              - '.github/workflows/cd.yml'
+            frontend:
+              - 'web/src/**'
+              - 'web/public/**'
+              - 'web/e2e/**'
+              - 'web/*.{ts,js,json,css}'
+              - '.github/workflows/ci.yml'
+              - '.github/workflows/cd.yml'
+            infra:
+              - 'docker-compose.yml'
+              - 'docker-compose.observability.yml'
+              - 'infra/observability/**'
+              - 'backend/Dockerfile'
+              - 'web/Dockerfile'
+
+  # ═══════════════════════════════════════════════════════════════════
+  # Job 2: CodeQL Security Analysis
+  # ═══════════════════════════════════════════════════════════════════
+  codeql:
+    name: CodeQL security scan
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    defaults:
-      run:
-        working-directory: backend
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["java-kotlin", "javascript-typescript"]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Java 17 (Temurin) with Maven cache
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: security-extended,security-and-quality
+
+      - name: Auto-build (Java)
+        if: matrix.language == 'java-kotlin'
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Auto-build (JS/TS)
+        if: matrix.language == 'javascript-typescript'
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
+
+  # ═══════════════════════════════════════════════════════════════════
+  # Job 3: Backend Tests
+  # ═══════════════════════════════════════════════════════════════════
+  backend-test:
+    name: Backend Maven verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: [changes]
+    if: ${{ needs.changes.outputs.backend == 'true' || github.event_name != 'pull_request' }}
+    defaults:
+      run:
+        working-directory: backend
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg15
+        env:
+          POSTGRES_DB: hospital_db
+          POSTGRES_USER: hospital_user
+          POSTGRES_PASSWORD: testpass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U hospital_user -d hospital_db"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.BACKEND_JDK }}
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: ${{ env.BACKEND_JDK }}
           cache: maven
 
-      - name: Run Maven tests (compile + unit tests, all modules)
-        run: mvn -B test
+      - name: Maven verify (unit + integration tests + JaCoCo)
+        run: >-
+          mvn -B verify
+          -Dspring.datasource.url=jdbc:postgresql://localhost:5432/hospital_db
+          -Dspring.datasource.username=hospital_user
+          -Dspring.datasource.password=testpass
+          -Dspring.jpa.hibernate.ddl-auto=create-drop
+        env:
+          JWT_SECRET: ci-test-jwt-secret-at-least-32-chars
+          PATIENT_IDENTIFIER_SECRET: ci-test-patient-secret-32-chars
 
-  # ── Job 2: Frontend ────────────────────────────────────────────
+      - name: Upload JaCoCo coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: |
+            backend/**/target/site/jacoco/jacoco.xml
+            backend/**/target/site/jacoco/index.html
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-reports
+          path: backend/**/target/surefire-reports/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # ═══════════════════════════════════════════════════════════════════
+  # Job 4: Frontend Tests
+  # ═══════════════════════════════════════════════════════════════════
   frontend-test:
     name: Frontend lint, test, build & E2E
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    needs: [changes]
+    if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name != 'pull_request' }}
     defaults:
       run:
         working-directory: web
@@ -49,10 +199,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Node.js 22 with npm cache
+      - name: Set up Node.js ${{ env.FRONTEND_NODE }}
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: ${{ env.FRONTEND_NODE }}
           cache: npm
           cache-dependency-path: web/package-lock.json
 
@@ -95,6 +245,15 @@ jobs:
       - name: Unit tests with coverage
         run: npm run test:unit:coverage
 
+      - name: Upload frontend coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: web/coverage/
+          if-no-files-found: warn
+          retention-days: 14
+
       - name: Production build
         env:
           NEXT_PUBLIC_API_BASE_URL: http://localhost:8081/api/v1
@@ -117,13 +276,38 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-  # ── Job 3: Docker images (non-PR only, depends on tests) ───────
-  docker-push:
-    name: Build & push Docker images
+  # ═══════════════════════════════════════════════════════════════════
+  # Job 5: Observability stack validation
+  # ═══════════════════════════════════════════════════════════════════
+  validate-observability:
+    name: Validate observability compose config
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    needs: [backend-test, frontend-test]
-    if: github.event_name != 'pull_request'
+    timeout-minutes: 5
+    needs: [changes]
+    if: ${{ needs.changes.outputs.infra == 'true' || github.event_name != 'pull_request' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Validate docker-compose.yml
+        run: docker compose -f docker-compose.yml config --quiet
+
+      - name: Validate docker-compose.observability.yml
+        run: docker compose -f docker-compose.yml -f docker-compose.observability.yml config --quiet
+
+  # ═══════════════════════════════════════════════════════════════════
+  # Job 6: Docker images (non-PR only, depends on core tests)
+  # ═══════════════════════════════════════════════════════════════════
+  docker-push:
+    name: Build, scan & push Docker images
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [backend-test, frontend-test, validate-observability]
+    if: ${{ github.event_name != 'pull_request' && (success() || !cancelled()) }}
 
     steps:
       - name: Checkout
@@ -139,7 +323,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # ── Backend image ──
       - name: Build and push Backend image
+        id: backend-image
         uses: docker/build-push-action@v6
         with:
           context: ./backend
@@ -151,7 +337,25 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Scan Backend image (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
+          format: sarif
+          output: trivy-backend.sarif
+          severity: CRITICAL,HIGH
+          exit-code: 0
+
+      - name: Upload Backend scan results
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-backend.sarif
+          category: trivy-backend
+
+      # ── Frontend image ──
       - name: Build and push Frontend image
+        id: frontend-image
         uses: docker/build-push-action@v6
         with:
           context: ./web
@@ -164,3 +368,57 @@ jobs:
             ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Scan Frontend image (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
+          format: sarif
+          output: trivy-frontend.sarif
+          severity: CRITICAL,HIGH
+          exit-code: 0
+
+      - name: Upload Frontend scan results
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-frontend.sarif
+          category: trivy-frontend
+
+  # ═══════════════════════════════════════════════════════════════════
+  # Job 7: Summary — final gate
+  # ═══════════════════════════════════════════════════════════════════
+  ci-summary:
+    name: CI summary
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    needs: [backend-test, frontend-test, validate-observability, codeql]
+    if: always()
+    steps:
+      - name: Check results
+        run: |
+          echo "## HMS CI Results" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Job | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-----|--------|" >> "$GITHUB_STEP_SUMMARY"
+
+          declare -A jobs=(
+            ["codeql"]="${{ needs.codeql.result }}"
+            ["backend-test"]="${{ needs.backend-test.result }}"
+            ["frontend-test"]="${{ needs.frontend-test.result }}"
+            ["validate-observability"]="${{ needs.validate-observability.result }}"
+          )
+
+          FAILED=0
+          for job in "${!jobs[@]}"; do
+            result="${jobs[$job]}"
+            icon="✅"
+            if [[ "$result" == "failure" ]]; then icon="❌"; FAILED=1; fi
+            if [[ "$result" == "skipped" ]]; then icon="⏭️"; fi
+            if [[ "$result" == "cancelled" ]]; then icon="⚠️"; fi
+            echo "| $job | $icon $result |" >> "$GITHUB_STEP_SUMMARY"
+          done
+
+          if [[ $FAILED -eq 1 ]]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "❌ **Some jobs failed.** Check the logs above." >> "$GITHUB_STEP_SUMMARY"
+          fi

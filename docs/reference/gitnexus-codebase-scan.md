@@ -1,6 +1,6 @@
 # GitNexus Codebase Scan
 
-**Status:** code-intelligence snapshot for committed `HEAD` plus source metrics refreshed on 2026-05-31.
+**Status:** code-intelligence snapshot for committed `HEAD` plus source metrics refreshed on 2026-06-14.
 **Primary source:** GitNexus index for `hospital-management-system`, verified with source, config, and test inventories.
 
 ## 1. GitNexus Index

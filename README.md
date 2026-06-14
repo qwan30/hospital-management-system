@@ -6,8 +6,15 @@
 [![Next.js 16](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=nextdotjs)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)](https://react.dev/)
 [![Playwright](https://img.shields.io/badge/Playwright-E2E-green?style=for-the-badge&logo=playwright)](https://playwright.dev/)
+[![Release](https://img.shields.io/badge/Release-RC_1.0-0d7c4b?style=for-the-badge)](https://github.com/tranhquan099-commits/hospital-management-system)
+[![Tests](https://img.shields.io/badge/Tests-331_passing-success?style=for-the-badge)](https://github.com/tranhquan099-commits/hospital-management-system/actions)
+[![Coverage](https://img.shields.io/badge/Coverage-80.48%25-brightgreen?style=for-the-badge)](https://github.com/tranhquan099-commits/hospital-management-system)
 
 Một hệ thống quản lý bệnh viện chuyên sâu (Healthcare ERP) hỗ trợ toàn diện các luồng nghiệp vụ từ đặt lịch khám công khai, phân luồng tiếp đón (Intake/Queue), bệnh án lâm sàng (EHR), cấp phát thuốc (Pharmacy Dispensing), thanh toán viện phí (Billing) cho đến cổng thông tin tự phục vụ dành cho bệnh nhân (Patient Portal). Hệ thống được thiết kế theo mô hình **DDD (Domain-Driven Design)** và đáp ứng các tiêu chuẩn bảo mật nghiêm ngặt đối với thông tin cá nhân của bệnh nhân (PHI).
+
+> **🟢 Production Status: Release Candidate — June 14, 2026**  
+> Tất cả 7 luồng nghiệp vụ lâm sàng được triển khai và kiểm thử. 148 backend tests + 183+ E2E scenarios passing. 80.48% frontend branch coverage.  
+> 📚 **[Xem tài liệu đầy đủ →](docs/HMS_DOCUMENTATION.html)** | 📂 **[Documentation Map →](docs/README.md)**
 
 ---
 
@@ -121,13 +128,46 @@ npm run dev
 *Truy cập UI tại: `http://localhost:3000`*
 
 ### 6. Tài Khoản Demo Mặc Định (Seeded Users)
-- **Bác sĩ**: `doctor1@hospital.vn` / `Doctor@1234`
-- **Dược sĩ**: `pharmacist@hospital.vn` / `Pharma@1234`
-- **Lễ tân**: `receptionist@hospital.vn` / `Reception@1234`
-- **Admin**: `admin@hospital.vn` / `Admin@1234`
+| Vai Trò | Email | Mật Khẩu |
+|---------|-------|----------|
+| Bác sĩ (Nội khoa) | `doctor1@hospital.vn` | `Doctor@1234` |
+| Bác sĩ (Tim mạch) | `doctor2@hospital.vn` | `Doctor@1234` |
+| Điều dưỡng | `nurse@hospital.vn` | `Nurse@1234` |
+| Lễ tân | `receptionist@hospital.vn` | `Reception@1234` |
+| Dược sĩ | `pharmacist@hospital.vn` | `Pharma@1234` |
+| Kế toán | `accountant@hospital.vn` | `Acc@1234` |
+| Admin | `admin@hospital.vn` | `Admin@1234` |
+| Bệnh nhân (Portal) | `patient@example.com` | `Patient@1234` |
+
+> Kích hoạt `HMS_RELEASE_DEMO_SEED_ENABLED=true` để tạo thêm dữ liệu UAT tổng hợp (bệnh nhân, lịch hẹn, kho dược, audit logs).
 
 ---
 
 ## 📈 Tự Động Hóa Triển Khai (CI/CD & Observability)
-- **CI Pipeline**: Tự động hóa kiểm thử biên dịch Java, chạy test tích hợp Testcontainers, kiểm linter và kiểm thử frontend (Vitest & Playwright) trên GitHub Actions, tự động đóng gói image đẩy lên GHCR.
-- **CD Pipeline**: Tích hợp deploy lên máy chủ VPS bằng Docker Compose. Hỗ trợ hệ thống giám sát hoạt động lâm sàng (**Prometheus + Grafana + Loki + Tempo**) thông qua file overlay `docker-compose.observability.yml`.
+- **CI Pipeline** (`ci.yml`): Tự động hóa kiểm thử biên dịch Java, chạy test tích hợp Testcontainers, kiểm linter và kiểm thử frontend (Vitest & Playwright) trên GitHub Actions, tự động đóng gói image đẩy lên GHCR.
+- **CD Pipeline** (`cd.yml`): Tích hợp deploy lên máy chủ VPS bằng Docker Compose với staging → production promotion, smoke tests, và Slack notifications.
+- **Rollback** (`rollback.yml`): Tự động rollback với confirmation gate khi release thất bại health check.
+- **Security Scan** (`security-scan.yml`): OWASP Dependency Check, TruffleHog secret detection, Trivy container scanning.
+- **Observability**: Hỗ trợ hệ thống giám sát hoạt động (**Prometheus + Grafana + Loki + Tempo**) thông qua file overlay `docker-compose.observability.yml`.
+
+---
+
+## 📚 Tài Liệu (Documentation)
+
+Tài liệu dự án được tổ chức theo cấu trúc 12 danh mục chuyên nghiệp:
+
+| Danh Mục | Nội Dung | Tài Liệu Chính |
+|----------|----------|----------------|
+| **00-overview** | Nền tảng kỹ thuật, quy trình | [`project-foundation.md`](docs/00-overview/project-foundation.md) |
+| **01-business** | Yêu cầu nghiệp vụ, business rules | [`business-rules.md`](docs/01-business/business-rules.md) |
+| **02-product** | PRD, feature list, roadmap | [`prd.md`](docs/02-product/prd.md) |
+| **03-requirements** | SRS, permissions matrix | [`permissions-matrix.md`](docs/03-requirements/permissions-matrix.md) |
+| **04-architecture** | DDD, security, coding standards | [`architecture.md`](docs/04-architecture/architecture.md) |
+| **05-api** | API contract, auth, error codes | [`api-overview.md`](docs/05-api/api-overview.md) |
+| **06-database** | Schema, migrations, seed data | [`db-schema.md`](docs/06-database/db-schema.md) |
+| **07-flows** | Business flows, state machines | [`end-to-end-business-flow.md`](docs/07-flows/end-to-end-business-flow.md) |
+| **09-testing** | Test strategy, test plan | [`test-strategy.md`](docs/09-testing/test-strategy.md) |
+| **10-deployment** | CI/CD, Docker, env variables | [`deployment-guide.md`](docs/10-deployment/deployment-guide.md) |
+| **12-handover** | Handover, onboarding, known issues | [`handover-document.md`](docs/12-handover/handover-document.md) |
+
+> 📄 **[Xem tài liệu tổng hợp dạng HTML →](docs/HMS_DOCUMENTATION.html)** | 📂 **[Documentation Index →](docs/README.md)** | 📋 **[API Contract →](API_CONTRACT.md)**

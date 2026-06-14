@@ -1,6 +1,6 @@
 # Frontend Route Inventory
 
-**Status:** current route inventory for `web/src/app` as refreshed on 2026-05-31.
+**Status:** current route inventory for `web/src/app` as refreshed on 2026-06-14.
 **Canonical frontend:** `web/`
 **Reference-only frontend prototypes:** `frontend/`
 

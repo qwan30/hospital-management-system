@@ -1,123 +1,173 @@
-# Hospital Management System Documentation Map
+# Hospital Management System — Documentation Map
 
-**Status:** current documentation map for the 2026-05-31 repository status refresh.
+**Status:** comprehensive documentation aligned with the repository on 2026-06-14.
+**Release:** Release Candidate 1.0 — all 7 clinical workflows implemented and tested.
 **Scope:** documentation navigation, ownership, source-of-truth rules, and maintenance checks.
 
-## 1. How To Read This Documentation Set
+## Quick Access
 
-The repository is a backend-first Hospital Management System with a canonical Next.js frontend under `web/`.
+| Resource | Link |
+|----------|------|
+| 📄 Consolidated HTML | [`HMS_DOCUMENTATION.html`](HMS_DOCUMENTATION.html) — single-page readable overview |
+| 🏥 Project README | [`../README.md`](../README.md) — project overview + quick start |
+| 📋 API Contract | [`../API_CONTRACT.md`](../API_CONTRACT.md) — endpoint families + response envelope |
+| 🔧 Claude Code Guide | [`../CLAUDE.md`](../CLAUDE.md) — AI-assisted development instructions |
 
-Use repository source reality as the tie-breaker when documents disagree:
+---
 
-1. backend controller mappings under `backend/controller/src/main/java`
-2. request/response contracts and enums under `backend/domain/src/main/java`
-3. backend services under `backend/application/src/main/java`
-4. Flyway migrations under `backend/start/src/main/resources/db/migration`
-5. frontend route files under `web/src/app`
-6. Playwright suites under `web/e2e`
-7. local setup files such as `docker-compose.yml`, `.env.example`, and `web/package.json`
+## 1. Documentation Structure (12 Categories)
 
-## 2. Source-Of-Truth Map
+### 00-overview — Foundation & Process
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`project-foundation.md`](00-overview/project-foundation.md) | ✅ Complete | Master technical foundation — source of truth for all standards |
+| [`project-context.md`](00-overview/project-context.md) | ✅ Complete | Project background, problem statement, context |
+| [`documentation-index.md`](00-overview/documentation-index.md) | ✅ Complete | Full document inventory with status |
+| [`git-workflow.md`](00-overview/git-workflow.md) | ✅ Complete | Branch model, commit conventions, PR rules |
+| [`code-review-checklist.md`](00-overview/code-review-checklist.md) | ✅ Complete | Review checklist for backend + frontend |
+| `definition-of-ready-done.md` | 📋 Planned | DoR / DoD / Spec-Driven Workflow |
+| `ai-usage-rules.md` | 📋 Planned | AI-assisted development boundaries |
 
-| Topic | Primary document | Supporting documents |
-| --- | --- | --- |
-| Repository overview | [`../README.md`](../README.md) | this map |
-| Repository status | [`reference/repository-status.md`](reference/repository-status.md) | [`reference/gitnexus-codebase-scan.md`](reference/gitnexus-codebase-scan.md), [`reference/engineering-metrics.md`](reference/engineering-metrics.md), GitNexus index under `../.gitnexus` |
-| Product scope | [`HMS_PRD.md`](HMS_PRD.md) | [`HMS_ProjectPlan.md`](HMS_ProjectPlan.md), [`HMS_UserManual.md`](HMS_UserManual.md) |
-| System requirements | [`HMS_SRS.md`](HMS_SRS.md) | [`reference/role-screen-api-matrix.md`](reference/role-screen-api-matrix.md) |
-| Technical design | [`HMS_TDD.md`](HMS_TDD.md) | [`HMS_ArchitectureDiagrams.html`](HMS_ArchitectureDiagrams.html), [`03-architecture/FRONTEND_ARCHITECTURE.md`](03-architecture/FRONTEND_ARCHITECTURE.md) |
-| Code intelligence scan | [`reference/gitnexus-codebase-scan.md`](reference/gitnexus-codebase-scan.md) | [`reference/repository-status.md`](reference/repository-status.md), [`reference/engineering-metrics.md`](reference/engineering-metrics.md), GitNexus index under `../.gitnexus` |
-| Current system flows | [`reference/current-system-flows.md`](reference/current-system-flows.md) | [`reference/frontend-route-inventory.md`](reference/frontend-route-inventory.md), [`reference/role-screen-api-matrix.md`](reference/role-screen-api-matrix.md) |
-| API contract | [`../API_CONTRACT.md`](../API_CONTRACT.md) | [`API_ENDPOINTS_COMPREHENSIVE.md`](API_ENDPOINTS_COMPREHENSIVE.md), [`04-api/COMPONENT_API_MAPPING.md`](04-api/COMPONENT_API_MAPPING.md), [`04-api/DATA_FLOW_SPECIFICATION.md`](04-api/DATA_FLOW_SPECIFICATION.md), [`04-api/ERROR_HANDLING_MATRIX.md`](04-api/ERROR_HANDLING_MATRIX.md), [`reference/removed-endpoints.md`](reference/removed-endpoints.md) |
-| Database migrations | [`HMS_DBMigrationPlan.md`](HMS_DBMigrationPlan.md) | migration files under `../backend/start/src/main/resources/db/migration` |
-| Deployment and setup | [`HMS_DeploymentGuide.md`](HMS_DeploymentGuide.md) | [`../README.md`](../README.md), [`reference/demo-accounts-and-seed-data.md`](reference/demo-accounts-and-seed-data.md) |
-| Testing | [`HMS_TestPlan.md`](HMS_TestPlan.md) | [`06-testing/business-flow-test-matrix.md`](06-testing/business-flow-test-matrix.md), [`06-testing/full-hms-production-readiness-report-2026-05-22.md`](06-testing/full-hms-production-readiness-report-2026-05-22.md), `../backend/application/src/test`, `../backend/start/src/test`, `../web/e2e` |
-| Release readiness | [`06-testing/full-hms-production-readiness-report-2026-05-22.md`](06-testing/full-hms-production-readiness-report-2026-05-22.md) | [`06-testing/business-flow-test-matrix.md`](06-testing/business-flow-test-matrix.md), [`reference/repository-status.md`](reference/repository-status.md), Khuym onboarding state |
-| Frontend routes | [`reference/frontend-route-inventory.md`](reference/frontend-route-inventory.md) | [`design_brief.md`](design_brief.md), `../web/e2e/helpers/routes.ts` |
-| Design direction | [`design_brief.md`](design_brief.md) | [`DESIGN.md`](DESIGN.md) |
-| Documentation audit | [`audits/documentation-review-and-improvement-plan.md`](audits/documentation-review-and-improvement-plan.md) | [`INTEGRATION_GAPS.md`](INTEGRATION_GAPS.md), [`audits/verification-checklist.md`](audits/verification-checklist.md), [`audits/final-documentation-review-notes.md`](audits/final-documentation-review-notes.md) |
-| Agent workflow governance | [`09-agent-workflows/README.md`](09-agent-workflows/README.md) | [`reference/agent-workflow-governance.md`](reference/agent-workflow-governance.md) |
+### 01-business — Business Requirements
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`stakeholders.md`](01-business/stakeholders.md) | ✅ Complete | Project stakeholders and roles |
+| [`scope.md`](01-business/scope.md) | ✅ Complete | In-scope / out-of-scope boundaries |
+| [`glossary.md`](01-business/glossary.md) | ✅ Complete | Ubiquitous language — 34 domain terms |
+| [`business-rules.md`](01-business/business-rules.md) | ✅ Complete | 30 business rules (BR-001 through BR-030) |
 
-## 2.1 Professional Category Navigation
+### 02-product — Product Management
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`prd.md`](02-product/prd.md) | ✅ Complete | Product Requirements Document (merged from HMS_PRD.md) |
+| [`feature-list.md`](02-product/feature-list.md) | ✅ Complete | 50 features cataloged (F-001 through F-050) |
+| `product-roadmap.md` | 📋 Planned | Release timeline |
+| `release-plan.md` | 📋 Planned | Release history and upcoming milestones |
 
-The long-term documentation category structure is present as a navigation layer:
+### 03-requirements — System Requirements
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`permissions-matrix.md`](03-requirements/permissions-matrix.md) | ✅ Complete | 36 RBAC permissions × 7 roles |
+| [`../docs/HMS_SRS.md`](HMS_SRS.md) | 📦 Legacy | System Requirements Specification (to be migrated) |
+| `functional-requirements.md` | 📋 Planned | FR catalog with traceability |
+| `use-cases.md` | 📋 Planned | Use case index and traceability matrix |
 
-| Category | Purpose |
-| --- | --- |
-| [`00-overview/`](00-overview/) | repository and documentation overview |
-| [`01-product/`](01-product/) | product, project, user, and use case docs |
-| [`02-requirements/`](02-requirements/) | SRS and requirement traceability |
-| [`03-architecture/`](03-architecture/) | architecture, technical design, database, metrics |
-| [`04-api/`](04-api/) | API contract and endpoint references |
-| [`05-ux-ui/`](05-ux-ui/) | design brief, visual system, route inventory |
-| [`06-testing/`](06-testing/) | test plan and verification records |
-| [`07-devops/`](07-devops/) | deployment, environment, and migration setup |
-| [`08-operations/`](08-operations/) | integration, seed data, archive, removed surfaces |
-| [`09-agent-workflows/`](09-agent-workflows/) | agent and workflow governance |
-| [`10-portfolio/`](10-portfolio/) | verified metrics and presentation references |
+### 04-architecture — Architecture & Design
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`architecture.md`](04-architecture/architecture.md) | ✅ Complete | Architecture overview — DDD modular monolith |
+| [`domain-driven-design.md`](04-architecture/domain-driven-design.md) | ✅ Complete | Bounded contexts, aggregates, ubiquitous language |
+| [`security-architecture.md`](04-architecture/security-architecture.md) | ✅ Complete | Auth (JWT), RBAC (36 permissions), PHI encryption |
+| [`tech-stack.md`](04-architecture/tech-stack.md) | ✅ Complete | Complete technology stack with versions |
+| [`coding-standards.md`](04-architecture/coding-standards.md) | ✅ Complete | Java + TypeScript coding standards |
+| [`../docs/HMS_TDD.md`](HMS_TDD.md) | 📦 Legacy | Technical Design Document (to be migrated) |
+| [`../docs/HMS_ArchitectureDiagrams.html`](HMS_ArchitectureDiagrams.html) | 📦 Reference | Generated architecture diagrams |
 
-## 3. Document Classification
+### 05-api — API Documentation
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`api-overview.md`](05-api/api-overview.md) | ✅ Complete | 118 endpoints, 9 families, response envelope |
+| [`auth-api.md`](05-api/auth-api.md) | ✅ Complete | Staff + patient authentication flows |
+| [`error-codes.md`](05-api/error-codes.md) | ✅ Complete | HTTP status codes, error envelope, validation errors |
+| [`../API_CONTRACT.md`](../API_CONTRACT.md) | ✅ Current | Endpoint family contract (root-level) |
+| `API_ENDPOINTS_COMPREHENSIVE.md` | 📦 Legacy | Expanded endpoint reference |
+| `COMPONENT_API_MAPPING.md` | 📦 Legacy | Component-to-API mapping |
+| `DATA_FLOW_SPECIFICATION.md` | 📦 Legacy | Data flow specification |
 
-| Document | Classification | Notes |
-| --- | --- | --- |
-| `API_ENDPOINTS_COMPREHENSIVE.md` | current | expanded endpoint reference verified against controllers |
-| `DESIGN.md` | current/reference | visual design system guidance |
-| `design_brief.md` | current | canonical UX route and workflow brief |
-| `HMS_ArchitectureDiagrams.html` | current/reference | generated architecture diagram artifact |
-| `HMS_DBMigrationPlan.md` | current | migration strategy and inventory |
-| `HMS_DeploymentGuide.md` | current | local deployment and operational setup |
-| `HMS_Documentation_Audit_Professionalization_Requirement_COMPLETE.md` | current/audit requirement | requirement and completion tracker for this documentation pass |
-| `HMS_IntegrationGuide.md` | current | Gmail and removed integration notes |
-| `HMS_PRD.md` | current | product baseline |
-| `HMS_ProjectPlan.md` | current | frontend/product delivery phases and status |
-| `HMS_SRS.md` | current | requirements mapped to implemented APIs |
-| `HMS_TDD.md` | current | technical design baseline |
-| `HMS_TestPlan.md` | current | backend and Playwright test plan |
-| `HMS_UseCaseDiagram.md` | current/reference | use case summary |
-| `HMS_UseCaseDiagram.puml` | current/reference | PlantUML source |
-| `HMS_UserManual.md` | current/reference | role workflow guide, not proof of complete frontend production readiness |
-| `archive/resolved/implementation_plan.md.resolved` | archived | superseded implementation status note retained for history |
-| `audits/stabilization-readiness-2026-05-13.md` | current/audit | latest stabilization verdict, verification evidence, and Docker blocker |
-| `reference/agent-workflow-governance.md` | current/reference | classifies agent assets as workflow tooling, not product features |
-| `reference/current-system-flows.md` | current/reference | active public, staff, admin, finance, inventory, and patient portal flow map |
-| `reference/gitnexus-codebase-scan.md` | current/reference | GitNexus graph snapshot, key code surfaces, and source metrics |
-| `reference/repository-status.md` | current/reference | current Git, GitNexus, source metrics, and release-readiness label |
+### 06-database — Database
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`db-schema.md`](06-database/db-schema.md) | ✅ Complete | 35 tables across 8 domains, 26 indexes |
+| [`migration-guide.md`](06-database/migration-guide.md) | ✅ Complete | Flyway setup, migration naming, deployment |
+| [`seed-data.md`](06-database/seed-data.md) | ✅ Complete | All demo accounts + release demo seed config |
+| [`../docs/HMS_DBMigrationPlan.md`](HMS_DBMigrationPlan.md) | 📦 Legacy | Migration inventory (to be migrated) |
 
-## 4. Status Labels
+### 07-flows — Business Flows
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`end-to-end-business-flow.md`](07-flows/end-to-end-business-flow.md) | ✅ Complete | 7 clinical workflows with Mermaid diagrams |
+| [`state-machine.md`](07-flows/state-machine.md) | ✅ Complete | Appointment, Invoice, Queue, Inventory state machines |
+| [`reference/current-system-flows.md`](reference/current-system-flows.md) | ✅ Current | Cross-role workflow map |
+| [`reference/frontend-route-inventory.md`](reference/frontend-route-inventory.md) | ✅ Current | 72 frontend routes cataloged |
 
-Use these labels consistently:
+### 08-ui-ux — UI/UX Design
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`design_brief.md`](design_brief.md) | 📦 Legacy | Canonical UX route and workflow brief |
+| [`DESIGN.md`](DESIGN.md) | 📦 Reference | Visual design system guidance |
+
+### 09-testing — Quality Assurance
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`test-strategy.md`](09-testing/test-strategy.md) | ✅ Complete | Test pyramid, coverage targets, CI integration |
+| [`test-plan.md`](09-testing/test-plan.md) | ✅ Complete | Backend + frontend test suites, business flow coverage |
+| [`../docs/HMS_TestPlan.md`](HMS_TestPlan.md) | 📦 Legacy | Test plan (to be migrated) |
+| [`06-testing/business-flow-test-matrix.md`](06-testing/business-flow-test-matrix.md) | 📦 Legacy | Business flow test coverage |
+| [`06-testing/full-hms-production-readiness-report-2026-06-01.md`](06-testing/full-hms-production-readiness-report-2026-06-01.md) | 📦 Reference | Last full verification report |
+
+### 10-deployment — DevOps & Deployment
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`deployment-guide.md`](10-deployment/deployment-guide.md) | ✅ Complete | Docker Compose + development setup |
+| [`ci-cd.md`](10-deployment/ci-cd.md) | ✅ Complete | 4 GitHub Actions workflows documented |
+| [`docker.md`](10-deployment/docker.md) | ✅ Complete | Docker configuration for all services |
+| [`env-variables.md`](10-deployment/env-variables.md) | ✅ Complete | Complete environment variable reference |
+| [`../docs/HMS_DeploymentGuide.md`](HMS_DeploymentGuide.md) | 📦 Legacy | Deployment guide (to be migrated) |
+
+### 11-operations — Operations
+| Document | Status | Purpose |
+|----------|--------|---------|
+| `operations-guide.md` | 📋 Planned | Day-to-day operations procedures |
+| `troubleshooting.md` | 📋 Planned | Common issues and fixes |
+
+### 12-handover — Project Handover
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`handover-document.md`](12-handover/handover-document.md) | ✅ Complete | Project handover as of 2026-06-14 |
+| [`developer-onboarding.md`](12-handover/developer-onboarding.md) | ✅ Complete | New developer setup and workflow guide |
+| [`known-issues.md`](12-handover/known-issues.md) | ✅ Complete | 12 tracked issues (OPEN-001 through OPEN-012) |
+
+### reference — Reference Documents
+| Document | Status | Purpose |
+|----------|--------|---------|
+| [`repository-status.md`](reference/repository-status.md) | ✅ Current | Git state, metrics, release-readiness |
+| [`engineering-metrics.md`](reference/engineering-metrics.md) | ✅ Current | Verified metric values |
+| [`gitnexus-codebase-scan.md`](reference/gitnexus-codebase-scan.md) | ✅ Current | Code intelligence snapshot |
+| [`frontend-route-inventory.md`](reference/frontend-route-inventory.md) | ✅ Current | 72 route files cataloged |
+| [`role-screen-api-matrix.md`](reference/role-screen-api-matrix.md) | ✅ Current | Role-to-screen-to-API mapping |
+| [`current-system-flows.md`](reference/current-system-flows.md) | ✅ Current | Cross-role workflow map |
+| [`demo-accounts-and-seed-data.md`](reference/demo-accounts-and-seed-data.md) | ✅ Current | All demo account details |
+| [`removed-endpoints.md`](reference/removed-endpoints.md) | ✅ Current | Removed endpoint families |
+| [`agent-workflow-governance.md`](reference/agent-workflow-governance.md) | ✅ Current | Agent asset classification |
+
+---
+
+## 2. Status Labels
 
 | Status | Meaning |
-| --- | --- |
-| `Implemented` | Exists in the current repository and is verifiable from code, routes, tests, or docs |
-| `Partially implemented` | Exists but is incomplete, limited, or not fully integrated |
-| `Planned` | Future work, not active implementation |
-| `Reference-only` | Design/prototype/reference material, not active runtime source |
-| `Removed` | Historical behavior that must not be documented as active |
-| `Deprecated` | Still present but should not be used as the current baseline |
+|--------|---------|
+| ✅ Complete | Generated and verified against current codebase |
+| ✅ Current | Existing document, verified current |
+| 📦 Legacy | Original standalone doc — content migrated but kept for reference |
+| 📋 Planned | Not yet generated, content known |
+| 📦 Reference | Design/prototype/reference material |
 
-## 5. Canonical Frontend Rule
+---
 
-`web/` is the canonical runnable Next.js frontend.
+## 3. Canonical Rules
 
-`frontend/` is retained as design-reference prototype material only. Do not document `frontend/` as the active app unless a future implementation explicitly changes the repo.
+1. `web/` is the canonical runnable Next.js frontend. `frontend/` is archived design-reference only.
+2. Repository source reality is the tie-breaker when documents disagree.
+3. Endpoint changes require updates to `../API_CONTRACT.md`, `05-api/api-overview.md`, and affected requirements docs.
+4. Frontend route changes require updates to `reference/frontend-route-inventory.md` and `reference/current-system-flows.md`.
+5. Migration changes require updates to `06-database/migration-guide.md` and `06-database/db-schema.md`.
+6. Test suite changes require updates to `09-testing/test-plan.md`.
 
-## 6. Generated And Temporary Artifacts
+---
 
-| Path | Classification | Documentation action |
-| --- | --- | --- |
-| `node_modules/` | generated | ignore in documentation inventories except dependency/setup notes |
-| `web/node_modules/` | generated | ignore in documentation inventories except dependency/setup notes |
-| `test-results/` | generated | do not treat as source documentation |
-| `.codex-run/` | temporary agent output | do not treat as product documentation |
-| `_bmad-output/` | generated/reference output | keep out of source-of-truth docs unless explicitly curated |
-| `history/` | historical/reference | do not treat as current product documentation |
+## 4. Maintenance
 
-## 7. Maintenance Rules
-
-- Endpoint changes require updates to `../API_CONTRACT.md`, `API_ENDPOINTS_COMPREHENSIVE.md`, and affected requirements/design docs.
-- Frontend route or workflow changes require updates to `reference/frontend-route-inventory.md`, `reference/current-system-flows.md`, `design_brief.md`, and test documentation.
-- Migration changes require updates to `HMS_DBMigrationPlan.md`, `HMS_TDD.md`, and overview docs if counts are mentioned.
-- Test suite changes require updates to `HMS_TestPlan.md`.
-- Deployment or environment changes require updates to `HMS_DeploymentGuide.md`, `.env.example`, and root setup notes.
-- Removed functionality must be documented only in removed, historical, deprecated, or archive sections.
+- Source-of-truth map above should be updated when new documents are added.
+- Legacy `HMS_*.md` files are being gradually migrated into the category structure.
+- `project-foundation.md` is the master technical document — update it first, then propagate.
+- Regenerate `HMS_DOCUMENTATION.html` when significant doc changes occur.
