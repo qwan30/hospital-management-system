@@ -51,76 +51,76 @@ const metrics = [
 const commandMetrics = [
   {
     label: "Appointment Queue",
-    value: "36",
-    meta: "Patients",
+    value: "Active",
+    meta: "Real-time triage",
     icon: CalendarDays,
   },
   {
     label: "Triage Status",
-    value: "12",
-    meta: "High Priority",
+    value: "Live",
+    meta: "Priority-based routing",
     icon: HeartPulse,
   },
   {
     label: "Room Utilization",
-    value: "78%",
-    meta: "312 / 400 Rooms",
+    value: "Tracked",
+    meta: "Bed management system",
     icon: Bed,
   },
   {
     label: "SLA Compliance",
-    value: "98.6%",
-    meta: "All SLAs Met",
+    value: "Monitored",
+    meta: "Continuous auditing",
     icon: CheckCircle2,
   },
 ];
 
 const patientRows = [
-  ["Sarah Johnson", "MRN-74281", "Check-in", "OPD - Cardiology", "12 min"],
-  ["Michael Chen", "MRN-81562", "In Consultation", "OPD - Cardiology", "5 min"],
-  ["Emily Rodriguez", "MRN-90317", "Diagnostics", "Radiology", "18 min"],
-  ["James Lee", "MRN-66431", "Pharmacy", "Pharmacy", "8 min"],
-  ["Olivia Martinez", "MRN-22109", "Discharge Prep", "3B - Room 312", "15 min"],
+  ["Patient A. Smith", "MRN-74281", "Check-in", "OPD - Cardiology", "12 min"],
+  ["Patient M. Chen", "MRN-81562", "In Consultation", "OPD - Cardiology", "5 min"],
+  ["Patient E. Rodriguez", "MRN-90317", "Diagnostics", "Radiology", "18 min"],
+  ["Patient J. Lee", "MRN-66431", "Pharmacy", "Pharmacy", "8 min"],
+  ["Patient O. Martinez", "MRN-22109", "Discharge Prep", "3B - Room 312", "15 min"],
 ];
 
 const workflowCards = [
   {
     title: "Patient Portal",
-    badge: "Verified",
+    badge: "Active",
     icon: CircleUserRound,
-    primary: "Sarah Johnson",
-    detail: "MRN-74281",
+    primary: "Patient Dashboard",
+    detail: "Personal health records",
     action: "View My Records",
     rows: [
-      "Next Appointment: May 28, 2024 - 10:30 AM",
-      "Department: Cardiology",
-      "Status: Confirmed",
+      "View upcoming appointments",
+      "Access lab results and reports",
+      "Secure messaging with care team",
     ],
   },
   {
     title: "Doctor Console",
-    badge: "On Duty",
+    badge: "Clinical",
     icon: Stethoscope,
-    primary: "Dr. James Wilson",
-    detail: "Cardiologist",
+    primary: "Clinical Workstation",
+    detail: "Patient management",
     action: "Open Doctor Console",
     rows: [
-      "08:00 AM - Sarah Johnson - Consulted",
-      "10:30 AM - Michael Chen - In Progress",
-      "12:00 PM - Emily Rodriguez - Scheduled",
+      "Morning rounds - consult patients",
+      "Review lab results and imaging",
+      "Prescribe and document encounters",
     ],
   },
   {
     title: "Department Coordination",
-    badge: "Cardiology Dept.",
+    badge: "Operations",
     icon: Building2,
-    primary: "12 / 20",
-    detail: "Beds Available",
+    primary: "Bed Management",
+    detail: "Real-time availability",
     action: "Open Department View",
     rows: [
-      "Team Members: 4 active, 8 overflow",
-      "Today's Cases: 18",
-      "Pending Tasks: 7 require attention",
+      "Team Members: active shift tracking",
+      "Today's Cases: department workload",
+      "Pending Tasks: prioritized queue",
     ],
   },
 ];
@@ -304,9 +304,9 @@ function HeroClinicalConsole() {
       <HeartbeatLine />
       <div className="absolute left-[4%] top-[5%] w-[30%] rounded-[8px] border border-hc-cyan/45 bg-slate-950/72 p-4 shadow-[0_18px_50px_rgba(8,145,178,0.14)] backdrop-blur">
         <PanelTitle>Patient Queue</PanelTitle>
-        <QueueRow name="Sarah Johnson" status="Check-in" time="08:15 AM" />
-        <QueueRow name="Michael Chen" status="Consult" time="09:30 AM" />
-        <QueueRow name="Emily Rodriguez" status="Ready" time="09:45 AM" />
+        <QueueRow name="Patient A.S." status="Check-in" time="08:15 AM" />
+        <QueueRow name="Patient M.C." status="Consult" time="09:30 AM" />
+        <QueueRow name="Patient E.R." status="Ready" time="09:45 AM" />
         <div className="mt-3 text-right text-[10px] text-slate-400">
           View all queue {">"}
         </div>
@@ -333,7 +333,7 @@ function HeroClinicalConsole() {
         <PanelTitle>Provider Verified</PanelTitle>
         <ShieldCheck className="mx-auto mt-4 size-16 text-hc-cyan" />
         <div className="mt-4 text-sm font-semibold text-white">
-          Dr. James Wilson
+          Clinical Staff
         </div>
         <div className="text-xs text-slate-400">Cardiology</div>
         <div className="mt-4 inline-flex items-center gap-2 rounded-[6px] bg-hc-cyan/12 px-3 py-2 text-[11px] font-semibold text-cyan-200">
@@ -347,11 +347,11 @@ function HeroClinicalConsole() {
           <div>
             <div className="flex items-center gap-3">
               <div className="grid size-10 place-items-center rounded-full bg-hc-cyan/16 text-cyan-200">
-                SJ
+                P.A.
               </div>
               <div>
                 <div className="text-sm font-semibold text-white">
-                  Sarah Johnson
+                  Patient Record
                 </div>
                 <div className="text-[11px] text-slate-400">
                   MRN-74281 - 34 y - F
