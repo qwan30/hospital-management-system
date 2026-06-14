@@ -1,8 +1,0 @@
-{
-    "CheckedAt":  "2026-05-22T02:06:09",
-    "ReleaseData":  "PASS: playwright-release-data-final-after-audit-filter-2026-05-22.log",
-    "CI":  "PASS: playwright-ci-final-2026-05-22.log",
-    "Integrated":  "PASS: playwright-integrated-final-after-audit-filter-2026-05-22.log",
-    "UI":  "PASS: playwright-ui-final-rerun-2026-05-22.log",
-    "Visual":  "FAIL: playwright-visual-final-2026-05-22.log, 14 baseline diffs need review"
-}

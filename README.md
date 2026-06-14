@@ -1,173 +1,331 @@
 # 🏥 Enterprise Hospital Management System (HMS)
 
-[![Java 17](https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=openjdk)](https://openjdk.org/)
-[![Spring Boot 3.3](https://img.shields.io/badge/Spring_Boot-3.3-brightgreen?style=for-the-badge&logo=springboot)](https://spring.io/projects/spring-boot)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
-[![Next.js 16](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=nextdotjs)](https://nextjs.org/)
-[![React 19](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)](https://react.dev/)
-[![Playwright](https://img.shields.io/badge/Playwright-E2E-green?style=for-the-badge&logo=playwright)](https://playwright.dev/)
-[![Release](https://img.shields.io/badge/Release-RC_1.0-0d7c4b?style=for-the-badge)](https://github.com/tranhquan099-commits/hospital-management-system)
-[![Tests](https://img.shields.io/badge/Tests-331_passing-success?style=for-the-badge)](https://github.com/tranhquan099-commits/hospital-management-system/actions)
-[![Coverage](https://img.shields.io/badge/Coverage-80.48%25-brightgreen?style=for-the-badge)](https://github.com/tranhquan099-commits/hospital-management-system)
+[![Java 17](https://img.shields.io/badge/Java-17-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://openjdk.org/)
+[![Spring Boot 3.3](https://img.shields.io/badge/Spring_Boot-3.3-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![PostgreSQL 15](https://img.shields.io/badge/PostgreSQL-15-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![React 19](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Playwright](https://img.shields.io/badge/Playwright-45ba4b?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
+[![GitHub Actions](https://img.shields.io/badge/CI%2FCD-Active-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/tranhquan099-commits/hospital-management-system/actions)
+[![Release](https://img.shields.io/badge/Release-RC_1.0-0d7c4b?style=for-the-badge)](https://github.com/qwan30/hospital-management-system)
+[![Tests](https://img.shields.io/badge/Tests-331_Passing-22C55E?style=for-the-badge)](https://github.com/qwan30/hospital-management-system/actions)
+[![Coverage](https://img.shields.io/badge/Coverage-80.48%25-22C55E?style=for-the-badge)](https://github.com/qwan30/hospital-management-system)
 
-Một hệ thống quản lý bệnh viện chuyên sâu (Healthcare ERP) hỗ trợ toàn diện các luồng nghiệp vụ từ đặt lịch khám công khai, phân luồng tiếp đón (Intake/Queue), bệnh án lâm sàng (EHR), cấp phát thuốc (Pharmacy Dispensing), thanh toán viện phí (Billing) cho đến cổng thông tin tự phục vụ dành cho bệnh nhân (Patient Portal). Hệ thống được thiết kế theo mô hình **DDD (Domain-Driven Design)** và đáp ứng các tiêu chuẩn bảo mật nghiêm ngặt đối với thông tin cá nhân của bệnh nhân (PHI).
+**A full-stack healthcare ERP system** supporting end-to-end hospital clinical workflows — from public appointment booking, patient intake & queue triage, electronic health records (EHR), pharmacy dispensing with lot-level traceability, to billing & revenue reporting. Built with **Domain-Driven Design (DDD)** principles and strict **PHI (Protected Health Information)** compliance — AES-GCM encryption, SHA-256 hashed indexing, JWT-based RBAC with 36 granular permissions.
 
-> **🟢 Production Status: Release Candidate — June 14, 2026**  
-> Tất cả 7 luồng nghiệp vụ lâm sàng được triển khai và kiểm thử. 148 backend tests + 183+ E2E scenarios passing. 80.48% frontend branch coverage.  
-> 📚 **[Xem tài liệu đầy đủ →](docs/HMS_DOCUMENTATION.html)** | 📂 **[Documentation Map →](docs/README.md)**
-
----
-
-## 🌟 Tính Năng & Nghiệp Vụ Đặc Thù
-
-| Nghiệp Vụ | Giải Pháp Kỹ Thuật & Kiến Trúc | Ý Nghĩa Thực Tế |
-|---|---|---|
-| **Đặt Lịch Khám** | Slot Lock giao dịch chống trùng lịch + Mã hóa định danh bệnh nhân. | Đảm bảo tính nhất quán lịch khám của bác sĩ; thông tin CMND/CCCD được mã hóa **AES-GCM** và đánh chỉ mục dạng **SHA-256 hash** bảo mật thông tin cá nhân (PHI). |
-| **Phân Luồng Tiếp Đón** | Quản lý vòng đời Trạng thái Hàng đợi Tiếp nhận (Check-in -> Room Assignment -> Consultation -> Complete). | Bác sĩ, điều dưỡng phối hợp nhịp nhàng, tối ưu hóa thời gian chờ đợi của bệnh nhân tại phòng khám. |
-| **Bệnh Án Lâm Sàng (EHR)** | Tạo bệnh án điện tử, đơn thuốc số hóa, tự động tạo tài liệu PDF đơn thuốc và gửi thư nhắc qua **Gmail API**. | Số hóa quy trình khám chữa bệnh lâm sàng, giảm thiểu thủ tục giấy tờ. |
-| **Cấp Phát Thuốc** | Quản lý kho dược phẩm theo Lot/Movement; Quy trình phát thuốc đối soát liên kết trực tiếp ID bệnh án và đơn thuốc. | Kiểm soát chặt chẽ hao hụt thuốc, truy vết lịch sử phát thuốc của dược sĩ phòng hóa. |
-| **Viện Phí & Doanh Thu** | Tính hóa đơn tự động theo bảng giá dịch vụ y tế, lập báo cáo doanh thu ngày/tháng cho bộ phận kế toán. | Tự động hóa kế toán dòng tiền bệnh viện. |
-| **Phân Quyền RBAC** | Cấu hình **Spring Security + JWT** với 36 quyền chi tiết, phương thức bảo vệ API mức độ annotation `@PreAuthorize`. | Đảm bảo đúng vai trò (Bác sĩ, Điều dưỡng, Dược sĩ, Kế toán, Admin, Bệnh nhân) chỉ được tiếp cận đúng dữ liệu cho phép. |
+> **🟢 Production Status: Release Candidate 1.0 — June 14, 2026**
+> All 7 clinical workflows implemented and verified. 148 backend integration tests + 183+ Playwright E2E scenarios passing. 80.48% frontend branch coverage.
+>
+> 📚 **[Interactive Documentation Portal →](docs/HMS_DOCUMENTATION.html)** | 📂 **[Documentation Index →](docs/README.md)** | 📋 **[API Contract →](docs/05-api/api-contract.md)**
 
 ---
 
-## 📐 Luồng Nghiệp Vụ Y Tế Khép Kín (Clinical Workflow)
-
-Sơ đồ Mermaid dưới đây biểu diễn hành trình khám chữa bệnh khép kín của bệnh nhân và sự tương tác giữa các vai trò khác nhau trong hệ thống:
+## 🎯 System Architecture Overview
 
 ```mermaid
-graph TD
-    classDef role fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
-    classDef process fill:#efebe9,stroke:#4e342e,stroke-width:2px;
+graph TB
+    subgraph "Client Layer"
+        A["🏥 Staff Dashboard<br/><i>Doctors, Nurses, Receptionists</i>"]
+        B["⚙️ Admin Panel<br/><i>Administrators</i>"]
+        C["🏠 Patient Portal<br/><i>Self-service</i>"]
+        D["🌐 Public Website<br/><i>Booking & Information</i>"]
+    end
 
-    A[Bệnh nhân: Đặt lịch khám trực tuyến] -->|1. Booking| B(Lễ tân: Tiếp đón & Đăng ký hàng đợi)
-    B -->|2. Check-in| C(Điều dưỡng: Đo chỉ số sinh tồn & Phân phòng khám)
-    C -->|3. Vital Signs| D(Bác sĩ: Khám lâm sàng & Kê đơn thuốc)
-    D -->|4. Medical Record & Prescription| E(Dược sĩ: Kiểm tra & Phát thuốc)
-    D -->|5. Diagnostic services| F(Kế toán: Thanh toán viện phí)
-    E -->|6. Dispense Traceability| G[Bệnh nhân nhận thuốc và ra về]
-    F -->|7. Invoice Completed| G
+    subgraph "Infrastructure"
+        N["🔀 Nginx<br/><i>Reverse Proxy</i>"]
+        F["⚛️ Next.js 16<br/><i>App Router</i>"]
+    end
 
-    class A,G role;
-    class B,C,D,E,F process;
+    subgraph "API Gateway"
+        G["🔐 Spring Security + JWT<br/><i>RBAC · Rate Limiting · CORS</i>"]
+        H["🔌 REST Controllers<br/><i>118 endpoints · 32 controllers</i>"]
+    end
+
+    subgraph "Application Core — DDD Modular Monolith"
+        direction TB
+        I["📦 Application Services<br/><i>Use Cases · Workflows · Auth</i>"]
+        J["🏛️ Domain Model<br/><i>Entities · Value Objects · Aggregates<br/>17 bounded contexts</i>"]
+        K["🗄️ Infrastructure<br/><i>Spring Data JPA · Gmail Client<br/>PostgreSQL Adapters</i>"]
+    end
+
+    subgraph "Data & Observability"
+        L[("🐘 PostgreSQL 15<br/><i>pgvector · 35 tables</i>")]
+        M["📊 Prometheus → Grafana<br/><i>Metrics & Dashboards</i>"]
+        O["📝 Loki → Tempo<br/><i>Logs & Traces</i>"]
+    end
+
+    A --> N
+    B --> N
+    C --> N
+    D --> N
+    N --> F
+    F --> G
+    G --> H
+    H --> I
+    I --> J
+    J --> K
+    K --> L
+    H -.-> M
+    H -.-> O
+
+    style A fill:#1e40af,stroke:#3b82f6,color:#fff
+    style B fill:#7c3aed,stroke:#a78bfa,color:#fff
+    style C fill:#059669,stroke:#34d399,color:#fff
+    style D fill:#0891b2,stroke:#22d3ee,color:#fff
+    style N fill:#ea580c,stroke:#fb923c,color:#fff
+    style F fill:#000,stroke:#666,color:#fff
+    style G fill:#dc2626,stroke:#f87171,color:#fff
+    style H fill:#b91c1c,stroke:#ef4444,color:#fff
+    style I fill:#1d4ed8,stroke:#60a5fa,color:#fff
+    style J fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style K fill:#4b5563,stroke:#9ca3af,color:#fff
+    style L fill:#1e40af,stroke:#60a5fa,color:#fff
+    style M fill:#eab308,stroke:#facc15,color:#000
+    style O fill:#eab308,stroke:#facc15,color:#000
 ```
 
 ---
 
-## 📊 Số Liệu Kỹ Thuật Đã Được Kiểm Chứng (Project Metrics)
+## 🏥 End-to-End Clinical Workflow
 
-* **REST API Surface**: **118 REST API mappings** quản lý qua Spring MVC.
-* **Quy Mô Giao Diện (Frontend)**: **72 trang Next.js (App Router)** đáp ứng phân hệ Staff UI, Admin UI và Patient Portal.
-* **Cấu Trúc Dữ Liệu**: **20 Flyway migrations** kiến thiết nên cấu trúc **35 bảng DB** và **26 chỉ mục index** tối ưu hóa truy vấn tìm kiếm bệnh án lâm sàng.
-* **Bảo Đảm Chất Lượng (Quality Gates)**:
-  - Hệ thống tích hợp **148 Test Cases Backend** (Spring Boot Integration Tests kết hợp PostgreSQL Testcontainers).
-  - Giao diện Frontend duy trì mức độ bao phủ code cao với **80.48% branch coverage** thông qua công cụ Vitest.
-  - Vượt qua chuỗi **183 kịch bản Playwright E2E** tự động kiểm tra RBAC, luồng khám bệnh và các lỗi click-path.
+```mermaid
+graph LR
+    subgraph "1️⃣ Booking"
+        P["🧑 Patient<br/><i>Books online</i>"]
+    end
 
----
+    subgraph "2️⃣ Intake & Queue"
+        R["👩‍💼 Receptionist<br/><i>Check-in · Register Queue</i>"]
+        N1["👩‍⚕️ Nurse<br/><i>Vital Signs · Room Assignment</i>"]
+    end
 
-## 📂 Kiến Trúc Mã Nguồn (DDD Architecture)
+    subgraph "3️⃣ Consultation"
+        D1["👨‍⚕️ Doctor<br/><i>Examination · Diagnosis<br/>E-Prescription · PDF Export</i>"]
+    end
 
-Mã nguồn backend được tổ chức theo cấu trúc Modular Monolith định hướng DDD rõ rệt:
+    subgraph "4️⃣ Pharmacy"
+        PH["💊 Pharmacist<br/><i>Dispense · Lot Tracking<br/>Inventory Movement</i>"]
+    end
 
-```text
-backend/
-├── domain/          # Entities JPA, Enums, Bounded Context, Exceptions và Contracts
-├── infrastructure/  # Spring Data repositories, PostgreSQL adapters, Gmail Client
-├── application/     # Nghiệp vụ nghiệp vụ (Use Cases), dịch vụ xác thực, jobs định kỳ
-├── controller/      # REST Controllers, API envelopes, Filter bảo mật
-└── start/           # Composition root, cấu hình khởi chạy app, Flyway migrations
+    subgraph "5️⃣ Billing"
+        AC["💰 Accountant<br/><i>Invoice · Payment<br/>Revenue Report</i>"]
+    end
+
+    subgraph "6️⃣ Completion"
+        OUT["✅ Patient<br/><i>Receives medication<br/>& invoice</i>"]
+    end
+
+    P -->|"1. Book Appointment"| R
+    R -->|"2. Check-in"| N1
+    N1 -->|"3. Vital Signs Recorded"| D1
+    D1 -->|"4. E-Prescription"| PH
+    D1 -->|"5. Services Billed"| AC
+    PH -->|"6. Medication Dispensed"| OUT
+    AC -->|"7. Payment Collected"| OUT
+
+    classDef patient fill:#059669,stroke:#34d399,color:#fff,stroke-width:2px
+    classDef staff fill:#1e40af,stroke:#3b82f6,color:#fff,stroke-width:2px
+    classDef doctor fill:#7c3aed,stroke:#a78bfa,color:#fff,stroke-width:2px
+    classDef pharma fill:#ea580c,stroke:#fb923c,color:#fff,stroke-width:2px
+    classDef finance fill:#b91c1c,stroke:#ef4444,color:#fff,stroke-width:2px
+    classDef done fill:#22c55e,stroke:#4ade80,color:#fff,stroke-width:2px
+
+    class P,OUT patient
+    class R,N1 staff
+    class D1 doctor
+    class PH pharma
+    class AC finance
 ```
 
-Quan hệ phụ thuộc giữa các module:
-`domain` $\leftarrow$ `infrastructure` $\leftarrow$ `application` $\leftarrow$ `controller` $\leftarrow$ `start`
+---
+
+## 🎯 Key Features & Business Value
+
+| # | Clinical Domain | Technical Implementation | Business Impact |
+|---|---------------|-------------------------|-----------------|
+| 🏥 | **Appointment Booking** | Transactional slot locking prevents double-booking; AES-GCM encrypted patient identity (CCCD/CMND) with SHA-256 hashed indexing | Guarantees scheduling consistency; PHI-compliant identity protection |
+| 🔄 | **Patient Intake & Queue** | Full lifecycle state machine: `CHECKED_IN → VITAL_SIGNS → ASSIGNED → IN_CONSULTATION → COMPLETED` | Streamlined patient flow; optimized doctor utilization; reduced wait times |
+| 📋 | **Electronic Health Records (EHR)** | Digital medical records with diagnosis, prescriptions; automated PDF generation; Gmail API reminder integration | Paperless clinical workflow; prescription accuracy; patient follow-up |
+| 💊 | **Pharmacy Dispensing** | Lot-level inventory tracking with FIFO expiration management; dispense operations cross-referenced to medical record IDs | Full drug traceability; prevented stockouts via low-stock alerts; audit compliance |
+| 💰 | **Billing & Revenue** | Automated invoice generation from service pricing rules; daily/monthly revenue reports with filtering | Cash flow automation; financial transparency for accounting department |
+| 🔐 | **RBAC Security** | Spring Security + JWT with 36 granular permissions; `@PreAuthorize` method-level protection; httpOnly refresh cookies with rotation | Enforced separation of duties across 7 roles; HIPAA-aligned access control |
 
 ---
 
-## 🛠️ Hướng Dẫn Khởi Chạy Nhanh (Local Setup)
+## 📊 Verified Project Metrics
 
-### 1. Yêu Cầu Cài Đặt
-- Java 17 hoặc cao hơn
-- Node.js 22 & npm
-- Docker Desktop
+```mermaid
+xychart-beta
+    title "Quality Gates — HMS v1.0 RC"
+    x-axis ["Backend Tests", "E2E Scenarios", "Branch Coverage %", "API Endpoints", "DB Tables", "Pages"]
+    y-axis "Count / Percentage" 0 --> 350
+    bar [148, 183, 80.48, 118, 35, 72]
+```
 
-### 2. Khởi Động PostgreSQL
+| Metric | Value | Status |
+|--------|-------|--------|
+| **Backend Integration Tests** | 148 (Spring Boot + Testcontainers) | ✅ All Passing |
+| **E2E Playwright Scenarios** | 183+ (RBAC, Clinical, Click-path) | ✅ All Passing |
+| **Frontend Branch Coverage** | 80.48% (Vitest) | ✅ Above 80% Target |
+| **REST API Endpoints** | 118 mappings across 32 controllers | ✅ Verified |
+| **Database Schema** | 35 tables, 26 indexes, 20 Flyway migrations | ✅ Migrated |
+| **RBAC Permissions** | 36 granular permissions covering 7 roles | ✅ Enforced |
+| **CI/CD Pipelines** | Build → Test → Docker → Deploy → Rollback | ✅ Automated |
+
+---
+
+## 🏗️ DDD Architecture — Modular Monolith
+
+```
+ ┌─────────────────────────────────────────────────────────┐
+ │                    start (Composition Root)              │
+ │         Flyway Migrations · App Config · Bootstrap       │
+ ├─────────────────────────────────────────────────────────┤
+ │                   controller (40 Controllers)            │
+ │   ┌──────────┬──────────┬──────────┬────────────────┐   │
+ │   │   Auth   │  Admin   │ Clinical │  PatientPortal │   │
+ │   └──────────┴──────────┴──────────┴────────────────┘   │
+ ├─────────────────────────────────────────────────────────┤
+ │                 application (Use Cases)                  │
+ │   ┌──────────┬──────────┬──────────┬────────────────┐   │
+ │   │ Workflow │  Read    │  Write   │   Auth/Security│   │
+ │   │ Services │ Services │ Services │   Services     │   │
+ │   └──────────┴──────────┴──────────┴────────────────┘   │
+ ├─────────────────────────────────────────────────────────┤
+ │               infrastructure (Adapters)                  │
+ │     Spring Data JPA Repositories · Gmail Client · PDF    │
+ ├─────────────────────────────────────────────────────────┤
+ │                  domain (17 Bounded Contexts)            │
+ │   ┌──────┬──────┬──────┬──────┬──────┬──────┬──────┐    │
+ │   │Patient│Appt  │Queue │MedRec│Inven │Invoice│Admin│    │
+ │   └──────┴──────┴──────┴──────┴──────┴──────┴──────┘    │
+ │   ┌──────┬──────┬──────┬──────┬──────┬──────┬──────┐    │
+ │   │ Lab  │ Rx   │User  │Audit │Dept  │Timeslot│Cont│    │
+ │   └──────┴──────┴──────┴──────┴──────┴──────┴──────┘    │
+ └─────────────────────────────────────────────────────────┘
+     Dependency Flow: domain ← infrastructure ← application ← controller ← start
+```
+
+**17 Bounded Contexts:** `admin` · `appointment` · `audit` · `common` · `content` · `department` · `email` · `inventory` · `invoice` · `lab` · `medicalrecord` · `patient` · `patientauth` · `patientportal` · `prescription` · `timeslot` · `user`
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- **Java 17+** · **Node.js 22+** · **Docker Desktop**
+
+### 1. Start PostgreSQL
 ```bash
 docker compose -f infra/docker-compose.yml up -d postgres
 ```
 
-### 3. Cấu Hình Biến Môi Trường (`.env`)
-Tạo file `.env` tại thư mục gốc từ `.env.example`:
-```dotenv
-POSTGRES_PASSWORD=hospital_pass
-JWT_SECRET=your-super-secret-jwt-key-minimum-32-characters
-PATIENT_IDENTIFIER_SECRET=your-separate-encryption-secret-key-minimum-32-characters
-SPRING_PROFILES_ACTIVE=dev
-HMS_RELEASE_DEMO_SEED_ENABLED=true  # Kích hoạt dữ liệu UAT demo phong phú
+### 2. Configure Environment
+```bash
+cp .env.example .env
 ```
+Required secrets: `POSTGRES_PASSWORD`, `JWT_SECRET` (≥32 chars), `PATIENT_IDENTIFIER_SECRET` (≥32 chars)
 
-### 4. Khởi Chạy Backend (Chạy module `start`)
-Sử dụng script PowerShell tự động load `.env`:
+### 3. Start Backend (Spring Boot)
 ```powershell
-.\backend\run.ps1
+.\backend\run.ps1                    # PowerShell — auto-loads .env
 ```
-*Hoặc lệnh Maven thủ công:*
 ```bash
-cd backend
-mvn install -DskipTests
-mvn spring-boot:run -f start/pom.xml
+cd backend && mvn install -DskipTests && mvn spring-boot:run -f start/pom.xml
 ```
-*Actuator health endpoint check: `http://localhost:8081/actuator/health`*
+Health check: `http://localhost:8081/actuator/health`
 
-### 5. Khởi Chạy Frontend Next.js
+### 4. Start Frontend (Next.js)
 ```bash
-cd frontend
-npm install
-npm run dev
+cd frontend && npm install && npm run dev
 ```
-*Truy cập UI tại: `http://localhost:3000`*
+Open: `http://localhost:3000`
 
-### 6. Tài Khoản Demo Mặc Định (Seeded Users)
-| Vai Trò | Email | Mật Khẩu |
-|---------|-------|----------|
-| Bác sĩ (Nội khoa) | `doctor1@hospital.vn` | `Doctor@1234` |
-| Bác sĩ (Tim mạch) | `doctor2@hospital.vn` | `Doctor@1234` |
-| Điều dưỡng | `nurse@hospital.vn` | `Nurse@1234` |
-| Lễ tân | `receptionist@hospital.vn` | `Reception@1234` |
-| Dược sĩ | `pharmacist@hospital.vn` | `Pharma@1234` |
-| Kế toán | `accountant@hospital.vn` | `Acc@1234` |
-| Admin | `admin@hospital.vn` | `Admin@1234` |
-| Bệnh nhân (Portal) | `patient@example.com` | `Patient@1234` |
+### 5. Full Stack (Docker Compose)
+```bash
+docker compose -f infra/docker-compose.yml up -d --build    # Backend + Frontend + PostgreSQL
+docker compose -f infra/docker-compose.yml -f infra/docker-compose.observability.yml up -d   # + Monitoring
+```
 
-> Kích hoạt `HMS_RELEASE_DEMO_SEED_ENABLED=true` để tạo thêm dữ liệu UAT tổng hợp (bệnh nhân, lịch hẹn, kho dược, audit logs).
+### Demo Accounts
+
+| Role | Email | Password |
+|------|-------|----------|
+| 👨‍⚕️ Doctor (Internal Medicine) | `doctor1@hospital.vn` | `Doctor@1234` |
+| 👨‍⚕️ Doctor (Cardiology) | `doctor2@hospital.vn` | `Doctor@1234` |
+| 👩‍⚕️ Nurse | `nurse@hospital.vn` | `Nurse@1234` |
+| 👩‍💼 Receptionist | `receptionist@hospital.vn` | `Reception@1234` |
+| 💊 Pharmacist | `pharmacist@hospital.vn` | `Pharma@1234` |
+| 💰 Accountant | `accountant@hospital.vn` | `Acc@1234` |
+| ⚙️ Admin | `admin@hospital.vn` | `Admin@1234` |
+| 🧑 Patient (Portal) | `patient@example.com` | `Patient@1234` |
 
 ---
 
-## 📈 Tự Động Hóa Triển Khai (CI/CD & Observability)
-- **CI Pipeline** (`ci.yml`): Tự động hóa kiểm thử biên dịch Java, chạy test tích hợp Testcontainers, kiểm linter và kiểm thử frontend (Vitest & Playwright) trên GitHub Actions, tự động đóng gói image đẩy lên GHCR.
-- **CD Pipeline** (`cd.yml`): Tích hợp deploy lên máy chủ VPS bằng Docker Compose với staging → production promotion, smoke tests, và Slack notifications.
-- **Rollback** (`rollback.yml`): Tự động rollback với confirmation gate khi release thất bại health check.
-- **Security Scan** (`security-scan.yml`): OWASP Dependency Check, TruffleHog secret detection, Trivy container scanning.
-- **Observability**: Hỗ trợ hệ thống giám sát hoạt động (**Nginx reverse proxy → Prometheus → Grafana → Loki → Tempo**) thông qua file overlay `docker-compose.observability.yml`. Cấu hình Nginx, Prometheus, Grafana, Loki, Tempo tại [`infra/`](infra/).
+## 🧪 Testing & Quality
+
+```bash
+# Backend — 148 integration tests
+cd backend && mvn verify
+
+# Frontend — unit tests (Vitest)
+cd frontend && npm run test:unit
+
+# Frontend — E2E tests (Playwright)
+cd frontend && npm run test:e2e:ci       # Full CI suite
+cd frontend && npm run test:e2e:ui       # UI smoke & accessibility
+cd frontend && npm run test:e2e:integrated  # Backend-integrated auth & booking
+```
 
 ---
 
-## 📚 Tài Liệu (Documentation)
+## 📈 CI/CD & Observability
 
-Tài liệu dự án được tổ chức theo cấu trúc 12 danh mục chuyên nghiệp:
+| Pipeline | Trigger | Actions |
+|----------|---------|---------|
+| **CI** (`ci.yml`) | Push / PR | Java build · Testcontainers · Vitest · Playwright · Docker build → GHCR |
+| **CD** (`cd.yml`) | Release tag | Deploy to VPS · Smoke tests · Slack notification |
+| **Rollback** (`rollback.yml`) | Manual | Automated rollback with health check gate |
+| **Security** (`security-scan.yml`) | Schedule / Push | OWASP DC · TruffleHog · Trivy container scan |
 
-| Danh Mục | Nội Dung | Tài Liệu Chính |
-|----------|----------|----------------|
-| **00-overview** | Nền tảng kỹ thuật, quy trình | [`project-foundation.md`](docs/00-overview/project-foundation.md) |
-| **01-business** | Yêu cầu nghiệp vụ, business rules | [`business-rules.md`](docs/01-business/business-rules.md) |
-| **02-product** | PRD, feature list, roadmap | [`prd.md`](docs/02-product/prd.md) |
-| **03-requirements** | SRS, permissions matrix | [`permissions-matrix.md`](docs/03-requirements/permissions-matrix.md) |
+**Observability Stack:** `Nginx → Frontend → Backend → Prometheus → Grafana + Loki → Tempo`
+
+Configurations in [`infra/observability/`](infra/observability/) — Prometheus metrics, Grafana dashboards, Loki log aggregation, Tempo distributed tracing.
+
+---
+
+## 📚 Documentation
+
+| Section | Content | Primary Doc |
+|---------|---------|-------------|
+| **00-overview** | Project foundation, conventions, onboarding | [`project-foundation.md`](docs/00-overview/project-foundation.md) |
+| **01-business** | Business rules, glossary, scope | [`business-rules.md`](docs/01-business/business-rules.md) |
+| **02-product** | PRD, feature list, release plan | [`prd.md`](docs/02-product/prd.md) |
+| **03-requirements** | SRS, permissions, use cases | [`srs.md`](docs/03-requirements/srs.md) |
 | **04-architecture** | DDD, security, coding standards | [`architecture.md`](docs/04-architecture/architecture.md) |
-| **05-api** | API contract, auth, error codes | [`API Contract →`](docs/API_CONTRACT.md) |
+| **05-api** | API contract, auth, error codes | [`api-contract.md`](docs/05-api/api-contract.md) |
 | **06-database** | Schema, migrations, seed data | [`db-schema.md`](docs/06-database/db-schema.md) |
 | **07-flows** | Business flows, state machines | [`end-to-end-business-flow.md`](docs/07-flows/end-to-end-business-flow.md) |
-| **09-testing** | Test strategy, test plan | [`test-strategy.md`](docs/09-testing/test-strategy.md) |
+| **08-ui-ux** | Design system, screen specs | [`design-system.md`](docs/08-ui-ux/02_design-system/design-system.md) |
+| **09-testing** | Test strategy, plan, RTM | [`test-strategy.md`](docs/09-testing/test-strategy.md) |
 | **10-deployment** | CI/CD, Docker, env variables | [`deployment-guide.md`](docs/10-deployment/deployment-guide.md) |
+| **11-operations** | Admin guide, troubleshooting | [`admin-guide.md`](docs/11-operations/admin-guide.md) |
 | **12-handover** | Handover, onboarding, known issues | [`handover-document.md`](docs/12-handover/handover-document.md) |
 
-> 📄 **[Xem tài liệu tổng hợp dạng HTML →](docs/HMS_DOCUMENTATION.html)** | 📂 **[Documentation Index →](docs/README.md)** | 📋 **[API Contract →](docs/API_CONTRACT.md)**
+> 📄 **[Interactive Documentation Portal →](docs/HMS_DOCUMENTATION.html)** | 📂 **[Full Documentation Index →](docs/README.md)**
+
+---
+
+## 🔒 Security & Compliance
+
+- **PHI Protection:** Patient identifiers (CCCD/CMND) encrypted with AES-GCM, indexed by SHA-256 hash — plaintext never stored
+- **Authentication:** JWT access tokens (15min TTL) + httpOnly refresh cookies (7-day rotation)
+- **Authorization:** 36 RBAC permissions at method-level via `@PreAuthorize`
+- **Rate Limiting:** Sliding-window rate limit on public endpoints (configurable, default 30/min)
+- **CORS:** Configurable allowed origins via environment variables
+- **Audit Trail:** Full audit logging for all state-changing operations
+
+---
+
+*Built with ❤️ following Domain-Driven Design, Clean Architecture principles, and healthcare industry compliance standards.*

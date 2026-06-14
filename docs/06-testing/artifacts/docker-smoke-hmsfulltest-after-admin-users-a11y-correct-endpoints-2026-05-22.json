@@ -1,9 +1,0 @@
-{
-    "CheckedAt":  "2026-05-22T01:49:03",
-    "BackendHealth":  "UP",
-    "FrontendStatus":  200,
-    "DepartmentsCount":  0,
-    "DoctorsCount":  0,
-    "StaffAuthRole":  null,
-    "PatientAuthRole":  null
-}

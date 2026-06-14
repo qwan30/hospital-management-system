@@ -1,7 +1,0 @@
-{
-    "status":  "PASS",
-    "dumpFile":  "/tmp/hmsprod20260601.dump",
-    "restoredTempDatabase":  "hms_restore_check_20260601",
-    "restoredAndDropped":  true,
-    "sourceCounts":  "23,11,15"
-}

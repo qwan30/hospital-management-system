@@ -1,2 +1,0 @@
-PASS: git -c safe.directory=D:/projects/hospital-management-system diff --cached --check completed with exit code 0.
-Note: Git emitted CRLF normalization warnings while staging Windows-generated evidence artifacts; no whitespace errors remained after artifact normalization.

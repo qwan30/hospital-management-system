@@ -1,305 +1,246 @@
-﻿# Product Requirements Document — Hospital Management System (HMS)
+﻿# Hospital Management System PRD
 
-> Tai lieu yeu cau san pham (PRD) tong hop cho he thong quan ly benh vien. Merge tu co so hien tai: `docs/HMS_PRD.md`. Cap nhat lan cuoi: 2026-06-14.
+Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
-**Status:** Release Candidate, aligned voi repository tai thoi diem 2026-06-14.
-**Release label:** Release Candidate
-**So do tai lieu:** [docs/00-overview/README.md](../00-overview/README.md)
-**Route inventory:** [docs/reference/frontend-route-inventory.md](../reference/frontend-route-inventory.md)
-**Feature list chi tiet:** [docs/02-product/feature-list.md](feature-list.md)
+Documentation map: [README.md](README.md)
+Route inventory: [reference/frontend-route-inventory.md](reference/frontend-route-inventory.md)
 
----
+## 1. Purpose
 
-## 1. Tom Tat San Pham (Product Summary)
+This PRD is the current product baseline for the repository in `D:\projects\hospital-management-system`.
+It is intended to support UI/UX design and frontend planning from the code that actually exists today.
 
-Du an la mot he thong quan ly benh vien (Hospital Management System - HMS) backend-first voi:
+## 2. Product Summary
 
-- **Noi dung benh vien cong khai:** Trang chu, danh sach khoa, bac si, tin tuc
-- **Dat lich hen:** Wizard nhap trieu chung, chon bac si, chon khung gio, xac nhan
-- **Xac thuc nhan vien:** JWT token + RBAC, HTTP-only refresh cookie
-- **Quy trinh lam sang bac si:** Ho so benh an, chan doan, don thuoc (PDF), tai kham
-- **Quy trinh dieu phoi:** Diem danh, hang doi, sinh hieu, phong lam sang
-- **Quy trinh tai chinh:** Hoa don, thanh toan, bang gia, bao cao doanh thu
-- **Quy trinh admin:** Quan ly nguoi dung, khoa, phong, lich, noi dung, thong ke
-- **Cong thong tin benh nhan:** Lich su lich hen, ket qua xet nghiem, tin nhan, ho so
-- **Nha thuoc:** Quan ly ton kho, lo thuoc, xuat nhap, canh bao
+The project is a backend-first hospital management platform with:
 
-**Architecture:** Modular monolith (DDD), Java 17 + Spring Boot 3.3.5, Next.js 16 + React 19, PostgreSQL 15.
+- public hospital discovery content
+- appointment booking with symptom intake
+- staff authentication and role-based workflows
+- doctor medical record and prescription PDF generation
+- nurse check-in, queue, and vital signs workflows
+- accountant invoice, payment, pricing, and revenue reporting workflows
+- admin operations for users, departments, rooms, schedules, content, and monitoring
+- patient portal authentication, overview, appointments, lab results, messages, and profile
 
----
+## 3. Current Implementation Baseline
 
-## 2. Hien Trang Hien Tai (Current Implementation Baseline)
+### 3.1 Implemented now
 
-### 2.1 Da Trieu Khai (Implemented)
+- Spring Boot backend with a DDD-oriented Maven layout: `domain`, `infrastructure`, `application`, `controller`, and `start`
+- controller route handlers in `backend/controller/src/main/java`
+- PostgreSQL schema managed by Flyway migrations `V1` through `V16`
+- seed data for departments, staff accounts, pricing, slots, inventory, and patient portal demo data
+- deterministic public chatbot based on live database content
+- Gmail integration hooks for transactional email, disabled by default unless configured
+- frontend API client, route guards, and role-aware navigation helpers for selected staff and portal flows
 
-- **Backend:** Spring Boot + Maven 5-module reactor (domain, infrastructure, application, controller, start)
-- **API:** 40 controllers, 118 REST API mappings
-- **Database:** PostgreSQL 15, 20 Flyway migrations (V1-V16 seed + gap migrations), 35 tables, 26 indexes
-- **Seed data:** Departments, staff accounts, pricing, slots, inventory, patient portal demo data
-- **Frontend:** Next.js 16 App Router, 72 page files, 80.48% Vitest branch coverage, 183+ Playwright E2E scenarios
-- **Security:** Spring Security, JWT (JJWT 0.12.6), RBAC (36 permissions), rate limiting, CSP headers
-- **PHI protection:** AES-256-GCM for CCCD, SHA-256 for search, BCrypt for passwords
-- **Audit logging:** 13+ audit action types, REQUIRES_NEW propagation, immutable
-- **Chatbot:** Rule-based, deterministic, grounded in live DB content (departments, doctors, slots)
-- **PDF generation:** Apache PDFBox 3.0.4 for prescription PDF
-- **Docker:** Docker Compose with PostgreSQL, backend, frontend, Nginx
-- **Observability:** Prometheus, Grafana, Loki, Tempo, OpenTelemetry
-- **CI/CD:** GitHub Actions, GHCR image registry
+### 3.2 Not implemented yet
 
-### 2.2 Chua Trieu Khai (Not Implemented Yet)
+- full production readiness for every frontend workflow
+- complete backend API integration across every frontend workflow
+- patient self-service cancel/reschedule flows
+- patient portal message compose or reply APIs
+- external payment gateway integration
+- separate real-time room-board operations beyond the audited queue assign-room action
 
-- Full production readiness for every frontend workflow (selected workflows only are backend-integrated)
-- Patient self-service cancel/reschedule flows
-- Patient portal message compose or reply APIs
-- External payment gateway integration
-- Separate real-time room-board operations beyond the audited queue assign-room action
-- Drug-allergy interaction checking
-- AI/LLM assistant features (removed from product)
+### 3.3 Frontend status
 
-### 2.3 Frontend Status
+The `frontend/` folder contains the canonical Next.js frontend route tree for public, staff, admin, and patient portal screens.
+The `frontend/` directory is retained as migrated design-reference HTML/PNG prototypes, not as the runnable frontend.
+Design work should therefore treat the implemented `frontend/` app and the backend APIs and contract DTOs in `backend/domain` as the current product baseline.
 
-- `frontend/` = Canonical Next.js frontend (public, staff, admin, patient portal route groups)
-- `frontend/` = Archive of migrated design-reference HTML/PNG prototypes (NOT runnable)
-- Frontend route guards are UX-only; backend `@PreAuthorize` and 401/403 responses remain the source of truth
-- Only selected frontend workflows are fully backend-integrated
-
----
-
-## 3. Nguoi Dung Va Vai Tro (Users and Roles)
+## 4. Users and Roles
 
 | Role | Current system access | Design implication |
 | --- | --- | --- |
-| **Guest** | Public content, doctor directory, department info, booking, chatbot | Can hoan thien giao dien public website va booking flow |
-| **Patient** | Portal claim, portal login, overview, appointments, lab results, messages, profile | Can portal nhe, tap trung vao hien thi va niem tin |
-| **Doctor** | Staff auth, appointment list/detail, status updates, medical records, follow-up, PDF prescr. | Can khong gian lam vice dac thong tin, desktop-first |
-| **Nurse** | Staff auth, daily appointments, queue, check-in, vital signs | Can tuong tac nhanh, list/detail, intake de dang |
-| **Accountant** | Invoices, payments, pricing, revenue reports | Can bang tai chinh, bo loc, hien thi trang thai |
-| **Receptionist** | RBAC role exists; queue and appointment support. Seeded demo account exists. | Can man hinh scheduling neu role duoc productize |
-| **Pharmacist** | RBAC role exists; prescription read + inventory. Seeded demo account exists. | Can man hinh nha thuoc neu role duoc productize |
-| **Admin** | Users, departments, rooms, templates, closures, slots, content, news, stats, monitoring, audit logs | Can console dieu hanh rong voi dieu huong manh |
+| Guest | Public content, doctor directory, department info, booking, chatbot | Needs a polished public website and booking flow |
+| Patient | Portal claim, portal login, overview, appointments, lab results, messages, profile | Needs a lightweight portal focused on visibility and trust |
+| Doctor | Staff auth, appointment list/detail, status updates, medical records, follow-up, PDFs | Needs an information-dense clinical workspace |
+| Nurse | Staff auth, daily appointments, queue, check-in, vital signs | Needs fast list/detail interactions and low-friction intake |
+| Accountant | Invoices, payments, pricing, revenue reports | Needs finance tables, filters, and status visibility |
+| Admin | Users, departments, rooms, templates, closures, slots, content, news, stats, monitoring, audit logs | Needs a broad operations console with strong navigation |
+| Receptionist | RBAC role exists for appointment, queue, and scheduling support; no seeded demo account is currently persisted | Needs future scheduling-oriented screens if the role is productized |
+| Pharmacist | RBAC role exists for prescription read and inventory workflows; no seeded demo account is currently persisted | Needs future pharmacy-focused screens if the role is productized |
 
-**Xem them:**
-- [Role-screen-API matrix](../reference/role-screen-api-matrix.md)
-- [Permissions matrix](../03-requirements/permissions-matrix.md)
+See [role-screen/API matrix](reference/role-screen-api-matrix.md) for the implementation-aligned role map.
 
----
-
-## 4. Trang Thai Tinh Nang (Current-Vs-Planned Feature Status)
+## 4.1 Current-Vs-Planned Feature Status
 
 | Product area | Status | Notes |
 | --- | --- | --- |
-| Backend modules and REST APIs | IMPLEMENTED | 5-module Maven reactor, 118 mappings |
-| Public discovery and booking APIs | IMPLEMENTED | Departments, doctors, slots, appointments, chatbot |
-| Staff auth and RBAC | IMPLEMENTED | JWT, refresh cookies, 36 permissions, frontend guards |
-| Clinical workflows | IMPLEMENTED | Queue, vital signs, lab results, medical records, follow-up, prescription PDF |
-| Finance and inventory APIs | IMPLEMENTED | Invoice, payment, pricing, revenue, items, lots, movements, alerts |
-| Patient portal read experience | PARTIAL | Auth, overview, appointments, lab results, messages (read-only), profile |
-| Frontend route tree | PARTIAL | 72 page files; only selected workflows backend-integrated |
-| Dockerized frontend | IMPLEMENTED | frontend/Dockerfile, Docker Compose frontend service |
-| External payment gateway | PLANNED | No payment-provider integration present |
-| Patient self-cancel/reschedule | PLANNED | APIs not implemented |
-| Drug-allergy interaction | PLANNED | No CDSS rules |
-| AI/internal assistant | REMOVED | Historical assistant API and DB surfaces removed |
-| Real-time room board | PLANNED | Beyond queue assign-room |
+| Backend modules and REST APIs | Implemented | Current source is the five-module Maven reactor under `backend/` |
+| Public discovery and booking APIs | Implemented | Public content, departments, doctors, slots, appointments, and scoped chatbot are active |
+| Staff auth and RBAC | Implemented | Staff access tokens, refresh cookies, backend RBAC, and frontend route guards exist |
+| Clinical workflows | Implemented | Appointments, queue, vital signs, lab results, medical records, follow-up, and prescription PDF routes exist |
+| Finance and inventory APIs | Implemented | Invoice, payment, pricing, revenue, inventory item, lot, movement, and alert routes exist |
+| Patient portal read experience | Partially implemented | Auth, overview, appointments, lab results, messages, and profile exist; message send/reply, self-cancel, and reschedule are not implemented |
+| Frontend route tree | Partially implemented | `frontend/src/app` contains public, staff, admin, and portal routes; only selected workflows are backend-integrated |
+| Dockerized frontend | Implemented | `frontend/Dockerfile` and the active Docker Compose `frontend` service build the canonical Next.js app |
+| External payment gateway | Planned | No payment-provider integration is present |
+| AI/internal assistant workflows | Removed | Historical assistant API and database surfaces are removed from the active product |
 
----
+## 5. Product Scope For Frontend Design
 
-## 5. Pham Vi Cho Thiet Ke Frontend (Product Scope for Frontend Design)
+### 5.1 Public experience
 
-### 5.1 Public Experience
-- Home page (API: `/api/v1/content/home`)
-- Department list and detail
-- Doctor list, detail, slot availability by date
-- News listing
-- Booking entry points (symptom intake, doctor/slot selection, patient details, confirmation)
+- Home page driven by `/api/v1/content/home`
+- Department list and department detail
+- Doctor list, doctor detail, and doctor slot availability by date
+- News and announcement listing
+- Booking entry points
 - Public chatbot entry point
 
-### 5.2 Staff Experience
-- Staff login and token refresh
-- Doctor dashboard and appointment list/detail
-- Medical record editor (diagnosis, notes, follow-up, prescription items, PDF)
-- Nurse intake board (today list, queue, check-in, vital signs)
-- Accountant workspace (invoices, payments, pricing, revenue)
-- Admin workspace (users, departments, rooms, schedules, content, monitoring, audit logs)
+### 5.2 Booking experience
 
-### 5.3 Patient Portal
+- symptom intake and clinical triage copy
+- doctor and slot selection
+- patient identity and contact capture
+- booking confirmation with generated confirmation code
+
+### 5.3 Staff experience
+
+- Staff login and token refresh flow
+- doctor dashboard and appointment list
+- doctor appointment detail page
+- medical record editor with diagnosis, notes, follow-up, prescription items, and PDF preview/download
+- nurse intake board with today list, queue list, check-in, and vital signs capture
+- accountant workspace for invoices, payments, pricing, and revenue reports
+- admin workspace for data setup, content management, and system monitoring
+
+### 5.4 Patient portal
+
 - Portal claim flow
-- Portal login and refresh
+- Portal login and refresh flow
 - Overview dashboard
-- Appointment history
-- Lab results list with summary, comment, attachment
-- Message threads (read-only)
+- Appointment history and next appointment visibility
+- Lab result list with summary, doctor comment, and attachment link
+- Message thread list with nested messages returned by the API
 - Profile editing
 
----
+## 6. Screen Inventory
 
-## 6. Kien Truc He Thong (System Architecture)
+The frontend product should at minimum include the screens below.
 
-| Layer | Technology | Notes |
-|-------|-----------|-------|
-| **Backend** | Java 17, Spring Boot 3.3.5 | Modular monolith with DDD layering |
-| **Frontend** | Next.js 16, React 19, TypeScript | App Router, Tailwind CSS 4 |
-| **Database** | PostgreSQL 15 (pgvector) | Flyway migrations, 35 tables |
-| **Security** | Spring Security, JJWT 0.12.6 | RBAC, rate limiting, CSRF, CSP |
-| **PDF** | Apache PDFBox 3.0.4 | Prescription PDF generation |
-| **Container** | Docker, Docker Compose | Backend, frontend, PostgreSQL, Nginx |
-| **Observability** | Prometheus, Grafana, Loki, Tempo | Optional overlay stack |
-| **CI/CD** | GitHub Actions | Build, test, security scan, deploy |
+### 6.1 Public screens
 
----
+- Home
+- Departments
+- Department detail
+- Doctors
+- Doctor detail with slot picker
+- Booking wizard
+- Booking success state
+- News list
+- Chatbot drawer or widget
 
-## 7. Cac Yeu Cau Phien Dung (UX Requirements)
+### 6.2 Staff screens
 
-- Public va patient experiences: mobile + desktop responsive
-- Staff experiences: desktop-first, tablet-friendly
-- UI phan anh chinh xac gioi han vai tro (khong hien thi actions khong duoc phep)
-- Form validation inline, giu lai du lieu da nhap khi an toan
-- Du lieu nhay cam: giao dien lam sang, dam bao, it nhieu, khong marketing
-- Accessibility target: WCAG 2.1 AA
+- Staff login
+- Doctor dashboard
+- Doctor appointment detail
+- Medical record editor
+- Prescription PDF preview state
+- Nurse daily intake board
+- Queue board
+- Vital signs editor
+- Invoice list and detail
+- Pricing management
+- Revenue dashboard
+- Admin users
+- Admin departments
+- Admin rooms
+- Admin schedule templates
+- Admin special closures
+- Admin slot generation
+- Admin content and news
+- Admin stats and monitoring
+- Audit log viewer
 
----
+### 6.3 Patient portal screens
 
-## 8. Cac Rang Buoc (Product Constraints From Current Code)
+- Claim access
+- Login
+- Overview
+- Appointments
+- Lab results
+- Messages
+- Profile
 
-- Chatbot la quy tac, khong phai AI/LLM. Khong co tich hop AI ben ngoai.
-- Patient portal messages: read-only tu phia benh nhan.
-- Room management: admin API chi; chua co nurse room workflow rieng.
-- Refresh tokens: HTTP-only cookies cho ca staff va patient auth.
-- Prescription PDF: chi preview/download; khong co gui email tu dong (Gmail hook disabled by default).
-- Slot duration: 30 phut co dinh.
-- Khong co external payment gateway.
-- Khong co telemedicine.
+### 6.4 Shared overlay patterns
 
----
+- authentication expired modal or silent refresh flow
+- permission denied states
+- empty states
+- optimistic loading and skeleton states
+- form validation states
 
-## 9. Danh Muc Man Hinh (Screen Inventory)
+## 7. Key Journeys
 
-### 9.1 Public Screens
-| Screen | API Dependency |
-|--------|---------------|
-| Home | `GET /api/v1/content/home` |
-| Departments | `GET /api/v1/departments` |
-| Department detail | `GET /api/v1/departments/{id}` |
-| Doctors | `GET /api/v1/doctors` |
-| Doctor detail with slot picker | `GET /api/v1/doctors/{id}`, `GET /api/v1/doctors/{id}/slots?date=` |
-| Booking wizard | `POST /api/v1/appointments` |
-| Booking success | — |
-| News list | `GET /api/v1/news` |
-| Chatbot drawer | `POST /api/v1/chatbot/messages` |
+### 7.1 Public booking journey
 
-### 9.2 Staff Screens
-| Screen | Roles |
-|--------|-------|
-| Staff login | All staff |
-| Doctor dashboard + appointment list | DOCTOR, ADMIN |
-| Doctor appointment detail | DOCTOR, ADMIN |
-| Medical record editor | DOCTOR, ADMIN |
-| Prescription PDF preview/download | DOCTOR, ADMIN, PHARMACIST |
-| Nurse daily intake board | NURSE, ADMIN |
-| Queue board | NURSE, RECEPTIONIST, ADMIN |
-| Vital signs editor | NURSE, DOCTOR, ADMIN |
-| Invoice list and detail | ACCOUNTANT, ADMIN |
-| Pricing management | ACCOUNTANT, ADMIN |
-| Revenue dashboard | ACCOUNTANT, ADMIN |
-| Admin users | ADMIN |
-| Admin departments | ADMIN |
-| Admin rooms | ADMIN |
-| Admin schedule templates | ADMIN |
-| Admin special closures | ADMIN |
-| Admin slot generation | ADMIN |
-| Admin content and news | ADMIN |
-| Admin stats and monitoring | ADMIN |
-| Audit log viewer | ADMIN, ACCOUNTANT |
-| Support dashboard | All staff |
-| Schedule view | DOCTOR |
-| Inventory management | PHARMACIST, ADMIN |
+1. Guest lands on Home or Departments.
+2. Guest explores doctors and slot availability.
+3. Guest enters symptoms and receives duration guidance.
+4. Guest selects doctor and first slot.
+5. Guest completes patient details and booking contact details.
+6. System returns confirmation code and booking summary.
 
-### 9.3 Patient Portal Screens
-| Screen | API |
-|--------|-----|
-| Claim access | `POST /api/v1/patient-auth/claim` |
-| Login | `POST /api/v1/patient-auth/login` |
-| Overview | `GET /api/v1/patient-portal/overview` |
-| Appointments | `GET /api/v1/patient-portal/appointments` |
-| Lab results | `GET /api/v1/patient-portal/lab-results` |
-| Messages | `GET /api/v1/patient-portal/messages` |
-| Profile | `GET/PUT /api/v1/patient-portal/profile` |
+### 7.2 Doctor care completion journey
 
-### 9.4 Shared Overlay Patterns
-- Authentication expired modal / silent refresh flow
-- Permission denied states
-- Empty states
-- Optimistic loading and skeleton states
-- Form validation states
+1. Doctor logs in.
+2. Doctor reviews own appointment list or opens a direct appointment detail page.
+3. Doctor updates appointment status.
+4. Doctor creates a medical record with diagnosis, notes, optional vital signs, optional follow-up date, and prescription items.
+5. Doctor previews or downloads prescription PDF.
 
----
+### 7.3 Nurse intake journey
 
-## 10. Cac Hanh Trinh Chinh (Key Journeys)
+1. Nurse logs in.
+2. Nurse opens today appointments or queue.
+3. Nurse checks in the patient.
+4. Nurse records vital signs.
 
-### 10.1 Public Booking Journey
-1. Guest lands on Home or Departments
-2. Guest explores doctors and slot availability
-3. Guest enters symptoms (duration guidance)
-4. Guest selects doctor and first slot
-5. Guest completes patient details and booking contact
-6. System returns `HMS-XXXXXXXX` confirmation code and booking summary
+### 7.4 Accountant billing journey
 
-### 10.2 Doctor Care Completion Journey
-1. Doctor logs in
-2. Reviews own appointment list
-3. Updates appointment status
-4. Creates medical record (diagnosis, notes, vitals, follow-up, prescription)
-5. Previews/downloads prescription PDF
+1. Accountant logs in.
+2. Accountant reviews invoices by status.
+3. Accountant creates an invoice from an appointment.
+4. Accountant records payment or voids an invoice.
+5. Accountant reviews daily or monthly revenue and department breakdown.
+6. Accountant maintains pricing rules.
 
-### 10.3 Nurse Intake Journey
-1. Nurse logs in
-2. Opens today appointments or queue
-3. Checks in the patient
-4. Records vital signs
+### 7.5 Admin governance journey
 
-### 10.4 Accountant Billing Journey
-1. Accountant logs in
-2. Reviews invoices by status
-3. Creates invoice from appointment
-4. Records payment or voids invoice
-5. Reviews revenue reports (daily/monthly/department)
-6. Maintains pricing rules
+1. Admin logs in.
+2. Admin manages staff, departments, rooms, and scheduling structures.
+3. Admin manages public content and news.
+4. Admin reviews monitoring, stats, and audit logs.
 
-### 10.5 Admin Governance Journey
-1. Admin logs in
-2. Manages staff, departments, rooms, scheduling structures
-3. Manages public content and news
-4. Reviews monitoring, stats, and audit logs
+## 8. UX Requirements
 
----
+- Public and patient experiences must work well on mobile and desktop.
+- Staff experiences are desktop-first but should remain tablet-friendly.
+- UI must reflect role boundaries exactly; unavailable actions should not be shown.
+- Booking and medical forms must show validation inline and preserve entered data where safe.
+- Sensitive data views must feel clinical, reliable, and low-noise rather than marketing-driven.
+- Accessibility target for the frontend is WCAG 2.1 AA.
 
-## 11. Cac Tinh Nang Chua Trieu Khai (Not Yet Implemented Items)
+## 9. Product Constraints From Current Code
 
-| Feature | Reason | Required for GA? |
-|---------|--------|:----------------:|
-| Full frontend integration for all workflows | Selected flows only are API-connected | No (iterative) |
-| Patient self-cancel / reschedule | No API exists | No |
-| Patient message compose/reply | No API exists | No |
-| External payment gateway | No integration exists | No |
-| Real-time room board | Beyond queue assign-room | No |
-| Drug-allergy interaction | CDSS scope | No |
-| AI chatbot / LLM | Removed from product | No |
+- The chatbot is rule-based and grounded in departments, doctors, and slots. It is not a general AI or LLM chat experience.
+- There is no external AI provider integration in the current product.
+- Patient portal messaging is currently read-only from the patient side.
+- Room management exists for admin APIs only; a nurse room workflow is not implemented yet.
+- Refresh tokens are returned via HTTP-only cookies for both staff and patient authentication.
 
----
+## 10. Design Acceptance Criteria
 
-## 12. Tai Lieu Tham Khao (References)
+Frontend design artifacts produced from this PRD should:
 
-| Document | Location |
-|----------|----------|
-| Feature catalog | [docs/02-product/feature-list.md](feature-list.md) |
-| Project scope | [docs/01-business/scope.md](../01-business/scope.md) |
-| Business rules | [docs/01-business/business-rules.md](../01-business/business-rules.md) |
-| Glossary | [docs/01-business/glossary.md](../01-business/glossary.md) |
-| Permissions matrix | [docs/03-requirements/permissions-matrix.md](../03-requirements/permissions-matrix.md) |
-| SRS (functional requirements) | [docs/HMS_SRS.md](../HMS_SRS.md) |
-| TDD (technical design) | [docs/HMS_TDD.md](../HMS_TDD.md) |
-| API endpoints | [docs/API_ENDPOINTS_COMPREHENSIVE.md](../API_ENDPOINTS_COMPREHENSIVE.md) |
-| Role-screen-API matrix | [docs/reference/role-screen-api-matrix.md](../reference/role-screen-api-matrix.md) |
-| Domain-driven design | [docs/04-architecture/domain-driven-design.md](../04-architecture/domain-driven-design.md) |
-| User manual | [docs/HMS_UserManual.md](../HMS_UserManual.md) |
-| Design system | [docs/design_system.md](../design_system.md) |
+- cover all implemented roles and modules listed above
+- distinguish implemented backend capability from future enhancements
+- include clear responsive behavior for public and portal views
+- include dense desktop layouts for doctor, nurse, accountant, and admin workspaces
+- show where PDFs, monitoring data, and status chips appear
+- avoid designing flows that need APIs the current repository does not provide
