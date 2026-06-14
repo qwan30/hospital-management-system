@@ -1,4 +1,4 @@
-# Full HMS Production Readiness Report - 2026-05-22
+﻿# Full HMS Production Readiness Report - 2026-05-22
 
 > Successor update: the 2026-06-01 readiness pass closes W-02 pharmacy dispensing and W-03 notification delivery evidence. See [Full HMS Production Readiness Report - 2026-06-01](full-hms-production-readiness-report-2026-06-01.md) for current release-candidate status and remaining P1/P2 backlog.
 
@@ -8,7 +8,7 @@
 
 All executable engineering gates in this hardening pass are green: backend, frontend lint/unit/coverage/build, dependency security, Docker release-demo smoke, Playwright release-data/CI/integrated/UI/visual, backup/restore smoke, health/monitoring, and patient privacy/RBAC smoke all passed with synthetic release-demo data.
 
-Post-report update on 2026-05-31: W-01 lab-result creation UX was implemented in the active `web/` app as `/staff/lab-results/new`, aligned to the backend `LabResultCreateRequest` DTO, and covered by frontend unit tests, the staff operations Playwright flow, the exhaustive route contract, and the existing backend `LabResultIntegrationTest`.
+Post-report update on 2026-05-31: W-01 lab-result creation UX was implemented in the active `frontend/` app as `/staff/lab-results/new`, aligned to the backend `LabResultCreateRequest` DTO, and covered by frontend unit tests, the staff operations Playwright flow, the exhaustive route contract, and the existing backend `LabResultIntegrationTest`.
 
 The system is **not marked Production Ready** because the following release-owner waivers still need explicit approval before production sign-off:
 

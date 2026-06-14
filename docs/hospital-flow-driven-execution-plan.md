@@ -1,4 +1,4 @@
-# Hospital Management System Flow-Driven Execution Plan
+﻿# Hospital Management System Flow-Driven Execution Plan
 
 ## 1. Project Understanding Summary
 
@@ -27,7 +27,7 @@ Current architecture facts:
 - API envelope: `ApiResponse<T>` with success/data/message/error/pagination/timestamp.
 - Frontend: Next.js 16, React 19, TypeScript under `web`.
 - Reference-only frontend prototype: `frontend`.
-- API client: `web/src/lib/api-client.ts`.
+- API client: `frontend/src/lib/api-client.ts`.
 - Auth/session: staff and patient tokens stored by auth scope and attached by the API client.
 - Existing tests: backend integration/application tests and Playwright/unit tests under `web`.
 
@@ -252,7 +252,7 @@ Business purpose:
 Allow public users to discover real doctors and choose an actual doctor for later appointment booking.
 
 Current behavior:
-`web/src/app/(public)/doctors/page.tsx` shows visible doctor directory UI, search, filters, doctor cards, and action buttons, but the render path is static/hardcoded.
+`frontend/src/app/(public)/doctors/page.tsx` shows visible doctor directory UI, search, filters, doctor cards, and action buttons, but the render path is static/hardcoded.
 
 Problem:
 Typing a doctor name or selecting filters does not reliably query real doctor data. Doctor cards may not map to real backend `doctorId` values, so downstream booking can use fake or unsupported doctor identifiers.
@@ -411,7 +411,7 @@ Business purpose:
 Allow a public patient to book a real appointment with a selected doctor and available slot, creating or updating patient data and reserving backend time slots.
 
 Current behavior:
-`web/src/app/(public)/booking/page.tsx` already posts to `/appointments`, but it uses environment/fake doctor and slot IDs plus placeholder patient fields in places.
+`frontend/src/app/(public)/booking/page.tsx` already posts to `/appointments`, but it uses environment/fake doctor and slot IDs plus placeholder patient fields in places.
 
 Problem:
 The form can appear successful without reflecting a real hospital booking flow. A real booking must use selected backend doctor/slot IDs and payload fields matching `AppointmentCreateRequest`.

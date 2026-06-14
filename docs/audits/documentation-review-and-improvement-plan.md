@@ -1,4 +1,4 @@
-# Documentation Review And Improvement Plan
+﻿# Documentation Review And Improvement Plan
 
 **Status:** completed for the April 26, 2026 documentation professionalization pass.
 **Requirement source:** `../HMS_Documentation_Audit_Professionalization_Requirement_COMPLETE.md`
@@ -23,18 +23,18 @@
 | Backend modules | `backend/pom.xml`, module folders |
 | Backend endpoints | controller mappings under `backend/controller/src/main/java` |
 | API envelope | `backend/controller/src/main/java/com/hospital/shared/api` |
-| RBAC | `backend/application/src/main/java/com/hospital/core/security/RbacAuthorizationService.java`, `web/src/lib/rbac.ts` |
+| RBAC | `backend/application/src/main/java/com/hospital/core/security/RbacAuthorizationService.java`, `frontend/src/lib/rbac.ts` |
 | Migrations | `backend/start/src/main/resources/db/migration` |
 | Backend tests | `backend/application/src/test`, `backend/start/src/test` |
-| Frontend routes | `web/src/app` |
-| Frontend scripts | `web/package.json`, `web/playwright.config.ts` |
-| E2E suites | `web/e2e/specs` |
+| Frontend routes | `frontend/src/app` |
+| Frontend scripts | `frontend/package.json`, `frontend/playwright.config.ts` |
+| E2E suites | `frontend/e2e/specs` |
 | Local services | `docker-compose.yml`, `.env.example` |
 | Seed data | `backend/application/src/main/java/com/hospital/core/seed/SeedDataService.java` |
 
 ## 3. Known Outcome
 
-- The active docs now identify `web/` as the canonical frontend and `frontend/` as reference-only.
+- The active docs now identify `frontend/` as the canonical frontend and `frontend/` as reference-only.
 - Active API docs no longer present removed AI/internal-assistant routes as active.
 - Migration docs include `V16`.
 - Test docs identify current backend and Playwright test locations.

@@ -67,7 +67,7 @@ function Wait-Http($Name, $Uri) {
 }
 
 if (-not $SkipComposeUp) {
-  docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d --build
+  docker compose -f infra/docker-compose.yml -f infra/docker-compose.observability.yml up -d --build
   Add-Check "compose_up" "PASS" "docker compose overlay started"
 }
 

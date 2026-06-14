@@ -1,4 +1,4 @@
-# Integration Gaps
+﻿# Integration Gaps
 
 **Status:** historical GitNexus-backed integration audit retained for documentation and implementation follow-up.
 **Generated:** 2026-05-18.
@@ -30,8 +30,8 @@ The 2026-05-31 repository refresh verified the GitNexus index is up to date for 
 
 | Component or flow | Issue | Root cause | Fix |
 | --- | --- | --- | --- |
-| `BookingWizard` | Stale name in audit prompt; GitNexus cannot find this symbol | Current public booking route is `PublicBookingPage` in `web/src/app/(public)/booking/page.tsx` | Update docs/tests to reference `PublicBookingPage`; keep `booking-wizard.spec.ts` only as E2E file name |
-| `/staff/lab-results` and `/staff/lab-results/[id]` | Previous static staff lab shell is now API-backed | `listLabResultsByAppointment`, `getLabResult`, `createLabResult`, and `deleteLabResult` are wired in `web/src/lib/clinical-api.ts` | Keep final release verification current after W-01 changes; export remains intentionally unsupported until an export contract exists |
+| `BookingWizard` | Stale name in audit prompt; GitNexus cannot find this symbol | Current public booking route is `PublicBookingPage` in `frontend/src/app/(public)/booking/page.tsx` | Update docs/tests to reference `PublicBookingPage`; keep `booking-wizard.spec.ts` only as E2E file name |
+| `/staff/lab-results` and `/staff/lab-results/[id]` | Previous static staff lab shell is now API-backed | `listLabResultsByAppointment`, `getLabResult`, `createLabResult`, and `deleteLabResult` are wired in `frontend/src/lib/clinical-api.ts` | Keep final release verification current after W-01 changes; export remains intentionally unsupported until an export contract exists |
 | `/staff/schedule` | Staff schedule page is static | Backend doctor schedule endpoint exists at `/api/v1/me/schedule`, but no frontend wrapper/page integration exists | Add `getMySchedule({ date | week })` in a clinical or schedule API module and replace static page data |
 | Patient appointment cancellation/rescheduling | Portal UI disables actions; no patient write API is exposed | Backend has staff/admin appointment cancel/update metadata APIs, but no patient self-service cancel/reschedule contract | Keep disabled UI until backend contract is designed; document as unsupported in user-facing flows |
 | Notification/reminder visibility | Reminder planning/dispatch exists only as backend side effect | `ReminderService` is triggered through medical record follow-up and scheduled dispatch, not exposed as a UI/API workflow | Document as backend side effect; add operational visibility only if product requires it |
@@ -47,7 +47,7 @@ Use this checklist for every missing business flow or frontend integration gap:
 - [ ] Backend API implemented and covered by service or integration tests
 - [ ] API endpoint documented in `docs/04-api/COMPONENT_API_MAPPING.md`
 - [ ] Frontend route/component uses real service data, not static fixture data
-- [ ] Frontend service function created under `web/src/lib`
+- [ ] Frontend service function created under `frontend/src/lib`
 - [ ] Request and response DTOs typed from backend contracts
 - [ ] Page state handles loading, empty, success, validation error, conflict, 401, and 403 states
 - [ ] Component test written with React Testing Library and Vitest mocks

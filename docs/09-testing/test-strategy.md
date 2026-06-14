@@ -1,4 +1,4 @@
-# HMS Test Strategy
+﻿# HMS Test Strategy
 
 **Version:** 1.0
 **Last updated:** 2026-06-14
@@ -8,7 +8,7 @@
 
 ## 1. Purpose and Scope
 
-This document defines the testing strategy for the Hospital Management System. It describes the test pyramid, coverage targets, test data management, CI integration, flaky test policy, and regression approach. It applies to all code under `backend/` (Java/Spring Boot modular monolith) and `web/` (Next.js/React frontend).
+This document defines the testing strategy for the Hospital Management System. It describes the test pyramid, coverage targets, test data management, CI integration, flaky test policy, and regression approach. It applies to all code under `backend/` (Java/Spring Boot modular monolith) and `frontend/` (Next.js/React frontend).
 
 ---
 
@@ -106,9 +106,9 @@ It verifies both `pom.xml` declared dependencies and Java source-level imports, 
 
 #### 2.2.1 Frontend Unit Tests (Vitest)
 
-Location: `web/src/**/__tests__/`
+Location: `frontend/src/**/__tests__/`
 
-Configuration (`web/vitest.config.ts`):
+Configuration (`frontend/vitest.config.ts`):
 - Environment: jsdom
 - Setup: `@testing-library/jest-dom` matchers
 - Coverage provider: v8
@@ -122,9 +122,9 @@ Coverage areas:
 
 #### 2.2.2 Frontend E2E Tests (Playwright)
 
-Location: `web/e2e/specs/`
+Location: `frontend/e2e/specs/`
 
-Configuration (`web/playwright.config.ts`):
+Configuration (`frontend/playwright.config.ts`):
 - Test directory: `./e2e`
 - Fully parallel execution
 - CI retries: 2; local retries: 0
@@ -245,7 +245,7 @@ Changes detected
      |
      +-- backend/ changed ---> backend-test (mvn verify + JaCoCo)
      |
-     +-- web/ changed -------> frontend-test (lint + unit coverage + build + E2E CI)
+     +-- frontend/ changed -------> frontend-test (lint + unit coverage + build + E2E CI)
      |
      +-- infra/ changed ----> validate-observability (docker-compose config)
      |                          |
@@ -278,7 +278,7 @@ Final: ci-summary aggregates all job results
 
 Jobs are skipped when no relevant files change:
 - `backend-test` runs only when `backend/**` or CI/CD workflow files change.
-- `frontend-test` runs only when `web/src/**`, `web/public/**`, `web/e2e/**`, `web/*.{ts,js,json,css}`, or CI/CD workflow files change.
+- `frontend-test` runs only when `frontend/src/**`, `frontend/public/**`, `frontend/e2e/**`, `frontend/*.{ts,js,json,css}`, or CI/CD workflow files change.
 - `validate-observability` runs only when `docker-compose.yml`, `docker-compose.observability.yml`, `infra/observability/**`, or Dockerfiles change.
 - On `pull_request` events, path filters are bypassed and all jobs run.
 
@@ -441,14 +441,14 @@ These gates are documented with evidence in the production readiness report (`do
 | Integration test base class | `D:\projects\hospital-management-system\backend\start\src\test\java\com\hospital\api\AbstractIntegrationTest.java` |
 | Module boundary test | `D:\projects\hospital-management-system\backend\start\src\test\java\com\hospital\api\ModuleBoundaryTest.java` |
 | Backend POM (parent) | `D:\projects\hospital-management-system\backend\pom.xml` |
-| Frontend unit tests | `D:\projects\hospital-management-system\web\src\**\__tests__` |
-| Frontend E2E tests | `D:\projects\hospital-management-system\web\e2e\specs` |
-| Vitest config | `D:\projects\hospital-management-system\web\vitest.config.ts` |
-| Vitest setup | `D:\projects\hospital-management-system\web\vitest.setup.ts` |
-| Playwright config | `D:\projects\hospital-management-system\web\playwright.config.ts` |
+| Frontend unit tests | `D:\projects\hospital-management-system\frontend\src\**\__tests__` |
+| Frontend E2E tests | `D:\projects\hospital-management-system\frontend\e2e\specs` |
+| Vitest config | `D:\projects\hospital-management-system\frontend\vitest.config.ts` |
+| Vitest setup | `D:\projects\hospital-management-system\frontend\vitest.setup.ts` |
+| Playwright config | `D:\projects\hospital-management-system\frontend\playwright.config.ts` |
 | CI workflow | `D:\projects\hospital-management-system\.github\workflows\ci.yml` |
 | CD workflow | `D:\projects\hospital-management-system\.github\workflows\cd.yml` |
 | Business flow test matrix | `D:\projects\hospital-management-system\docs\06-testing\business-flow-test-matrix.md` |
 | Production readiness report | `D:\projects\hospital-management-system\docs\06-testing\full-hms-production-readiness-report-2026-06-01.md` |
 | Test plan | `D:\projects\hospital-management-system\docs\HMS_TestPlan.md` |
-| Package.json (scripts) | `D:\projects\hospital-management-system\web\package.json` |
+| Package.json (scripts) | `D:\projects\hospital-management-system\frontend\package.json` |

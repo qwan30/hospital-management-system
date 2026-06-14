@@ -1,4 +1,4 @@
-# Hospital Management System Documentation Audit and Professionalization Requirement
+﻿# Hospital Management System Documentation Audit and Professionalization Requirement
 
 **Document type:** Requirement Specification
 **Project:** Hospital Management System (HMS)
@@ -72,10 +72,10 @@ This requirement includes documentation-only work such as:
 - correcting stale or misleading claims
 - clarifying the source of truth for product, requirement, API, architecture, testing, and deployment documentation
 - documenting the current repository structure
-- documenting the difference between `web/` and `frontend/`
+- documenting the difference between `frontend/` and `frontend/`
 - documenting removed AI/internal-assistant endpoint families as historical or removed only
 - aligning API documentation with actual controller mappings
-- aligning frontend documentation with actual `web/src/app` routes
+- aligning frontend documentation with actual `frontend/src/app` routes
 - aligning test documentation with actual backend and Playwright test locations
 - aligning deployment documentation with actual Docker Compose and local setup behavior
 - adding missing documentation maps, matrices, and inventories
@@ -132,10 +132,10 @@ The documentation must consistently describe the current system baseline as foll
 
 ### 4.2 Frontend
 
-- The runnable frontend is the Next.js / React / TypeScript app under `web/`.
+- The runnable frontend is the Next.js / React / TypeScript app under `frontend/`.
 - The `frontend/` directory is retained as design-reference prototype material only.
 - Documentation must not describe `frontend/` as the canonical runnable frontend.
-- Any Docker or setup notes must direct local frontend startup to `web/`, unless a future implementation explicitly changes that.
+- Any Docker or setup notes must direct local frontend startup to `frontend/`, unless a future implementation explicitly changes that.
 
 ### 4.3 API
 
@@ -146,7 +146,7 @@ The documentation must consistently describe the current system baseline as foll
 ### 4.4 Testing
 
 - Backend test documentation must describe actual test locations and actual scope.
-- Frontend test documentation must describe actual Playwright suites under `web/e2e`.
+- Frontend test documentation must describe actual Playwright suites under `frontend/e2e`.
 - Documentation must distinguish:
   - implemented tests
   - coverage targets
@@ -199,9 +199,9 @@ When documentation conflicts with the repository, the repository source wins.
 | Security behavior | `backend/controller/src/main/java/com/hospital/api/config` and security tests | RBAC, public route rate limiting, JWT/cookie behavior |
 | Database migrations | `backend/start/src/main/resources/db/migration` | Migration count, migration names, removed assistant cleanup |
 | Backend tests | `backend/application/src/test`, `backend/start/src/test` | Covered workflows, integration tests, module boundary tests |
-| Frontend routes | `web/src/app` | Public, staff, admin, and patient portal route inventory |
-| Frontend scripts | `web/package.json`, `web/playwright.config.ts` | Lint, build, and Playwright commands |
-| E2E suites | `web/e2e` | Route audit, auth, RBAC, responsive, visual, workflow coverage |
+| Frontend routes | `frontend/src/app` | Public, staff, admin, and patient portal route inventory |
+| Frontend scripts | `frontend/package.json`, `frontend/playwright.config.ts` | Lint, build, and Playwright commands |
+| E2E suites | `frontend/e2e` | Route audit, auth, RBAC, responsive, visual, workflow coverage |
 | Local services | `docker-compose.yml`, `.env.example` | PostgreSQL/backend services, absent or inactive frontend Docker service |
 
 ---
@@ -257,7 +257,7 @@ They must not appear in active API summaries, active UI requirements, active des
 Documentation must consistently state:
 
 ```text
-web/ is the canonical runnable Next.js frontend.
+frontend/ is the canonical runnable Next.js frontend.
 frontend/ is retained as design-reference prototype material only.
 ```
 
@@ -337,13 +337,13 @@ The documentation review should follow this process.
 | Stack and module topology | `README.md`, `docs/HMS_TDD.md`, `docs/HMS_DeploymentGuide.md` | `backend/pom.xml`, module POMs | All docs name the same five backend modules and Java/Spring/Maven baseline |
 | Active endpoint families | `API_CONTRACT.md`, `docs/API_ENDPOINTS_COMPREHENSIVE.md`, `docs/HMS_TDD.md` | Controller mappings under `backend/controller/src/main/java` | Active paths match controllers and use `/api/v1` consistently |
 | Removed endpoint families | All API, integration, deployment, and design docs | Controller search under `backend/controller/src/main/java` | Removed AI/internal-assistant routes appear only as removed historical items |
-| Product and screen inventory | `docs/HMS_PRD.md`, `docs/HMS_ProjectPlan.md`, `docs/design_brief.md` | `web/src/app` page and layout files | Product docs reflect implemented route families without presenting prototypes as runnable screens |
-| Frontend canonical location | `README.md`, `docs/HMS_PRD.md`, `docs/HMS_TDD.md`, `docs/HMS_TestPlan.md`, `docs/HMS_DeploymentGuide.md` | `web/package.json`, `web/src/app`, `frontend/` | `web/` is documented as canonical; `frontend/` is documented as design-reference only |
-| Frontend route coverage | `docs/HMS_TestPlan.md`, `docs/design_brief.md` | `web/e2e/specs`, `web/e2e/helpers/routes.ts` | Route-audit and workflow coverage statements match current Playwright suites |
+| Product and screen inventory | `docs/HMS_PRD.md`, `docs/HMS_ProjectPlan.md`, `docs/design_brief.md` | `frontend/src/app` page and layout files | Product docs reflect implemented route families without presenting prototypes as runnable screens |
+| Frontend canonical location | `README.md`, `docs/HMS_PRD.md`, `docs/HMS_TDD.md`, `docs/HMS_TestPlan.md`, `docs/HMS_DeploymentGuide.md` | `frontend/package.json`, `frontend/src/app`, `frontend/` | `frontend/` is documented as canonical; `frontend/` is documented as design-reference only |
+| Frontend route coverage | `docs/HMS_TestPlan.md`, `docs/design_brief.md` | `frontend/e2e/specs`, `frontend/e2e/helpers/routes.ts` | Route-audit and workflow coverage statements match current Playwright suites |
 | Backend test coverage | `README.md`, `docs/HMS_TestPlan.md`, `docs/HMS_TDD.md` | Tests under `backend/application/src/test` and `backend/start/src/test` | Docs distinguish coverage target from measured coverage and list real test locations |
 | Database migration state | `README.md`, `docs/HMS_TDD.md`, `docs/HMS_DBMigrationPlan.md`, `docs/HMS_DeploymentGuide.md` | `backend/start/src/main/resources/db/migration` | Docs report current migration inventory accurately |
-| Deployment setup | `README.md`, `docs/HMS_DeploymentGuide.md`, `.env.example` | `docker-compose.yml`, backend app config, `web/package.json` | Setup commands and Docker notes match runnable local services |
-| Design guidance | `docs/design_brief.md`, `docs/DESIGN.md`, `web/src/app` | Implemented screens and shared UI conventions | Design docs distinguish required UX direction from prototype references and obsolete UI ideas |
+| Deployment setup | `README.md`, `docs/HMS_DeploymentGuide.md`, `.env.example` | `docker-compose.yml`, backend app config, `frontend/package.json` | Setup commands and Docker notes match runnable local services |
+| Design guidance | `docs/design_brief.md`, `docs/DESIGN.md`, `frontend/src/app` | Implemented screens and shared UI conventions | Design docs distinguish required UX direction from prototype references and obsolete UI ideas |
 | Agent workflow governance | `AGENTS.md`, `CLAUDE.md`, `.instructions.md`, agent folders | Root repo structure | Agent-related files are documented as development workflow assets, not product features |
 
 ---
@@ -355,7 +355,7 @@ The documentation review should follow this process.
 P0 completion checklist:
 
 - [x] P0-01 Correct Flyway migration inventory
-- [x] P0-02 Clarify `web/` vs `frontend/`
+- [x] P0-02 Clarify `frontend/` vs `frontend/`
 - [x] P0-03 Keep removed AI/internal-assistant features out of active docs
 - [x] P0-04 Fix quick-start and setup command accuracy
 - [x] P0-05 Clarify current coverage versus target coverage
@@ -379,19 +379,19 @@ Acceptance criteria:
 - migration names and removed-assistant cleanup notes are accurate
 - no stale migration count remains in active docs
 
-#### P0-02: Clarify `web/` vs `frontend/`
+#### P0-02: Clarify `frontend/` vs `frontend/`
 
 Documentation must clearly state:
 
-- `web/` is the canonical runnable frontend
+- `frontend/` is the canonical runnable frontend
 - `frontend/` is design-reference prototype material only
-- setup commands for the frontend start from `web/`
+- setup commands for the frontend start from `frontend/`
 - any Docker wording must not direct users to `frontend/` as the active app
 
 Acceptance criteria:
 
 - root `README.md` explains both folders
-- deployment docs use `web/` for frontend local startup
+- deployment docs use `frontend/` for frontend local startup
 - product/design docs do not present `frontend/` prototypes as runnable screens
 
 #### P0-03: Keep Removed AI/Internal-Assistant Features Out Of Active Docs
@@ -415,7 +415,7 @@ All commands must be verified against the actual repository structure.
 Acceptance criteria:
 
 - backend commands run from the correct directory
-- frontend commands run from `web/`
+- frontend commands run from `frontend/`
 - Docker commands match actual `docker-compose.yml`
 - test commands match actual scripts and test locations
 - docs do not imply unavailable commands are currently supported
@@ -467,7 +467,7 @@ The route inventory should classify:
 
 Acceptance criteria:
 
-- route inventory is based on `web/src/app`
+- route inventory is based on `frontend/src/app`
 - product docs and test docs link to it
 - route status is labeled clearly
 
@@ -541,7 +541,7 @@ Acceptance criteria:
 
 - implemented suites are described accurately
 - planned suites are labeled as planned
-- test commands match `web/package.json`
+- test commands match `frontend/package.json`
 - backend test locations are documented accurately
 
 #### P1-05: Add Demo Accounts And Seed Data Reference
@@ -764,7 +764,7 @@ The documentation audit and professionalization pass is complete when all of the
 - [x] The migration inventory matches the repository.
 - [x] Active endpoint families match controller mappings.
 - [x] Removed AI/internal-assistant endpoint families appear only as removed or historical.
-- [x] Frontend documentation consistently identifies `web/` as canonical.
+- [x] Frontend documentation consistently identifies `frontend/` as canonical.
 - [x] `frontend/` is consistently described as reference-only.
 - [x] Setup commands use correct working directories.
 - [x] Test commands match actual scripts or are marked planned.
@@ -821,17 +821,17 @@ Run this checklist before closing the documentation pass.
 
 ### 13.4 Frontend Verification
 
-- [x] Compare route files in `web/src/app` against product docs.
-- [x] Compare route files in `web/src/app` against design docs.
-- [x] Compare route files in `web/src/app` against test docs.
-- [x] Verify `web/` is documented as canonical.
+- [x] Compare route files in `frontend/src/app` against product docs.
+- [x] Compare route files in `frontend/src/app` against design docs.
+- [x] Compare route files in `frontend/src/app` against test docs.
+- [x] Verify `frontend/` is documented as canonical.
 - [x] Verify `frontend/` is documented as reference-only.
 
 ### 13.5 Testing Verification
 
-- [x] Compare Playwright specs in `web/e2e/specs` against `docs/HMS_TestPlan.md`.
+- [x] Compare Playwright specs in `frontend/e2e/specs` against `docs/HMS_TestPlan.md`.
 - [x] Compare backend tests under `backend/application/src/test` and `backend/start/src/test` against backend test claims.
-- [x] Confirm test commands match `web/package.json` and backend Maven commands.
+- [x] Confirm test commands match `frontend/package.json` and backend Maven commands.
 - [x] Confirm coverage targets are not presented as measured coverage unless reports exist.
 
 ### 13.6 Migration Verification
@@ -845,7 +845,7 @@ Run this checklist before closing the documentation pass.
 - [x] Verify setup commands in `README.md`.
 - [x] Verify setup commands in `docs/HMS_DeploymentGuide.md`.
 - [x] Verify Docker Compose documentation matches `docker-compose.yml`.
-- [x] Verify frontend startup instructions point to `web/`.
+- [x] Verify frontend startup instructions point to `frontend/`.
 
 ### 13.8 Phase 2 And Agent Workflow Verification
 
@@ -891,7 +891,7 @@ Excluded billing/finance scope:
 
 Implementation should include:
 
-- authenticated API client in `web/`
+- authenticated API client in `frontend/`
 - staff token handling
 - patient token handling
 - refresh handling
@@ -918,7 +918,7 @@ Implementation should include:
 
 Implementation should include:
 
-- `web/Dockerfile`
+- `frontend/Dockerfile`
 - production Next.js build
 - Docker Compose frontend service
 - environment-based API URL configuration
@@ -994,7 +994,7 @@ Use this checklist for the next implementation phase. Tick items only after impl
 
 - [x] Implement frontend API integration, excluding billing/finance workflows.
 - [x] Implement frontend RBAC hardening, excluding billing-specific actions and tests.
-- [x] Add Dockerized frontend support for `web/`.
+- [x] Add Dockerized frontend support for `frontend/`.
 - [x] Add CI/CD pipeline checks for backend, frontend, Docker, and non-billing E2E coverage.
 - [x] Add larger seed data and performance validation, excluding invoice/revenue/payment data and benchmarks.
 - [x] Implement queue workflow enhancements.
@@ -1005,7 +1005,7 @@ Use this checklist for the next implementation phase. Tick items only after impl
 - Frontend API integration works for public, staff, admin, inventory, queue, clinical, and patient portal workflows selected for this phase.
 - Billing/finance surfaces remain unchanged unless a separate requirement is approved.
 - RBAC route guards, role-aware navigation, unauthorized states, and forbidden states are covered by Playwright tests.
-- `web/` has a production Docker build path and an active Docker Compose frontend service.
+- `frontend/` has a production Docker build path and an active Docker Compose frontend service.
 - CI verifies backend tests, frontend lint/build, Docker build, and selected Playwright suites.
 - Seed/performance work supports non-billing scenarios only.
 - Queue enhancement supports call, skip, assign room, in-consultation, complete visit, and audit trail behavior.
@@ -1028,7 +1028,7 @@ Recommended structure:
 | Metric | Type | Source | Status |
 |---|---|---|---|
 | Backend Maven modules | Current verified | `backend/pom.xml` | Verified during docs pass |
-| Frontend route/page count | Current verified | `web/src/app` | Verify before publishing |
+| Frontend route/page count | Current verified | `frontend/src/app` | Verify before publishing |
 | REST route handler count | Current verified | Controllers | Verify before publishing |
 | Flyway migration count | Current verified | Migration folder | Verify before publishing |
 | UI/E2E test count | Current verified | Playwright output | Verify before publishing |
@@ -1053,7 +1053,7 @@ The documentation improvement pass is done when:
 - [x] P1 findings are documented or moved into a tracked follow-up with a concrete target file.
 - [x] P2 findings are either completed or deferred.
 - [x] API docs do not present removed AI/internal-assistant routes as active.
-- [x] Frontend docs consistently identify `web/` as canonical.
+- [x] Frontend docs consistently identify `frontend/` as canonical.
 - [x] `frontend/` is consistently described as design-reference material.
 - [x] Setup, testing, and deployment docs name commands that match the repository structure.
 - [x] Future implementation requirements are separated from documentation-only requirements.

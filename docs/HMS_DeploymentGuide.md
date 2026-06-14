@@ -146,12 +146,12 @@ Backend endpoints:
 ### 5.3 Start the frontend app in development
 
 ```bash
-cd web
+cd frontend
 npm install
 npm run dev
 ```
 
-This starts the canonical Next.js frontend app from `web/`.
+This starts the canonical Next.js frontend app from `frontend/`.
 
 ## 6. Docker Compose Notes
 
@@ -159,7 +159,7 @@ The active compose file currently:
 
 - exposes PostgreSQL on `${HMS_POSTGRES_HOST_PORT:-5432}`
 - exposes the backend on `${HMS_BACKEND_HOST_PORT:-8081}`
-- builds the canonical frontend from `web/Dockerfile`
+- builds the canonical frontend from `frontend/Dockerfile`
 - exposes the frontend on `${HMS_FRONTEND_HOST_PORT:-3000}`
 - injects backend database, JWT, and frontend API URL settings
 

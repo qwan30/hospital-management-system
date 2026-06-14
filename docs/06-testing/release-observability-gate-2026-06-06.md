@@ -1,8 +1,8 @@
-# HMS Release Observability Gate - 2026-06-06
+﻿# HMS Release Observability Gate - 2026-06-06
 
 ## Scope
 
-This gate adds local release-candidate observability for the existing Spring Boot backend and `web/` Next.js app. It does not change the release verdict by itself; it extends the current readiness lane with logs, metrics, traces, dashboards, and a smoke command.
+This gate adds local release-candidate observability for the existing Spring Boot backend and `frontend/` Next.js app. It does not change the release verdict by itself; it extends the current readiness lane with logs, metrics, traces, dashboards, and a smoke command.
 
 ## Runtime Stack
 

@@ -1,4 +1,4 @@
-# Hospital Management System PRD
+﻿# Hospital Management System PRD
 
 Status: aligned with the repository on 2026-04-26 after AI and internal assistant removal.
 
@@ -46,9 +46,9 @@ The project is a backend-first hospital management platform with:
 
 ### 3.3 Frontend status
 
-The `web/` folder contains the canonical Next.js frontend route tree for public, staff, admin, and patient portal screens.
+The `frontend/` folder contains the canonical Next.js frontend route tree for public, staff, admin, and patient portal screens.
 The `frontend/` directory is retained as migrated design-reference HTML/PNG prototypes, not as the runnable frontend.
-Design work should therefore treat the implemented `web/` app and the backend APIs and contract DTOs in `backend/domain` as the current product baseline.
+Design work should therefore treat the implemented `frontend/` app and the backend APIs and contract DTOs in `backend/domain` as the current product baseline.
 
 ## 4. Users and Roles
 
@@ -75,8 +75,8 @@ See [role-screen/API matrix](reference/role-screen-api-matrix.md) for the implem
 | Clinical workflows | Implemented | Appointments, queue, vital signs, lab results, medical records, follow-up, and prescription PDF routes exist |
 | Finance and inventory APIs | Implemented | Invoice, payment, pricing, revenue, inventory item, lot, movement, and alert routes exist |
 | Patient portal read experience | Partially implemented | Auth, overview, appointments, lab results, messages, and profile exist; message send/reply, self-cancel, and reschedule are not implemented |
-| Frontend route tree | Partially implemented | `web/src/app` contains public, staff, admin, and portal routes; only selected workflows are backend-integrated |
-| Dockerized frontend | Implemented | `web/Dockerfile` and the active Docker Compose `frontend` service build the canonical Next.js app |
+| Frontend route tree | Partially implemented | `frontend/src/app` contains public, staff, admin, and portal routes; only selected workflows are backend-integrated |
+| Dockerized frontend | Implemented | `frontend/Dockerfile` and the active Docker Compose `frontend` service build the canonical Next.js app |
 | External payment gateway | Planned | No payment-provider integration is present |
 | AI/internal assistant workflows | Removed | Historical assistant API and database surfaces are removed from the active product |
 

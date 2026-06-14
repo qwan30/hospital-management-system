@@ -1,4 +1,4 @@
-# UX And UI Documentation
+﻿# UX And UI Documentation
 
 This folder groups design and frontend experience documentation.
 
@@ -9,4 +9,4 @@ Primary documents:
 - [Frontend Route Inventory](../reference/frontend-route-inventory.md)
 - [Role-Screen/API Matrix](../reference/role-screen-api-matrix.md)
 
-`web/` is the canonical runnable frontend. `frontend/` remains reference-only prototype material.
+`frontend/` is the canonical runnable frontend. `frontend/` remains reference-only prototype material.

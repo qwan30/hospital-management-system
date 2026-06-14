@@ -1,4 +1,4 @@
-# Product Requirements Document — Hospital Management System (HMS)
+﻿# Product Requirements Document — Hospital Management System (HMS)
 
 > Tai lieu yeu cau san pham (PRD) tong hop cho he thong quan ly benh vien. Merge tu co so hien tai: `docs/HMS_PRD.md`. Cap nhat lan cuoi: 2026-06-14.
 
@@ -58,7 +58,7 @@ Du an la mot he thong quan ly benh vien (Hospital Management System - HMS) backe
 
 ### 2.3 Frontend Status
 
-- `web/` = Canonical Next.js frontend (public, staff, admin, patient portal route groups)
+- `frontend/` = Canonical Next.js frontend (public, staff, admin, patient portal route groups)
 - `frontend/` = Archive of migrated design-reference HTML/PNG prototypes (NOT runnable)
 - Frontend route guards are UX-only; backend `@PreAuthorize` and 401/403 responses remain the source of truth
 - Only selected frontend workflows are fully backend-integrated
@@ -95,7 +95,7 @@ Du an la mot he thong quan ly benh vien (Hospital Management System - HMS) backe
 | Finance and inventory APIs | IMPLEMENTED | Invoice, payment, pricing, revenue, items, lots, movements, alerts |
 | Patient portal read experience | PARTIAL | Auth, overview, appointments, lab results, messages (read-only), profile |
 | Frontend route tree | PARTIAL | 72 page files; only selected workflows backend-integrated |
-| Dockerized frontend | IMPLEMENTED | web/Dockerfile, Docker Compose frontend service |
+| Dockerized frontend | IMPLEMENTED | frontend/Dockerfile, Docker Compose frontend service |
 | External payment gateway | PLANNED | No payment-provider integration present |
 | Patient self-cancel/reschedule | PLANNED | APIs not implemented |
 | Drug-allergy interaction | PLANNED | No CDSS rules |

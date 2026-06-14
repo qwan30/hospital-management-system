@@ -71,7 +71,7 @@ The launcher script loads `.env` variables automatically. The backend starts on 
 Open a second terminal:
 
 ```bash
-cd web
+cd frontend
 npm install
 npm run dev
 ```
@@ -104,7 +104,7 @@ hospital-management-system/
 │   ├── infrastructure/               #   JPA repositories, external adapters, PHI encryption
 │   ├── start/                        #   Composition root, Spring Boot entry, Flyway migrations
 │   └── run.ps1                       #   Dev launcher (loads .env, starts Spring Boot)
-├── web/                              # Next.js 16 frontend (canonical source — not frontend/)
+├── frontend/                              # Next.js 16 frontend (canonical source — not frontend/)
 │   ├── src/app/                      #   Next.js App Router pages
 │   │   ├── (public)/                 #     Landing, about, departments, doctors, booking
 │   │   ├── portal/                   #     Patient dashboard and appointment management
@@ -160,7 +160,7 @@ Every change must be reviewed before merging:
 cd backend && mvn verify
 
 # Frontend
-cd web && npm run lint && npm run test:unit && npm run test:e2e:ci
+cd frontend && npm run lint && npm run test:unit && npm run test:e2e:ci
 
 # Full stack
 docker compose up -d && docker compose run --rm backend-test
@@ -252,7 +252,7 @@ On error:
 
 ### Frontend Canonical Source
 
-The canonical frontend source is **`web/`**, not `frontend/`. The `frontend/` directory contains deprecated prototype files and should not be used for development.
+The canonical frontend source is **`frontend/`**, not `frontend/`. The `frontend/` directory contains deprecated prototype files and should not be used for development.
 
 ---
 
@@ -267,7 +267,7 @@ mvn verify -DskipTests            # Build without tests
 mvn test -pl domain               # Test a specific module
 
 # ── Frontend (Vitest + Playwright) ──
-cd web
+cd frontend
 npm run lint                      # ESLint
 npm run test:unit                 # Vitest unit tests
 npm run test:unit:coverage        # Unit tests with coverage report
@@ -290,8 +290,8 @@ docker compose exec postgres psql -U hospital_user -d hospital_db  # Database co
 |------|---------|-------|
 | **GitNexus** | Code intelligence (call graphs, impact analysis, symbol search) | `gitnexus_query`, `gitnexus_impact`, `gitnexus_context` -- always run impact analysis before editing a symbol |
 | **CodeGraph** | Code exploration over an indexed knowledge graph | `codegraph_explore` for architecture questions, `codegraph_search` for symbol lookup |
-| **Playwright** | End-to-end browser tests | `npm run test:e2e:*` in `web/` |
-| **Vitest** | Frontend unit tests | `npm run test:unit:*` in `web/` |
+| **Playwright** | End-to-end browser tests | `npm run test:e2e:*` in `frontend/` |
+| **Vitest** | Frontend unit tests | `npm run test:unit:*` in `frontend/` |
 | **JaCoCo** | Backend test coverage | Integrated into `mvn verify` |
 
 ---

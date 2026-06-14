@@ -1,4 +1,4 @@
-# Docker Configuration
+﻿# Docker Configuration
 
 ## Overview
 
@@ -12,7 +12,7 @@ hospital-management-system/
 ├── docker-compose.observability.yml # Optional observability stack
 ├── backend/
 │   └── Dockerfile                   # Multi-stage Spring Boot build
-├── web/
+├── frontend/
 │   └── Dockerfile                   # Multi-stage Next.js build
 └── infra/
     └── observability/
@@ -152,7 +152,7 @@ ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 
 ## Frontend Dockerfile
 
-**File:** `web/Dockerfile`
+**File:** `frontend/Dockerfile`
 
 Three-stage build for optimal image size and caching.
 

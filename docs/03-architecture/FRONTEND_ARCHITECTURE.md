@@ -1,17 +1,17 @@
-# Frontend Architecture
+﻿# Frontend Architecture
 
-**Status:** current architecture reference for the canonical Next.js app in `web/`.
+**Status:** current architecture reference for the canonical Next.js app in `frontend/`.
 **Generated:** 2026-05-18.
-**Sources:** GitNexus scan, `web/src/app`, `web/src/lib`, `web/src/components`, and current frontend tests.
+**Sources:** GitNexus scan, `frontend/src/app`, `frontend/src/lib`, `frontend/src/components`, and current frontend tests.
 
 ## Runtime Shape
 
 | Concern | Current implementation |
 | --- | --- |
-| App framework | Next.js app router under `web/src/app` |
+| App framework | Next.js app router under `frontend/src/app` |
 | Component model | React client components for interactive pages |
-| Shared UI | `web/src/components/ui`, `web/src/components/shells`, `web/src/components/auth` |
-| API layer | thin service modules under `web/src/lib` |
+| Shared UI | `frontend/src/components/ui`, `frontend/src/components/shells`, `frontend/src/components/auth` |
+| API layer | thin service modules under `frontend/src/lib` |
 | State management | page-local React state with `useState`, `useEffect`, and `useMemo` |
 | Global client state | sessionStorage for access token, token expiry, and role |
 | Route authorization | frontend route guard plus backend method/security authorization |
@@ -23,7 +23,7 @@ The current codebase does not use Redux, Zustand, React Query, SWR, or Axios. In
 
 ```text
 page/component
-  -> feature service in web/src/lib
+  -> feature service in frontend/src/lib
   -> apiRequest(path, init, { authScope })
   -> fetch(`${apiBaseUrl}${path}`, credentials: "include")
   -> backend ApiResponse envelope
@@ -90,7 +90,7 @@ There is no Axios-style interceptor stack. The current pattern is centralized in
 2. response interceptor equivalent: `readJson(response)` and `if (!response.ok) throw ApiClientError(...)`
 3. feature-specific error mapping: done in page components or helpers such as `toQueueError`
 
-If automatic refresh is added later, it should be added at the `apiRequest` boundary and covered by `web/src/lib/__tests__/api-client.test.ts`.
+If automatic refresh is added later, it should be added at the `apiRequest` boundary and covered by `frontend/src/lib/__tests__/api-client.test.ts`.
 
 ## State Management Architecture
 
@@ -108,7 +108,7 @@ This architecture keeps each page independent, but it means cross-page cache inv
 
 For a new backend-backed page:
 
-1. Add or reuse a service function in `web/src/lib`.
+1. Add or reuse a service function in `frontend/src/lib`.
 2. Type the request and response DTOs from the backend controller/shared DTO contract.
 3. In the page, keep `isLoading`, `error`, and form/action state explicit.
 4. Use `authScope: "staff"` or `authScope: "patient"` for protected endpoints.
@@ -121,7 +121,7 @@ For a new backend-backed page:
 | Caveat | Evidence | Action |
 | --- | --- | --- |
 | `BookingWizard` is not a current symbol | GitNexus context failed for `BookingWizard`; `PublicBookingPage` is indexed | Use `PublicBookingPage` in docs and tests |
-| Staff lab-results page is static | `web/src/app/staff/(app)/lab-results/page.tsx` uses local `labReports` data | Add staff lab result service functions and wire the page before claiming full staff lab integration |
+| Staff lab-results page is static | `frontend/src/app/staff/(app)/lab-results/page.tsx` uses local `labReports` data | Add staff lab result service functions and wire the page before claiming full staff lab integration |
 | Staff schedule page is static | `/staff/schedule` has static layout; admin schedule/slot pages are API-backed | Add doctor schedule service wrapper for `/api/v1/me/schedule` if staff schedule becomes a release flow |
 | Patient appointment actions are unsupported | portal appointments page disables reschedule/cancel action | Keep the unsupported state until backend APIs exist |
 | No automatic token refresh replay | `apiRequest` attaches tokens but does not retry 401 | Document as current behavior or add a tested refresh strategy |

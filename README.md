@@ -93,7 +93,7 @@ Quan hệ phụ thuộc giữa các module:
 
 ### 2. Khởi Động PostgreSQL
 ```bash
-docker compose up -d postgres
+docker compose -f infra/docker-compose.yml up -d postgres
 ```
 
 ### 3. Cấu Hình Biến Môi Trường (`.env`)
@@ -121,7 +121,7 @@ mvn spring-boot:run -f start/pom.xml
 
 ### 5. Khởi Chạy Frontend Next.js
 ```bash
-cd web
+cd frontend
 npm install
 npm run dev
 ```
@@ -148,7 +148,7 @@ npm run dev
 - **CD Pipeline** (`cd.yml`): Tích hợp deploy lên máy chủ VPS bằng Docker Compose với staging → production promotion, smoke tests, và Slack notifications.
 - **Rollback** (`rollback.yml`): Tự động rollback với confirmation gate khi release thất bại health check.
 - **Security Scan** (`security-scan.yml`): OWASP Dependency Check, TruffleHog secret detection, Trivy container scanning.
-- **Observability**: Hỗ trợ hệ thống giám sát hoạt động (**Prometheus + Grafana + Loki + Tempo**) thông qua file overlay `docker-compose.observability.yml`.
+- **Observability**: Hỗ trợ hệ thống giám sát hoạt động (**Nginx reverse proxy → Prometheus → Grafana → Loki → Tempo**) thông qua file overlay `docker-compose.observability.yml`. Cấu hình Nginx, Prometheus, Grafana, Loki, Tempo tại [`infra/`](infra/).
 
 ---
 
@@ -163,11 +163,11 @@ Tài liệu dự án được tổ chức theo cấu trúc 12 danh mục chuyên
 | **02-product** | PRD, feature list, roadmap | [`prd.md`](docs/02-product/prd.md) |
 | **03-requirements** | SRS, permissions matrix | [`permissions-matrix.md`](docs/03-requirements/permissions-matrix.md) |
 | **04-architecture** | DDD, security, coding standards | [`architecture.md`](docs/04-architecture/architecture.md) |
-| **05-api** | API contract, auth, error codes | [`api-overview.md`](docs/05-api/api-overview.md) |
+| **05-api** | API contract, auth, error codes | [`API Contract →`](docs/API_CONTRACT.md) |
 | **06-database** | Schema, migrations, seed data | [`db-schema.md`](docs/06-database/db-schema.md) |
 | **07-flows** | Business flows, state machines | [`end-to-end-business-flow.md`](docs/07-flows/end-to-end-business-flow.md) |
 | **09-testing** | Test strategy, test plan | [`test-strategy.md`](docs/09-testing/test-strategy.md) |
 | **10-deployment** | CI/CD, Docker, env variables | [`deployment-guide.md`](docs/10-deployment/deployment-guide.md) |
 | **12-handover** | Handover, onboarding, known issues | [`handover-document.md`](docs/12-handover/handover-document.md) |
 
-> 📄 **[Xem tài liệu tổng hợp dạng HTML →](docs/HMS_DOCUMENTATION.html)** | 📂 **[Documentation Index →](docs/README.md)** | 📋 **[API Contract →](API_CONTRACT.md)**
+> 📄 **[Xem tài liệu tổng hợp dạng HTML →](docs/HMS_DOCUMENTATION.html)** | 📂 **[Documentation Index →](docs/README.md)** | 📋 **[API Contract →](docs/API_CONTRACT.md)**

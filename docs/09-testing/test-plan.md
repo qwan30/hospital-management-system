@@ -1,4 +1,4 @@
-# Test Plan
+﻿# Test Plan
 
 **Version:** 1.0
 **Date:** 2026-06-14
@@ -124,17 +124,17 @@ All backend integration tests share a Testcontainers PostgreSQL instance and see
 
 | Test Area | Location | Coverage |
 |-----------|----------|----------|
-| API Client | `web/src/lib/__tests__/` | Bearer token, public passthrough, error handling |
-| RBAC Utilities | `web/src/lib/__tests__/` | Permission checks, role hierarchy |
-| Route Guards | `web/src/components/auth/__tests__/` | Authorization redirect, forbidden handling |
-| Navigation Shell | `web/src/components/shells/__tests__/` | Role-filtered menus, hidden links |
-| UI Components | `web/src/components/ui/__tests__/` | Form fields, status badges, buttons |
-| Queue Page | `web/src/app/staff/(app)/queue/__tests__/` | Loading, error, filtering, check-in, terminal actions |
-| Staff Login | `web/src/app/staff/(auth)/login/__tests__/` | Form validation, fail-closed behavior |
-| Booking Flow | `web/src/app/(public)/booking/__tests__/` | Slot selection, form validation, confirmation |
-| Admin Pages | `web/src/app/admin/(app)/*/__tests__/` | Users, departments, rooms, news, inventory CRUD |
-| Portal Pages | `web/src/app/portal/(app)/*/__tests__/` | Overview, appointments, lab results, profile |
-| Doctor Dashboard | `web/src/app/staff/(app)/doctor/dashboard/__tests__/` | Appointment list, status actions |
+| API Client | `frontend/src/lib/__tests__/` | Bearer token, public passthrough, error handling |
+| RBAC Utilities | `frontend/src/lib/__tests__/` | Permission checks, role hierarchy |
+| Route Guards | `frontend/src/components/auth/__tests__/` | Authorization redirect, forbidden handling |
+| Navigation Shell | `frontend/src/components/shells/__tests__/` | Role-filtered menus, hidden links |
+| UI Components | `frontend/src/components/ui/__tests__/` | Form fields, status badges, buttons |
+| Queue Page | `frontend/src/app/staff/(app)/queue/__tests__/` | Loading, error, filtering, check-in, terminal actions |
+| Staff Login | `frontend/src/app/staff/(auth)/login/__tests__/` | Form validation, fail-closed behavior |
+| Booking Flow | `frontend/src/app/(public)/booking/__tests__/` | Slot selection, form validation, confirmation |
+| Admin Pages | `frontend/src/app/admin/(app)/*/__tests__/` | Users, departments, rooms, news, inventory CRUD |
+| Portal Pages | `frontend/src/app/portal/(app)/*/__tests__/` | Overview, appointments, lab results, profile |
+| Doctor Dashboard | `frontend/src/app/staff/(app)/doctor/dashboard/__tests__/` | Appointment list, status actions |
 
 ### 3.2 Playwright E2E Test Suites
 
@@ -289,8 +289,8 @@ Phase 4: Extended
 | Backend test report | JUnit XML | `backend/*/target/surefire-reports/` |
 | Backend coverage report | HTML | `backend/*/target/site/jacoco/` |
 | Frontend coverage report | Text/HTML | `coverage/` (Vitest) |
-| E2E test report | HTML | `web/playwright-report/` |
-| Visual snapshots | PNG | `web/e2e/snapshots/` |
+| E2E test report | HTML | `frontend/playwright-report/` |
+| Visual snapshots | PNG | `frontend/e2e/snapshots/` |
 
 ---
 

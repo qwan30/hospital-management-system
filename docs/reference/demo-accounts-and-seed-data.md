@@ -1,4 +1,4 @@
-# Demo Accounts And Seed Data
+﻿# Demo Accounts And Seed Data
 
 **Status:** current seed-data reference for the May 15, 2026 repository baseline.
 **Verification sources:** `SeedDataService`, `ReleaseDemoSeedService`, `ReleaseDemoSeedCatalog`, and `ReleaseDemoSeedProperties`.
@@ -93,5 +93,5 @@ When seed data changes, update:
 - this file
 - `README.md`
 - `docs/HMS_DeploymentGuide.md`
-- `web/e2e/helpers/personas.ts`
-- release smoke tests under `web/e2e/specs`
+- `frontend/e2e/helpers/personas.ts`
+- release smoke tests under `frontend/e2e/specs`

@@ -1,4 +1,4 @@
-# Documentation Verification Checklist
+﻿# Documentation Verification Checklist
 
 **Status:** completed for the April 26, 2026 documentation professionalization pass.
 
@@ -27,17 +27,17 @@
 
 ## 4. Frontend Verification
 
-- [x] Compare route files in `web/src/app` against product docs.
-- [x] Compare route files in `web/src/app` against design docs.
-- [x] Compare route files in `web/src/app` against test docs.
-- [x] Verify `web/` is documented as canonical.
+- [x] Compare route files in `frontend/src/app` against product docs.
+- [x] Compare route files in `frontend/src/app` against design docs.
+- [x] Compare route files in `frontend/src/app` against test docs.
+- [x] Verify `frontend/` is documented as canonical.
 - [x] Verify `frontend/` is documented as reference-only.
 
 ## 5. Testing Verification
 
-- [x] Compare Playwright specs in `web/e2e/specs` against `docs/HMS_TestPlan.md`.
+- [x] Compare Playwright specs in `frontend/e2e/specs` against `docs/HMS_TestPlan.md`.
 - [x] Compare backend tests under `backend/application/src/test` and `backend/start/src/test` against backend test claims.
-- [x] Confirm test commands match `web/package.json` and backend Maven commands.
+- [x] Confirm test commands match `frontend/package.json` and backend Maven commands.
 - [x] Confirm coverage targets are not presented as measured coverage unless reports exist.
 
 ## 6. Migration Verification
@@ -51,7 +51,7 @@
 - [x] Verify setup commands in `README.md`.
 - [x] Verify setup commands in `docs/HMS_DeploymentGuide.md`.
 - [x] Verify Docker Compose documentation matches `docker-compose.yml`.
-- [x] Verify frontend startup instructions point to `web/`.
+- [x] Verify frontend startup instructions point to `frontend/`.
 
 ## 8. Phase 2 And Agent Workflow Verification
 

@@ -1,4 +1,4 @@
-# Testing Documentation
+﻿# Testing Documentation
 
 This folder groups verification and testing documentation.
 
@@ -12,4 +12,4 @@ Primary documents:
 - [Documentation Verification Checklist](../audits/verification-checklist.md)
 - [Final Documentation Review Notes](../audits/final-documentation-review-notes.md)
 
-Test claims should be verified against backend tests under `backend/application/src/test` and `backend/start/src/test`, frontend component tests under `web/src/**/__tests__`, and Playwright suites under `web/e2e`.
+Test claims should be verified against backend tests under `backend/application/src/test` and `backend/start/src/test`, frontend component tests under `frontend/src/**/__tests__`, and Playwright suites under `frontend/e2e`.

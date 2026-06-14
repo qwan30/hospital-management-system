@@ -1,4 +1,4 @@
-# End-to-End Business Flows
+﻿# End-to-End Business Flows
 
 **Version:** 1.0
 **Date:** 2026-06-14
@@ -94,7 +94,7 @@ sequenceDiagram
 - Refresh token: HTTP-only cookie, not accessible to JavaScript
 - Backend: JwtAuthenticationFilter validates token on every request
 - Backend: RbacAuthorizationService enforces method-level @PreAuthorize
-- Frontend: Route guard in `web/src/lib/rbac.ts` enforces screen-level access
+- Frontend: Route guard in `frontend/src/lib/rbac.ts` enforces screen-level access
 
 ```mermaid
 sequenceDiagram
@@ -612,6 +612,6 @@ sequenceDiagram
 - Security denials (401, 403) are logged with actor, action, resource, and timestamp
 
 ### RBAC Enforcement
-- Frontend: route guard in `web/src/lib/rbac.ts` blocks unauthorized screen access
+- Frontend: route guard in `frontend/src/lib/rbac.ts` blocks unauthorized screen access
 - Backend: `RbacAuthorizationService` with `@PreAuthorize` annotations on every controller method
 - 6 staff roles + PATIENT role, each with distinct permission sets across 11 business modules

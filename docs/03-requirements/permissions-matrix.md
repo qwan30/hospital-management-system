@@ -1,11 +1,11 @@
-# Ma Tran Quyen (Role-Permission Matrix)
+﻿# Ma Tran Quyen (Role-Permission Matrix)
 
 > Ma tran 36 quyen RBAC (Role-Based Access Control) cho 7 vai tro nguoi dung. Cap nhat lan cuoi: 2026-06-14.
 
 **Nguon (Sources):**
 - `backend/application/src/main/java/com/hospital/core/security/RbacAuthorizationService.java`
 - `backend/domain/src/main/java/com/hospital/shared/enums/UserRole.java`
-- `web/src/lib/rbac.ts`
+- `frontend/src/lib/rbac.ts`
 - `backend/controller/src/main/java/com/hospital/api/config/SecurityConfig.java`
 
 ---
@@ -171,7 +171,7 @@
 
 ## 4. Frontend Route Guards
 
-Cac frontend route guards trong `web/src/lib/rbac.ts` phan anh RBAC phia backend, voi mot so ngoai le:
+Cac frontend route guards trong `frontend/src/lib/rbac.ts` phan anh RBAC phia backend, voi mot so ngoai le:
 
 | Route prefix | Roles duoc phep | Ghi chu |
 |--------------|----------------|---------|
@@ -205,7 +205,7 @@ Cac frontend route guards trong `web/src/lib/rbac.ts` phan anh RBAC phia backend
 ## 6. Tham Chieu (References)
 
 - Backend RBAC implementation: `backend/application/src/main/java/com/hospital/core/security/RbacAuthorizationService.java`
-- Frontend route policies: `web/src/lib/rbac.ts`
+- Frontend route policies: `frontend/src/lib/rbac.ts`
 - Security configuration: `backend/controller/src/main/java/com/hospital/api/config/SecurityConfig.java`
 - UserRole enum: `backend/domain/src/main/java/com/hospital/shared/enums/UserRole.java`
 - Role-screen-API matrix: `docs/reference/role-screen-api-matrix.md`

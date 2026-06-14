@@ -1,4 +1,4 @@
-# Code Review Checklist — HMS
+﻿# Code Review Checklist — HMS
 
 > Tai lieu danh cho toan bo nhan vien ky thuat. Cac muc duoc phan theo muc do nghiem trong.
 > Bao gom ca phan Tieng Viet mo ta quy trinh va phan Tieng Anh danh muc kiem tra.
@@ -155,16 +155,16 @@
 | RBAC permissions | `backend/application/src/main/java/com/hospital/core/security/RbacAuthorizationService.java` |
 | PHI encryption | `backend/infrastructure/src/main/java/com/hospital/core/patient/PatientIdentifierProtector.java` |
 | Rate limiting | `backend/controller/src/main/java/com/hospital/api/config/RateLimitFilter.java` |
-| Frontend RBAC | `web/src/lib/rbac.ts` |
-| Route guard | `web/src/components/auth/route-guard.tsx` |
-| API client | `web/src/lib/api-client.ts` |
-| E2E specs | `web/e2e/specs/` |
+| Frontend RBAC | `frontend/src/lib/rbac.ts` |
+| Route guard | `frontend/src/components/auth/route-guard.tsx` |
+| API client | `frontend/src/lib/api-client.ts` |
+| E2E specs | `frontend/e2e/specs/` |
 | Integration tests | `backend/start/src/test/java/com/hospital/api/` |
 | Domain entities | `backend/domain/src/main/java/com/hospital/core/` |
 | Flyway migrations | `backend/start/src/main/resources/db/migration/` |
 | Architecture guide | `docs/03-architecture/README.md` |
 | Security config | `backend/controller/src/main/java/com/hospital/api/config/SecurityConfig.java` |
-| Frontend tests | `web/src/**/__tests__/` |
+| Frontend tests | `frontend/src/**/__tests__/` |
 
 ### Cong cu ho tro (CLI / MCP tools)
 

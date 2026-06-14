@@ -1,4 +1,4 @@
-# GitNexus Codebase Scan
+﻿# GitNexus Codebase Scan
 
 **Status:** code-intelligence snapshot for committed `HEAD` plus source metrics refreshed on 2026-06-14.
 **Primary source:** GitNexus index for `hospital-management-system`, verified with source, config, and test inventories.
@@ -66,11 +66,11 @@ GitNexus query and context passes show these central surfaces:
 | Method-level controller mappings | 117 | `@GetMapping`, `@PostMapping`, `@PutMapping`, `@PatchMapping`, `@DeleteMapping` annotations |
 | Total controller mapping annotations | 148 | method-level mappings plus `@RequestMapping` annotations |
 | Flyway migrations | 18, `V1` through `V18` | `backend/start/src/main/resources/db/migration` |
-| Frontend page files | 72 | `web/src/app/**/page.tsx` |
-| Frontend page/layout/route files | 78 | `web/src/app` |
+| Frontend page files | 72 | `frontend/src/app/**/page.tsx` |
+| Frontend page/layout/route files | 78 | `frontend/src/app` |
 | Backend test classes | 32 | `backend/application/src/test`, `backend/start/src/test` |
-| Tracked Playwright specs | 24 | `git ls-files web/e2e/specs/*.ts` |
-| Current working-tree Playwright specs | 24 | `web/e2e/specs/*.ts` |
+| Tracked Playwright specs | 24 | `git ls-files frontend/e2e/specs/*.ts` |
+| Current working-tree Playwright specs | 24 | `frontend/e2e/specs/*.ts` |
 
 ## 5. Verification Commands
 

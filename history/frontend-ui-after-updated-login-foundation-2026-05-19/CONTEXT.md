@@ -1,8 +1,8 @@
-# Frontend UI After Updated Login Foundation Context
+﻿# Frontend UI After Updated Login Foundation Context
 
 ## Objective
 
-Apply the `web/screenshot-each-page/UI-after-updated` visual direction and `docs/design_system.md` tokens to the `web/` frontend without reverting unrelated dirty-tree work.
+Apply the `frontend/screenshot-each-page/UI-after-updated` visual direction and `docs/design_system.md` tokens to the `frontend/` frontend without reverting unrelated dirty-tree work.
 
 ## Locked Decisions
 
@@ -14,13 +14,13 @@ Apply the `web/screenshot-each-page/UI-after-updated` visual direction and `docs
 
 ## Completed
 
-- Refreshed `web/src/app/staff/(auth)/login/page.tsx` to the centered Hospital Core card, cyan cross brand mark, blue/white clinical background, accessible labels, emergency access action, and status/version tiles.
-- Refined `web/src/app/staff/(auth)/login/page.tsx` for real browser viewport height by widening inner card padding, tightening vertical rhythm, adding a compact `max-height:860px` layout mode, and making the bottom compliance footer readable over the blue background.
+- Refreshed `frontend/src/app/staff/(auth)/login/page.tsx` to the centered Hospital Core card, cyan cross brand mark, blue/white clinical background, accessible labels, emergency access action, and status/version tiles.
+- Refined `frontend/src/app/staff/(auth)/login/page.tsx` for real browser viewport height by widening inner card padding, tightening vertical rhythm, adding a compact `max-height:860px` layout mode, and making the bottom compliance footer readable over the blue background.
 - Reworked the same route background to match `staff_login.png` more closely: darker-to-light clinical blue left field, subtle curved linework, and a faded hospital-corridor scene on the right instead of the previous abstract grid.
 - Reduced the same route for 100% browser zoom without `transform: scale`: card max-width `540px`, card padding `32-40px`, title `34px`, subtitle `15px`, inputs `48px`, primary button `50px`, card icon `48px`, block gaps around `20px`, and footer text `12px`.
-- Extended `web/src/app/globals.css` with missing Hospital Core token aliases used by the updated designs.
-- Aligned `web/src/components/shells/public-top-nav.tsx` and `web/src/components/shells/top-nav.tsx` with the updated brand/action icon direction and role-aware profile text.
-- Fixed the `web/src/app/staff/(app)/schedule/page.tsx` React lint blocker around initial schedule loading while preserving existing page behavior.
+- Extended `frontend/src/app/globals.css` with missing Hospital Core token aliases used by the updated designs.
+- Aligned `frontend/src/components/shells/public-top-nav.tsx` and `frontend/src/components/shells/top-nav.tsx` with the updated brand/action icon direction and role-aware profile text.
+- Fixed the `frontend/src/app/staff/(app)/schedule/page.tsx` React lint blocker around initial schedule loading while preserving existing page behavior.
 
 ## Verification
 

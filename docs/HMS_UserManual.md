@@ -1,4 +1,4 @@
-# Hospital Management System User Manual
+﻿# Hospital Management System User Manual
 
 Status: role workflow reference aligned to the repository on 2026-04-26 after AI and internal assistant removal.
 
@@ -6,7 +6,7 @@ Role matrix: [reference/role-screen-api-matrix.md](reference/role-screen-api-mat
 
 ## 1. How To Use This Manual
 
-The repository contains the canonical Next.js route tree under `web/`, but not every screen is production-ready or fully backend-integrated.
+The repository contains the canonical Next.js route tree under `frontend/`, but not every screen is production-ready or fully backend-integrated.
 Use this manual as a role workflow guide, not as proof that every route is complete for production operation.
 
 ## 2. Guest And Public User

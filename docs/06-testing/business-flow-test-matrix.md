@@ -1,4 +1,4 @@
-# HMS A-to-Z Business Flow Test Document
+﻿# HMS A-to-Z Business Flow Test Document
 
 **Status:** canonical BA/QA end-to-end business-flow testing document for the current HMS repository.
 **Generated:** 2026-05-21.
@@ -14,11 +14,11 @@ Use this document to test the system from public discovery through booking, queu
 
 | Surface | Source | Purpose | Status |
 | --- | --- | --- | --- |
-| Public website and patient/staff UI | `web/` | Canonical Next.js app for public discovery, staff operations, admin, and patient portal | Working, with selected static/reference-only screens |
+| Public website and patient/staff UI | `frontend/` | Canonical Next.js app for public discovery, staff operations, admin, and patient portal | Working, with selected static/reference-only screens |
 | Reference prototype | `frontend/` | Historical/design reference only | Not active runtime |
 | Backend API | `backend/controller`, `backend/application`, `backend/domain`, `backend/infrastructure`, `backend/start` | Spring Boot modular monolith with controllers, services, DTOs, repositories, migrations, and security filters | Working |
 | Database | `backend/start/src/main/resources/db/migration` | Flyway-managed PostgreSQL schema | Working |
-| Automated tests | `backend/application/src/test`, `backend/start/src/test`, `web/src/**/__tests__`, `web/e2e` | Unit, integration, component, route, visual, and workflow coverage | Working; latest recorded final pass is in `full-hms-production-readiness-report-2026-06-01.md` |
+| Automated tests | `backend/application/src/test`, `backend/start/src/test`, `frontend/src/**/__tests__`, `frontend/e2e` | Unit, integration, component, route, visual, and workflow coverage | Working; latest recorded final pass is in `full-hms-production-readiness-report-2026-06-01.md` |
 
 ### Business Modules
 
@@ -187,7 +187,7 @@ Status labels:
 7. Protected API calls include bearer token.
 8. Logout clears session and calls backend logout.
 
-**Expected result:** Role access matches `web/src/lib/rbac.ts` and backend `RbacAuthorizationService`.
+**Expected result:** Role access matches `frontend/src/lib/rbac.ts` and backend `RbacAuthorizationService`.
 
 **Exception cases:**
 - Missing/invalid credentials.
@@ -1068,11 +1068,11 @@ npx.cmd gitnexus list
 npx.cmd gitnexus query "patient appointment booking check in workflow" -r hospital-management-system
 npx.cmd gitnexus query "doctor consultation medical record prescription workflow" -r hospital-management-system
 npx.cmd gitnexus query "frontend button action API integration loading error state" -r hospital-management-system
-rg --files web/src/app
+rg --files frontend/src/app
 rg --files backend
 rg -n "@(RestController|RequestMapping|GetMapping|PostMapping|PutMapping|PatchMapping|DeleteMapping|PreAuthorize)" backend/controller/src/main/java backend/application/src/main/java
 rg -n "CREATE TABLE|ALTER TABLE|CHECK \(|status|role" backend/start/src/main/resources/db/migration
-rg -n "onClick|type=""submit""|<button|<Button|Button" web/src/app web/src/components web/src/lib
+rg -n "onClick|type=""submit""|<button|<Button|Button" frontend/src/app frontend/src/components frontend/src/lib
 git diff --check -- docs/06-testing/business-flow-test-matrix.md docs/06-testing/README.md
 ```
 
@@ -1080,18 +1080,18 @@ git diff --check -- docs/06-testing/business-flow-test-matrix.md docs/06-testing
 
 | Area | Primary anchors |
 | --- | --- |
-| Frontend route inventory | `web/e2e/helpers/routes.ts`, `web/src/app/**/page.tsx` |
-| Frontend route contracts | `web/e2e/helpers/exhaustive-route-contracts.ts` |
-| Frontend RBAC | `web/src/lib/rbac.ts`, route guard tests |
-| Public API wrapper | `web/src/lib/public-api.ts` |
-| Clinical API wrapper | `web/src/lib/clinical-api.ts` |
-| Operations API wrapper | `web/src/lib/operations-api.ts` |
-| Medical records API wrapper | `web/src/lib/medical-records-api.ts` |
-| Patient records API wrapper | `web/src/lib/patient-records-api.ts` |
+| Frontend route inventory | `frontend/e2e/helpers/routes.ts`, `frontend/src/app/**/page.tsx` |
+| Frontend route contracts | `frontend/e2e/helpers/exhaustive-route-contracts.ts` |
+| Frontend RBAC | `frontend/src/lib/rbac.ts`, route guard tests |
+| Public API wrapper | `frontend/src/lib/public-api.ts` |
+| Clinical API wrapper | `frontend/src/lib/clinical-api.ts` |
+| Operations API wrapper | `frontend/src/lib/operations-api.ts` |
+| Medical records API wrapper | `frontend/src/lib/medical-records-api.ts` |
+| Patient records API wrapper | `frontend/src/lib/patient-records-api.ts` |
 | Backend controllers | `backend/controller/src/main/java/com/hospital/api` |
 | Backend services | `backend/application/src/main/java/com/hospital/core` |
 | DTOs and enums | `backend/domain/src/main/java/com/hospital/shared` |
 | Database migrations | `backend/start/src/main/resources/db/migration` |
 | Backend integration tests | `backend/start/src/test/java/com/hospital/api` |
-| Frontend unit/component tests | `web/src/**/__tests__` |
-| Playwright suites | `web/e2e/specs` |
+| Frontend unit/component tests | `frontend/src/**/__tests__` |
+| Playwright suites | `frontend/e2e/specs` |

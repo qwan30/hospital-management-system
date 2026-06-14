@@ -1,8 +1,8 @@
-# P1 UI Truthfulness Real-User QA - 2026-06-01
+﻿# P1 UI Truthfulness Real-User QA - 2026-06-01
 
 ## 1. Test Plan
 
-**Scope:** HMS `web/` P1 UI truthfulness and destructive-action safety slice after waiver closure.
+**Scope:** HMS `frontend/` P1 UI truthfulness and destructive-action safety slice after waiver closure.
 
 **Critical journeys covered:**
 
@@ -14,7 +14,7 @@
 
 **Done criteria:**
 
-- No enabled `href="#"` controls in `web/src/app`.
+- No enabled `href="#"` controls in `frontend/src/app`.
 - Unsupported visible actions are disabled with truthful copy or routed to a real screen.
 - Dangerous actions listed in the P1 plan require explicit browser confirmation.
 - Priority UI routes pass real browser checks with no unfiltered console errors and no 4xx/5xx app/API requests.
@@ -25,11 +25,11 @@
 | Step | Result | Evidence |
 | --- | --- | --- |
 | GitNexus impact checks | PASS/LOW for edited indexed page symbols; login source symbols were not resolved by the local index, so edits were kept to markup-only truthfulness | CLI `impact`/`query` output during implementation |
-| Source scan for hash links | PASS | `rg 'href="#"' web/src/app web/src/components` returned no matches |
+| Source scan for hash links | PASS | `rg 'href="#"' frontend/src/app frontend/src/components` returned no matches |
 | Focused component tests | PASS, 32 tests | Admin users/departments/rooms/slots and staff queue/invoices confirmation tests |
 | Playwright UI truthfulness spec | PASS, 2 tests | `npx.cmd playwright test e2e/specs/ui-truthfulness.spec.ts --project=chromium` |
-| Actionable-control manifest | PASS, 0 bugs | `web/test-results/actionable-control-manifest/summary.md` |
-| Real-user browser pass | PASS, 23 checks, 11 screenshots | `web/test-results/real-user-browser-qa-2026-06-01/summary.md` |
+| Actionable-control manifest | PASS, 0 bugs | `frontend/test-results/actionable-control-manifest/summary.md` |
+| Real-user browser pass | PASS, 23 checks, 11 screenshots | `frontend/test-results/real-user-browser-qa-2026-06-01/summary.md` |
 
 ## 3. Bug Report
 
@@ -56,12 +56,12 @@
 - Chrome-headed real-user pass: 23 checks passed.
 - Unfiltered console errors: 0.
 - 4xx/5xx app/API requests: 0.
-- Screenshots saved under `web/test-results/real-user-browser-qa-2026-06-01/`.
+- Screenshots saved under `frontend/test-results/real-user-browser-qa-2026-06-01/`.
 - Chrome DevTools MCP/extension was unavailable in this session, so the browser pass used Playwright launching the installed Chrome channel in headed mode.
 
 ## 6. Playwright Regression Plan
 
-- Keep `web/e2e/specs/ui-truthfulness.spec.ts` in the UI suite.
+- Keep `frontend/e2e/specs/ui-truthfulness.spec.ts` in the UI suite.
 - The priority-route test asserts specific disabled/routed controls.
 - The manifest test crawls all route contracts, writes `manifest.json` and `summary.md`, and asserts there are no enabled fake/hash-link controls.
 - Future P1 slices should reduce the `needs review` count by adding route-specific click tests or disabling unsupported controls.

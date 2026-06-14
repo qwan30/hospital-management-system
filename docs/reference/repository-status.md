@@ -1,4 +1,4 @@
-# Repository Status
+﻿# Repository Status
 
 **Status refresh:** 2026-06-14.
 **Scope:** Git state, GitNexus index state, source-derived metrics, release-readiness label, and verification evidence.
@@ -30,9 +30,9 @@
 | Controller Java files | 40 | `backend/controller/src/main/java` |
 | Method-level controller mappings | 118 | `rg "@(GetMapping|PostMapping|PutMapping|PatchMapping|DeleteMapping)\b"` |
 | Flyway migrations | 20 | `backend/start/src/main/resources/db/migration` |
-| Frontend page files | 72 | `web/src/app/**/page.tsx` |
+| Frontend page files | 72 | `frontend/src/app/**/page.tsx` |
 | Backend test files | 34 | `backend/application/src/test`, `backend/start/src/test` |
-| Playwright specs | 25 | `web/e2e/specs/*.ts` |
+| Playwright specs | 25 | `frontend/e2e/specs/*.ts` |
 | CI/CD workflows | 4 | ci.yml, cd.yml, rollback.yml, security-scan.yml |
 | Docker services | 3 | postgres, backend, frontend (plus optional observability stack) |
 

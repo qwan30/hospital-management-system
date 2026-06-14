@@ -1,12 +1,12 @@
-# Hospital Core — UI Completion Plan
+﻿# Hospital Core — UI Completion Plan
 
-This document outlines the detailed screen-by-screen visual and functional audit comparing the target UI design screenshots (located in `web/screenshot-each-page/UI-after-updated`) against the current live Next.js implementation (located in `web/src/app` and audited in `docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/`).
+This document outlines the detailed screen-by-screen visual and functional audit comparing the target UI design screenshots (located in `frontend/screenshot-each-page/UI-after-updated`) against the current live Next.js implementation (located in `frontend/src/app` and audited in `docs/06-testing/artifacts/all-routes-live-ui-audit-2026-05-22/`).
 
 ---
 
 ## 1. Executive Summary
 
-This plan provides a blueprint for bringing the live Next.js application in `web/` to parity with the design aesthetics, layouts, and interactive capabilities defined in the target screenshots. 
+This plan provides a blueprint for bringing the live Next.js application in `frontend/` to parity with the design aesthetics, layouts, and interactive capabilities defined in the target screenshots. 
 
 ### Core Objectives
 *   **Aesthetic Alignment:** Implement the **dark navy top navigation + light clinical sidebar + white workspace + dense operational tables** hierarchy across all pages.
@@ -44,7 +44,7 @@ To ensure visual consistency, all developers must adhere to the following layout
 
 ## 3. Screen-by-Screen Analysis (79 Target Screenshots)
 
-The following sections analyze every screenshot in the target design directory `web/screenshot-each-page/UI-after-updated/` compared with the current implementation.
+The following sections analyze every screenshot in the target design directory `frontend/screenshot-each-page/UI-after-updated/` compared with the current implementation.
 
 ### Section A: Accountant Workspace (Finance)
 

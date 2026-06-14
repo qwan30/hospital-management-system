@@ -1,4 +1,4 @@
-# Stabilization Readiness Audit - 2026-05-13
+﻿# Stabilization Readiness Audit - 2026-05-13
 
 ## Verdict
 
@@ -17,11 +17,11 @@ The repository is not in a stop-and-rewrite state. The frontend unit/build gates
 
 ## Fixes Applied
 
-- Aligned active API defaults to backend port `8081` in `.env.example`, CI env, `web/Dockerfile`, the web API client fallback, E2E backend helper, and active docs.
+- Aligned active API defaults to backend port `8081` in `.env.example`, CI env, `frontend/Dockerfile`, the web API client fallback, E2E backend helper, and active docs.
 - Removed insecure dev fallback defaults for database password, JWT secret, and patient identifier secret from `backend/start/src/main/resources/application-dev.yml`; dev now requires environment-provided values.
 - Cleaned generated backend output files from the worktree and added ignore rules for `backend/start/test_output*.txt` and `backend/start/startup-log.txt`.
 - Fixed newly added Playwright spec lint issues by replacing `any` metric casts with a typed layout-shift entry shape and removing unused fixtures/variables.
-- Excluded generated `web/coverage/**` from ESLint so lint output reflects source files.
+- Excluded generated `frontend/coverage/**` from ESLint so lint output reflects source files.
 
 ## Verification Results
 
@@ -30,11 +30,11 @@ The repository is not in a stop-and-rewrite state. The frontend unit/build gates
 | `git diff --check` | Pass | no whitespace errors after cleanup |
 | `npx.cmd gitnexus status` | Pass | index up to date at `9ae36bf` |
 | `mvn.cmd -pl start -am -DskipTests=false test` from `backend/` | Blocked for integration confidence | build success; 80 application tests passed; start module reported 144 tests, 140 skipped because Testcontainers could not find a valid Docker environment |
-| `npm.cmd run lint` from `web/` | Pass | ESLint completed without warnings after `coverage/**` ignore |
-| `npm.cmd run test:unit` from `web/` | Pass | 16 test files, 177 tests passed |
-| `npm.cmd run build` from `web/` | Pass | Next.js production build completed; 65 app routes generated, including `/robots.txt` and `/sitemap.xml` |
-| `npm.cmd run test:e2e:ci` from `web/` | Pass | 167 Chromium Playwright tests passed, 1 HTTPS ingress test intentionally skipped |
-| `npm.cmd run test:e2e:visual` from `web/` | Pass | 14 Chromium visual snapshots passed after baseline refresh |
+| `npm.cmd run lint` from `frontend/` | Pass | ESLint completed without warnings after `coverage/**` ignore |
+| `npm.cmd run test:unit` from `frontend/` | Pass | 16 test files, 177 tests passed |
+| `npm.cmd run build` from `frontend/` | Pass | Next.js production build completed; 65 app routes generated, including `/robots.txt` and `/sitemap.xml` |
+| `npm.cmd run test:e2e:ci` from `frontend/` | Pass | 167 Chromium Playwright tests passed, 1 HTTPS ingress test intentionally skipped |
+| `npm.cmd run test:e2e:visual` from `frontend/` | Pass | 14 Chromium visual snapshots passed after baseline refresh |
 | `node .codex\khuym_status.mjs --json` | Pass with known missing optional tools | 19 Khuym skills detected; `br`, `bv`, and `node` found; `cass`, `cm`, and `gkg` remain unavailable |
 | `docker compose build backend frontend` | Blocked | Docker Desktop Linux engine pipe `//./pipe/dockerDesktopLinuxEngine` was unavailable |
 

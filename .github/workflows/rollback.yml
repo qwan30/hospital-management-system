@@ -91,7 +91,7 @@ jobs:
             # Override image tags and redeploy
             BACKEND_IMAGE="ghcr.io/${REPO}/backend:${BTAG}" \
             FRONTEND_IMAGE="ghcr.io/${REPO}/frontend:${FTAG}" \
-            docker compose up -d --remove-orphans
+            docker compose -f infra/docker-compose.yml up -d --remove-orphans
 
             echo "✓ Rollback complete — backend:$BTAG frontend:$FTAG"
 

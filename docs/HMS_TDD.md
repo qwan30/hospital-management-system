@@ -30,10 +30,10 @@ It replaces earlier technical notes that assumed a finished React application or
 
 ### 2.2 Frontend
 
-The `web/` folder contains the canonical Next.js frontend app for public, staff, admin, and patient portal screens.
+The `frontend/` folder contains the canonical Next.js frontend app for public, staff, admin, and patient portal screens.
 The `frontend/` directory is retained as migrated design-reference HTML/PNG prototypes, not as the runnable frontend.
 
-Installed dependencies in `web/package.json` indicate the current frontend stack:
+Installed dependencies in `frontend/package.json` indicate the current frontend stack:
 
 | Area | Installed package |
 | --- | --- |
@@ -47,10 +47,10 @@ Installed dependencies in `web/package.json` indicate the current frontend stack
 
 Current frontend code reality:
 
-- `web/src/app` contains route groups for public, staff, admin, and patient portal screens
-- `web/src/lib/api-client.ts` provides the shared fetch envelope client
-- `web/src/lib/clinical-api.ts` and `web/src/lib/staff-queue.ts` cover selected clinical queue integration
-- `web/src/lib/rbac.ts` and `web/src/components/auth/route-guard.tsx` provide frontend route-guard helpers
+- `frontend/src/app` contains route groups for public, staff, admin, and patient portal screens
+- `frontend/src/lib/api-client.ts` provides the shared fetch envelope client
+- `frontend/src/lib/clinical-api.ts` and `frontend/src/lib/staff-queue.ts` cover selected clinical queue integration
+- `frontend/src/lib/rbac.ts` and `frontend/src/components/auth/route-guard.tsx` provide frontend route-guard helpers
 - there is no frontend Dockerfile
 
 ## 3. Repository Topology
@@ -62,7 +62,7 @@ backend/
   application/     use-case services, auth services, orchestration, seed/backfill jobs
   controller/      REST controllers, API envelope, security filters, web error handling
   start/           Spring Boot entry point, runtime config, Flyway migrations, integration tests
-web/
+frontend/
   src/app/  canonical Next.js route tree
 frontend/
   */        migrated design-reference HTML/PNG prototypes
@@ -223,7 +223,7 @@ mvn spring-boot:run -pl start
 ### 10.2 Frontend
 
 ```bash
-cd web
+cd frontend
 npm install
 npm run dev
 ```

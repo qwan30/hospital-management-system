@@ -1,4 +1,4 @@
-# Architecture -- Hospital Management System
+﻿# Architecture -- Hospital Management System
 
 - **Status:** living document; reflects codebase state as of 2026-06-14
 - **Scope:** backend modular monolith, frontend integration, deployment topology
@@ -441,19 +441,19 @@ External integration exceptions (e.g., Gmail API failures) are caught in `infras
 
 ### 7.1 Application layer
 
-The frontend is a **Next.js 16** application using the **App Router** (`web/src/app`), React 19, Tailwind CSS 4, and Base UI components. It communicates with the backend exclusively through the REST API at `/api/v1/*`.
+The frontend is a **Next.js 16** application using the **App Router** (`frontend/src/app`), React 19, Tailwind CSS 4, and Base UI components. It communicates with the backend exclusively through the REST API at `/api/v1/*`.
 
 ### 7.2 API client architecture
 
 ```text
 Page / Component
-  -> Feature service module (web/src/lib/*.ts)
+  -> Feature service module (frontend/src/lib/*.ts)
     -> apiRequest(path, init, { authScope })
       -> fetch(`${apiBaseUrl}${path}`, { credentials: "include", headers })
         -> Spring Boot controller
 ```
 
-The shared `apiRequest` function in `web/src/lib/api-client.ts` handles:
+The shared `apiRequest` function in `frontend/src/lib/api-client.ts` handles:
 
 1. **Base URL resolution:** reads `NEXT_PUBLIC_API_BASE_URL` environment variable; defaults to `http://localhost:8081/api/v1`.
 2. **Content negotiation:** always sets `Content-Type: application/json` and `Accept: application/json`.

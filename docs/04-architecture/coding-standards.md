@@ -1,4 +1,4 @@
-# Coding Standards
+﻿# Coding Standards
 
 **Scope:** Java backend (Spring Boot) and TypeScript/React frontend (Next.js App Router).
 **Purpose:** Ensure consistency, readability, and maintainability across the entire codebase.
@@ -416,10 +416,10 @@ public class InventoryController {
 
 ### 3.1 File Organization
 
-The frontend lives under `web/` and uses the Next.js App Router.
+The frontend lives under `frontend/` and uses the Next.js App Router.
 
 ```
-web/src/
+frontend/src/
   app/             -- Next.js App Router pages and layouts
     (public)/      -- Public-facing routes
     (auth)/        -- Authentication routes
@@ -454,7 +454,7 @@ web/src/
 - Do NOT use `React.FC` -- declare props directly in the function signature.
 - Use named exports (not default exports).
 - Keep components focused on a single responsibility.
-- Extract reusable UI elements into `web/src/components/ui/`.
+- Extract reusable UI elements into `frontend/src/components/ui/`.
 
 ```tsx
 import type { ReactNode } from "react";
@@ -494,7 +494,7 @@ export function DataPanel({ title, action, children, filters, footer, className 
 - Keep hooks focused on a single concern.
 
 ```ts
-// web/src/lib/use-stored-role.ts
+// frontend/src/lib/use-stored-role.ts
 export function useStoredRole(): string | null {
   // encapsulated read from sessionStorage with fallback
 }
@@ -502,7 +502,7 @@ export function useStoredRole(): string | null {
 
 ### 3.4 API Client
 
-All HTTP communication goes through the centralized API client in `web/src/lib/api-client.ts`.
+All HTTP communication goes through the centralized API client in `frontend/src/lib/api-client.ts`.
 
 **`ApiEnvelope` interface (mirrors the backend):**
 ```ts
@@ -518,13 +518,13 @@ export interface ApiEnvelope<T> {
 ```
 
 **Rules:**
-- Define typed request/response interfaces per domain in dedicated service modules under `web/src/lib/`.
+- Define typed request/response interfaces per domain in dedicated service modules under `frontend/src/lib/`.
 - Use the `apiRequest` wrapper from `api-client.ts` which handles base URL resolution, JSON parsing, and error shaping.
 - Domain service modules (e.g., `clinical-api.ts`, `public-api.ts`, `operations-api.ts`) encapsulate endpoint paths and typed return values.
 - Handle errors through `ApiClientError` -- never swallow fetch failures.
 
 ```ts
-// web/src/lib/public-api.ts
+// frontend/src/lib/public-api.ts
 import { apiRequest } from "./api-client";
 
 export interface Doctor {

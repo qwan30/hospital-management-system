@@ -1,4 +1,4 @@
-# Hospital Management System — Documentation Map
+﻿# Hospital Management System — Documentation Map
 
 **Status:** comprehensive documentation aligned with the repository on 2026-06-14.
 **Release:** Release Candidate 1.0 — all 7 clinical workflows implemented and tested.
@@ -156,7 +156,7 @@
 
 ## 3. Canonical Rules
 
-1. `web/` is the canonical runnable Next.js frontend. `frontend/` is archived design-reference only.
+1. `frontend/` is the canonical runnable Next.js frontend. `frontend/` is archived design-reference only.
 2. Repository source reality is the tie-breaker when documents disagree.
 3. Endpoint changes require updates to `../API_CONTRACT.md`, `05-api/api-overview.md`, and affected requirements docs.
 4. Frontend route changes require updates to `reference/frontend-route-inventory.md` and `reference/current-system-flows.md`.

@@ -1,7 +1,7 @@
 # Current System Flows
 
 **Status:** current flow map for the June 14, 2026 repository baseline.
-**Canonical runtime:** Spring Boot backend on `8081`, PostgreSQL on `5432`, and the Next.js app in `web/` on `3000`.
+**Canonical runtime:** Spring Boot backend on `8081`, PostgreSQL on `5432`, and the Next.js app in `frontend/` on `3000`.
 
 This document summarizes the active product flows from source, route, and OpenAPI evidence. Use it with the route inventory and role matrix instead of treating route-file existence as proof that a workflow is fully backend-integrated.
 
@@ -11,10 +11,10 @@ This document summarizes the active product flows from source, route, and OpenAP
 | --- | --- | --- | --- |
 | Backend composition root | `backend/start` | `http://localhost:8081` | Spring Boot app, actuator health, Swagger UI, Flyway migrations |
 | Database | `docker-compose.yml` | `localhost:5432` | PostgreSQL 15 using `pgvector/pgvector:pg15` |
-| Frontend app | `web/` | `http://localhost:3000` | Canonical Next.js 16 / React 19 app |
+| Frontend app | `frontend/` | `http://localhost:3000` | Canonical Next.js 16 / React 19 app |
 | Reference prototypes | `frontend/` | none | Design-reference material, not the active runtime |
 
-The current OpenAPI surface exposes 89 API paths and 117 operations under `/api/v1` plus SpringDoc and actuator support endpoints. The current Next.js route tree contains 65 `page.tsx` files and 71 route/layout files under `web/src/app`.
+The current OpenAPI surface exposes 89 API paths and 117 operations under `/api/v1` plus SpringDoc and actuator support endpoints. The current Next.js route tree contains 65 `page.tsx` files and 71 route/layout files under `frontend/src/app`.
 
 ## 2. End-To-End Flow Map
 
@@ -52,7 +52,7 @@ java -jar start\target\start-0.1.0-SNAPSHOT.jar
 Frontend:
 
 ```powershell
-cd web
+cd frontend
 npm.cmd run dev -- -p 3000
 ```
 
@@ -79,9 +79,9 @@ For browser login from `http://localhost:3000`, the backend must allow credentia
 
 Use these sources when this flow map needs maintenance:
 
-- `web/src/app`
-- `web/e2e/helpers/routes.ts`
-- `web/src/lib/rbac.ts`
+- `frontend/src/app`
+- `frontend/e2e/helpers/routes.ts`
+- `frontend/src/lib/rbac.ts`
 - `backend/controller/src/main/java`
 - `backend/application/src/main/java/com/hospital/core/security/RbacAuthorizationService.java`
 - `backend/start/src/main/resources/application.yml`

@@ -297,8 +297,8 @@ Chay: `cd backend && mvn verify -Dspring.datasource.url=jdbc:postgresql://localh
 | Lint | ESLint 9 | Check style |
 
 Chay:
-- Unit: `cd web && npm run test:unit:coverage`
-- E2E: `cd web && npm run test:e2e:ci`
+- Unit: `cd frontend && npm run test:unit:coverage`
+- E2E: `cd frontend && npm run test:e2e:ci`
 
 ### 8.3 CI Pipeline (GitHub Actions)
 
@@ -353,7 +353,7 @@ cd backend
 ./run.ps1
 
 # 3. Chay frontend
-cd web
+cd frontend
 npm install
 npm run dev
 ```
@@ -364,7 +364,7 @@ npm run dev
 |---------|-------|------|---------|
 | postgres | pgvector/pgvector:pg15 | 5432 | Volume: postgres-data |
 | backend | ghcr.io/.../backend:latest | 8081 | Build tu backend/Dockerfile |
-| frontend | ghcr.io/.../frontend:latest | 3000 | Build tu web/Dockerfile |
+| frontend | ghcr.io/.../frontend:latest | 3000 | Build tu frontend/Dockerfile |
 
 Bien moi truong bat buoc: `POSTGRES_PASSWORD`, `JWT_SECRET`, `PATIENT_IDENTIFIER_SECRET`
 

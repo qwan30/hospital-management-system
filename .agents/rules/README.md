@@ -17,7 +17,7 @@ rules/
 ├── typescript/      # TypeScript/JavaScript specific
 ├── python/          # Python specific
 ├── golang/          # Go specific
-├── web/             # Web and frontend specific
+├── frontend/             # Web and frontend specific
 ├── swift/           # Swift specific
 └── php/             # PHP specific
 ```
@@ -89,7 +89,7 @@ To add support for a new language (e.g., `rust/`):
    ```
 4. Reference existing skills if available, or create new ones under `skills/`.
 
-For non-language domains like `web/`, follow the same layered pattern when there is enough reusable domain-specific guidance to justify a standalone ruleset.
+For non-language domains like `frontend/`, follow the same layered pattern when there is enough reusable domain-specific guidance to justify a standalone ruleset.
 
 ## Rule Priority
 

@@ -1,4 +1,4 @@
-# Final Documentation Review Notes
+﻿# Final Documentation Review Notes
 
 ## Updated
 
@@ -13,12 +13,12 @@
 
 ## Verified
 
-- `web/` is documented as the canonical runnable frontend.
+- `frontend/` is documented as the canonical runnable frontend.
 - `frontend/` is documented as reference-only prototype material.
 - Flyway migration inventory includes `V1` through `V16`.
 - Removed AI/internal-assistant endpoints appear only in removed, historical, verification, or requirement sections.
 - API documentation reflects current controller families under `backend/controller/src/main/java`.
-- Test documentation reflects backend test locations and the nine Playwright spec files under `web/e2e/specs`.
+- Test documentation reflects backend test locations and the nine Playwright spec files under `frontend/e2e/specs`.
 - Docker Compose documentation reflects the current PostgreSQL/backend-only active service shape.
 - Agent workflow files are classified as development workflow assets, not product features.
 - Phase 2 documentation organization exists as a compatibility-safe category navigation layer.

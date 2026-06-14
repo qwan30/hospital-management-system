@@ -1,4 +1,4 @@
-# Hospital Management System Project Plan
+﻿# Hospital Management System Project Plan
 
 Status: updated to reflect the current repository on 2026-04-26 after AI and internal assistant removal.
 
@@ -20,9 +20,9 @@ The next major milestone is to turn that backend into a coherent frontend produc
 | Inventory APIs | Done | items, lots, movements, alerts |
 | Patient portal APIs | Partially done | auth, overview, appointments, lab results, messages list, profile |
 | Public chatbot | Done | deterministic helper for departments, doctors, and slots |
-| Frontend application | In progress | canonical Next.js app exists in `web/`; selected auth, RBAC, API-client, queue, inventory, monitoring, audit, and portal flows are backend-integrated |
+| Frontend application | In progress | canonical Next.js app exists in `frontend/`; selected auth, RBAC, API-client, queue, inventory, monitoring, audit, and portal flows are backend-integrated |
 | Frontend tests | In progress | Playwright covers route smoke, auth/API flows, RBAC, responsive, visual, operations API screens, and staff queue behavior |
-| Dockerized frontend | Done | `web/Dockerfile` and the active Compose `frontend` service build the canonical Next.js app |
+| Dockerized frontend | Done | `frontend/Dockerfile` and the active Compose `frontend` service build the canonical Next.js app |
 
 ## 2.1 Current-Vs-Planned Status Legend
 

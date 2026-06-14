@@ -47,7 +47,7 @@ services:
   frontend:
     image: ghcr.io/tranhquan099-commits/hospital-management-system/frontend:latest
     build:
-      context: ./web
+      context: ./frontend
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8081/api/v1}

@@ -1,4 +1,4 @@
-# Hospital Management System Test Plan
+﻿# Hospital Management System Test Plan
 
 Status: aligned with the repository on 2026-05-13 after staff frontend auth, RBAC navigation, and queue component coverage updates.
 
@@ -7,7 +7,7 @@ Route inventory: [reference/frontend-route-inventory.md](reference/frontend-rout
 
 ## 1. Current Automated Test Coverage
 
-The repository currently has meaningful backend test coverage and a Playwright-based frontend suite under `web/e2e/`.
+The repository currently has meaningful backend test coverage and a Playwright-based frontend suite under `frontend/e2e/`.
 
 The backend tests now follow the DDD-oriented Maven split:
 
@@ -49,7 +49,7 @@ Current integration and hardening suites include:
 - Queue page component coverage verifies loading, unauthorized, filtering, check-in, terminal appointment hiding, and row-level action error states.
 - Backend-integrated Playwright coverage verifies staff auth, patient auth/claim, logout, public booking, nurse queue access, nurse check-in when a waiting appointment exists, and forbidden non-nurse queue access.
 
-Current Playwright spec files under `web/e2e/specs`:
+Current Playwright spec files under `frontend/e2e/specs`:
 
 - `a11y-integrated.spec.ts`
 - `admin-pages.spec.ts`
@@ -75,7 +75,7 @@ Current Playwright spec files under `web/e2e/specs`:
 
 Verification scope note:
 
-- Required CI smoke command: `npm run test:e2e:ci`. This runs the contract/API route smoke files explicitly listed in `web/package.json` on Chromium only.
+- Required CI smoke command: `npm run test:e2e:ci`. This runs the contract/API route smoke files explicitly listed in `frontend/package.json` on Chromium only.
 - Required UI smoke command: `npm run test:e2e:ui`. This runs `@ui` tests on Chromium only.
 - Required visual command: `npm run test:e2e:visual`. This is intentionally scoped to the maintained Chromium baseline set.
 - `performance.spec.ts` is exploratory and skipped until stable browser Web Vitals instrumentation is added.
@@ -125,7 +125,7 @@ Verify:
 
 ## 3. Frontend Test Plan For Upcoming UI Work
 
-The canonical Next.js frontend is `web/`. Static design prototypes in `frontend/` remain references only.
+The canonical Next.js frontend is `frontend/`. Static design prototypes in `frontend/` remain references only.
 
 ### 3.1 Unit tests
 
@@ -144,7 +144,7 @@ The canonical Next.js frontend is `web/`. Static design prototypes in `frontend/
 
 ### 3.3 End-to-end tests
 
-Playwright is configured in `web/playwright.config.ts` with tests under `web/e2e/`.
+Playwright is configured in `frontend/playwright.config.ts` with tests under `frontend/e2e/`.
 
 Commands:
 
@@ -173,7 +173,7 @@ Current E2E flows:
 - patient login calls `/api/v1/patient-auth/login`
 - patient claim calls `/api/v1/patient-auth/claim`
 - staff logout calls `/api/v1/auth/logout`
-- frontend route guards allow and deny routes according to `web/src/lib/rbac.ts`
+- frontend route guards allow and deny routes according to `frontend/src/lib/rbac.ts`
 - staff side navigation hides links and CTA targets that the stored role cannot access
 - public booking validates required intake fields and emits an appointment request once the backend is available
 - portal/staff/admin smoke checks validate the main user-facing destinations and headings

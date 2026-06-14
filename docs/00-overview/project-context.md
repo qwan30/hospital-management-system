@@ -1,4 +1,4 @@
-# Project Context: Hospital Management System (HMS)
+﻿# Project Context: Hospital Management System (HMS)
 
 > **Release status**: Release Candidate / Ship with fixes (2026-06-14)
 > **Documentation conventions**: Vietnamese for business/product documentation, English for technical documentation
@@ -84,7 +84,7 @@ hospital-management-system/
 │   ├── application/       # Use-case services, auth service, schedulers, seed data
 │   ├── controller/        # REST controllers, security filters, API envelope, error handling
 │   └── start/             # Composition root, application config, Flyway migrations, entry point
-├── web/                   # Next.js App Router - canonical frontend (the only active frontend)
+├── frontend/                   # Next.js App Router - canonical frontend (the only active frontend)
 ├── docs/                  # Product and technical documentation
 ├── infra/                 # Nginx config, observability configs (Grafana dashboards, Prometheus,
 │                          #   Loki, Tempo, OpenTelemetry collector)
@@ -104,7 +104,7 @@ Dependencies flow inward. The `domain` module has zero knowledge of infrastructu
 
 ### 3.2 Frontend Route Groups
 
-The `web/` frontend organizes its 70+ pages into four route groups:
+The `frontend/` frontend organizes its 70+ pages into four route groups:
 
 | Route group | Entry point | Purpose |
 |---|---|---|
@@ -113,7 +113,7 @@ The `web/` frontend organizes its 70+ pages into four route groups:
 | `admin` | `/admin/login` | Admin console: users, departments, rooms, schedule, content, monitoring |
 | `portal` | `/portal/login` | Patient self-service: appointments, lab results, messages, profile |
 
-The `frontend/` directory at the project root is **not canonical**. It contains archived design prototypes (HTML/PNG). All active development is in `web/`.
+The `frontend/` directory at the project root is **not canonical**. It contains archived design prototypes (HTML/PNG). All active development is in `frontend/`.
 
 ---
 
@@ -392,9 +392,9 @@ Deploys to VPS using Docker Compose:
 | API contract (active endpoints) | `API_CONTRACT.md` |
 | Product requirements | `docs/HMS_PRD.md` |
 | Software requirements | `docs/HMS_SRS.md` |
-| Frontend shared API client library | `web/src/lib/` |
-| Frontend UI components | `web/src/components/` |
-| Frontend E2E tests | `web/e2e/` |
+| Frontend shared API client library | `frontend/src/lib/` |
+| Frontend UI components | `frontend/src/components/` |
+| Frontend E2E tests | `frontend/e2e/` |
 | Frontend Vitest unit tests | Co-located in `__tests__/` directories alongside pages |
 | Flyway migrations | `backend/start/src/main/resources/db/migration/` |
 | Docker Compose (production) | `docker-compose.yml` |

@@ -1,10 +1,10 @@
-# Frontend Route Inventory
+﻿# Frontend Route Inventory
 
-**Status:** current route inventory for `web/src/app` as refreshed on 2026-06-14.
-**Canonical frontend:** `web/`
+**Status:** current route inventory for `frontend/src/app` as refreshed on 2026-06-14.
+**Canonical frontend:** `frontend/`
 **Reference-only frontend prototypes:** `frontend/`
 
-This inventory is based on the current Next.js App Router files under `web/src/app` and the route audit helper in `web/e2e/helpers/routes.ts`.
+This inventory is based on the current Next.js App Router files under `frontend/src/app` and the route audit helper in `frontend/e2e/helpers/routes.ts`.
 
 Use [current-system-flows.md](current-system-flows.md) for the cross-role workflow map that connects these routes to backend API families and current integration limits.
 
@@ -12,14 +12,14 @@ Use [current-system-flows.md](current-system-flows.md) for the cross-role workfl
 
 | Area | Status | Current source |
 | --- | --- | --- |
-| Public routes | Implemented route files | `web/src/app/(public)` |
-| Staff routes | Implemented route files, selected backend integration, staff auth/RBAC/queue unit coverage | `web/src/app/staff` |
-| Admin routes | Implemented route files, route-guarded | `web/src/app/admin` |
-| Patient portal routes | Implemented route files, partial backend integration | `web/src/app/portal` |
-| Auth/system routes | Implemented route files | `web/src/app/auth`, `web/src/app/forbidden`, public session pages |
+| Public routes | Implemented route files | `frontend/src/app/(public)` |
+| Staff routes | Implemented route files, selected backend integration, staff auth/RBAC/queue unit coverage | `frontend/src/app/staff` |
+| Admin routes | Implemented route files, route-guarded | `frontend/src/app/admin` |
+| Patient portal routes | Implemented route files, partial backend integration | `frontend/src/app/portal` |
+| Auth/system routes | Implemented route files | `frontend/src/app/auth`, `frontend/src/app/forbidden`, public session pages |
 | Classic/variant routes | Reference-only comparison routes where files exist | route directories containing `classic` or `variant` |
 
-Current file count: 71 `page.tsx` files and 77 total route/layout files under `web/src/app`.
+Current file count: 71 `page.tsx` files and 77 total route/layout files under `frontend/src/app`.
 
 ## 2. Public Routes
 
@@ -123,6 +123,6 @@ When adding, removing, or renaming frontend routes:
 
 - update this file
 - update `docs/design_brief.md`
-- update `web/e2e/helpers/routes.ts`
+- update `frontend/e2e/helpers/routes.ts`
 - update `docs/HMS_TestPlan.md` if test coverage changes
 - classify each affected route as contract-backed or reference-only; do not use route-file existence alone as completion evidence

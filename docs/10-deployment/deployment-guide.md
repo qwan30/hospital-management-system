@@ -151,7 +151,7 @@ The backend starts on port `8081` with the `dev` Spring profile by default.
 ### 3.2 Frontend
 
 ```bash
-cd web
+cd frontend
 npm install       # or: npm ci for deterministic installs
 npm run dev
 ```
@@ -170,7 +170,7 @@ mvn verify
 **Frontend unit tests:**
 
 ```bash
-cd web
+cd frontend
 npm run test:unit
 npm run test:unit:coverage   # with coverage report
 ```
@@ -247,7 +247,7 @@ Multi-stage build:
 
 ### 4.7 Frontend Dockerfile
 
-**File:** `web/Dockerfile`
+**File:** `frontend/Dockerfile`
 
 Three-stage build:
 - **Stage 1 (deps):** `node:22-alpine`, runs `npm ci` on `package.json` and `package-lock.json`.
@@ -413,7 +413,7 @@ cd backend
 mvn -pl application -Dtest=ReleaseDemoSeedPropertiesTest,ReleaseDemoSeedCatalogTest test
 
 # E2E release data smoke tests (requires seeded backend)
-cd web
+cd frontend
 $env:HMS_EXPECT_RELEASE_DEMO_SEED = "true"
 npm run test:e2e:release-data
 ```

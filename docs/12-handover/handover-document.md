@@ -115,7 +115,7 @@ Dependency chain: `domain` <-- `infrastructure` <-- `application` <-- `controlle
 ### Frontend Route Groups (Next.js 16 App Router)
 
 ```
-web/src/app/
+frontend/src/app/
 +-- (public)/        -- Landing, departments, doctors, booking, news, legal pages
 +-- portal/          -- Patient portal (overview, appointments, lab results, messages, profile)
 |   +-- (auth)/      -- Patient login
@@ -313,9 +313,9 @@ Key integration test suites:
 
 | Suite | Location | Coverage |
 |-------|----------|----------|
-| Vitest unit tests | `web/src/` | **80.48% branch coverage** |
-| ESLint | `web/` | Clean |
-| Playwright E2E | `web/e2e/specs/` | 25 spec files, 183+ scenarios |
+| Vitest unit tests | `frontend/src/` | **80.48% branch coverage** |
+| ESLint | `frontend/` | Clean |
+| Playwright E2E | `frontend/e2e/specs/` | 25 spec files, 183+ scenarios |
 
 E2E spec files (total 3804 lines):
 - `all-routes-exhaustive.spec.ts` -- Route contract verification
@@ -403,7 +403,7 @@ cd backend
 # OR: mvn spring-boot:run -f start/pom.xml
 
 # 4. Start frontend (separate terminal)
-cd web
+cd frontend
 npm install
 npm run dev
 

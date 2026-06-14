@@ -1,4 +1,4 @@
-# HMS Documentation Index
+﻿# HMS Documentation Index
 
 **Generated:** 2026-06-14
 **Scope:** Complete inventory of all documentation files in the Hospital Management System repository.
@@ -146,7 +146,7 @@ This index catalogs every documentation artifact. Use `docs/README.md` for the s
 | 58 | `docs/reference/repository-status.md` | Repository status: Git state, GitNexus index, source metrics, release-readiness label | Complete | Project Team |
 | 59 | `docs/reference/engineering-metrics.md` | Current vs. target engineering metrics: module counts, route counts, test coverage | Complete | Project Team |
 | 60 | `docs/reference/gitnexus-codebase-scan.md` | Code intelligence snapshot: GitNexus graph metrics, key code surfaces, source inventory | Complete | Project Team |
-| 61 | `docs/reference/frontend-route-inventory.md` | Frontend route inventory: all route files under `web/src/app`, area-by-area status | Complete | Frontend Team |
+| 61 | `docs/reference/frontend-route-inventory.md` | Frontend route inventory: all route files under `frontend/src/app`, area-by-area status | Complete | Frontend Team |
 | 62 | `docs/reference/role-screen-api-matrix.md` | Role-to-screen and API matrix: actor permissions, accessible screens, API families | Complete | Fullstack Team |
 | 63 | `docs/reference/current-system-flows.md` | Current system flow map: end-to-end business flows across all roles | Complete | Product Team |
 | 64 | `docs/reference/demo-accounts-and-seed-data.md` | Seed data reference: baseline staff accounts, release-demo seed accounts, passwords | Complete | Backend Team |

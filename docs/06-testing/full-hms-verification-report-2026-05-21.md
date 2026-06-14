@@ -1,4 +1,4 @@
-# Full HMS Verification Report - Final Pass 2026-05-22
+﻿# Full HMS Verification Report - Final Pass 2026-05-22
 
 ## 1. Executive verdict
 
@@ -31,8 +31,8 @@ Production sign-off remains blocked by non-P0 quality/security gates: visual bas
 
 | Check | Result |
 | --- | ---: |
-| `web/src/app/**/page.tsx` routes | 72 |
-| `web/e2e/helpers/routes.ts` lines | 116 |
+| `frontend/src/app/**/page.tsx` routes | 72 |
+| `frontend/e2e/helpers/routes.ts` lines | 116 |
 | Backend controller mappings | 148 |
 | Flyway migrations | 18 |
 | BF ID mentions in test docs/report | 83 |
@@ -147,10 +147,10 @@ Visual result: 14/14 screenshot baselines differ. No baselines were updated beca
 | --- | --- | --- |
 | Backend appointment workflow | `backend/application/src/main/java/com/hospital/core/appointment/AppointmentWorkflowService.java` | Fixed optional-filter query failures for appointment listing. |
 | Backend release demo seed | `backend/application/src/main/java/com/hospital/core/seed/ReleaseDemoSeedService.java` | Made patient seeding resilient to email/CCCD natural-key replay cases. |
-| Clinical web API/UI | `web/src/lib/clinical-api.ts`, `web/src/app/staff/(app)/nurse-intake/page.tsx`, `web/src/app/staff/(app)/vital-signs/page.tsx` | Connected nurse intake and vital signs to live backend data. |
-| Navigation/accessibility | `web/src/components/shells/top-nav.tsx`, `web/src/app/admin/(app)/layout.tsx`, `web/src/app/admin/(app)/users/page.tsx`, `web/src/app/admin/(app)/monitoring/page.tsx`, `web/src/app/staff/(app)/dashboard/page.tsx` | Fixed stale support links and missing accessible names. |
-| E2E contracts | `web/e2e/specs/*.ts`, `web/e2e/pages/booking-page.ts`, `web/e2e/helpers/exhaustive-route-contracts.ts` | Removed stale UI/seed assumptions and aligned browser tests with real release-demo data. |
-| Runtime config | `docker-compose.yml`, `.env.example`, `web/next.config.ts` | Added isolated CORS/rate-limit configuration and CSP API-origin support. |
+| Clinical web API/UI | `frontend/src/lib/clinical-api.ts`, `frontend/src/app/staff/(app)/nurse-intake/page.tsx`, `frontend/src/app/staff/(app)/vital-signs/page.tsx` | Connected nurse intake and vital signs to live backend data. |
+| Navigation/accessibility | `frontend/src/components/shells/top-nav.tsx`, `frontend/src/app/admin/(app)/layout.tsx`, `frontend/src/app/admin/(app)/users/page.tsx`, `frontend/src/app/admin/(app)/monitoring/page.tsx`, `frontend/src/app/staff/(app)/dashboard/page.tsx` | Fixed stale support links and missing accessible names. |
+| E2E contracts | `frontend/e2e/specs/*.ts`, `frontend/e2e/pages/booking-page.ts`, `frontend/e2e/helpers/exhaustive-route-contracts.ts` | Removed stale UI/seed assumptions and aligned browser tests with real release-demo data. |
+| Runtime config | `docker-compose.yml`, `.env.example`, `frontend/next.config.ts` | Added isolated CORS/rate-limit configuration and CSP API-origin support. |
 
 ## 12. Root cause summary
 
@@ -210,7 +210,7 @@ Open product/security quality risks:
 
 ## 16. Recommended next actions
 
-1. Review the 14 visual diffs in `web/test-results` and decide whether current UI is intended. Only then update snapshots or fix layout regressions.
+1. Review the 14 visual diffs in `frontend/test-results` and decide whether current UI is intended. Only then update snapshots or fix layout regressions.
 2. Run `npm audit` and remediate the 5 moderate and 2 high dependency vulnerabilities reported by the Docker frontend build.
 3. Add targeted frontend branch tests around admin, inventory, lab results, portal, clinical API error paths, and stored-role branches to raise branch coverage above 80%.
 4. Decide whether BF-04, BF-07, BF-09, BF-10, and BF-11 require deeper end-to-end CRUD/action tests before production.

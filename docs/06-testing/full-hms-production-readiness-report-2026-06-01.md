@@ -1,4 +1,4 @@
-# Full HMS Production Readiness Report - 2026-06-01
+﻿# Full HMS Production Readiness Report - 2026-06-01
 
 ## 1. Executive Verdict
 
@@ -47,8 +47,8 @@ This report does **not** call HMS fully Production Ready because the broader P1/
 | Secret scan | PASS, 0 high-confidence findings | `high-confidence-secret-scan-2026-06-01.log` |
 | Backup/restore smoke | PASS | `postgres-backup-restore-check-2026-06-01.json` |
 | Git diff whitespace check | PASS with line-ending warnings only | `git-diff-check-2026-06-01.log` |
-| P1 UI truthfulness regression | PASS, actionable-control manifest has 0 fake/hash-link bugs | `web/test-results/actionable-control-manifest/summary.md` |
-| Real-user Chrome browser QA | PASS, 23 checks, 11 screenshots, 0 unfiltered console errors, 0 4xx/5xx app/API requests | `web/test-results/real-user-browser-qa-2026-06-01/summary.md` |
+| P1 UI truthfulness regression | PASS, actionable-control manifest has 0 fake/hash-link bugs | `frontend/test-results/actionable-control-manifest/summary.md` |
+| Real-user Chrome browser QA | PASS, 23 checks, 11 screenshots, 0 unfiltered console errors, 0 4xx/5xx app/API requests | `frontend/test-results/real-user-browser-qa-2026-06-01/summary.md` |
 
 Notes:
 - The first integrated pass exposed origin mismatch when Playwright used `127.0.0.1` while the production bundle targeted `localhost`; rerun used `localhost` consistently.

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -898,7 +898,7 @@
             </div>
             <div class="arch-block">
               <div class="arch-block-title">Bộ bọc API Client</div>
-              <div class="arch-block-tech">web/src/lib/public-api.ts</div>
+              <div class="arch-block-tech">frontend/src/lib/public-api.ts</div>
             </div>
             <div class="arch-arrow">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -981,13 +981,13 @@
             <tbody>
               <tr>
                 <td><strong>Frontend Client</strong></td>
-                <td>Next.js 16, React 19, TS<br><a class="path-link" href="file:///d:/projects/hospital-management-system/web">web/</a></td>
+                <td>Next.js 16, React 19, TS<br><a class="path-link" href="file:///d:/projects/hospital-management-system/web">frontend/</a></td>
                 <td>Ứng dụng client động sử dụng React Server & Client Components, lưu trữ trạng thái qua sessionStorage, quản lý định tuyến RBAC.</td>
               </tr>
               <tr>
                 <td><strong>API Client Wrapper</strong></td>
-                <td>Native Fetch, TS Interfaces<br><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib">web/src/lib/</a></td>
-                <td>Tập hợp helper thực hiện gọi API được phân tách theo nghiệp vụ. Wrapper chính trong <a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/api-client.ts">api-client.ts</a> tự động đính kèm token Bearer JWT.</td>
+                <td>Native Fetch, TS Interfaces<br><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib">frontend/src/lib/</a></td>
+                <td>Tập hợp helper thực hiện gọi API được phân tách theo nghiệp vụ. Wrapper chính trong <a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib/api-client.ts">api-client.ts</a> tự động đính kèm token Bearer JWT.</td>
               </tr>
               <tr>
                 <td><strong>REST Controllers</strong></td>
@@ -1053,14 +1053,14 @@
               <tr>
                 <td><strong>Frontend Unit & RTL Tests</strong></td>
                 <td><code>npm run test:unit</code><br><code>npm run test:unit:coverage</code></td>
-                <td>Thư mục <code>web/src/**/__tests__</code> hoặc tệp component tương ứng</td>
+                <td>Thư mục <code>frontend/src/**/__tests__</code> hoặc tệp component tương ứng</td>
                 <td>Mock router của Next.js. Thực hiện stubbing các cuộc gọi API thông qua global fetch mock handlers.</td>
                 <td>Xác thực giao diện hiển thị, trạng thái tải (loading, error, empty), hoạt động của các biểu mẫu. Đạt mục tiêu > 80%.</td>
               </tr>
               <tr>
                 <td><strong>E2E Playwright Tests</strong></td>
                 <td><code>npm run test:e2e:ci</code></td>
-                <td>Playwright specs trong thư mục <code>web/e2e/</code></td>
+                <td>Playwright specs trong thư mục <code>frontend/e2e/</code></td>
                 <td>Khởi chạy toàn bộ hệ thống thực tế: Next.js dev server + Spring Boot backend monolith + PostgreSQL.</td>
                 <td>Mô phỏng hành trình người dùng đầu cuối (đăng nhập nhân viên, tiếp nhận hàng đợi, lưu trữ bệnh án, xuất hóa đơn).</td>
               </tr>
@@ -1258,7 +1258,7 @@
           <div class="chain-step-title">Mô tả mã nguồn</div>
           <div class="chain-step-desc">Che ký tự căn cước công dân trên bảng điều phối của điều dưỡng</div>
           <div class="chain-step-details">
-            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/staff-queue.ts">web/src/lib/staff-queue.ts</a></span></div>
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib/staff-queue.ts">frontend/src/lib/staff-queue.ts</a></span></div>
             <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Hàm <code>maskIdentifier(value)</code> nhận chuỗi CCCD gốc, thực hiện cắt chuỗi và chèn ký tự sao (ví dụ: hiển thị <code>079***012</code>). Điều này giúp bệnh nhân và điều dưỡng quan sát mã số định vị hàng đợi mà không lộ số căn cước công dân thực tế trên màn hình hiển thị.</span></div>
           </div>
         </div>
@@ -1277,7 +1277,7 @@
           <div class="chain-step-title">Mô tả mã nguồn</div>
           <div class="chain-step-desc">Tổng hợp số lượng bệnh nhân chờ đợi thực tế theo bác sĩ</div>
           <div class="chain-step-details">
-            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/staff-queue.ts">web/src/lib/staff-queue.ts</a></span></div>
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib/staff-queue.ts">frontend/src/lib/staff-queue.ts</a></span></div>
             <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Hàm <code>calculatePhysicianLoads()</code> nhóm danh sách bệnh nhân tiếp nhận theo doctorId, đếm tổng số ca "waiting", "ready", và "in_progress". Dữ liệu này giúp nhân viên đón tiếp đưa bệnh nhân vào hàng đợi của bác sĩ đang rảnh hơn.</span></div>
           </div>
         </div>
@@ -1296,7 +1296,7 @@
           <div class="chain-step-title">Mô tả mã nguồn</div>
           <div class="chain-step-desc">Mã hóa màu dựa trên khoảng thời gian tính bằng phút</div>
           <div class="chain-step-details">
-            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/staff-queue.ts">web/src/lib/staff-queue.ts</a></span></div>
+            <div class="detail-item"><span class="detail-label">File liên quan</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib/staff-queue.ts">frontend/src/lib/staff-queue.ts</a></span></div>
             <div class="detail-item"><span class="detail-label">Chi tiết logic</span><span class="detail-value">Hàm <code>getWaitBadgeClass(waitMinutes)</code> sẽ kiểm tra: nếu thời gian chờ lớn hơn hoặc bằng 40 phút, trả về màu đỏ báo động (danger); từ 20 phút trở lên trả về màu vàng cảnh báo (warning); dưới 20 phút là màu xanh an toàn (success).</span></div>
           </div>
         </div>
@@ -1384,7 +1384,7 @@
                   <div class="chain-step-title">Bước 1: Hành động người dùng</div>
                   <div class="chain-step-desc">Nhân viên điền thông tin đăng nhập và nhấn Submit</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/staff/(auth)/login/page.tsx">web/src/app/staff/(auth)/login/page.tsx</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/app/staff/(auth)/login/page.tsx">frontend/src/app/staff/(auth)/login/page.tsx</a></span></div>
                     <div class="detail-item"><span class="detail-label">Logic xử lý</span><span class="detail-value">Kích hoạt trình xử lý sự kiện form <code>handleLogin()</code>.</span></div>
                   </div>
                 </div>
@@ -1393,7 +1393,7 @@
                   <div class="chain-step-title">Bước 2: Gọi lệnh API Client</div>
                   <div class="chain-step-desc">Gửi thông tin tài khoản đến REST endpoint</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value"><code>apiRequest("/auth/login", { method: "POST" })</code> trong <a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/api-client.ts">web/src/lib/api-client.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value"><code>apiRequest("/auth/login", { method: "POST" })</code> trong <a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib/api-client.ts">frontend/src/lib/api-client.ts</a></span></div>
                     <div class="detail-item"><span class="detail-label">Payload</span><span class="detail-value-code">{"email": "admin@hospital.vn", "password": "***"}</span></div>
                   </div>
                 </div>
@@ -1458,7 +1458,7 @@
                   <div class="chain-step-title">Bước 1: Hành động người dùng</div>
                   <div class="chain-step-desc">Bệnh nhân điền thông tin CCCD, Ngày sinh và đặt mật khẩu mới</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/portal/(app)/claim/page.tsx">web/src/app/portal/(app)/claim/page.tsx</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/app/portal/(app)/claim/page.tsx">frontend/src/app/portal/(app)/claim/page.tsx</a></span></div>
                   </div>
                 </div>
                 <div class="chain-step">
@@ -1518,7 +1518,7 @@
                   <div class="chain-step-title">Bước 1: Hành động người dùng</div>
                   <div class="chain-step-desc">Người dùng mở danh sách bác sĩ và lọc theo tên hoặc chuyên khoa</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/(public)/doctors/page.tsx">web/src/app/(public)/doctors/page.tsx</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/app/(public)/doctors/page.tsx">frontend/src/app/(public)/doctors/page.tsx</a></span></div>
                   </div>
                 </div>
                 <div class="chain-step">
@@ -1526,7 +1526,7 @@
                   <div class="chain-step-desc">Gửi yêu cầu GET tải danh sách bác sĩ kèm theo từ khóa lọc</div>
                   <div class="chain-step-details">
                     <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">listDoctors()</span></div>
-                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/public-api.ts">web/src/lib/public-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib/public-api.ts">frontend/src/lib/public-api.ts</a></span></div>
                     <div class="detail-item"><span class="detail-label">Endpoint</span><span class="detail-value-code">GET /api/v1/doctors</span></div>
                   </div>
                 </div>
@@ -1578,7 +1578,7 @@
                   <div class="chain-step-title">Bước 1: Hành động người dùng</div>
                   <div class="chain-step-desc">Người dùng chọn bác sĩ và click ngày trên lịch khám</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/(public)/booking/page.tsx">web/src/app/(public)/booking/page.tsx</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/app/(public)/booking/page.tsx">frontend/src/app/(public)/booking/page.tsx</a></span></div>
                   </div>
                 </div>
                 <div class="chain-step">
@@ -1586,7 +1586,7 @@
                   <div class="chain-step-desc">Gửi yêu cầu kiểm tra khung giờ rảnh kèm theo doctorId và ngày khám</div>
                   <div class="chain-step-details">
                     <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">listDoctorSlots(doctorId, date)</span></div>
-                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/public-api.ts">web/src/lib/public-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib/public-api.ts">frontend/src/lib/public-api.ts</a></span></div>
                     <div class="detail-item"><span class="detail-label">Endpoint</span><span class="detail-value-code">GET /api/v1/doctors/{doctorId}/slots?date=YYYY-MM-DD</span></div>
                   </div>
                 </div>
@@ -1637,7 +1637,7 @@
                   <div class="chain-step-title">Bước 1: Hành động người dùng</div>
                   <div class="chain-step-desc">Bệnh nhân nhập thông tin CCCD, Địa chỉ, Triệu chứng bệnh và nhấn Đăng ký</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/(public)/booking/page.tsx">web/src/app/(public)/booking/page.tsx</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/app/(public)/booking/page.tsx">frontend/src/app/(public)/booking/page.tsx</a></span></div>
                   </div>
                 </div>
                 <div class="chain-step">
@@ -1645,7 +1645,7 @@
                   <div class="chain-step-desc">API Client gửi request tạo mới lịch hẹn lên backend</div>
                   <div class="chain-step-details">
                     <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">createPublicAppointment(request)</span></div>
-                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/public-api.ts">web/src/lib/public-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib/public-api.ts">frontend/src/lib/public-api.ts</a></span></div>
                     <div class="detail-item"><span class="detail-label">Endpoint</span><span class="detail-value-code">POST /api/v1/appointments</span></div>
                   </div>
                 </div>
@@ -1706,7 +1706,7 @@
                   <div class="chain-step-title">Bước 1: Hành động người dùng</div>
                   <div class="chain-step-desc">Bác sĩ hoặc điều dưỡng nhập từ khóa tìm kiếm bệnh nhân tại trang quản lý</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code">web/src/app/staff/(app)/patients/page.tsx</span></div>
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code">frontend/src/app/staff/(app)/patients/page.tsx</span></div>
                   </div>
                 </div>
                 <div class="chain-step">
@@ -1714,7 +1714,7 @@
                   <div class="chain-step-desc">API Client gửi token JWT dưới phạm vi xác thực 'staff'</div>
                   <div class="chain-step-details">
                     <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">searchPatientRecords(query)</span> hoặc <code>getPatientRecordDetail(patientId)</code></div>
-                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/patient-records-api.ts">web/src/lib/patient-records-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib/patient-records-api.ts">frontend/src/lib/patient-records-api.ts</a></span></div>
                     <div class="detail-item"><span class="detail-label">Endpoints</span><span class="detail-value-code">GET /api/v1/patient-records?query=...</span> hoặc <code>GET /api/v1/patient-records/{patientId}</code></div>
                   </div>
                 </div>
@@ -1768,7 +1768,7 @@
                   <div class="chain-step-title">Bước 1: Hành động người dùng</div>
                   <div class="chain-step-desc">Điều dưỡng bấm nút "Check-in" trên bảng danh sách hàng đợi</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/staff/(app)/queue/page.tsx">web/src/app/staff/(app)/queue/page.tsx</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/app/staff/(app)/queue/page.tsx">frontend/src/app/staff/(app)/queue/page.tsx</a></span></div>
                   </div>
                 </div>
                 <div class="chain-step">
@@ -1776,7 +1776,7 @@
                   <div class="chain-step-desc">Gửi mốc thời gian tiếp nhận check-in thực tế</div>
                   <div class="chain-step-details">
                     <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">checkInAppointment(appointmentId, { checkedInAt })</span></div>
-                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/clinical-api.ts">web/src/lib/clinical-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib/clinical-api.ts">frontend/src/lib/clinical-api.ts</a></span></div>
                     <div class="detail-item"><span class="detail-label">Endpoint</span><span class="detail-value-code">POST /api/v1/appointments/{appointmentId}/checkin</span></div>
                   </div>
                 </div>
@@ -1829,7 +1829,7 @@
                   <div class="chain-step-title">Bước 1: Hành động người dùng</div>
                   <div class="chain-step-desc">Điều dưỡng nhấn Gọi, Bỏ qua hoặc chọn phòng khám trên bảng điều phối</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/staff/(app)/queue/page.tsx">web/src/app/staff/(app)/queue/page.tsx</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/app/staff/(app)/queue/page.tsx">frontend/src/app/staff/(app)/queue/page.tsx</a></span></div>
                   </div>
                 </div>
                 <div class="chain-step">
@@ -1889,7 +1889,7 @@
                   <div class="chain-step-title">Bước 1: Hành động người dùng</div>
                   <div class="chain-step-desc">Bác sĩ viết chẩn đoán, ghi chú thuốc và nhấn Hoàn thành ca khám</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/staff/(app)/medical-records/[id]/edit/page.tsx">web/src/app/staff/(app)/medical-records/[id]/edit/page.tsx</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/app/staff/(app)/medical-records/[id]/edit/page.tsx">frontend/src/app/staff/(app)/medical-records/[id]/edit/page.tsx</a></span></div>
                   </div>
                 </div>
                 <div class="chain-step">
@@ -1897,7 +1897,7 @@
                   <div class="chain-step-desc">API Client gửi request DTO gói dữ liệu bệnh án lâm sàng lên hệ thống</div>
                   <div class="chain-step-details">
                     <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value-code">createMedicalRecord(request)</span></div>
-                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/medical-records-api.ts">web/src/lib/medical-records-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib/medical-records-api.ts">frontend/src/lib/medical-records-api.ts</a></span></div>
                     <div class="detail-item"><span class="detail-label">Endpoint</span><span class="detail-value-code">POST /api/v1/medical-records</span></div>
                   </div>
                 </div>
@@ -1951,7 +1951,7 @@
                   <div class="chain-step-title">Bước 1: User Action</div>
                   <div class="chain-step-desc">Kế toán viên tải trang sổ cái, chọn hóa đơn chưa thanh toán hoặc nhập thông tin thanh toán</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/app/staff/(app)/invoices/page.tsx">web/src/app/staff/(app)/invoices/page.tsx</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/app/staff/(app)/invoices/page.tsx">frontend/src/app/staff/(app)/invoices/page.tsx</a></span></div>
                   </div>
                 </div>
                 <div class="chain-step">
@@ -1959,7 +1959,7 @@
                   <div class="chain-step-desc">Gửi yêu cầu khởi tạo hóa đơn, xác nhận thanh toán hoặc hủy hóa đơn</div>
                   <div class="chain-step-details">
                     <div class="detail-item"><span class="detail-label">Hàm gọi API</span><span class="detail-value"><code>listInvoices()</code>, <code>createInvoice()</code>, <code>recordInvoicePayment()</code>, or <code>voidInvoice()</code></span></div>
-                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/web/src/lib/operations-api.ts">web/src/lib/operations-api.ts</a></span></div>
+                    <div class="detail-item"><span class="detail-label">Vị trí</span><span class="detail-value"><a class="path-link" href="file:///d:/projects/hospital-management-system/frontend/src/lib/operations-api.ts">frontend/src/lib/operations-api.ts</a></span></div>
                     <div class="detail-item"><span class="detail-label">Endpoints</span><span class="detail-value-code">GET /invoices</span>, <code>POST /invoices</code>, <code>POST /invoices/{id}/payments</code>, <code>POST /invoices/{id}/void</code></div>
                   </div>
                 </div>
@@ -2013,7 +2013,7 @@
                   <div class="chain-step-title">Bước 1: Hành động người dùng</div>
                   <div class="chain-step-desc">Bệnh nhân truy cập trang cá nhân, mở mục xét nghiệm hoặc cập nhật hồ sơ</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code">web/src/app/portal/ (dashboard, appointments, lab-results, messages)</span></div>
+                    <div class="detail-item"><span class="detail-label">Tệp tin UI</span><span class="detail-value-code">frontend/src/app/portal/ (dashboard, appointments, lab-results, messages)</span></div>
                   </div>
                 </div>
                 <div class="chain-step">
@@ -2072,7 +2072,7 @@
                   <div class="chain-step-title">Bước 1: User Action</div>
                   <div class="chain-step-desc">Admin thay đổi vai trò tài khoản, khởi tạo khung giờ khám hoặc xem nhật ký hệ thống</div>
                   <div class="chain-step-details">
-                    <div class="detail-item"><span class="detail-label">File</span><span class="detail-value-code">web/src/app/admin/ (users, departments, rooms, slots, closures, monitoring)</span></div>
+                    <div class="detail-item"><span class="detail-label">File</span><span class="detail-value-code">frontend/src/app/admin/ (users, departments, rooms, slots, closures, monitoring)</span></div>
                   </div>
                 </div>
                 <div class="chain-step">

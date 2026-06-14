@@ -7,7 +7,7 @@ Attribution stance: Primary owner, with claim-by-claim verification
 
 ## 1. Executive project summary
 
-HMS is a hospital management system covering public discovery and appointment booking, staff authentication and RBAC, queue/intake, clinical records, lab results, inventory/pharmacy, finance, patient portal reads, reminders, admin operations, and release-demo UAT data. The active backend is a Java 17/Spring Boot 3.3 multi-module Maven application; the active frontend is the `web/` Next.js 16/React 19 TypeScript app.
+HMS is a hospital management system covering public discovery and appointment booking, staff authentication and RBAC, queue/intake, clinical records, lab results, inventory/pharmacy, finance, patient portal reads, reminders, admin operations, and release-demo UAT data. The active backend is a Java 17/Spring Boot 3.3 multi-module Maven application; the active frontend is the `frontend/` Next.js 16/React 19 TypeScript app.
 
 Current implementation status is substantial but not an unconstrained production claim. The repository's latest readiness label is `Release Candidate / Ship with fixes`, with W-01 lab-result creation, W-02 pharmacy dispensing, and W-03 reminder/email evidence closed, but product and safety follow-ups still open. Deployment evidence is local/containerized: Docker Compose covers PostgreSQL, backend, and frontend; a separate uncommitted observability overlay adds Prometheus, Grafana, Loki, Tempo, and OpenTelemetry configuration.
 
@@ -23,14 +23,14 @@ Major evidence gaps: no verified live deployment URL, no real user/adoption metr
 | --- | --- | --- | --- | --- |
 | Repo state | `git status --short --branch`, `git rev-parse HEAD`, `git remote -v` | Branch `master`, HEAD `ff810028c706c9ca9dba35a0809d8f990488b15e`, ahead of origin by 41 commits, dirty tree with 33 modified tracked paths and 12 status-collapsed untracked entries | VERIFIED | Dirty tree means committed evidence and working-tree evidence must be separated |
 | Git authorship | `git shortlog -sne --all`, `git log -n 50` | 49 visible commits by `Thanh Quan <tranthanhquan09@gmail.com>` from 2026-04-05 to 2026-06-01 | VERIFIED | Local Git history does not prove team size, PR review, or non-Git work |
-| Documentation | `README.md`, `docs/README.md`, `docs/reference/repository-status.md`, `docs/reference/engineering-metrics.md`, `docs/06-testing/*` | Docs identify `web/` as canonical frontend, `frontend/` as reference-only, and release label as `Release Candidate / Ship with fixes` | VERIFIED | Docs can drift; source was cross-checked for key counts |
+| Documentation | `README.md`, `docs/README.md`, `docs/reference/repository-status.md`, `docs/reference/engineering-metrics.md`, `docs/06-testing/*` | Docs identify `frontend/` as canonical frontend, `frontend/` as reference-only, and release label as `Release Candidate / Ship with fixes` | VERIFIED | Docs can drift; source was cross-checked for key counts |
 | Backend source | `backend/pom.xml`, backend module sources | 5 Maven modules: `domain`, `infrastructure`, `application`, `controller`, `start`; Java 17/Spring Boot 3.3.5 | VERIFIED | Fresh build not rerun in this audit |
 | API surface | `backend/controller/src/main/java` | 42 controller Java files, 32 `@RestController` classes, 118 method-level mappings, 66 `@PreAuthorize` annotations | VERIFIED | Count includes current dirty working tree |
 | Database | `backend/start/src/main/resources/db/migration` | 20 Flyway migrations, 35 `CREATE TABLE IF NOT EXISTS`, 26 `CREATE INDEX IF NOT EXISTS` occurrences | VERIFIED | SQL table count differs from JPA entity-file count; both are reported separately |
-| Frontend source | `web/src/app`, `web/package.json`, `web/src/lib` | 72 `page.tsx` files, 79 App Router page/layout/API route files, API client wraps backend envelope and request IDs | VERIFIED | Route-file presence alone is not treated as full workflow support |
-| Tests | `backend/application/src/test`, `backend/start/src/test`, `web/src/**/__tests__`, `web/e2e/specs` | 33 backend test classes, 49 frontend unit/component test files, 25 Playwright specs | VERIFIED | Dated pass evidence from 2026-06-01; no fresh full suite run in this audit |
+| Frontend source | `frontend/src/app`, `frontend/package.json`, `frontend/src/lib` | 72 `page.tsx` files, 79 App Router page/layout/API route files, API client wraps backend envelope and request IDs | VERIFIED | Route-file presence alone is not treated as full workflow support |
+| Tests | `backend/application/src/test`, `backend/start/src/test`, `frontend/src/**/__tests__`, `frontend/e2e/specs` | 33 backend test classes, 49 frontend unit/component test files, 25 Playwright specs | VERIFIED | Dated pass evidence from 2026-06-01; no fresh full suite run in this audit |
 | CI/CD | `.github/workflows/ci.yml` | CI defines Java setup, Maven tests, npm ci, lint, frontend build, Playwright chromium install, non-billing E2E, Docker build | VERIFIED | Local audit did not query remote CI run status |
-| Deployment | `docker-compose.yml`, `backend/Dockerfile`, `web/Dockerfile` | Compose runs PostgreSQL, backend, and Dockerized frontend with healthcheck and release-demo seed env knobs | VERIFIED | No production hosting evidence found locally |
+| Deployment | `docker-compose.yml`, `backend/Dockerfile`, `frontend/Dockerfile` | Compose runs PostgreSQL, backend, and Dockerized frontend with healthcheck and release-demo seed env knobs | VERIFIED | No production hosting evidence found locally |
 | Observability | `docker-compose.observability.yml`, `infra/observability/*`, `scripts/release-observability-smoke.ps1` | Uncommitted overlay configures Prometheus, Grafana, Loki, Tempo, OTel collector, dashboards, request correlation, JSON logs | VERIFIED | Source presence verified; smoke is only partially verified per `release-observability-gate-2026-06-06.md` |
 | Security | `SecurityConfig`, `RateLimitFilter`, `JwtAuthenticationFilter`, `RbacAuthorizationService`, `PatientIdentifierProtector` | JWT, BCrypt, method RBAC, CORS, CSP, rate limiting, audited denials, AES-GCM patient identifier encryption, SHA-256 hash index | VERIFIED | No external penetration test or compliance certification |
 | Code intelligence | `.gitnexus/meta.json`, `npx.cmd gitnexus status` | GitNexus indexed at HEAD `ff81002`, 721 files, 5506 nodes, 12627 edges, 300 processes, embeddings 0 | VERIFIED | GKG CLI missing, so GKG plan support unavailable |
@@ -47,9 +47,9 @@ Major evidence gaps: no verified live deployment URL, no real user/adoption metr
 | Spring Data JPA | Repository/entity persistence | `backend/domain/src/main/java`, repository packages | Core | High | VERIFIED |
 | Spring Security / JWT / BCrypt | Staff and patient auth, stateless API security, password hashing | `SecurityConfig`, `JwtAuthenticationFilter`, `AuthService`, `PatientAuthService` | Core | High | VERIFIED |
 | Method-level RBAC | 36 permission map entries and 66 controller `@PreAuthorize` annotations | `RbacAuthorizationService`, controller files | Core | High | VERIFIED |
-| Next.js 16 / React 19 / TypeScript | Canonical frontend app under `web/` | `web/package.json`, `web/src/app` | Core | High | VERIFIED |
-| Playwright | E2E, integrated, UI, visual, route, RBAC, accessibility, SEO, performance spec files | `web/e2e/specs`, dated logs | Substantial | High | VERIFIED |
-| Vitest / Testing Library | Frontend unit/component coverage | `web/package.json`, `web/src/**/__tests__` | Substantial | High | VERIFIED |
+| Next.js 16 / React 19 / TypeScript | Canonical frontend app under `frontend/` | `frontend/package.json`, `frontend/src/app` | Core | High | VERIFIED |
+| Playwright | E2E, integrated, UI, visual, route, RBAC, accessibility, SEO, performance spec files | `frontend/e2e/specs`, dated logs | Substantial | High | VERIFIED |
+| Vitest / Testing Library | Frontend unit/component coverage | `frontend/package.json`, `frontend/src/**/__tests__` | Substantial | High | VERIFIED |
 | Testcontainers | DB-backed backend integration test harness | `backend/start/src/test/java/com/hospital/api/AbstractIntegrationTest.java` | Substantial | High | VERIFIED |
 | Docker Compose | Local runtime for PostgreSQL, backend, frontend; release-demo smoke | `docker-compose.yml`, `docker-release-demo-smoke-2026-06-01.json` | Substantial | High | VERIFIED |
 | GitHub Actions | Automated backend, frontend, Playwright, Docker build checks | `.github/workflows/ci.yml` | Substantial | Medium | VERIFIED |
@@ -57,22 +57,22 @@ Major evidence gaps: no verified live deployment URL, no real user/adoption metr
 | Micrometer / Actuator / Prometheus | Metrics, actuator endpoints, request/queue/inventory/email counters | `application.yml`, `RateLimitFilter`, `RequestCorrelationFilter` | Supporting | Medium | VERIFIED |
 | OpenTelemetry / Tempo / Loki / Grafana | Uncommitted observability overlay and dashboards; full smoke still needs measurement | `docker-compose.observability.yml`, `infra/observability/*` | Configured but minimally used | Medium | VERIFIED |
 | GitNexus | Local code graph/index status | `.gitnexus/meta.json`, `npx.cmd gitnexus status` | Supporting | Low to Medium | VERIFIED |
-| `@google/generative-ai` | Listed in `web/package.json`, but no active source usage found | `web/package.json`, `rg @google/generative-ai` | Listed but not verified | Low | MISSING |
+| `@google/generative-ai` | Listed in `frontend/package.json`, but no active source usage found | `frontend/package.json`, `rg @google/generative-ai` | Listed but not verified | Low | MISSING |
 
 ## 4. Problem, users, and workflows
 
 | Item | Finding | Evidence reference | Status | Confidence |
 | --- | --- | --- | --- | --- |
 | Problem | HMS coordinates hospital appointment booking, clinical workflow, operations, finance, inventory, and patient portal access | `README.md`, `business-flow-test-matrix.md` | VERIFIED | High |
-| Intended users | Guests, patients, receptionist, nurse, doctor, pharmacist, accountant, admin | `business-flow-test-matrix.md`, `web/src/lib/rbac.ts`, `UserRole.java` | VERIFIED | High |
-| Public booking | Guest selects doctor/slot and submits appointment; backend creates patient/appointment and books slot | `AppointmentController`, `AppointmentWriteService`, `web/src/app/(public)/booking/page.tsx` | VERIFIED | High |
-| Staff auth/RBAC | Staff roles use JWT login and protected route/API access | `AuthController`, `JwtAuthenticationFilter`, `RbacAuthorizationService`, `web/src/lib/rbac.ts` | VERIFIED | High |
+| Intended users | Guests, patients, receptionist, nurse, doctor, pharmacist, accountant, admin | `business-flow-test-matrix.md`, `frontend/src/lib/rbac.ts`, `UserRole.java` | VERIFIED | High |
+| Public booking | Guest selects doctor/slot and submits appointment; backend creates patient/appointment and books slot | `AppointmentController`, `AppointmentWriteService`, `frontend/src/app/(public)/booking/page.tsx` | VERIFIED | High |
+| Staff auth/RBAC | Staff roles use JWT login and protected route/API access | `AuthController`, `JwtAuthenticationFilter`, `RbacAuthorizationService`, `frontend/src/lib/rbac.ts` | VERIFIED | High |
 | Queue lifecycle | Check-in, call, assign room, start consultation, complete, skip | `QueueController`, `AppointmentWorkflowService`, `staff-queue.spec.ts` | VERIFIED | High |
 | Clinical record | Doctor creates medical record, prescriptions, follow-up, prescription PDF | `MedicalRecordController`, `MedicalRecordService`, `medical-records-api.ts` | VERIFIED | High |
 | Lab results | Staff create/read/delete lab results; patient portal reads own lab results | `LabResultController`, `/staff/lab-results/new`, `PatientPortalController` | VERIFIED | High |
 | Inventory/pharmacy | Items, lots, movements, alerts, prescription-backed dispense | `InventoryController`, `InventoryWriteService`, `V19__Add_pharmacy_dispense_traceability.sql` | VERIFIED | High |
-| Finance | Invoices, payments, void, pricing, revenue reports | `InvoiceController`, `PricingController`, `RevenueReportController`, `web/src/lib/operations-api.ts` | VERIFIED | High |
-| Patient portal | Login/claim, overview, appointments, lab results, messages read, profile update; production adoption and full lifecycle remain unproven | `PatientAuthController`, `PatientPortalController`, `web/src/app/portal` | VERIFIED | Medium |
+| Finance | Invoices, payments, void, pricing, revenue reports | `InvoiceController`, `PricingController`, `RevenueReportController`, `frontend/src/lib/operations-api.ts` | VERIFIED | High |
+| Patient portal | Login/claim, overview, appointments, lab results, messages read, profile update; production adoption and full lifecycle remain unproven | `PatientAuthController`, `PatientPortalController`, `frontend/src/app/portal` | VERIFIED | Medium |
 | Reminders | Scheduled follow-up reminder dispatch and delivery-attempt tracking | `ReminderService`, `EmailService`, `email_delivery_attempts` migration | VERIFIED | High |
 | Support tickets | Support pages exist, but no dedicated support-ticket API is visible | `business-flow-test-matrix.md`, route files | MISSING | High |
 | Adoption | No real user, traffic, or production usage evidence found locally | Local repo inspection | MISSING | High |
@@ -85,14 +85,14 @@ Major evidence gaps: no verified live deployment URL, no real user/adoption metr
 | REST API | Controllers expose domain workflows with consistent API envelope | `backend/controller/src/main/java`, `ApiResponse.java` | 118 method-level mappings | Broad backend contract surface | VERIFIED |
 | Database schema | Flyway migrations define clinical, RBAC, inventory, patient portal, email attempts | `backend/start/src/main/resources/db/migration` | 20 migrations, 35 create-table statements | Real persistence model, not mock-only | VERIFIED |
 | Public booking | Appointment creation with slot validation and patient identifier protection | `AppointmentController`, `AppointmentWriteService` | Booking endpoint and UI route | Core business workflow | VERIFIED |
-| RBAC | Backend permission map and frontend route policies | `RbacAuthorizationService`, `web/src/lib/rbac.ts` | 7 app roles plus guest public routes | Prevents role leakage across clinical/admin areas | VERIFIED |
+| RBAC | Backend permission map and frontend route policies | `RbacAuthorizationService`, `frontend/src/lib/rbac.ts` | 7 app roles plus guest public routes | Prevents role leakage across clinical/admin areas | VERIFIED |
 | Queue operations | Transactional state transitions and audit events | `AppointmentWorkflowService`, `QueueController` | check-in, call, room, start, complete, skip | Stateful operational workflow | VERIFIED |
 | Clinical records and prescriptions | Record creation, appointment completion, PDF preview/retrieval, reminders | `MedicalRecordService`, `MedicalRecordController` | Medical record write and prescription read APIs | Core clinical value | VERIFIED |
 | Inventory and pharmacy | Item/lot/movement management and dispense traceability | `InventoryWriteService`, `InventoryController` | Items, lots, movements, alerts, dispense | Complex stock consistency and audit trail | VERIFIED |
 | Finance | Invoice create/pay/void, pricing, revenue reports | finance controllers and `operations-api.ts` | Invoices, payments, pricing, daily/monthly reports | Revenue workflow coverage | VERIFIED |
 | Patient portal | Patient account claim/login and read/update portal APIs | `PatientAuthController`, `PatientPortalController` | Overview, appointments, labs, messages read, profile update; production adoption not evidenced | Patient self-service base | VERIFIED |
 | Transactional email/reminders | Gmail transport when configured; local recorded attempts otherwise | `EmailService`, `GmailApiClient`, `ReminderService` | Appointment confirmation, visit result, follow-up reminder | Integration reliability and auditability | VERIFIED |
-| UI truthfulness controls | Action manifest reports no fake/hash-link bugs after P1 pass | `web/test-results/actionable-control-manifest/summary.md` | 1599 controls, 0 bugs, 74 disabled honestly in dated artifact | Honest UX state handling | VERIFIED |
+| UI truthfulness controls | Action manifest reports no fake/hash-link bugs after P1 pass | `frontend/test-results/actionable-control-manifest/summary.md` | 1599 controls, 0 bugs, 74 disabled honestly in dated artifact | Honest UX state handling | VERIFIED |
 | Observability overlay | Request IDs, JSON logs, metrics, OTel/Grafana stack | uncommitted observability files | Source-level overlay plus smoke script; full Docker smoke still pending | Useful for release operations | VERIFIED |
 
 ## 6. Architecture and design decisions
@@ -101,7 +101,7 @@ Major evidence gaps: no verified live deployment URL, no real user/adoption metr
 | --- | --- | --- | --- | --- | --- |
 | Keep backend maintainable as scope grows | DDD-style Maven modules with explicit dependencies | `backend/pom.xml`, README architecture section | More module wiring overhead | Clear ownership boundaries | VERIFIED |
 | Keep API responses consistent | `ApiResponse<T>` envelope with success, data, message, error, pagination, timestamp | `ApiResponse.java`, controller signatures | Requires all controllers to wrap responses | Predictable frontend integration | VERIFIED |
-| Protect role-specific hospital workflows | Backend method RBAC plus frontend route guard | `RbacAuthorizationService`, `SecurityConfig`, `web/src/lib/rbac.ts` | Dual policy surfaces can drift | Stronger defense-in-depth than frontend-only checks | VERIFIED |
+| Protect role-specific hospital workflows | Backend method RBAC plus frontend route guard | `RbacAuthorizationService`, `SecurityConfig`, `frontend/src/lib/rbac.ts` | Dual policy surfaces can drift | Stronger defense-in-depth than frontend-only checks | VERIFIED |
 | Prevent duplicate or invalid state transitions | Transactional services validate appointment, queue, invoice, inventory states | `AppointmentWorkflowService`, `InventoryWriteService`, finance services | More domain branching | Protects business consistency | VERIFIED |
 | Protect patient identifiers | Store encrypted CCCD plus hash for lookup | `PatientIdentifierProtector`, `V4__Expand_patient_identifier_and_security.sql` | Requires secret management and backfill | Balances searchability and sensitive-data protection | VERIFIED |
 | Track pharmacy dispense accountability | Movement rows include lot and medical-record references | `InventoryWriteService`, `V19__Add_pharmacy_dispense_traceability.sql` | Requires prescription item match | Supports audit trail and stock control | VERIFIED |
@@ -115,7 +115,7 @@ Major evidence gaps: no verified live deployment URL, no real user/adoption metr
 | --- | --- | --- | --- | --- | --- |
 | Overall repository implementation | `git shortlog -sne --all` shows 49 commits by Thanh Quan only | Whole local Git history | None visible locally | High | VERIFIED |
 | Modular backend split | Commit `ee96e3c refactor: split backend into DDD modules`; `backend/pom.xml` module structure | `backend/pom.xml` | None visible locally | High | VERIFIED |
-| Release-ready backend and web app baseline | Commit `12a6dc5 feat: add release-ready backend, web app, and ECC assets` | Backend, `web/`, docs | None visible locally | High | VERIFIED |
+| Release-ready backend and web app baseline | Commit `12a6dc5 feat: add release-ready backend, web app, and ECC assets` | Backend, `frontend/`, docs | None visible locally | High | VERIFIED |
 | API integration and frontend regression coverage | Commits `638c0b3`, `9b47639`, `9ae36bf`; test files | API and frontend tests | None visible locally | High | VERIFIED |
 | Security and inventory hardening | Commits `0f2f908`, `afc72c4`, `3f5283f`; security/inventory files | Security/inventory source | None visible locally | High | VERIFIED |
 | Release-readiness hardening | Commit `c9d5060`, readiness reports and artifacts | `docs/06-testing/*` | None visible locally | High | VERIFIED |
@@ -129,7 +129,7 @@ Major evidence gaps: no verified live deployment URL, no real user/adoption metr
 | Challenge | Why it was difficult | Solution implemented | Evidence | Result | Status |
 | --- | --- | --- | --- | --- | --- |
 | Appointment and queue state consistency | Hospital flow has status-dependent actions and role restrictions | Transactional service methods validate allowed statuses and record audit events | `AppointmentWorkflowService`, `QueueController` | Queue tests and Playwright passes exist | VERIFIED |
-| Patient privacy and role scoping | Staff, patient, and admin data access differs sharply | JWT, RBAC permission map, patient identifier encryption/hash, frontend guards | `SecurityConfig`, `RbacAuthorizationService`, `PatientIdentifierProtector`, `web/src/lib/rbac.ts` | SecurityHardeningIntegrationTest passed in dated evidence | VERIFIED |
+| Patient privacy and role scoping | Staff, patient, and admin data access differs sharply | JWT, RBAC permission map, patient identifier encryption/hash, frontend guards | `SecurityConfig`, `RbacAuthorizationService`, `PatientIdentifierProtector`, `frontend/src/lib/rbac.ts` | SecurityHardeningIntegrationTest passed in dated evidence | VERIFIED |
 | Pharmacy dispense traceability | Stock movement must match item, lot, medical record, and prescription item | `dispenseMedication` validates lot ownership, quantity, prescription item, then writes movement/audit | `InventoryWriteService`, `V19` migration | W-02 closed in readiness report | VERIFIED |
 | Reminder delivery reliability | External Gmail may be disabled or fail | Delivery attempts persist with `GMAIL` or `LOCAL_RECORD`, scheduler preserves retry behavior | `EmailService`, `GmailApiClient`, `ReminderService`, `V20` migration | W-03 closed as backend-only evidence | VERIFIED |
 | Frontend route truthfulness | Large route surface can expose fake links/buttons | Action manifest, disabled unsupported actions, browser QA | `ui-truthfulness.spec.ts`, actionable manifest, real-user browser QA summary | 0 fake/hash-link bugs in dated manifest | VERIFIED |
@@ -141,7 +141,7 @@ Major evidence gaps: no verified live deployment URL, no real user/adoption metr
 | Category | Metric | Baseline | Final value | Change | Measurement method | Evidence | Resume-safe? |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Scope | Backend method-level mappings | N/A | 118 | N/A | `Select-String` over controller annotations | Audit command 2026-06-07 | Yes |
-| Scope | Frontend pages | N/A | 72 `page.tsx` | N/A | `Get-ChildItem web/src/app -Filter page.tsx` | Audit command 2026-06-07 | Yes |
+| Scope | Frontend pages | N/A | 72 `page.tsx` | N/A | `Get-ChildItem frontend/src/app -Filter page.tsx` | Audit command 2026-06-07 | Yes |
 | Scope | Flyway migrations | N/A | 20 | N/A | Count migration SQL files | Audit command 2026-06-07 | Yes |
 | Scope | JPA entity files | N/A | 26 | N/A | Count files containing `@Entity` | Audit command 2026-06-07 | Yes |
 | Testing | Backend verification | N/A | 148 tests, 0 failures/errors/skips | N/A | `mvn.cmd verify` dated artifact | `backend-mvn-verify-2026-06-01.log` | Yes, with date qualification |
@@ -154,7 +154,7 @@ Major evidence gaps: no verified live deployment URL, no real user/adoption metr
 | Security | High-confidence secret scan | N/A | 0 findings | N/A | Dated readiness artifact | `high-confidence-secret-scan-2026-06-01.log` | Yes, with qualification |
 | Reliability | Docker release smoke | N/A | backend `UP`, frontend `200`, seed departments/doctors true | N/A | Compose smoke script output | `docker-release-demo-smoke-2026-06-01.json` | Yes, with date/environment |
 | Reliability | Backup/restore smoke | N/A | PASS | N/A | Postgres dump/restore/drop check | `postgres-backup-restore-check-2026-06-01.json` | Yes, with date/environment |
-| UX QA | Actionable-control manifest | N/A | 1599 controls, 0 bugs, 363 needs-review | N/A | Playwright/UI truthfulness manifest | `web/test-results/actionable-control-manifest/summary.md` | Yes, with qualification |
+| UX QA | Actionable-control manifest | N/A | 1599 controls, 0 bugs, 363 needs-review | N/A | Playwright/UI truthfulness manifest | `frontend/test-results/actionable-control-manifest/summary.md` | Yes, with qualification |
 | Browser QA | Real-user Chrome pass | N/A | 23 checks, 0 failures, 0 4xx/5xx | N/A | Browser QA summary | `real-user-browser-qa-2026-06-01/summary.md` | Yes, with date qualification |
 | Performance | API/page latency | MISSING | MISSING | MISSING | No baseline/final values found | `performance.spec.ts` exists, but no metric report found | Needs measurement |
 | Adoption | Users/traffic | MISSING | MISSING | MISSING | No analytics or production metrics found | Local repo | No |
@@ -173,10 +173,10 @@ Major evidence gaps: no verified live deployment URL, no real user/adoption metr
 | Flyway migrations | 20 | SQL file count | Non-SQL config excluded | Audit command | High |
 | SQL create-table statements | 35 | Count `CREATE TABLE IF NOT EXISTS` | Alter-only migrations excluded | Audit command | Medium |
 | SQL create-index statements | 26 | Count `CREATE INDEX IF NOT EXISTS` | Unique constraints not counted | Audit command | Medium |
-| Frontend pages | 72 | Count `web/src/app/**/page.tsx` | Layout and API routes excluded | Audit command | High |
+| Frontend pages | 72 | Count `frontend/src/app/**/page.tsx` | Layout and API routes excluded | Audit command | High |
 | App Router page/layout/API route files | 79 | Count `page.tsx`, `layout.tsx`, `route.ts` | Components outside app excluded | Audit command | Medium |
-| Frontend unit/component test files | 49 | Count `web/src/**/__tests__/*.(test|spec).(ts|tsx)` | Playwright tests excluded | Audit command | High |
-| Playwright specs | 25 | Count `web/e2e/specs/*.ts` | Snapshots excluded | Audit command | High |
+| Frontend unit/component test files | 49 | Count `frontend/src/**/__tests__/*.(test|spec).(ts|tsx)` | Playwright tests excluded | Audit command | High |
+| Playwright specs | 25 | Count `frontend/e2e/specs/*.ts` | Snapshots excluded | Audit command | High |
 | Backend test classes | 33 | Count Java files under backend test roots | Generated reports excluded | Audit command | High |
 | Visible Git commits | 49 | `git shortlog -sne --all` | Uncommitted work excluded | Git command | High for attribution |
 | Grafana dashboard JSON files | 7 | Count dashboard files | Datasource/provisioning files excluded | `infra/observability/grafana/dashboards` | Medium, uncommitted |
@@ -190,7 +190,7 @@ Major evidence gaps: no verified live deployment URL, no real user/adoption metr
 | Authentication | Staff and patient JWT login/refresh/logout | `AuthController`, `PatientAuthController`, `JwtAuthenticationFilter` | Dated E2E/integration evidence | Token rotation policy not fully audited here | VERIFIED |
 | Password hashing | BCrypt password encoder and password hash fields | `SecurityConfig`, `AuthService`, `PatientAuthService` | Source inspected | No password policy audit beyond validation | VERIFIED |
 | Patient identifier protection | AES-GCM encryption plus SHA-256 lookup hash | `PatientIdentifierProtector`, `V4` migration | Source inspected | Secret strength must be configured externally | VERIFIED |
-| Authorization | Backend method RBAC and frontend route guard | `RbacAuthorizationService`, `web/src/lib/rbac.ts` | RBAC Playwright and backend security tests in dated logs | Policy drift still possible | VERIFIED |
+| Authorization | Backend method RBAC and frontend route guard | `RbacAuthorizationService`, `frontend/src/lib/rbac.ts` | RBAC Playwright and backend security tests in dated logs | Policy drift still possible | VERIFIED |
 | Rate limiting | Public POST rate limit for auth, appointment, chatbot | `RateLimitFilter`, `application.yml` | Source inspected | In-memory per-instance; not distributed | VERIFIED |
 | CORS/CSP/security headers | CORS origins, CSP, no-referrer, same-origin frame options | `SecurityConfig` | Source inspected | CSP allows unsafe-inline | VERIFIED |
 | Audit logging | Queue/inventory/admin/security denial audit paths | `AuditLogService`, `AuthorizationDenialAuditFilter`, services | Dated tests and source inspected | Audit export/filter still needs review | VERIFIED |
@@ -228,7 +228,7 @@ No adoption or external business-impact metric is resume-safe from the local rep
 ## 14. Claims that are currently resume-safe
 
 - Claim: Built and maintained a full-stack hospital management system with a Java/Spring Boot backend and Next.js/React TypeScript frontend.
-  Supporting evidence: `README.md`, `backend/pom.xml`, `web/package.json`, `web/src/app`, 49 local commits by Thanh Quan.
+  Supporting evidence: `README.md`, `backend/pom.xml`, `frontend/package.json`, `frontend/src/app`, 49 local commits by Thanh Quan.
   Recommended emphasis: Full-stack architecture and implementation breadth.
   Required qualification: "local repository evidence" unless public repo/role is externally confirmed.
 
@@ -243,7 +243,7 @@ No adoption or external business-impact metric is resume-safe from the local rep
   Required qualification: Do not claim real production scale.
 
 - Claim: Implemented role-based authorization across backend API permissions and frontend route guards.
-  Supporting evidence: `RbacAuthorizationService`, controller `@PreAuthorize`, `web/src/lib/rbac.ts`, RBAC Playwright logs.
+  Supporting evidence: `RbacAuthorizationService`, controller `@PreAuthorize`, `frontend/src/lib/rbac.ts`, RBAC Playwright logs.
   Recommended emphasis: Security and privacy controls.
   Required qualification: Do not claim full compliance or independent security certification.
 
@@ -291,7 +291,7 @@ No adoption or external business-impact metric is resume-safe from the local rep
 
 | Priority | Missing metric or evidence | Why it matters | Recommended tool | Exact procedure or command | Expected output | Risk level |
 | --- | --- | --- | --- | --- | --- | --- |
-| P0 | Current full quality gate after dirty observability changes | Confirms report is current, not just dated | Maven, npm, Playwright | `cd backend; mvn.cmd verify`; `cd web; npm run lint; npm run test:unit:coverage; npm run build` | Pass/fail logs, coverage summary | Low |
+| P0 | Current full quality gate after dirty observability changes | Confirms report is current, not just dated | Maven, npm, Playwright | `cd backend; mvn.cmd verify`; `cd frontend; npm run lint; npm run test:unit:coverage; npm run build` | Pass/fail logs, coverage summary | Low |
 | P0 | Observability smoke | Validates uncommitted monitoring stack | Docker Compose, PowerShell smoke | `.\scripts\release-observability-smoke.ps1` | JSON summary with Prometheus backend target, metrics, Loki/Tempo evidence | Low to Medium |
 | P1 | API latency baseline | Makes performance claims measurable | k6, wrk, autocannon, or Playwright traces | Run against local Docker release-demo stack; test `GET /departments`, `GET /doctors`, `POST /appointments`, authenticated queue/inventory reads; 5 runs | p50/p95/p99 latency, error rate | Medium; local only |
 | P1 | Frontend page performance | Useful full-stack/UX evidence | Lighthouse or Playwright trace | Run Lighthouse on `/`, `/booking`, `/staff/login`, `/portal/login`, authenticated dashboards with synthetic data | LCP/CLS/TBT/performance score | Low |
@@ -384,7 +384,7 @@ No adoption or external business-impact metric is resume-safe from the local rep
   Evidence of usage: migration files, JPA entities, repositories.
   Technical purpose: Versioned relational persistence.
 - Technology: Next.js / React / TypeScript
-  Evidence of usage: `web/package.json`, `web/src/app`, frontend tests.
+  Evidence of usage: `frontend/package.json`, `frontend/src/app`, frontend tests.
   Technical purpose: Public, staff, admin, and portal UI.
 - Technology: Spring Security / JWT / BCrypt / RBAC
   Evidence of usage: security config, JWT filter, RBAC service, route guard.
@@ -415,7 +415,7 @@ No adoption or external business-impact metric is resume-safe from the local rep
   Evidence: 2026-06-07 controller annotation count
 - Verified scope item: Frontend pages
   Verified count: 72
-  Evidence: 2026-06-07 `web/src/app/**/page.tsx` count
+  Evidence: 2026-06-07 `frontend/src/app/**/page.tsx` count
 - Verified scope item: DB migrations
   Verified count: 20
   Evidence: Flyway migration directory
@@ -442,7 +442,7 @@ No adoption or external business-impact metric is resume-safe from the local rep
 - Do not claim HIPAA/compliance/security certification.
 - Do not claim AI/Gemini integration unless active source and tests are added.
 - Do not present synthetic release-demo seed data as real usage.
-- Do not treat `frontend/` prototypes as the runnable frontend; `web/` is canonical.
+- Do not treat `frontend/` prototypes as the runnable frontend; `frontend/` is canonical.
 - Do not claim complete support ticket, patient cancel/reschedule, or patient messaging write workflows.
 - Qualify all dated test/coverage/audit metrics with the 2026-06-01 evidence date unless rerun.
 

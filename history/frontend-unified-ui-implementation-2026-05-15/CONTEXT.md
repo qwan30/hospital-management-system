@@ -1,8 +1,8 @@
-# Frontend Unified UI Implementation Context
+﻿# Frontend Unified UI Implementation Context
 
 ## Objective
 
-Implement `implementation_plan.md.resolved` for the `web/` frontend so Admin, Staff, Portal, and Public surfaces use the Hospital Core visual system consistently.
+Implement `implementation_plan.md.resolved` for the `frontend/` frontend so Admin, Staff, Portal, and Public surfaces use the Hospital Core visual system consistently.
 
 ## Locked Decisions
 
@@ -15,7 +15,7 @@ Implement `implementation_plan.md.resolved` for the `web/` frontend so Admin, St
 
 ## Verification
 
-- `npm.cmd run lint`: pass with two pre-existing warnings in `web/screenshot-each-page/capture.js`.
+- `npm.cmd run lint`: pass with two pre-existing warnings in `frontend/screenshot-each-page/capture.js`.
 - `npm.cmd run test:unit`: 332 passed.
 - `npm.cmd run build`: pass.
 - Chromium E2E CI spec set with `--workers=1`: 167 passed, 1 skipped.

@@ -8,7 +8,7 @@ This is an **Enterprise Hospital Management System (HMS)** — a full-stack heal
 
 **Tech stack:** Java 17, Spring Boot 3.3, PostgreSQL 15 (with pgvector), Next.js 16 (App Router), React 19, Tailwind CSS 4, Playwright, Docker Compose.
 
-The backend follows **Domain-Driven Design (DDD)** as a modular monolith. The frontend is a canonical Next.js App Router application under `web/`. The `frontend/` directory is design-reference prototype material only — not the active app.
+The backend follows **Domain-Driven Design (DDD)** as a modular monolith. The frontend is a canonical Next.js App Router application under `frontend/`.
 
 ## Architecture
 
@@ -20,7 +20,7 @@ backend/
 ├── controller/      # REST controllers, API envelopes, security filters (40 controllers)
 └── start/           # Composition root, Flyway migrations, app config
 
-web/
+frontend/
 ├── src/app/         # Next.js App Router — staff, admin, portal, public routes
 ├── src/components/  # Shared UI components (hc-icon, data-panel, sidebar, etc.)
 ├── src/lib/         # API client, auth helpers, utility modules
@@ -37,10 +37,10 @@ Dependency flow: `domain` ← `infrastructure` ← `application` ← `controller
 
 ### Quick Start (Docker Compose)
 ```bash
-docker compose up -d          # postgres + backend + frontend
-docker compose down -v        # tear down with volume cleanup
+docker compose -f infra/docker-compose.yml up -d          # postgres + backend + frontend
+docker compose -f infra/docker-compose.yml down -v        # tear down with volume cleanup
 ```
-Observability stack: `docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d` adds Prometheus, Grafana, Loki, and Tempo.
+Observability stack: `docker compose -f infra/docker-compose.yml -f infra/docker-compose.observability.yml up -d` adds Prometheus, Grafana, Loki, and Tempo.
 
 ### Backend (Development)
 ```powershell
@@ -56,7 +56,7 @@ Backend listens on `http://localhost:8081`. Actuator health: `http://localhost:8
 
 ### Frontend (Development)
 ```bash
-cd web
+cd frontend
 npm install
 npm run dev                    # http://localhost:3000
 ```
@@ -79,7 +79,7 @@ mvn verify                     # 148 integration tests (Spring Boot + Testcontai
 
 ### Frontend
 ```bash
-cd web
+cd frontend
 npm run test:unit              # Vitest unit tests (80.48% branch coverage)
 npm run test:e2e:ui            # Playwright UI route smoke & accessibility (323+ scenarios)
 npm run test:e2e:integrated    # Backend-backed auth, claim, booking, queue checks
@@ -112,7 +112,7 @@ GitHub Actions workflows in `.github/workflows/`:
 
 ## Development Notes
 
-- **Frontend canonical source**: `web/` is the active app. `frontend/` is archived design-reference material only.
+- **Frontend canonical source**: `frontend/` is the active Next.js application.
 - **Backend security**: Spring Security + JWT with 36 granular RBAC permissions via `@PreAuthorize`.
 - **PHI protection**: Patient identifiers (CCCD/CMND) encrypted with AES-GCM, indexed by SHA-256 hash.
 - **API envelope**: All responses use `{ success, data, message, error, pagination, timestamp }`.
@@ -139,7 +139,7 @@ Use the following skills when working on related files:
 |---------|-------|
 | `README.md` | `/readme` |
 | `.github/workflows/*.yml` | `/ci-workflow` |
-| `web/src/**` (frontend) | `/react-review`, `/e2e` |
+| `frontend/src/**` (frontend) | `/react-review`, `/e2e` |
 | `backend/**` (Java) | `/java-review`, `/springboot-tdd` |
 | `docs/**` | `/update-docs` |
 

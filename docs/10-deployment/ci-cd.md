@@ -1,4 +1,4 @@
-# CI/CD Pipeline
+﻿# CI/CD Pipeline
 
 ## Overview
 
@@ -117,8 +117,8 @@ Before any test job runs, the `changes` job evaluates a **path filter** to deter
 | Output | Paths |
 |--------|-------|
 | `backend` | `backend/**`, `.github/workflows/ci.yml`, `.github/workflows/cd.yml` |
-| `frontend` | `web/src/**`, `web/public/**`, `web/e2e/**`, `web/*.{ts,js,json,css}`, CI/CD workflow files |
-| `infra` | `docker-compose.yml`, `docker-compose.observability.yml`, `infra/observability/**`, `backend/Dockerfile`, `web/Dockerfile` |
+| `frontend` | `frontend/src/**`, `frontend/public/**`, `frontend/e2e/**`, `frontend/*.{ts,js,json,css}`, CI/CD workflow files |
+| `infra` | `docker-compose.yml`, `docker-compose.observability.yml`, `infra/observability/**`, `backend/Dockerfile`, `frontend/Dockerfile` |
 
 Each test job (`backend-test`, `frontend-test`, `validate-observability`) checks its path output before running. On non-PR events (push to main/master), all jobs run unconditionally.
 
@@ -420,7 +420,7 @@ Scans both frontend and backend dependencies for known vulnerabilities.
 
 | Tool | Scope | Configuration |
 |------|-------|---------------|
-| `npm audit` | Frontend (`web/package-lock.json`) | `--audit-level=high` (only reports high/critical) |
+| `npm audit` | Frontend (`frontend/package-lock.json`) | `--audit-level=high` (only reports high/critical) |
 | OWASP Dependency Check | Backend (Maven) | `-DfailBuildOnCVSS=7` (fails on CVSS >= 7), HTML report |
 
 Both steps use `continue-on-error: true` -- scanning results do not fail the workflow. Reports are uploaded as artifacts (14-day retention).
