@@ -62,7 +62,7 @@ export default function PrescriptionPreviewPage() {
             {/* PDF Header */}
             <div className="flex justify-between items-start mb-16 relative z-10 border-b border-[var(--hc-border-soft)] pb-8">
               <div>
-                <h2 className="text-2xl font-bold tracking-tight text-[var(--hc-text)] mb-2">HMS Precision</h2>
+                <h2 className="text-2xl font-bold tracking-tight text-[var(--hc-text)] mb-2">Hospital Core</h2>
                 <p className="text-[10px] text-[var(--hc-text-muted)] tracking-widest font-bold uppercase">
                   UNIT 04 - CLINICAL CARE INFRASTRUCTURE
                 </p>

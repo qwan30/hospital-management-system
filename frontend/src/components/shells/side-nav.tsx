@@ -215,14 +215,14 @@ export function HcSidebar({
                 href={link.href}
                 data-active={isActive ? "true" : undefined}
                 className={cn(
-                  "group relative flex h-12 items-center gap-[14px] px-4 text-sm font-medium text-[#1E2A44] transition-colors duration-150 hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-blue-600)]",
+                  "group relative flex h-12 items-center gap-[14px] px-4 text-sm font-medium text-[var(--hc-text)] transition-colors duration-150 hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-blue-600)]",
                   isActive &&
                     "bg-[var(--hc-blue-50)] font-bold text-[var(--hc-blue-600)] hover:bg-[var(--hc-blue-50)] hover:text-[var(--hc-blue-600)] border-l-4 border-l-[var(--hc-blue-600)]",
                 )}
               >
                 <Icon
                   className={cn(
-                    "size-5 shrink-0 text-[#31415F] transition-colors group-hover:text-[var(--hc-blue-600)]",
+                    "size-5 shrink-0 text-[var(--hc-text-secondary)] transition-colors group-hover:text-[var(--hc-blue-600)]",
                     isActive && "text-[var(--hc-blue-600)] group-hover:text-[var(--hc-blue-600)]",
                   )}
                   aria-hidden="true"

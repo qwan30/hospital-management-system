@@ -315,6 +315,72 @@
   --sidebar-accent-foreground: #F8FAFC;
   --sidebar-border: rgba(255, 255, 255, 0.1);
   --sidebar-ring: #93B4FF;
+
+  /* ── HC token dark mode overrides ── */
+
+  /* Text — invert for dark backgrounds */
+  --hc-text: #F8FAFC;
+  --hc-text-secondary: #94A3B8;
+  --hc-text-muted: #64748B;
+  --hc-text-placeholder: #475569;
+
+  /* Surfaces — dark gray palette */
+  --hc-surface: #1E293B;
+  --hc-surface-muted: #0F172A;
+  --hc-surface-soft: #1E293B;
+  --hc-bg: #0F172A;
+  --hc-background: #0F172A;
+  --hc-content-bg: #1E293B;
+  --hc-sidebar-bg: #0F172A;
+
+  /* Borders — subtle in dark mode */
+  --hc-border: rgba(255, 255, 255, 0.08);
+  --hc-border-strong: rgba(255, 255, 255, 0.14);
+  --hc-border-soft: rgba(255, 255, 255, 0.06);
+
+  /* Brand navy — deepened for dark mode */
+  --hc-navy-950: #020617;
+  --hc-navy-900: #060B1A;
+  --hc-navy-850: #0A1430;
+  --hc-navy-800: #0F1D44;
+
+  /* Primary blue — softened for dark backgrounds */
+  --hc-blue-700: #3B82F6;
+  --hc-blue-600: #60A5FA;
+  --hc-blue-500: #93B4FF;
+  --hc-blue-400: #60A5FA;
+  --hc-blue-300: #3B82F6;
+  --hc-blue-100: rgba(59, 130, 246, 0.15);
+  --hc-blue-50: rgba(59, 130, 246, 0.08);
+  --hc-primary: var(--hc-blue-600);
+  --hc-primary-bg: var(--hc-blue-50);
+
+  /* Semantic — adjusted for dark visibility */
+  --hc-success: #34D399;
+  --hc-success-bg: rgba(52, 211, 153, 0.12);
+  --hc-warning: #FBBF24;
+  --hc-warning-bg: rgba(251, 191, 36, 0.12);
+  --hc-danger: #F87171;
+  --hc-danger-bg: rgba(248, 113, 113, 0.12);
+  --hc-info: #60A5FA;
+  --hc-info-bg: rgba(96, 165, 250, 0.12);
+
+  /* Operational */
+  --hc-stock: #34D399;
+  --hc-stock-bg: rgba(52, 211, 153, 0.12);
+  --hc-low-stock: #FBBF24;
+  --hc-low-stock-bg: rgba(251, 191, 36, 0.12);
+  --hc-critical: #F87171;
+  --hc-critical-bg: rgba(248, 113, 113, 0.12);
+  --hc-expiring: #A78BFA;
+  --hc-expiring-bg: rgba(167, 139, 250, 0.12);
+
+  /* Accent */
+  --hc-teal-bg: rgba(20, 184, 166, 0.12);
+  --hc-purple-bg: rgba(167, 139, 250, 0.12);
+
+  /* White for dark mode */
+  --hc-white: #F8FAFC;
 }
 
 @layer base {
@@ -344,17 +410,57 @@
   }
 }
 
-/* ── Reduced Motion ── */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+/* ── Motion Keyframes ── */
+@keyframes hc-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
+
+@keyframes hc-slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hc-slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hc-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.animate-hc-fade-in {
+  animation: hc-fade-in var(--motion-slow) both;
+}
+
+.animate-hc-slide-up {
+  animation: hc-slide-up var(--motion-spring) both;
+}
+
+.animate-hc-slide-down {
+  animation: hc-slide-down var(--motion-spring) both;
+}
+
+.animate-hc-scale-in {
+  animation: hc-scale-in var(--motion-spring) both;
+}
+
+/* Staggered children (apply to parent, children get hc-stagger-item) */
+.hc-stagger > .hc-stagger-item {
+  opacity: 0;
+  animation: hc-slide-up var(--motion-spring) both;
+}
+
+.hc-stagger > .hc-stagger-item:nth-child(1)  { animation-delay: 0ms; }
+.hc-stagger > .hc-stagger-item:nth-child(2)  { animation-delay: 60ms; }
+.hc-stagger > .hc-stagger-item:nth-child(3)  { animation-delay: 120ms; }
+.hc-stagger > .hc-stagger-item:nth-child(4)  { animation-delay: 180ms; }
+.hc-stagger > .hc-stagger-item:nth-child(5)  { animation-delay: 240ms; }
+.hc-stagger > .hc-stagger-item:nth-child(6)  { animation-delay: 300ms; }
+.hc-stagger > .hc-stagger-item:nth-child(7)  { animation-delay: 360ms; }
+.hc-stagger > .hc-stagger-item:nth-child(8)  { animation-delay: 420ms; }
 
 /* ===== Hospital Core Utility Classes ===== */
 .mono {

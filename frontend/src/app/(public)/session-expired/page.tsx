@@ -8,7 +8,7 @@ export default function SessionExpiredPage() {
 <div className="w-full max-w-2xl bg-surface-container-lowest p-16 flex flex-col items-start gap-12 ring-1 ring-outline-variant/15">
 {/* Branding Anchor */}
 <div className="flex items-center gap-2 mb-4">
-<span className="text-lg font-bold uppercase tracking-widest text-on-surface">HMS Precision</span>
+<span className="text-lg font-bold uppercase tracking-widest text-on-surface">Hospital Core</span>
 </div>
 {/* Content Container */}
 <div className="space-y-8 w-full">

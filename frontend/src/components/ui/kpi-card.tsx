@@ -22,7 +22,7 @@ const toneClasses: Record<KpiTone, string> = {
   amber: "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
   red: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
   purple: "bg-[var(--hc-purple-bg)] text-[var(--hc-purple)]",
-  teal: "bg-[#CCFBF1] text-[#0F766E]",
+  teal: "bg-[var(--hc-teal-bg)] text-[var(--hc-teal-700)]",
 };
 
 export function KpiCard({

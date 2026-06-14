@@ -7,25 +7,25 @@ export default function PatientAppointmentsPage() {
       <main>
 
 {/* TopNavBar (JSON Derived) */}
-<header className="bg-white dark:bg-neutral-950 flex justify-between items-center px-6 w-full max-w-none h-16 shrink-0 border-b-0 bg-neutral-100 dark:bg-neutral-900">
+<header className="flex justify-between items-center px-6 w-full max-w-none h-16 shrink-0 border-b border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text)]">
 <div className="flex items-center gap-4">
-<span className="text-lg font-semibold uppercase tracking-widest text-neutral-900 dark:text-white">HMS Precision</span>
-<div className="h-4 w-px bg-neutral-300 mx-2"></div>
+<span className="text-lg font-semibold uppercase tracking-widest text-[var(--hc-text)]">Hospital Core</span>
+<div className="h-4 w-px bg-[var(--hc-border)] mx-2"></div>
 <nav className="flex items-center gap-6">
-<span className="text-neutral-400 text-sm">Dashboard</span>
-<span className="text-neutral-400 text-sm">/</span>
-<span className="text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 font-semibold text-sm py-5">Appointments</span>
+<span className="text-[var(--hc-text-muted)] text-sm">Dashboard</span>
+<span className="text-[var(--hc-text-muted)] text-sm">/</span>
+<span className="text-[var(--hc-primary)] border-b-2 border-[var(--hc-primary)] font-semibold text-sm py-5">Appointments</span>
 </nav>
 </div>
 <div className="flex items-center gap-6">
 <div className="relative">
 <input className="bg-surface-container-low border-0 border-b-2 border-outline px-4 py-1.5 text-sm focus:ring-0 focus:border-primary w-64 transition-all" placeholder="Search Patient ID..." type="text"/>
 </div>
-<div className="flex items-center gap-4 text-neutral-600">
+<div className="flex items-center gap-4 text-[var(--hc-text-secondary)]">
 <HcIcon name="notifications" className="cursor-pointer hover:text-primary transition-colors" />
 <HcIcon name="settings" className="cursor-pointer hover:text-primary transition-colors" />
 <HcIcon name="help" className="cursor-pointer hover:text-primary transition-colors" />
-<div className="h-8 w-8 bg-neutral-200 overflow-hidden">
+<div className="h-8 w-8 bg-[var(--hc-surface-soft)] overflow-hidden">
 <Image alt="User profile" className="h-full w-full object-cover" data-alt="professional portrait of a medical administrator in a clean modern clinical setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-vVbeWD4kwISaeRFRKlvVuqSENkHizYgzcJdOOF4FwTvt3DPCoh1zzdyLnAESMlxiwh1nkSXpAJMCwsXtuKDRPmGQ_0p6PpKYx4K8hiHJjQA_iiMxJavSoGcbsE2K-ZgTgghKayjvGuDkU2J28sAdebZYqfd4gH_jq0sLDw_jCF9r5O1fVLARLWZt7kFW6LMYwSnllk-K4pA6mbPLCiiPPsga7RxW96Hfyz6C_xLwGVKKB1mH72FN0LMA2hCpBJydGGhS9pRNgw" width={1200} height={800}/>
 </div>
 </div>
@@ -43,8 +43,8 @@ export default function PatientAppointmentsPage() {
 {/* Segmented Control */}
 <div className="flex bg-surface-container-high p-1">
 <button className="px-6 py-2 text-xs font-bold uppercase tracking-widest bg-white text-primary shadow-sm">Upcoming</button>
-<button className="px-6 py-2 text-xs font-bold uppercase tracking-widest text-neutral-500 hover:bg-white/50 transition-colors">Past</button>
-<button className="px-6 py-2 text-xs font-bold uppercase tracking-widest text-neutral-500 hover:bg-white/50 transition-colors">All</button>
+<button className="px-6 py-2 text-xs font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] hover:bg-white/50 transition-colors">Past</button>
+<button className="px-6 py-2 text-xs font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] hover:bg-white/50 transition-colors">All</button>
 </div>
 </div>
 {/* Appointment List Area */}
@@ -68,7 +68,7 @@ export default function PatientAppointmentsPage() {
 <HcIcon name="person" className="text-on-surface-variant" />
 </div>
 <div>
-<p className="font-semibold text-sm">Dr. Sarah Kensington</p>
+<p className="font-semibold text-sm">Dr. Cardio Clinical</p>
 <p className="text-[10px] text-on-surface-variant uppercase tracking-tighter">Lead Cardiologist</p>
 </div>
 </div>
@@ -77,7 +77,7 @@ export default function PatientAppointmentsPage() {
 <p className="text-[10px] text-on-surface-variant">Wing B, Room 402</p>
 </div>
 <div className="col-span-2">
-<span className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-widest">
+<span className="inline-flex items-center px-3 py-1 bg-[var(--hc-blue-50)] text-[var(--hc-primary)] text-[10px] font-bold uppercase tracking-widest">
                                 Confirmed
                             </span>
 </div>

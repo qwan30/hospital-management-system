@@ -183,7 +183,7 @@ export default function DoctorDetailPage() {
                 <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center shrink-0">
                   <HcIcon name="call" className="text-[var(--hc-primary)] w-4 h-4" />
                 </div>
-                <span className="text-sm font-bold tracking-tight text-[var(--hc-text-secondary)]">Support: +1 (800) MED-CORE</span>
+                <span className="text-sm font-bold tracking-tight text-[var(--hc-text-secondary)]">Support: +1 (800) Hospital Core</span>
               </div>
               <div className="flex gap-3 items-center">
                 <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center shrink-0">

@@ -133,7 +133,7 @@ export default function BookingDetailsReviewPage() {
             </div>
 
             <p className="text-[10px] text-slate-500 text-center leading-relaxed italic font-medium mt-2">
-              By clicking confirm, you agree to MED-CORE's surgical intake policies and privacy protocols.
+              By clicking confirm, you agree to Hospital Core's surgical intake policies and privacy protocols.
             </p>
           </div>
 
