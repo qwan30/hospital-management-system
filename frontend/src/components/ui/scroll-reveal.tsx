@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -37,18 +37,20 @@ export function ScrollReveal({
   className,
   rootMargin = "60px 0px",
 }: ScrollRevealProps) {
+  const isReducedMotion = useMemo(
+    () =>
+      typeof window !== "undefined"
+        ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        : false,
+    []
+  );
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const observedRef = useRef(false);
+  const [visible, setVisible] = useState(isReducedMotion);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    if (prefersReducedMotion) {
-      setVisible(true);
-      return;
-    }
+    if (observedRef.current) return;
+    observedRef.current = true;
 
     const node = ref.current;
     if (!node) return;
