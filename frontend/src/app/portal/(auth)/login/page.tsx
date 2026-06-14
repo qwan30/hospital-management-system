@@ -16,6 +16,7 @@ import {
   MessageSquare,
   Globe,
   ChevronDown,
+  ClipboardPlus,
 } from "lucide-react";
 import {
   apiRequest,
@@ -68,7 +69,7 @@ export default function PortalLoginPage() {
       <div className="relative flex flex-1">
 
         {/* Left Column - Information Panel */}
-        <section className="relative z-10 hidden w-full flex-col justify-center px-8 py-10 lg:flex lg:w-[45%] lg:px-16 xl:px-24 bg-[#f8fbff]">
+        <section className="relative z-10 hidden w-full flex-col justify-center px-8 py-10 lg:flex lg:w-[45%] lg:px-16 xl:px-24 bg-[var(--hc-surface-muted)]">
           <div className="absolute left-8 top-8 flex items-center gap-3 lg:left-12">
             <span className="grid size-9 place-items-center rounded-lg bg-[var(--hc-primary)] text-white">
               <Hospital className="size-5" aria-hidden="true" />
@@ -77,14 +78,14 @@ export default function PortalLoginPage() {
           </div>
 
           <div className="mt-8 max-w-[480px]">
-            <h1 className="text-[52px] font-bold leading-[1.1] tracking-tight text-[#0a2540]">
+            <h1 className="text-[52px] font-bold leading-[1.1] tracking-tight text-[var(--hc-navy-900)]">
               Patient Portal
             </h1>
             <p className="mt-2 text-[20px] font-medium text-[var(--hc-text-secondary)]">
               Your health. Your time. Your portal.
             </p>
 
-            <p className="mb-8 mt-12 text-[22px] font-bold leading-snug text-[#0a2540]">
+            <p className="mb-8 mt-12 text-[22px] font-bold leading-snug text-[var(--hc-navy-900)]">
               Everything you need<br />
               for your health journey,<br />
               all in one place.
@@ -113,11 +114,11 @@ export default function PortalLoginPage() {
               />
             </div>
 
-            <div className="mt-10 flex items-start gap-4 rounded-xl bg-[#eef6ff] p-5 border border-[#d6e8ff]">
+            <div className="mt-10 flex items-start gap-4 rounded-xl bg-[var(--hc-primary-bg)] p-5 border border-[var(--hc-blue-100)]">
               <LockKeyhole className="mt-0.5 size-5 shrink-0 text-[var(--hc-primary)]" aria-hidden="true" />
               <div>
                 <p className="text-[14px] font-bold text-[var(--hc-primary)]">Your privacy is our priority.</p>
-                <p className="mt-0.5 text-[13px] text-[#4b6a8e]">
+                <p className="mt-0.5 text-[13px] text-[var(--hc-text-secondary)]">
                   We keep your information safe and secure in compliance with HIPAA standards.
                 </p>
               </div>
@@ -140,13 +141,13 @@ export default function PortalLoginPage() {
           <div className="w-full max-w-[540px] px-6 py-10 pointer-events-auto">
             <div className="rounded-[24px] border border-[var(--hc-border)] bg-white px-8 py-10 shadow-[0_24px_80px_rgba(15,23,42,0.12)]">
               <header className="mb-8 flex flex-col items-center text-center">
-                <span className="mb-4 grid size-12 place-items-center rounded-xl border border-[var(--hc-primary)] bg-[#f8fbff] text-[var(--hc-primary)]">
+                <span className="mb-4 grid size-12 place-items-center rounded-xl border border-[var(--hc-primary)] bg-[var(--hc-surface-muted)] text-[var(--hc-primary)]">
                   <ClipboardPlus className="size-6" aria-hidden="true" />
                 </span>
                 <span className="mb-1.5 text-[12px] font-extrabold uppercase tracking-widest text-[var(--hc-primary)]">
                   Welcome Back
                 </span>
-                <h2 className="text-[28px] font-bold text-[#0a2540]">
+                <h2 className="text-[28px] font-bold text-[var(--hc-navy-900)]">
                   Log in to your account
                 </h2>
                 <p className="mt-1 text-[15px] text-[var(--hc-text-secondary)]">
@@ -158,11 +159,11 @@ export default function PortalLoginPage() {
 
               <form className="grid gap-5" onSubmit={handleLogin}>
                 <label className="grid gap-2" htmlFor="patient-email">
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#0a2540]">Email</span>
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--hc-navy-900)]">Email</span>
                   <span className="flex h-12 items-center gap-3 rounded-lg border border-[var(--hc-border)] bg-white px-4 transition focus-within:border-[var(--hc-primary)] focus-within:ring-2 focus-within:ring-[rgba(15,98,254,0.12)]">
-                    <MailIcon className="size-5 shrink-0 text-[#9bb9da]" aria-hidden="true" />
+                    <MailIcon className="size-5 shrink-0 text-[var(--hc-text-placeholder)]" aria-hidden="true" />
                     <input
-                      className="h-full min-w-0 flex-1 border-0 bg-transparent text-[15px] font-medium text-[var(--hc-text)] outline-none placeholder:text-[#9bb9da]"
+                      className="h-full min-w-0 flex-1 border-0 bg-transparent text-[15px] font-medium text-[var(--hc-text)] outline-none placeholder:text-[var(--hc-text-placeholder)]"
                       id="patient-email"
                       name="email"
                       placeholder="name@hospital.com"
@@ -174,11 +175,11 @@ export default function PortalLoginPage() {
                 </label>
 
                 <label className="grid gap-2" htmlFor="patient-password">
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#0a2540]">Password</span>
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[var(--hc-navy-900)]">Password</span>
                   <span className="flex h-12 items-center gap-3 rounded-lg border border-[var(--hc-border)] bg-white px-4 transition focus-within:border-[var(--hc-primary)] focus-within:ring-2 focus-within:ring-[rgba(15,98,254,0.12)]">
-                    <LockKeyhole className="size-5 shrink-0 text-[#9bb9da]" aria-hidden="true" />
+                    <LockKeyhole className="size-5 shrink-0 text-[var(--hc-text-placeholder)]" aria-hidden="true" />
                     <input
-                      className="h-full min-w-0 flex-1 border-0 bg-transparent text-[15px] font-medium text-[var(--hc-text)] outline-none placeholder:text-[#9bb9da]"
+                      className="h-full min-w-0 flex-1 border-0 bg-transparent text-[15px] font-medium text-[var(--hc-text)] outline-none placeholder:text-[var(--hc-text-placeholder)]"
                       id="patient-password"
                       name="password"
                       placeholder="Password"
@@ -189,7 +190,7 @@ export default function PortalLoginPage() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="text-[#9bb9da] hover:text-[var(--hc-text)] focus:outline-none"
+                      className="text-[var(--hc-text-placeholder)] hover:text-[var(--hc-text)] focus:outline-none"
                     >
                       {showPassword ? <EyeOff className="size-5 shrink-0" aria-hidden="true" /> : <Eye className="size-5 shrink-0" aria-hidden="true" />}
                     </button>
@@ -198,8 +199,8 @@ export default function PortalLoginPage() {
 
                 <div className="flex items-center justify-between mt-1">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" className="size-4 rounded border-[#9bb9da] text-[var(--hc-primary)] focus:ring-[var(--hc-primary)]" />
-                    <span className="text-[13px] font-bold text-[#0a2540]">Remember me</span>
+                    <input type="checkbox" className="size-4 rounded border-[var(--hc-text-placeholder)] text-[var(--hc-primary)] focus:ring-[var(--hc-primary)]" />
+                    <span className="text-[13px] font-bold text-[var(--hc-navy-900)]">Remember me</span>
                   </label>
                   <button
                     className="text-[13px] font-bold text-[var(--hc-text-secondary)] opacity-70"
@@ -254,9 +255,9 @@ export default function PortalLoginPage() {
       </div>
 
       {/* Footer Bar */}
-      <footer className="relative z-20 flex h-[64px] items-center justify-between border-t border-[var(--hc-border)] bg-[#f4f7fb] px-6 lg:px-12">
+      <footer className="relative z-20 flex h-[64px] items-center justify-between border-t border-[var(--hc-border)] bg-[var(--hc-surface-muted)] px-6 lg:px-12">
         <div className="flex items-center gap-3">
-          <span className="grid size-8 place-items-center rounded-full bg-[#0a2540] text-[13px] font-bold text-white">
+          <span className="grid size-8 place-items-center rounded-full bg-[var(--hc-navy-900)] text-[13px] font-bold text-white">
             N
           </span>
           <div className="flex flex-col">
@@ -265,21 +266,21 @@ export default function PortalLoginPage() {
             </span>
             <div className="flex items-center gap-1.5">
               <span className="size-1.5 rounded-full bg-[var(--hc-success)]" />
-              <span className="text-[11px] font-bold text-[#0a2540]">OPERATIONAL // NODE_S7</span>
+              <span className="text-[11px] font-bold text-[var(--hc-text)]">All Systems Operational</span>
             </div>
           </div>
         </div>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <ShieldCheck className="size-5 text-[#0a2540]" aria-hidden="true" />
-          <span className="text-[13px] font-bold text-[#0a2540]">Trusted. Secure. Healthcare.</span>
+          <ShieldCheck className="size-5 text-[var(--hc-navy-900)]" aria-hidden="true" />
+          <span className="text-[13px] font-bold text-[var(--hc-navy-900)]">Trusted. Secure. Healthcare.</span>
           <span className="text-[13px] font-medium text-[var(--hc-primary)]">HIPAA Compliant</span>
         </div>
 
         <div className="flex items-center gap-6">
           <div className="hidden items-center gap-2 lg:flex cursor-pointer hover:text-[var(--hc-primary)] transition">
             <Globe className="size-4 text-[var(--hc-text-secondary)]" />
-            <span className="text-[13px] font-bold text-[#0a2540]">English (US)</span>
+            <span className="text-[13px] font-bold text-[var(--hc-navy-900)]">English (US)</span>
             <ChevronDown className="size-4 text-[var(--hc-text-secondary)]" />
           </div>
           <div className="flex flex-col text-right">
@@ -299,11 +300,11 @@ export default function PortalLoginPage() {
 function FeatureItem({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
     <div className="flex items-center gap-4">
-      <span className="grid size-12 shrink-0 place-items-center rounded-full bg-[#eef6ff]">
+      <span className="grid size-12 shrink-0 place-items-center rounded-full bg-[var(--hc-primary-bg)]">
         {icon}
       </span>
       <div>
-        <h3 className="text-[15px] font-bold text-[#0a2540]">{title}</h3>
+        <h3 className="text-[15px] font-bold text-[var(--hc-navy-900)]">{title}</h3>
         <p className="mt-0.5 text-[14px] text-[var(--hc-text-secondary)]">{description}</p>
       </div>
     </div>
