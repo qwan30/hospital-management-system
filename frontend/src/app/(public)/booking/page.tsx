@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   createPublicAppointment,
   listDoctors,
@@ -291,9 +292,11 @@ export default function PublicBookingPage() {
                 </p>
               ) : null}
               {isLoadingSlots ? (
-                <p className="border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] bg-white p-4 text-sm font-medium text-[var(--hc-text-secondary)]">
-                  Loading available slots...
-                </p>
+                <div className="grid gap-3 sm:grid-cols-3" aria-busy="true">
+                  {Array.from({ length: 3 }, (_, i) => (
+                    <Skeleton key={i} className="h-16 w-full rounded-[var(--radius-md)]" />
+                  ))}
+                </div>
               ) : selectedDoctorId ? (
                 availableSlots.length > 0 ? (
                   <div className="grid gap-3 sm:grid-cols-3">
