@@ -1,7 +1,7 @@
 package com.hospital.api.appointment;
 
-import com.hospital.core.appointment.AppointmentWriteService;
 import com.hospital.core.appointment.AppointmentWorkflowService;
+import com.hospital.core.appointment.CreateAppointmentUseCase;
 import com.hospital.shared.api.ApiResponse;
 import com.hospital.shared.api.PaginationMeta;
 import com.hospital.shared.appointment.AppointmentDetailResponse;
@@ -40,13 +40,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/api/v1/appointments")
 public class AppointmentController {
-  private final AppointmentWriteService appointmentWriteService;
+  private final CreateAppointmentUseCase createAppointmentUseCase;
   private final AppointmentWorkflowService appointmentWorkflowService;
 
   public AppointmentController(
-      AppointmentWriteService appointmentWriteService,
+      CreateAppointmentUseCase createAppointmentUseCase,
       AppointmentWorkflowService appointmentWorkflowService) {
-    this.appointmentWriteService = appointmentWriteService;
+    this.createAppointmentUseCase = createAppointmentUseCase;
     this.appointmentWorkflowService = appointmentWorkflowService;
   }
 
@@ -54,7 +54,7 @@ public class AppointmentController {
   public ResponseEntity<ApiResponse<AppointmentResponse>> createAppointment(
       @Valid @RequestBody AppointmentCreateRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(ApiResponse.ok(appointmentWriteService.createAppointment(request)));
+        .body(ApiResponse.ok(createAppointmentUseCase.createAppointment(request)));
   }
 
   @GetMapping

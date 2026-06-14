@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class AppointmentWriteService {
+public class AppointmentWriteService implements CreateAppointmentUseCase {
   private final AppointmentRepository appointmentRepository;
   private final PatientRepository patientRepository;
   private final PatientIdentifierProtector patientIdentifierProtector;
