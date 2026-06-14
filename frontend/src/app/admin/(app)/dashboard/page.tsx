@@ -236,7 +236,7 @@ export default function AdminDashboardPage() {
                   </span>
                   <AlertTriangle className="w-4 h-4 text-[var(--hc-danger)] shrink-0" />
                   <span className="text-[13px] font-medium text-[var(--hc-text)]">
-                    Unauthorized access attempt blocked – Node IP 192.168.1.42
+                    Unauthorized access attempt blocked from Node IP 192.168.1.42
                   </span>
                 </div>
                 <Badge variant="danger">High Alert</Badge>

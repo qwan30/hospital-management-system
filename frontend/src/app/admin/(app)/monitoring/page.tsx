@@ -118,7 +118,7 @@ export default function AdminMonitoringPage() {
 
   const uptimePercent = snapshot
     ? Math.min(100, (snapshot.uptimeSeconds / (24 * 3600)) * 100).toFixed(2)
-    : "—";
+    : "N/A";
 
   return (
     <main data-testid="monitoring-snapshot" className="p-8 pb-20 max-w-[1400px] mx-auto">
@@ -203,28 +203,28 @@ export default function AdminMonitoringPage() {
       <section className="mt-6 hc-kpi-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
         <KpiCard
           label="Active Alerts"
-          value={snapshot?.activeAlerts ?? "—"}
+          value={snapshot?.activeAlerts ?? "N/A"}
           helper="Current release snapshot"
           icon={Bell}
           tone="blue"
         />
         <KpiCard
           label="Inventory Alerts"
-          value={snapshot?.inventoryAlertCount ?? "—"}
+          value={snapshot?.inventoryAlertCount ?? "N/A"}
           helper="Low stock and expiry checks"
           icon={Package}
           tone="amber"
         />
         <KpiCard
           label="Schedule Alerts"
-          value={snapshot?.scheduleAlertCount ?? "—"}
+          value={snapshot?.scheduleAlertCount ?? "N/A"}
           helper="Active closure conflicts"
           icon={Activity}
           tone="green"
         />
         <KpiCard
           label="Today Queue"
-          value={snapshot?.todayQueueCount ?? "—"}
+          value={snapshot?.todayQueueCount ?? "N/A"}
           helper={snapshot?.queueStatus ?? "Pending"}
           icon={Server}
           tone="blue"

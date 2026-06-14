@@ -14,6 +14,7 @@ import {
 
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
+import { TableRowSkeleton } from "@/components/ui/skeleton";
 import {
   Users, UserPlus, HeartPulse, Building2, ShieldCheck,
   Search, X, Filter, ChevronDown, Download, Pencil,
@@ -275,10 +276,10 @@ export default function AdminUsersPage() {
       ) : null}
 
       <div className="hc-kpi-grid mb-8">
-        <KpiCard label="Total Staff" value={stats.total.toString()} icon={Users} tone="blue" />
-        <KpiCard label="Medical Dept" value={stats.medical.toString()} icon={HeartPulse} tone="teal" />
-        <KpiCard label="Admin Stations" value={stats.administration.toString()} icon={Building2} tone="purple" />
-        <KpiCard label="Active Accounts" value={stats.active.toString()} icon={ShieldCheck} tone="green" />
+        <KpiCard label="Total Staff" value={isLoading ? "" : stats.total.toString()} icon={Users} tone="blue" isLoading={isLoading} />
+        <KpiCard label="Medical Dept" value={isLoading ? "" : stats.medical.toString()} icon={HeartPulse} tone="teal" isLoading={isLoading} />
+        <KpiCard label="Admin Stations" value={isLoading ? "" : stats.administration.toString()} icon={Building2} tone="purple" isLoading={isLoading} />
+        <KpiCard label="Active Accounts" value={isLoading ? "" : stats.active.toString()} icon={ShieldCheck} tone="green" isLoading={isLoading} />
       </div>
 
       <div className="bg-white p-5 rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] shadow-sm mb-6">
@@ -344,7 +345,15 @@ export default function AdminUsersPage() {
 
       <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm flex flex-col min-h-[400px]">
         {isLoading ? (
-          <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)] m-auto">Loading staff users...</div>
+          <table className="hc-table w-full">
+            <thead><tr><th className="hc-th">Name</th><th className="hc-th">Role</th><th className="hc-th">Status</th><th className="hc-th">Phone</th><th className="hc-th">Actions</th></tr></thead>
+            <tbody>
+              <TableRowSkeleton columns={5} />
+              <TableRowSkeleton columns={5} />
+              <TableRowSkeleton columns={5} />
+              <TableRowSkeleton columns={5} />
+            </tbody>
+          </table>
         ) : (
           <>
             <UsersTable

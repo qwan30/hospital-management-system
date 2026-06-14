@@ -299,7 +299,7 @@ export default function AdminInventoryPage() {
       <section className="mt-8 hc-kpi-grid">
         <KpiCard label="Total Items" value={totalItems.toLocaleString()} helper={`+${items.length} SKUs tracked`} icon={Package} tone="blue" />
         <KpiCard label="Low Stock Items" value={lowStockCount} helper={lowStockCount > 0 ? "Needs attention" : "All adequate"} icon={AlertTriangle} tone={lowStockCount > 0 ? "amber" : "green"} />
-        <KpiCard label="Pending Orders" value="—" helper="Est. value: N/A" icon={ShoppingCart} tone="green" />
+        <KpiCard label="Pending Orders" value="N/A" helper="Est. value: N/A" icon={ShoppingCart} tone="green" />
         <KpiCard label="Expiring Soon" value={expiringCount} helper="Within 30 days" icon={Clock} tone={expiringCount > 0 ? "red" : "teal"} />
       </section>
 
