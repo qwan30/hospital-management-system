@@ -168,7 +168,7 @@ export default function PrescriptionPreviewPage() {
             <div className="mt-auto pt-16 flex justify-between items-end relative z-10 border-t border-[var(--hc-border-soft)]">
               <div className="space-y-1">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">Date of Authorization</p>
-                <p className="text-xs font-bold font-mono text-[var(--hc-text)]">2023.10.24 — 14:32:00 GMT</p>
+                <p className="text-xs font-bold font-mono text-[var(--hc-text)]">2023.10.24 at 14:32:00 GMT</p>
                 <div className="w-48 h-[1px] bg-[var(--hc-border-soft)] mt-8"></div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)] mt-2">Hospital Stamp / Digital ID</p>
               </div>

@@ -182,7 +182,7 @@ export default function AdminAuditLogsPage() {
             <label className="text-[11px] font-bold text-[var(--hc-text)]">Date Range</label>
             <button className="flex items-center justify-start gap-3 h-9 px-3 bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
                 <CalendarIcon className="w-4 h-4 text-[var(--hc-text-secondary)]" />
-                <span className="text-sm font-medium text-[var(--hc-text)]">May 12, 2025 – May 15, 2025</span>
+                <span className="text-sm font-medium text-[var(--hc-text)]">May 12, 2025 to May 15, 2025</span>
             </button>
           </div>
         </div>

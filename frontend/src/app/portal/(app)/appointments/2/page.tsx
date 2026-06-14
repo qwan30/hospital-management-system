@@ -61,7 +61,7 @@ export default function PatientAppointmentsPage() {
 <div className="grid grid-cols-12 items-center bg-surface px-6 py-6 border-b-2 border-transparent hover:border-primary-container hover:bg-surface-container-lowest transition-all group">
 <div className="col-span-2">
 <p className="text-lg font-semibold tabular-nums leading-none">Oct 24, 2023</p>
-<p className="text-xs text-on-surface-variant mt-1 tabular-nums">09:30 AM — 10:15 AM</p>
+<p className="text-xs text-on-surface-variant mt-1 tabular-nums">09:30 AM to 10:15 AM</p>
 </div>
 <div className="col-span-3 flex items-center gap-3">
 <div className="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
@@ -89,7 +89,7 @@ export default function PatientAppointmentsPage() {
 <div className="grid grid-cols-12 items-center bg-surface px-6 py-6 border-b-2 border-transparent hover:border-primary-container hover:bg-surface-container-lowest transition-all group">
 <div className="col-span-2">
 <p className="text-lg font-semibold tabular-nums leading-none">Oct 26, 2023</p>
-<p className="text-xs text-on-surface-variant mt-1 tabular-nums">02:00 PM — 02:30 PM</p>
+<p className="text-xs text-on-surface-variant mt-1 tabular-nums">02:00 PM to 02:30 PM</p>
 </div>
 <div className="col-span-3 flex items-center gap-3">
 <div className="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
@@ -117,7 +117,7 @@ export default function PatientAppointmentsPage() {
 <div className="grid grid-cols-12 items-center bg-surface px-6 py-6 border-b-2 border-transparent hover:border-primary-container hover:bg-surface-container-lowest transition-all group">
 <div className="col-span-2">
 <p className="text-lg font-semibold tabular-nums leading-none">Nov 02, 2023</p>
-<p className="text-xs text-on-surface-variant mt-1 tabular-nums">11:00 AM — 11:45 AM</p>
+<p className="text-xs text-on-surface-variant mt-1 tabular-nums">11:00 AM to 11:45 AM</p>
 </div>
 <div className="col-span-3 flex items-center gap-3">
 <div className="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
@@ -145,7 +145,7 @@ export default function PatientAppointmentsPage() {
 <div className="grid grid-cols-12 items-center bg-surface px-6 py-6 border-b-2 border-transparent hover:border-primary-container hover:bg-surface-container-lowest transition-all group opacity-60">
 <div className="col-span-2">
 <p className="text-lg font-semibold tabular-nums leading-none">Nov 12, 2023</p>
-<p className="text-xs text-on-surface-variant mt-1 tabular-nums">04:15 PM — 04:45 PM</p>
+<p className="text-xs text-on-surface-variant mt-1 tabular-nums">04:15 PM to 04:45 PM</p>
 </div>
 <div className="col-span-3 flex items-center gap-3">
 <div className="w-10 h-10 bg-surface-container-highest flex items-center justify-center">

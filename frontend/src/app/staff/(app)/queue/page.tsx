@@ -161,7 +161,7 @@ export default function QueueBoardPage() {
   if (isLoading) {
     return (
       <main className="p-8 pb-20 max-w-[1400px] mx-auto" aria-busy="true">
-        <PageHeader categoryLabel="QUEUE" title="Queue Board" description="Live nurse queue — today" />
+        <PageHeader categoryLabel="QUEUE" title="Queue Board" description="Live nurse queue: today" />
         <div className="mt-8 p-12 text-center bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm">
           <div className="inline-block w-6 h-6 border-2 border-slate-200 border-t-[var(--hc-primary)] rounded-full animate-spin" />
           <p className="mt-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Loading today&apos;s nurse queue…</p>
@@ -175,7 +175,7 @@ export default function QueueBoardPage() {
     const isAuthError = error.status === 401 || error.status === 403;
     return (
       <main className="p-8 pb-20 max-w-[1400px] mx-auto">
-        <PageHeader categoryLabel="QUEUE" title="Queue Board" description="Live nurse queue — today" />
+        <PageHeader categoryLabel="QUEUE" title="Queue Board" description="Live nurse queue: today" />
         <section
           className="mt-8 border border-[var(--hc-danger)] bg-[var(--hc-danger-bg)] p-8 rounded-[var(--radius-xl)]"
           data-testid={isAuthError ? "queue-unauthorized" : "queue-load-error"}
@@ -203,7 +203,7 @@ export default function QueueBoardPage() {
       <PageHeader
         categoryLabel="QUEUE"
         title="Queue Board"
-        description="Live nurse queue — today"
+        description="Live nurse queue: today"
         action={
           <button
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors disabled:opacity-50"

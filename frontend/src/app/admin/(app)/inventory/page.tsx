@@ -368,10 +368,10 @@ export default function AdminInventoryPage() {
                             <StockBar quantity={item.quantityOnHand} reorder={item.reorderLevel} />
                           </td>
                           <td className="hc-td text-sm tabular-nums">{item.reorderLevel.toLocaleString()}</td>
-                          <td className="hc-td text-sm">{item.departmentName || "—"}</td>
+                          <td className="hc-td text-sm">{item.departmentName || "N/A"}</td>
                           <td className="hc-td"><StatusBadge status={status} /></td>
                           <td className="hc-td text-sm text-slate-500">
-                            {item.lastRestockedAt ? new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(item.lastRestockedAt)) : "—"}
+                            {item.lastRestockedAt ? new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(item.lastRestockedAt)) : "N/A"}
                           </td>
                           <td className="hc-td text-right">
                             <div className="flex items-center justify-end gap-1">

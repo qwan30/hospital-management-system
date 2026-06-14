@@ -160,7 +160,7 @@ export default function DoctorDetailPage() {
                 <div className="flex justify-between items-end">
                   <div>
                     <p className="text-base font-bold tracking-tight text-[var(--hc-text)] mb-1">Tuesday, Nov 12</p>
-                    <p className="text-sm font-bold text-[var(--hc-primary)]">02:00 PM — 02:45 PM</p>
+                    <p className="text-sm font-bold text-[var(--hc-primary)]">02:00 PM to 02:45 PM</p>
                   </div>
                   <div className="text-right">
                     <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Fee</p>

@@ -596,7 +596,7 @@ export default function InvoicesPage() {
 
       {/* Payment Dialog */}
       {paymentInvoice && (
-        <Dialog title={`Record Payment — ${paymentInvoice.invoiceId}`} onClose={() => setPaymentInvoice(null)}>
+        <Dialog title={`Record Payment: ${paymentInvoice.invoiceId}`} onClose={() => setPaymentInvoice(null)}>
           <form className="space-y-6" onSubmit={handleRecordPayment}>
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Payment Method</label>
