@@ -51,7 +51,7 @@ export default function DoctorDetailPage() {
                   Dr. Alistair Thorne is a globally recognized authority in Interventional Cardiology, specializing in complex coronary interventions and structural heart disease. With nearly two decades of clinical excellence, his practice integrates advanced robotic-assisted procedures with patient-centric recovery protocols.
                 </p>
                 <p className="text-base text-[var(--hc-text-secondary)] font-medium leading-relaxed">
-                  His research at the Medicore Institute of Vascular Research focus on the miniaturization of pacemaker technology and high-precision stent placement. Dr. Thorne leads the HMS "Precision Care Initiative," ensuring that surgical outcomes are measured with architectural rigor.
+                  His research at the Hospital Core Institute of Vascular Research focuses on the miniaturization of pacemaker technology and high-precision stent placement. Dr. Thorne leads the HMS "Precision Care Initiative," ensuring that surgical outcomes are measured with architectural rigor.
                 </p>
               </div>
             </section>
@@ -80,7 +80,7 @@ export default function DoctorDetailPage() {
                 <ul className="space-y-4">
                   <li className="flex items-center gap-3">
                     <HcIcon name="apartment" className="text-[var(--hc-primary)] w-5 h-5" />
-                    <span className="text-sm font-bold tracking-tight text-[var(--hc-text)]">Medicore HMS Main Campus</span>
+                    <span className="text-sm font-bold tracking-tight text-[var(--hc-text)]">Hospital Core Main Campus</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <HcIcon name="apartment" className="text-[var(--hc-primary)] w-5 h-5" />

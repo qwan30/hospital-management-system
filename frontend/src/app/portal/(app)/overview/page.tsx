@@ -10,6 +10,7 @@ import {
 } from "@/lib/operations-api";
 
 import { HcIcon } from "@/components/ui/hc-icon";
+import { Skeleton } from "@/components/ui/skeleton";
 export default function PatientPortalOverviewPage() {
   const [overview, setOverview] = useState<PatientPortalOverviewResponse | null>(null);
   const [labResults, setLabResults] = useState<PatientPortalLabResultResponse[]>([]);
@@ -65,7 +66,23 @@ export default function PatientPortalOverviewPage() {
         </span>
       </header>
 
-      {error ? (
+      {!overview && !error ? (
+        <div className="space-y-6" aria-busy="true">
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] p-8 rounded-[var(--radius-xl)] space-y-3">
+            <Skeleton className="h-3 w-20 rounded" />
+            <Skeleton className="h-10 w-96 rounded" />
+            <div className="flex gap-4 mt-6">
+              <Skeleton className="h-12 w-36 rounded-[var(--radius-md)]" />
+              <Skeleton className="h-12 w-24 rounded-[var(--radius-md)]" />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {Array.from({ length: 3 }, (_, i) => (
+              <Skeleton key={i} className="h-48 w-full rounded-[var(--radius-xl)]" />
+            ))}
+          </div>
+        </div>
+      ) : error ? (
         <section className="mb-8 border border-[var(--hc-danger)] bg-[var(--hc-surface)] p-6 rounded-[var(--radius-lg)]" role="alert">
           <p className="text-sm font-semibold text-[var(--hc-danger)]">{error}</p>
         </section>

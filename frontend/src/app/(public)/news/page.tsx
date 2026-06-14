@@ -25,7 +25,7 @@ export default function NewsListPage() {
 <p className="text-sm font-medium text-outline mb-4">OCTOBER 24, 2024</p>
 <h2 className="text-3xl font-semibold mb-6 leading-tight">Breakthrough in Neural Reconstruction Systems</h2>
 <p className="text-on-surface-variant leading-relaxed mb-8">
-                            Medicore's research division announces a successful pilot for autonomous nerve regeneration using bio-compatible synthetic scaffolding.
+                            Hospital Core's research division announces a successful pilot for autonomous nerve regeneration using bio-compatible synthetic scaffolding.
                         </p>
 </div>
 <button
@@ -98,7 +98,7 @@ export default function NewsListPage() {
 <div className="md:col-span-7">
 <p className="text-xs font-semibold text-outline mb-2">OCTOBER 08, 2024</p>
 <h3 className="text-2xl font-semibold mb-4 tracking-tight">Annual HMS Global Symposium</h3>
-<p className="text-on-surface-variant max-w-2xl">Key findings from the 2024 Medicore Global Health Summit on sustainable healthcare delivery in urban environments.</p>
+<p className="text-on-surface-variant max-w-2xl">Key findings from the 2024 Hospital Core Global Health Summit on sustainable healthcare delivery in urban environments.</p>
 </div>
 <div className="md:col-span-2 flex justify-end">
 <button className="text-primary font-semibold py-2 px-6 border-b-2 border-transparent opacity-60" disabled title="Article archive browsing is not exposed by the current public news API." type="button">Read unavailable</button>
