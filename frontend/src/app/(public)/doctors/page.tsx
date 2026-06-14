@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { listDoctors, type DoctorResponse } from "@/lib/public-api";
 
 import { HcIcon } from "@/components/ui/hc-icon";
+import { Skeleton } from "@/components/ui/skeleton";
 function getSearchText(doctor: DoctorResponse) {
   return [
     doctor.fullName,
@@ -171,10 +172,20 @@ export default function PublicDoctorsPage() {
       <section className="bg-white px-6 lg:px-12 py-16">
         <div className="max-w-[1440px] mx-auto">
           {isLoading ? (
-            <div className="border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] bg-slate-50 p-16 flex flex-col items-center justify-center text-center">
-              <HcIcon name="hourglass_empty" className="text-4xl text-slate-300 mb-4" />
-              <h2 className="text-xl font-bold tracking-tight text-[var(--hc-text)] mb-2">Loading Doctors</h2>
-              <p className="text-sm text-[var(--hc-text-secondary)] font-medium">Loading doctors from the hospital system...</p>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
+              {Array.from({ length: 6 }, (_, i) => (
+                <div key={i} className="rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-white p-6 space-y-4">
+                  <div className="flex items-center gap-4">
+                    <Skeleton className="size-16 rounded-full" />
+                    <div className="space-y-2 flex-1">
+                      <Skeleton className="h-5 w-36 rounded" />
+                      <Skeleton className="h-4 w-24 rounded" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-4 w-full rounded" />
+                  <Skeleton className="h-10 w-32 rounded-[var(--radius-md)]" />
+                </div>
+              ))}
             </div>
           ) : error ? (
             <div className="border border-red-200 rounded-[var(--radius-xl)] bg-red-50 p-16 flex flex-col items-center justify-center text-center shadow-sm" role="alert">
