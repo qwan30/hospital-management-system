@@ -8,7 +8,6 @@ import {
   Eye,
   EyeOff,
   LockKeyhole,
-  Plus,
   ShieldCheck,
   Hospital,
   Calendar,
@@ -17,7 +16,6 @@ import {
   MessageSquare,
   Globe,
   ChevronDown,
-  ClipboardPlus
 } from "lucide-react";
 import {
   apiRequest,
@@ -73,9 +71,9 @@ export default function PortalLoginPage() {
         <section className="relative z-10 hidden w-full flex-col justify-center px-8 py-10 lg:flex lg:w-[45%] lg:px-16 xl:px-24 bg-[#f8fbff]">
           <div className="absolute left-8 top-8 flex items-center gap-3 lg:left-12">
             <span className="grid size-9 place-items-center rounded-lg bg-[var(--hc-primary)] text-white">
-              <Plus className="size-6 stroke-[3]" aria-hidden="true" />
+              <Hospital className="size-5" aria-hidden="true" />
             </span>
-            <span className="text-[17px] font-bold tracking-wide text-[var(--hc-primary)] uppercase">MEDCORE OS</span>
+            <span className="text-[15px] font-bold tracking-wide text-[var(--hc-primary)] uppercase">Hospital Core</span>
           </div>
 
           <div className="mt-8 max-w-[480px]">
@@ -285,11 +283,11 @@ export default function PortalLoginPage() {
             <ChevronDown className="size-4 text-[var(--hc-text-secondary)]" />
           </div>
           <div className="flex flex-col text-right">
-            <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#0a2540]">
-              HOSPITAL ADMIN
+            <span className="text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text)]">
+              Patient Portal
             </span>
             <span className="text-[10px] font-medium text-[var(--hc-text-secondary)]">
-              v2.4.0-STABLE
+              Hospital Management System
             </span>
           </div>
         </div>
