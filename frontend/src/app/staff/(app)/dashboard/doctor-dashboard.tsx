@@ -216,7 +216,7 @@ export function DoctorDashboardView() {
         {/* Pagination */}
         <div className="px-6 py-3 flex items-center justify-between border-t border-[var(--hc-border-soft)] text-sm">
           <span className="text-slate-500">
-            Showing {filteredPatients.length > 0 ? (page - 1) * PAGE_SIZE + 1 : 0}–{Math.min(page * PAGE_SIZE, filteredPatients.length)} of {filteredPatients.length} patients
+            Showing {filteredPatients.length > 0 ? (page - 1) * PAGE_SIZE + 1 : 0} to {Math.min(page * PAGE_SIZE, filteredPatients.length)} of {filteredPatients.length} patients
           </span>
           <div className="flex items-center gap-1">
             <button type="button" aria-label="Previous patient page" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 transition-colors">

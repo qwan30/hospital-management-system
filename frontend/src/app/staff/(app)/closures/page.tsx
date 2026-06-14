@@ -26,7 +26,7 @@ const CLOSURES = [
     title: "System Infrastructure Upgrade",
     description: "Electronic Medical Records (EMR) system offline for periodic DB migration.",
     date: "Oct 17",
-    duration: "22:00 – 04:00",
+    duration: "22:00 to 04:00",
     location: "Radiology Dept",
     type: "maintenance" as const,
   },

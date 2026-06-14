@@ -157,7 +157,7 @@ export function ReceptionistDashboardView() {
                     <td className="hc-td text-sm text-slate-500">{slot.department}</td>
                     <td className="hc-td text-sm font-mono text-[var(--hc-text)]">{slot.timeSlot}</td>
                     <td className="hc-td">{getStatusBadge(slot.status)}</td>
-                    <td className="hc-td text-sm text-[var(--hc-text)]">{slot.patientName || "—"}</td>
+                    <td className="hc-td text-sm text-[var(--hc-text)]">{slot.patientName || "N/A"}</td>
                     <td className="hc-td text-right">
                       {slot.status === "Available" ? (
                         <Link
