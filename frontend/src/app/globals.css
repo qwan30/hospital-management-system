@@ -140,8 +140,8 @@
   --hc-sidebar-w: 280px;
 
   /* Font */
-  --hc-font-sans: Inter, "IBM Plex Sans", "SF Pro Display", "Segoe UI", Arial, sans-serif;
-  --hc-font-mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+  --hc-font-sans: "Fira Sans", "SF Pro Display", "Segoe UI", Arial, sans-serif;
+  --hc-font-mono: "Fira Code", "SF Mono", Menlo, Consolas, monospace;
 
   /* Brand navy / topbar */
   --hc-navy-950: #061735;
@@ -160,7 +160,16 @@
   --hc-primary: var(--hc-blue-600);
   --hc-primary-bg: var(--hc-blue-50);
 
-  /* Accent */
+  /* Accent � amber */
+  --hc-amber-700: #B45309;
+  --hc-amber-600: #D97706;
+  --hc-amber-500: #F59E0B;
+  --hc-amber-400: #FBBF24;
+  --hc-amber-300: #FCD34D;
+  --hc-amber-100: #FEF3C7;
+  --hc-amber-50: #FFFBEB;
+
+  /* Accent � cyan */
   --hc-cyan: #00B8FF;
   --hc-teal-700: #0F766E;
   --hc-teal-600: #0D9488;
@@ -375,7 +384,16 @@
   --hc-expiring: #A78BFA;
   --hc-expiring-bg: rgba(167, 139, 250, 0.12);
 
-  /* Accent */
+  /* Accent � amber */
+  --hc-amber-700: #B45309;
+  --hc-amber-600: #D97706;
+  --hc-amber-500: #F59E0B;
+  --hc-amber-400: #FBBF24;
+  --hc-amber-300: #FCD34D;
+  --hc-amber-100: #FEF3C7;
+  --hc-amber-50: #FFFBEB;
+
+  /* Accent � cyan */
   --hc-teal-bg: rgba(20, 184, 166, 0.12);
   --hc-purple-bg: rgba(167, 139, 250, 0.12);
 

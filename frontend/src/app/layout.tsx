@@ -1,7 +1,20 @@
 import type { Metadata } from "next";
+import { Fira_Sans, Fira_Code } from "next/font/google";
 import "./globals.css";
 
-/* eslint-disable @next/next/no-page-custom-font */
+const firaSans = Fira_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--hc-font-sans",
+  display: "swap",
+});
+
+const firaCode = Fira_Code({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--hc-font-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "HOSPITAL CORE | Management System",
@@ -15,15 +28,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="min-h-screen antialiased">{children}</body>
+      <body
+        className={`${firaSans.variable} ${firaCode.variable} min-h-screen antialiased`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
