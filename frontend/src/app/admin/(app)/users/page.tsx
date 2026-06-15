@@ -239,7 +239,7 @@ export default function AdminUsersPage() {
         action={
           <div className="flex gap-3">
             <button
-              className="flex items-center justify-center gap-2 h-10 px-4 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] bg-white text-[var(--hc-text)] hover:bg-slate-50 transition-colors shadow-sm disabled:opacity-60"
+              className="flex items-center justify-center gap-2 h-10 px-4 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text)] hover:bg-[var(--hc-surface-soft)] transition-colors shadow-sm disabled:opacity-60"
               disabled={filteredUsers.length === 0}
               onClick={handleExportCSV}
               type="button"
@@ -282,7 +282,7 @@ export default function AdminUsersPage() {
         <KpiCard label="Active Accounts" value={isLoading ? "" : stats.active.toString()} icon={ShieldCheck} tone="green" isLoading={isLoading} />
       </div>
 
-      <div className="bg-white p-5 rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] shadow-sm mb-6">
+      <div className="bg-[var(--hc-surface)] p-5 rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] shadow-sm mb-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="relative w-full md:w-96">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] w-4 h-4 pointer-events-none" />
@@ -328,7 +328,7 @@ export default function AdminUsersPage() {
 
             <button
               aria-label="Clear user filters"
-              className="flex items-center justify-center w-10 h-10 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] text-[var(--hc-text-secondary)] hover:bg-slate-50 transition-colors bg-white shadow-sm"
+              className="flex items-center justify-center w-10 h-10 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] transition-colors bg-[var(--hc-surface)] shadow-sm"
               onClick={() => {
                 setQuery("");
                 setRoleFilter("ALL");
@@ -343,7 +343,7 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm flex flex-col min-h-[400px]">
+      <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm flex flex-col min-h-[400px]">
         {isLoading ? (
           <table className="hc-table w-full">
             <thead><tr><th className="hc-th">Name</th><th className="hc-th">Role</th><th className="hc-th">Status</th><th className="hc-th">Phone</th><th className="hc-th">Actions</th></tr></thead>
@@ -363,7 +363,7 @@ export default function AdminUsersPage() {
               users={filteredUsers}
             />
 
-            <div className="px-6 py-4 flex flex-wrap items-center justify-between border-t border-[var(--hc-border-soft)] bg-slate-50/50 mt-auto gap-4">
+            <div className="px-6 py-4 flex flex-wrap items-center justify-between border-t border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)] mt-auto gap-4">
               <span className="text-xs text-[var(--hc-text-secondary)] font-medium">
                 Showing 1 to {filteredUsers.length} of {users.length} staff members
               </span>
@@ -377,7 +377,7 @@ export default function AdminUsersPage() {
                 <div className="flex items-center gap-2">
                   <button
                     aria-label="Previous staff page"
-                    className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                    className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50 transition-colors"
                     disabled
                     type="button"
                   >
@@ -392,7 +392,7 @@ export default function AdminUsersPage() {
                   </button>
                   <button
                     aria-label="Next staff page"
-                    className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50 transition-colors"
+                    className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50 transition-colors"
                     disabled
                     type="button"
                   >
@@ -442,27 +442,27 @@ function UsersTable({
           <tr>
             <th className="w-[30%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                Full Name <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                Full Name <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[25%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                Email <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                Email <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[15%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                Role <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                Role <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[15%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                Department <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                Department <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[10%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                Status <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                Status <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[5%] text-right">Actions</th>
@@ -473,7 +473,7 @@ function UsersTable({
             <tr key={user.userId} className="hover:bg-[var(--hc-background)] transition-colors group">
               <td>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-blue-50 text-[var(--hc-blue-600)] flex items-center justify-center text-xs font-bold border border-blue-100 shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-[var(--hc-primary-bg)] text-[var(--hc-blue-600)] flex items-center justify-center text-xs font-bold border border-blue-100 shrink-0">
                     {initials(user.fullName)}
                   </div>
                   <div className="flex flex-col min-w-0">
@@ -484,17 +484,17 @@ function UsersTable({
               </td>
               <td>
                 <div className="flex items-center gap-2 text-sm text-[var(--hc-text-secondary)]">
-                  <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <Mail className="w-3.5 h-3.5 text-[var(--hc-text-muted)] shrink-0" />
                   <span className="truncate">{user.email}</span>
                 </div>
               </td>
               <td>
                 <div className={`inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${
-                  user.role === 'ADMIN' ? 'bg-purple-50 text-purple-600 border border-purple-200' :
-                  user.role === 'DOCTOR' ? 'bg-blue-50 text-blue-600 border border-blue-200' :
-                  user.role === 'NURSE' ? 'bg-teal-50 text-teal-600 border border-teal-200' :
-                  user.role === 'PHARMACIST' ? 'bg-orange-50 text-orange-600 border border-orange-200' :
-                  'bg-slate-100 text-slate-600 border border-slate-200'
+                  user.role === 'ADMIN' ? 'bg-[var(--hc-purple-bg)] text-[var(--hc-purple)] border border-purple-200' :
+                  user.role === 'DOCTOR' ? 'bg-[var(--hc-primary-bg)] text-[var(--hc-primary)] border border-blue-200' :
+                  user.role === 'NURSE' ? 'bg-[var(--hc-teal-bg)] text-[var(--hc-teal-600)] border border-teal-200' :
+                  user.role === 'PHARMACIST' ? 'bg-[var(--hc-amber-bg)] text-[var(--hc-amber-600)] border border-orange-200' :
+                  'bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)] border border-slate-200'
                 }`}>
                   {user.role}
                 </div>
@@ -515,7 +515,7 @@ function UsersTable({
               <td>
                 <div className="flex items-center justify-end gap-2">
                   <button
-                    className="w-8 h-8 flex items-center justify-center text-[var(--hc-text-secondary)] hover:bg-slate-100 rounded-md transition-colors border border-transparent hover:border-slate-200"
+                    className="w-8 h-8 flex items-center justify-center text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] rounded-md transition-colors border border-transparent hover:border-slate-200"
                     disabled={isSaving}
                     onClick={() => onEdit(user)}
                     title="Edit User"
@@ -527,8 +527,8 @@ function UsersTable({
                   <button
                     className={`flex items-center justify-center w-8 h-8 rounded-md transition-colors disabled:opacity-50 border ${
                       user.active
-                      ? "border-blue-200 text-blue-600 bg-blue-50 hover:bg-blue-600 hover:text-white"
-                      : "border-slate-200 text-slate-400 bg-slate-50 hover:bg-slate-500 hover:text-white"
+                      ? "border-blue-200 text-[var(--hc-primary)] bg-[var(--hc-primary-bg)] hover:bg-blue-600 hover:text-white"
+                      : "border-slate-200 text-[var(--hc-text-muted)] bg-[var(--hc-surface-soft)] hover:bg-[var(--hc-surface-soft)]0 hover:text-white"
                     }`}
                     disabled={isSaving}
                     onClick={() => onToggleActive(user)}
@@ -650,7 +650,7 @@ function Dialog({
 }) {
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/40 backdrop-blur-sm p-6">
-      <div className="w-full max-w-3xl bg-white rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] p-8 border border-[var(--hc-border)]">
+      <div className="w-full max-w-3xl bg-[var(--hc-surface)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] p-8 border border-[var(--hc-border)]">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-bold text-[var(--hc-text)]">{title}</h2>
           <button aria-label="Close dialog" className="p-2 text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" onClick={onClose} type="button">

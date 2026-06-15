@@ -60,7 +60,7 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Appointments Module */}
         <div className="lg:col-span-2">
-          <section className="rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-white p-[24px] shadow-[var(--shadow-card)] h-full">
+          <section className="rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-[var(--hc-surface)] p-[24px] shadow-[var(--shadow-card)] h-full">
             <div className="flex items-end justify-between mb-8">
               <h3 className="text-lg font-bold text-[var(--hc-text)] leading-tight">
                 Appointment Velocity
@@ -107,7 +107,7 @@ export default function AdminDashboardPage() {
         {/* Side Actions & Logs */}
         <div className="space-y-6 flex flex-col">
           {/* Quick Link Tiles */}
-          <section className="rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-white p-[24px] shadow-[var(--shadow-card)]">
+          <section className="rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-[var(--hc-surface)] p-[24px] shadow-[var(--shadow-card)]">
             <h3 className="text-sm font-bold uppercase tracking-widest mb-6 text-[var(--hc-text)]">
               System Controls
             </h3>
@@ -192,7 +192,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Asymmetric Bottom Section: Security & Logs */}
-      <section className="mt-6 rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-white p-[24px] shadow-[var(--shadow-card)]">
+      <section className="mt-6 rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-[var(--hc-surface)] p-[24px] shadow-[var(--shadow-card)]">
         <div className="flex flex-col md:flex-row gap-8 items-start">
           <div className="md:w-1/3">
             <h3 className="text-lg font-bold text-[var(--hc-text)] mb-3">

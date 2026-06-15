@@ -82,16 +82,16 @@ export default function RevenueDashboardPage() {
         action={
           <div className="flex items-center gap-3">
             {/* Mode Toggle */}
-            <div className="flex bg-slate-100 rounded-[var(--radius-md)] p-0.5 text-sm">
+            <div className="flex bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] p-0.5 text-sm">
               <button
                 type="button"
                 onClick={() => setMode("daily")}
-                className={`px-4 py-1.5 rounded-[var(--radius-sm)] text-xs font-bold transition-colors ${mode === "daily" ? "bg-white text-[var(--hc-primary)] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                className={`px-4 py-1.5 rounded-[var(--radius-sm)] text-xs font-bold transition-colors ${mode === "daily" ? "bg-[var(--hc-surface)] text-[var(--hc-primary)] shadow-sm" : "text-[var(--hc-text-muted)] hover:text-slate-700"}`}
               >DAILY</button>
               <button
                 type="button"
                 onClick={() => setMode("monthly")}
-                className={`px-4 py-1.5 rounded-[var(--radius-sm)] text-xs font-bold transition-colors ${mode === "monthly" ? "bg-white text-[var(--hc-primary)] shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
+                className={`px-4 py-1.5 rounded-[var(--radius-sm)] text-xs font-bold transition-colors ${mode === "monthly" ? "bg-[var(--hc-surface)] text-[var(--hc-primary)] shadow-sm" : "text-[var(--hc-text-muted)] hover:text-slate-700"}`}
               >MONTHLY</button>
             </div>
 
@@ -102,7 +102,7 @@ export default function RevenueDashboardPage() {
               <input aria-label="Revenue month" className="hc-input" type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
             )}
 
-            <button type="button" onClick={loadReport as () => void} disabled={isLoading} className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors disabled:opacity-50">
+            <button type="button" onClick={loadReport as () => void} disabled={isLoading} className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)] transition-colors disabled:opacity-50">
               <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
             </button>
           </div>
@@ -122,9 +122,9 @@ export default function RevenueDashboardPage() {
 
       {/* Loading */}
       {isLoading && (
-        <div className="mt-6 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-12 text-center" aria-busy="true">
+        <div className="mt-6 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-12 text-center" aria-busy="true">
           <div className="inline-block w-6 h-6 border-2 border-slate-200 border-t-[var(--hc-primary)] rounded-full animate-spin" />
-          <p className="mt-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Loading revenue report…</p>
+          <p className="mt-3 text-sm font-bold text-[var(--hc-text-muted)] uppercase tracking-widest">Loading revenue report…</p>
         </div>
       )}
 
@@ -132,10 +132,10 @@ export default function RevenueDashboardPage() {
       {!isLoading && (
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
           {/* Bar Chart */}
-          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8">
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8">
             <div className="flex justify-between items-center mb-8">
               <h3 className="text-sm font-bold text-[var(--hc-text)]">Revenue Breakdown</h3>
-              <span className="text-[10px] font-bold text-slate-400 uppercase">{mode === "daily" ? date : month}</span>
+              <span className="text-[10px] font-bold text-[var(--hc-text-muted)] uppercase">{mode === "daily" ? date : month}</span>
             </div>
             <div className="h-56 flex items-end gap-2 border-b border-slate-100">
               {barValues(departmentBreakdown, activeReport?.totalRevenue ?? 0).map((height, i) => (
@@ -146,18 +146,18 @@ export default function RevenueDashboardPage() {
                 />
               ))}
             </div>
-            <p className="mt-4 text-xs text-slate-400">Monthly endpoint does not expose department breakdown.</p>
+            <p className="mt-4 text-xs text-[var(--hc-text-muted)]">Monthly endpoint does not expose department breakdown.</p>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-4">
             <div className="bg-slate-900 rounded-[var(--radius-xl)] p-6">
               <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/70 mb-2">Report Scope</h3>
-              <p className="text-xs text-slate-400 leading-relaxed">This screen renders only paid invoice revenue returned by the finance report API.</p>
+              <p className="text-xs text-[var(--hc-text-muted)] leading-relaxed">This screen renders only paid invoice revenue returned by the finance report API.</p>
             </div>
-            <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Unsupported Features</h3>
-              <p className="text-xs text-slate-500 leading-relaxed">Claims, collection-rate, gateway latency, and annual reporting are not exposed by the current backend contract.</p>
+            <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)] mb-2">Unsupported Features</h3>
+              <p className="text-xs text-[var(--hc-text-muted)] leading-relaxed">Claims, collection-rate, gateway latency, and annual reporting are not exposed by the current backend contract.</p>
             </div>
           </div>
         </div>
@@ -165,11 +165,11 @@ export default function RevenueDashboardPage() {
 
       {/* Department Table */}
       {!isLoading && (
-        <section className="mt-6 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+        <section className="mt-6 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
           {mode === "monthly" ? (
-            <div className="p-12 text-center text-sm font-semibold text-slate-400">Department breakdown is only returned by the daily revenue endpoint.</div>
+            <div className="p-12 text-center text-sm font-semibold text-[var(--hc-text-muted)]">Department breakdown is only returned by the daily revenue endpoint.</div>
           ) : departmentBreakdown.length === 0 ? (
-            <div className="p-12 text-center text-sm font-semibold text-slate-400">No department revenue exists for the selected date.</div>
+            <div className="p-12 text-center text-sm font-semibold text-[var(--hc-text-muted)]">No department revenue exists for the selected date.</div>
           ) : (
             <>
               <div className="px-6 py-4 flex justify-between items-center border-b border-[var(--hc-border-soft)]">
@@ -186,9 +186,9 @@ export default function RevenueDashboardPage() {
                   </thead>
                   <tbody>
                     {departmentBreakdown.map((dept) => (
-                      <tr key={dept.departmentName} className="hover:bg-slate-50/50 transition-colors">
+                      <tr key={dept.departmentName} className="hover:bg-[var(--hc-surface-soft)] transition-colors">
                         <td className="hc-td font-semibold text-[var(--hc-text)]">{dept.departmentName}</td>
-                        <td className="hc-td text-sm tabular-nums text-slate-600">{dept.invoiceCount}</td>
+                        <td className="hc-td text-sm tabular-nums text-[var(--hc-text-secondary)]">{dept.invoiceCount}</td>
                         <td className="hc-td text-sm font-semibold tabular-nums text-[var(--hc-text)]">{formatCurrency(dept.totalRevenue)}</td>
                       </tr>
                     ))}

@@ -214,7 +214,7 @@ export default function AdminSpecialClosuresPage() {
         <KpiCard label="ROOMS" value={rooms.length.toString()} icon={DoorOpen} tone="amber" helper="Affected rooms" />
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 mb-6 bg-white p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
+      <div className="flex flex-wrap items-center gap-4 mb-6 bg-[var(--hc-surface)] p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
         <div className="relative flex-1 min-w-[280px]">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)]" />
           <input
@@ -248,7 +248,7 @@ export default function AdminSpecialClosuresPage() {
         </button>
       </div>
 
-      <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-xl overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">Loading special closures...</div>
         ) : (
@@ -285,27 +285,27 @@ function ClosuresTable({
           <tr>
             <th className="w-[30%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                TITLE <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                TITLE <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[18%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                DATE <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                DATE <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[18%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                DOCTOR <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                DOCTOR <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[12%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                ROOM <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                ROOM <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[12%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                STATUS <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                STATUS <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[10%] text-right">ACTIONS</th>
@@ -316,8 +316,8 @@ function ClosuresTable({
             <tr key={closure.closureId} className="group hover:bg-[var(--hc-background)] transition-colors">
               <td>
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100">
-                    <Calendar className="w-5 h-5 text-blue-600" />
+                  <div className="w-10 h-10 rounded-xl bg-[var(--hc-primary-bg)] flex items-center justify-center shrink-0 border border-blue-100">
+                    <Calendar className="w-5 h-5 text-[var(--hc-primary)]" />
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
                     <div className="text-sm font-bold text-[var(--hc-text)] truncate">{closure.title}</div>
@@ -327,7 +327,7 @@ function ClosuresTable({
               </td>
               <td>
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
+                  <Calendar className="w-4 h-4 text-[var(--hc-text-muted)] shrink-0" />
                   <div>
                     <div className="text-sm font-medium text-[var(--hc-text)]">{closure.closureDate}</div>
                     <div className="text-xs text-[var(--hc-text-secondary)] mt-0.5">(Mon)</div>
@@ -336,13 +336,13 @@ function ClosuresTable({
               </td>
               <td>
                 <div className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-slate-400 shrink-0" />
+                  <User className="w-4 h-4 text-[var(--hc-text-muted)] shrink-0" />
                   <span className="text-sm font-medium text-[var(--hc-text)]">{closure.doctorName ?? "All doctors"}</span>
                 </div>
               </td>
               <td>
                 <div className="flex items-center gap-2">
-                  <DoorOpen className="w-4 h-4 text-slate-400 shrink-0" />
+                  <DoorOpen className="w-4 h-4 text-[var(--hc-text-muted)] shrink-0" />
                   <span className="text-sm font-medium text-[var(--hc-text)]">{closure.roomName ?? "All rooms"}</span>
                 </div>
               </td>
@@ -353,7 +353,7 @@ function ClosuresTable({
                     <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Active</span>
                   </div>
                 ) : (
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-300 bg-slate-50 text-slate-600">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-300 bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]">
                     <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                     <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Inactive</span>
                   </div>
@@ -362,14 +362,14 @@ function ClosuresTable({
               <td>
                 <div className="flex items-center justify-end gap-2">
                   <button
-                    className="h-8 px-3 text-xs font-semibold text-[var(--hc-blue-600)] bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-slate-50 hover:border-slate-300 transition-colors"
+                    className="h-8 px-3 text-xs font-semibold text-[var(--hc-blue-600)] bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-surface-soft)] hover:border-slate-300 transition-colors"
                     disabled={isSaving}
                     onClick={() => onEdit(closure)}
                     type="button"
                   >
                     Edit
                   </button>
-                  <button className="w-8 h-8 flex items-center justify-center text-slate-400 rounded-md transition-colors opacity-60" disabled title="Closure row actions are limited to edit until a delete/deactivate API contract is exposed." type="button">
+                  <button className="w-8 h-8 flex items-center justify-center text-[var(--hc-text-muted)] rounded-md transition-colors opacity-60" disabled title="Closure row actions are limited to edit until a delete/deactivate API contract is exposed." type="button">
                     <MoreVertical className="w-4 h-4" />
                   </button>
                 </div>
@@ -379,18 +379,18 @@ function ClosuresTable({
         </tbody>
       </table>
 
-      <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-slate-50/50">
+      <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)]">
         <span className="text-xs text-[var(--hc-text-secondary)] font-medium">
           Showing 1 to {closures.length} of {closures.length} closures
         </span>
         <div className="flex items-center gap-2">
-          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50" disabled type="button">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50" disabled type="button">
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium" type="button">
             1
           </button>
-          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50" disabled type="button">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50" disabled type="button">
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -501,7 +501,7 @@ function TextArea({ label, onChange, value }: { label: string; onChange: (value:
 function Dialog({ children, onClose, title }: { children: ReactNode; onClose: () => void; title: string }) {
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/40 backdrop-blur-sm p-6">
-      <div className="w-full max-w-2xl bg-white rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] p-8 border border-[var(--hc-border)]">
+      <div className="w-full max-w-2xl bg-[var(--hc-surface)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] p-8 border border-[var(--hc-border)]">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-bold text-[var(--hc-text)]">{title}</h2>
           <button aria-label="Close dialog" className="p-2 text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" onClick={onClose} type="button">

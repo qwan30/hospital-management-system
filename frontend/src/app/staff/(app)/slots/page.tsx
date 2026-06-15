@@ -152,7 +152,7 @@ export default function SlotGenerationPage() {
       
       <footer className="pt-4 flex justify-between items-center text-hc-on-surface-variant text-[10px] font-bold uppercase tracking-widest border-t border-hc-outline-variant/30">
         <div className="flex gap-6">
-          <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> SERVER_STATUS: OPTIMAL</span>
+          <span className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 rounded-full bg-[var(--hc-success-bg)]0"></div> SERVER_STATUS: OPTIMAL</span>
           <span>QUEUE_DEPTH: 0</span>
         </div>
         <div>LAST_RUN: 2023-10-11 14:22:01 UTC</div>

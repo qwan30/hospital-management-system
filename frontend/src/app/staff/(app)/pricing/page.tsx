@@ -135,14 +135,14 @@ export default function PricingManagementPage() {
       {success && <div className="mt-4 border border-[var(--hc-primary)]/20 bg-[var(--hc-success-bg)] p-4 rounded-[var(--radius-md)] text-sm font-semibold text-[var(--hc-success)]" role="status">{success}</div>}
 
       {/* Table */}
-      <section className="mt-4 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+      <section className="mt-4 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="p-12 text-center" aria-busy="true">
             <div className="inline-block w-6 h-6 border-2 border-slate-200 border-t-[var(--hc-primary)] rounded-full animate-spin" />
-            <p className="mt-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Loading service pricing…</p>
+            <p className="mt-3 text-sm font-bold text-[var(--hc-text-muted)] uppercase tracking-widest">Loading service pricing…</p>
           </div>
         ) : pricingRules.length === 0 ? (
-          <div className="p-12 text-center text-sm font-semibold text-slate-400">No pricing rules found.</div>
+          <div className="p-12 text-center text-sm font-semibold text-[var(--hc-text-muted)]">No pricing rules found.</div>
         ) : (
           <>
             <div className="overflow-x-auto">
@@ -159,7 +159,7 @@ export default function PricingManagementPage() {
                 </thead>
                 <tbody>
                   {paged.map((rule) => (
-                    <tr key={rule.pricingId} className="hover:bg-slate-50/50 transition-colors">
+                    <tr key={rule.pricingId} className="hover:bg-[var(--hc-surface-soft)] transition-colors">
                       <td className="hc-td">
                         <span className="inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-full bg-[var(--hc-blue-50)] text-[var(--hc-primary)]">
                           {rule.departmentName || "GLOBAL"}
@@ -167,7 +167,7 @@ export default function PricingManagementPage() {
                       </td>
                       <td className="hc-td font-semibold text-[var(--hc-text)]">{rule.serviceName}</td>
                       <td className="hc-td font-mono text-sm text-[var(--hc-text)]">{formatCurrency(rule.amount)}</td>
-                      <td className="hc-td text-sm text-slate-500">{formatDate(rule.effectiveDate)}</td>
+                      <td className="hc-td text-sm text-[var(--hc-text-muted)]">{formatDate(rule.effectiveDate)}</td>
                       <td className="hc-td">
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-full bg-[var(--hc-success-bg)] text-[var(--hc-success)]">
                           <span className="w-1.5 h-1.5 rounded-full bg-[var(--hc-success)]" /> Active
@@ -177,7 +177,7 @@ export default function PricingManagementPage() {
                         <button
                           type="button"
                           aria-label={`Edit ${rule.serviceName}`}
-                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-bold uppercase rounded-[var(--radius-md)] bg-slate-100 text-[var(--hc-text)] hover:bg-[var(--hc-primary)] hover:text-white transition-colors"
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-bold uppercase rounded-[var(--radius-md)] bg-[var(--hc-surface-soft)] text-[var(--hc-text)] hover:bg-[var(--hc-primary)] hover:text-white transition-colors"
                           onClick={() => openEditForm(rule)}
                         >
                           <Edit2 className="w-3.5 h-3.5" /> Edit
@@ -191,13 +191,13 @@ export default function PricingManagementPage() {
 
             {/* Pagination */}
             <div className="px-6 py-3 flex items-center justify-between border-t border-[var(--hc-border-soft)] text-sm">
-              <span className="text-slate-500">Showing {(page - 1) * PAGE_SIZE + 1} to {Math.min(page * PAGE_SIZE, pricingRules.length)} of {pricingRules.length}</span>
+              <span className="text-[var(--hc-text-muted)]">Showing {(page - 1) * PAGE_SIZE + 1} to {Math.min(page * PAGE_SIZE, pricingRules.length)} of {pricingRules.length}</span>
               <div className="flex items-center gap-1">
-                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30"><ChevronLeft className="w-4 h-4" /></button>
+                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30"><ChevronLeft className="w-4 h-4" /></button>
                 {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
-                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-slate-100"}`}>{p}</button>
+                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-[var(--hc-surface-soft)]"}`}>{p}</button>
                 ))}
-                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30"><ChevronRight className="w-4 h-4" /></button>
+                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30"><ChevronRight className="w-4 h-4" /></button>
               </div>
             </div>
           </>
@@ -213,7 +213,7 @@ export default function PricingManagementPage() {
             <FormInput label="Amount" value={form.amount} onChange={(v) => setForm({ ...form, amount: v })} required type="number" />
             <FormInput label="Effective Date" value={form.effectiveDate} onChange={(v) => setForm({ ...form, effectiveDate: v })} required type="date" />
             <div className="flex justify-end gap-3 pt-2">
-              <button type="button" className="px-5 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-100 transition-colors" onClick={() => setIsFormOpen(false)}>Cancel</button>
+              <button type="button" className="px-5 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors" onClick={() => setIsFormOpen(false)}>Cancel</button>
               <button type="submit" disabled={isSaving} className="hc-button-primary px-5 py-2.5 text-sm disabled:opacity-60">{isSaving ? "Saving…" : "Save Service"}</button>
             </div>
           </form>
@@ -229,7 +229,7 @@ function FormInput({ label, value, onChange, type = "text", required = false }: 
 }) {
   return (
     <div>
-      <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">{label}</label>
+      <label className="block text-[10px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] mb-1.5">{label}</label>
       <input aria-label={label} className="hc-input w-full" type={type} required={required} value={value} onChange={(e) => onChange(e.target.value)} />
     </div>
   );
@@ -238,10 +238,10 @@ function FormInput({ label, value, onChange, type = "text", required = false }: 
 function Dialog({ children, title, onClose }: { children: ReactNode; title: string; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/30 p-6">
-      <div className="w-full max-w-lg bg-white rounded-[var(--radius-xl)] p-8 shadow-xl">
+      <div className="w-full max-w-lg bg-[var(--hc-surface)] rounded-[var(--radius-xl)] p-8 shadow-xl">
         <div className="mb-6 flex items-center justify-between">
           <h3 className="text-lg font-bold text-[var(--hc-text)]">{title}</h3>
-          <button aria-label="Close dialog" className="p-2 rounded-[var(--radius-md)] hover:bg-slate-100" onClick={onClose} type="button"><X className="w-5 h-5 text-slate-400" /></button>
+          <button aria-label="Close dialog" className="p-2 rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)]" onClick={onClose} type="button"><X className="w-5 h-5 text-[var(--hc-text-muted)]" /></button>
         </div>
         {children}
       </div>

@@ -228,7 +228,7 @@ export default function AdminDepartmentsPage() {
         <KpiCard label="API BACKED" value={filteredDepartments.length.toString()} icon={Network} tone="teal" helper="Filtered results" />
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 mb-6 bg-white p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
+      <div className="flex flex-wrap items-center gap-4 mb-6 bg-[var(--hc-surface)] p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
         <div className="relative flex-1 min-w-[280px]">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)]" />
           <input
@@ -267,7 +267,7 @@ export default function AdminDepartmentsPage() {
         </button>
       </div>
 
-      <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-xl overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">Loading departments...</div>
         ) : (
@@ -311,22 +311,22 @@ function DepartmentsTable({
           <tr>
             <th className="w-[30%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                DEPARTMENT <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                DEPARTMENT <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[20%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                CONTACT <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                CONTACT <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[25%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                IMAGE <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                IMAGE <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[15%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                STATUS <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                STATUS <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[10%] text-right">ACTIONS</th>
@@ -337,8 +337,8 @@ function DepartmentsTable({
             <tr key={department.departmentId} className="group hover:bg-[var(--hc-background)] transition-colors">
               <td>
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100">
-                    <Building2 className="w-5 h-5 text-blue-600" />
+                  <div className="w-10 h-10 rounded-xl bg-[var(--hc-primary-bg)] flex items-center justify-center shrink-0 border border-blue-100">
+                    <Building2 className="w-5 h-5 text-[var(--hc-primary)]" />
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
                     <div className="text-sm font-bold text-[var(--hc-text)] truncate">{department.name}</div>
@@ -351,7 +351,7 @@ function DepartmentsTable({
               </td>
               <td>
                 <div className="flex items-center gap-2">
-                  <ImageIcon className="w-4 h-4 text-slate-400 shrink-0" />
+                  <ImageIcon className="w-4 h-4 text-[var(--hc-text-muted)] shrink-0" />
                   <span className="text-xs text-[var(--hc-text-secondary)] truncate" title={department.imageUrl || ""}>
                     {department.imageUrl || "No image"}
                   </span>
@@ -364,7 +364,7 @@ function DepartmentsTable({
                     <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Active</span>
                   </div>
                 ) : (
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-300 bg-slate-50 text-slate-600">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-300 bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]">
                     <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                     <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Inactive</span>
                   </div>
@@ -373,7 +373,7 @@ function DepartmentsTable({
               <td>
                 <div className="flex items-center justify-end gap-2">
                   <button
-                    className="h-8 px-3 text-xs font-semibold text-[var(--hc-blue-600)] bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-slate-50 hover:border-slate-300 transition-colors disabled:opacity-50"
+                    className="h-8 px-3 text-xs font-semibold text-[var(--hc-blue-600)] bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-surface-soft)] hover:border-slate-300 transition-colors disabled:opacity-50"
                     disabled={isSaving}
                     onClick={() => onEdit(department)}
                     type="button"
@@ -381,7 +381,7 @@ function DepartmentsTable({
                     Edit
                   </button>
                   <button
-                    className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-[var(--hc-danger)] hover:bg-[var(--hc-danger-bg)] rounded-md transition-colors disabled:opacity-50"
+                    className="w-8 h-8 flex items-center justify-center text-[var(--hc-text-muted)] hover:text-[var(--hc-danger)] hover:bg-[var(--hc-danger-bg)] rounded-md transition-colors disabled:opacity-50"
                     disabled={isSaving || !department.active}
                     onClick={() => onDeactivate(department)}
                     title={department.active ? "Deactivate" : "Already inactive"}
@@ -396,18 +396,18 @@ function DepartmentsTable({
         </tbody>
       </table>
 
-      <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-slate-50/50">
+      <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)]">
         <span className="text-xs text-[var(--hc-text-secondary)] font-medium">
           Showing 1 to {departments.length} of {departments.length} departments
         </span>
         <div className="flex items-center gap-2">
-          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50" disabled type="button">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50" disabled type="button">
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium" type="button">
             1
           </button>
-          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50" disabled type="button">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50" disabled type="button">
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -487,7 +487,7 @@ function Dialog({
 }) {
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/40 backdrop-blur-sm p-6">
-      <div className="w-full max-w-xl bg-white rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] p-8 border border-[var(--hc-border)]">
+      <div className="w-full max-w-xl bg-[var(--hc-surface)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] p-8 border border-[var(--hc-border)]">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-bold text-[var(--hc-text)]">{title}</h2>
           <button aria-label="Close dialog" className="p-2 text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" onClick={onClose} type="button">

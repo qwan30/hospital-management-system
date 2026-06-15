@@ -134,11 +134,11 @@ export default function AdminMonitoringPage() {
           <button
             type="button"
             onClick={() => setAutoRefresh((v) => !v)}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-white hover:bg-slate-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)] transition-colors"
           >
-            <RefreshCw className={`w-4 h-4 ${autoRefresh ? "text-[var(--hc-success)] animate-spin" : "text-slate-400"}`} style={autoRefresh ? { animationDuration: "3s" } : undefined} />
+            <RefreshCw className={`w-4 h-4 ${autoRefresh ? "text-[var(--hc-success)] animate-spin" : "text-[var(--hc-text-muted)]"}`} style={autoRefresh ? { animationDuration: "3s" } : undefined} />
             Auto refresh:
-            <span className={autoRefresh ? "text-[var(--hc-success)] font-bold" : "text-slate-400"}>
+            <span className={autoRefresh ? "text-[var(--hc-success)] font-bold" : "text-[var(--hc-text-muted)]"}>
               {autoRefresh ? "● ON" : "OFF"}
             </span>
           </button>
@@ -148,14 +148,14 @@ export default function AdminMonitoringPage() {
               aria-label="Monitoring date range"
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="appearance-none pl-9 pr-8 py-2 text-sm font-medium rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-white hover:bg-slate-50 transition-colors cursor-pointer"
+              className="appearance-none pl-9 pr-8 py-2 text-sm font-medium rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)] transition-colors cursor-pointer"
             >
               <option value="1h">Last 1 hour</option>
               <option value="6h">Last 6 hours</option>
               <option value="24h">Last 24 hours</option>
               <option value="7d">Last 7 days</option>
             </select>
-            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--hc-text-muted)] pointer-events-none" />
           </div>
         </div>
       </div>
@@ -269,10 +269,10 @@ export default function AdminMonitoringPage() {
       {/* ── Bottom Panel: Chart + Recent Alerts + Quick Actions ── */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-[1fr_340px_260px] gap-4">
         {/* Alerts Trend Chart Placeholder */}
-        <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+        <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-[var(--hc-border-soft)] flex items-center justify-between">
             <h3 className="text-sm font-bold text-[var(--hc-text)]">ALERTS TREND</h3>
-            <select aria-label="Alerts trend grouping" className="text-xs border border-[var(--hc-border)] rounded-[var(--radius-md)] px-3 py-1.5 bg-white">
+            <select aria-label="Alerts trend grouping" className="text-xs border border-[var(--hc-border)] rounded-[var(--radius-md)] px-3 py-1.5 bg-[var(--hc-surface)]">
               <option>By hour</option>
               <option>By day</option>
             </select>
@@ -293,26 +293,26 @@ export default function AdminMonitoringPage() {
         </div>
 
         {/* Recent Alerts */}
-        <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+        <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-[var(--hc-border-soft)] flex items-center justify-between">
             <h3 className="text-sm font-bold text-[var(--hc-text)]">RECENT ALERTS</h3>
             <button type="button" className="text-xs font-semibold text-[var(--hc-primary)] hover:underline">View all</button>
           </div>
           <div className="divide-y divide-[var(--hc-border-soft)]">
             {recentAlerts.length === 0 ? (
-              <div className="p-6 text-center text-sm text-slate-400">No recent alerts</div>
+              <div className="p-6 text-center text-sm text-[var(--hc-text-muted)]">No recent alerts</div>
             ) : (
               recentAlerts.map((alert) => (
-                <div key={alert.id} className="px-5 py-3.5 flex items-start gap-3 hover:bg-slate-50/50 transition-colors">
+                <div key={alert.id} className="px-5 py-3.5 flex items-start gap-3 hover:bg-[var(--hc-surface-soft)] transition-colors">
                   <div className={`mt-0.5 grid size-7 shrink-0 place-items-center rounded-full ${alert.severity === "HIGH" ? "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]" : alert.severity === "MEDIUM" ? "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]" : "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]"}`}>
                     {alert.severity === "INFO" ? <Info className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold text-[var(--hc-text)] leading-tight">{alert.title}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{alert.description}</p>
+                    <p className="text-xs text-[var(--hc-text-muted)] mt-0.5">{alert.description}</p>
                   </div>
                   <div className="shrink-0 text-right">
-                    <span className="text-xs text-slate-400">{alert.time}</span>
+                    <span className="text-xs text-[var(--hc-text-muted)]">{alert.time}</span>
                     <span className={`block mt-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${alert.severity === "HIGH" ? "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]" : alert.severity === "MEDIUM" ? "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]" : "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]"}`}>
                       {alert.severity}
                     </span>
@@ -329,7 +329,7 @@ export default function AdminMonitoringPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+        <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-[var(--hc-border-soft)]">
             <h3 className="text-sm font-bold text-[var(--hc-text)]">QUICK ACTIONS</h3>
           </div>
@@ -338,16 +338,16 @@ export default function AdminMonitoringPage() {
               <button
                 key={action.label}
                 type="button"
-                className="w-full px-5 py-3.5 flex items-center gap-3 text-left hover:bg-slate-50/50 transition-colors group"
+                className="w-full px-5 py-3.5 flex items-center gap-3 text-left hover:bg-[var(--hc-surface-soft)] transition-colors group"
               >
                 <div className={`grid size-9 shrink-0 place-items-center rounded-[var(--radius-md)] ${action.bg}`}>
                   <action.icon className={`w-4 h-4 ${action.color}`} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-semibold text-[var(--hc-text)]">{action.label}</p>
-                  <p className="text-xs text-slate-500">{action.desc}</p>
+                  <p className="text-xs text-[var(--hc-text-muted)]">{action.desc}</p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </button>
             ))}
           </div>
@@ -360,11 +360,11 @@ export default function AdminMonitoringPage() {
 /* ─────────────────── Sub-components ─────────────────── */
 
 const quickActions = [
-  { label: "Run Health Check", desc: "Validate system components", icon: Zap, bg: "bg-emerald-50", color: "text-emerald-600" },
-  { label: "View Alert Center", desc: "Manage and acknowledge alerts", icon: Bell, bg: "bg-blue-50", color: "text-blue-600" },
-  { label: "Inventory Overview", desc: "Check stock and thresholds", icon: Package, bg: "bg-amber-50", color: "text-amber-600" },
-  { label: "Queue Monitoring", desc: "View queue performance", icon: Activity, bg: "bg-purple-50", color: "text-purple-600" },
-  { label: "System Logs", desc: "Access system logs", icon: FileText, bg: "bg-slate-100", color: "text-slate-600" },
+  { label: "Run Health Check", desc: "Validate system components", icon: Zap, bg: "bg-[var(--hc-success-bg)]", color: "text-[var(--hc-success)]" },
+  { label: "View Alert Center", desc: "Manage and acknowledge alerts", icon: Bell, bg: "bg-[var(--hc-primary-bg)]", color: "text-[var(--hc-primary)]" },
+  { label: "Inventory Overview", desc: "Check stock and thresholds", icon: Package, bg: "bg-[var(--hc-amber-bg)]", color: "text-[var(--hc-amber-600)]" },
+  { label: "Queue Monitoring", desc: "View queue performance", icon: Activity, bg: "bg-[var(--hc-purple-bg)]", color: "text-[var(--hc-purple)]" },
+  { label: "System Logs", desc: "Access system logs", icon: FileText, bg: "bg-[var(--hc-surface-soft)]", color: "text-[var(--hc-text-secondary)]" },
 ] as const;
 
 function StatusBanner({
@@ -383,17 +383,17 @@ function StatusBanner({
   hasChevron?: boolean;
 }) {
   return (
-    <div className={`flex items-center gap-4 rounded-[var(--radius-xl)] border p-5 transition-colors ${healthy ? "border-[var(--hc-border-soft)] bg-white" : "border-amber-200 bg-amber-50/50"}`}>
-      <div className={`grid size-12 shrink-0 place-items-center rounded-full ${healthy ? "bg-[var(--hc-success-bg)] text-[var(--hc-success)]" : "bg-amber-100 text-amber-600"}`}>
+    <div className={`flex items-center gap-4 rounded-[var(--radius-xl)] border p-5 transition-colors ${healthy ? "border-[var(--hc-border-soft)] bg-[var(--hc-surface)]" : "border-amber-200 bg-[var(--hc-amber-bg)]/50"}`}>
+      <div className={`grid size-12 shrink-0 place-items-center rounded-full ${healthy ? "bg-[var(--hc-success-bg)] text-[var(--hc-success)]" : "bg-amber-100 text-[var(--hc-amber-600)]"}`}>
         <Icon className="size-6" />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">{label}</p>
-        <p className={`text-xl font-bold ${healthy ? "text-[var(--hc-success)]" : "text-amber-600"}`}>{status}</p>
-        <p className="text-xs text-slate-500">{description}</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">{label}</p>
+        <p className={`text-xl font-bold ${healthy ? "text-[var(--hc-success)]" : "text-[var(--hc-amber-600)]"}`}>{status}</p>
+        <p className="text-xs text-[var(--hc-text-muted)]">{description}</p>
         <div className="mt-1 flex items-center gap-1.5">
-          <span className={`w-2 h-2 rounded-full ${healthy ? "bg-[var(--hc-success)]" : "bg-amber-500"}`} />
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+          <span className={`w-2 h-2 rounded-full ${healthy ? "bg-[var(--hc-success)]" : "bg-[var(--hc-amber-bg)]0"}`} />
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-[var(--hc-text-muted)]">
             {healthy ? "OPERATIONAL" : "REVIEW REQUIRED"}
           </span>
         </div>
@@ -419,11 +419,11 @@ function ObservabilityTarget({
   healthy: boolean;
 }) {
   return (
-    <div className="rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-white p-4 shadow-sm">
+    <div className="rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] p-4 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">{label}</p>
-          <p className="mt-1 text-sm text-slate-500">{description}</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">{label}</p>
+          <p className="mt-1 text-sm text-[var(--hc-text-muted)]">{description}</p>
         </div>
         <span className={`rounded-full px-3 py-1 text-xs font-bold ${healthy ? "bg-[var(--hc-success-bg)] text-[var(--hc-success)]" : "bg-amber-100 text-amber-700"}`}>
           {status}

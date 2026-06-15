@@ -75,32 +75,32 @@ export default function SpecialClosuresPage() {
       {/* Calendar + Closure List */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-6">
         {/* Calendar */}
-        <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">
+        <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-sm font-bold text-[var(--hc-text)]">Closure Calendar</h2>
             <div className="flex items-center gap-1">
-              <button type="button" className="p-1.5 rounded-[var(--radius-md)] hover:bg-slate-100 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+              <button type="button" className="p-1.5 rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors"><ChevronLeft className="w-4 h-4" /></button>
               <span className="px-3 text-xs font-bold text-[var(--hc-text)] uppercase">October 2023</span>
-              <button type="button" className="p-1.5 rounded-[var(--radius-md)] hover:bg-slate-100 transition-colors"><ChevronRight className="w-4 h-4" /></button>
+              <button type="button" className="p-1.5 rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors"><ChevronRight className="w-4 h-4" /></button>
             </div>
           </div>
 
           {/* Day Headers */}
           <div className="grid grid-cols-7 gap-px mb-1">
             {DAY_HEADERS.map((d) => (
-              <div key={d} className="py-2 text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">{d}</div>
+              <div key={d} className="py-2 text-center text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">{d}</div>
             ))}
           </div>
 
           {/* Calendar Grid */}
-          <div className="grid grid-cols-7 gap-px bg-slate-100 rounded-[var(--radius-md)] overflow-hidden">
+          <div className="grid grid-cols-7 gap-px bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] overflow-hidden">
             {CALENDAR_DAYS.map((cell, i) => (
               <div
                 key={i}
                 className={`aspect-square p-2 flex flex-col justify-between text-xs font-medium transition-colors ${
                   cell.marker === "holiday"
                     ? "bg-[var(--hc-primary)] text-white"
-                    : "bg-white hover:bg-slate-50"
+                    : "bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)]"
                 } ${cell.prev ? "text-slate-300" : "text-[var(--hc-text)]"}`}
               >
                 <span>{cell.day}</span>
@@ -118,27 +118,27 @@ export default function SpecialClosuresPage() {
           <div className="mt-4 flex gap-4">
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[var(--hc-primary)]" />
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Maintenance</span>
+              <span className="text-[10px] font-bold text-[var(--hc-text-muted)] uppercase tracking-widest">Maintenance</span>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-slate-800" />
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Holiday</span>
+              <span className="text-[10px] font-bold text-[var(--hc-text-muted)] uppercase tracking-widest">Holiday</span>
             </div>
           </div>
         </div>
 
         {/* Closure List */}
-        <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+        <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
           <div className="px-6 py-4 flex justify-between items-center border-b border-[var(--hc-border-soft)]">
             <h2 className="text-sm font-bold text-[var(--hc-text)]">Active & Upcoming Schedule</h2>
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-100 px-2.5 py-1 rounded-full">
+            <span className="text-[10px] font-bold text-[var(--hc-text-muted)] uppercase tracking-widest bg-[var(--hc-surface-soft)] px-2.5 py-1 rounded-full">
               {CLOSURES.length} Entries
             </span>
           </div>
 
           <div className="divide-y divide-[var(--hc-border-soft)]">
             {CLOSURES.map((closure) => (
-              <div key={closure.id} className="group p-6 flex items-start justify-between hover:bg-slate-50/50 transition-colors">
+              <div key={closure.id} className="group p-6 flex items-start justify-between hover:bg-[var(--hc-surface-soft)] transition-colors">
                 <div className="flex gap-4">
                   {/* Date Indicator */}
                   <div className={`w-14 h-14 shrink-0 rounded-[var(--radius-md)] flex flex-col items-center justify-center text-sm ${
@@ -153,12 +153,12 @@ export default function SpecialClosuresPage() {
                   {/* Details */}
                   <div>
                     <h3 className="text-sm font-bold text-[var(--hc-text)] mb-1">{closure.title}</h3>
-                    <p className="text-xs text-slate-500 mb-2 max-w-md">{closure.description}</p>
+                    <p className="text-xs text-[var(--hc-text-muted)] mb-2 max-w-md">{closure.description}</p>
                     <div className="flex gap-4">
-                      <span className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase">
+                      <span className="flex items-center gap-1 text-[10px] font-bold text-[var(--hc-text-muted)] uppercase">
                         <Clock className="w-3 h-3" /> {closure.duration}
                       </span>
-                      <span className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase">
+                      <span className="flex items-center gap-1 text-[10px] font-bold text-[var(--hc-text-muted)] uppercase">
                         <MapPin className="w-3 h-3" /> {closure.location}
                       </span>
                     </div>
@@ -167,10 +167,10 @@ export default function SpecialClosuresPage() {
 
                 {/* Actions (visible on hover) */}
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button type="button" className="p-2 rounded-[var(--radius-md)] hover:bg-slate-100 transition-colors text-slate-400 hover:text-[var(--hc-primary)]">
+                  <button type="button" className="p-2 rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors text-[var(--hc-text-muted)] hover:text-[var(--hc-primary)]">
                     <Edit2 className="w-4 h-4" />
                   </button>
-                  <button type="button" className="p-2 rounded-[var(--radius-md)] hover:bg-[var(--hc-danger-bg)] transition-colors text-slate-400 hover:text-[var(--hc-danger)]">
+                  <button type="button" className="p-2 rounded-[var(--radius-md)] hover:bg-[var(--hc-danger-bg)] transition-colors text-[var(--hc-text-muted)] hover:text-[var(--hc-danger)]">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>

@@ -70,15 +70,15 @@ export default function AdminAuditLogsPage() {
         title={
           <div className="flex items-center gap-4">
               <span>Audit Logs</span>
-              <Badge variant="outline" className="rounded-full bg-green-50 text-green-700 border-green-200 px-2.5 py-0.5 text-[11px] font-bold tracking-wide uppercase flex items-center">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2"></span>
+              <Badge variant="outline" className="rounded-full bg-[var(--hc-success-bg)] text-[var(--hc-success)] border-green-200 px-2.5 py-0.5 text-[11px] font-bold tracking-wide uppercase flex items-center">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--hc-success-bg)]0 mr-2"></span>
                   Live
               </Badge>
           </div>
         }
         description="Monitor authorization, system actions, inventory movement, and administrative changes."
         action={
-          <button className="hc-button-outline flex items-center gap-2 h-10 px-5 bg-white hover:bg-[var(--hc-background)]">
+          <button className="hc-button-outline flex items-center gap-2 h-10 px-5 bg-[var(--hc-surface)] hover:bg-[var(--hc-background)]">
               <Download className="w-4 h-4" />
               <span className="font-bold text-[11px] uppercase tracking-widest">Export CSV</span>
           </button>
@@ -146,7 +146,7 @@ export default function AdminAuditLogsPage() {
       </div>
 
       {/* Filters Area */}
-      <div className="bg-white rounded-xl border border-[var(--hc-border-soft)] p-4 shadow-sm mb-6 flex flex-col gap-4">
+      <div className="bg-[var(--hc-surface)] rounded-xl border border-[var(--hc-border-soft)] p-4 shadow-sm mb-6 flex flex-col gap-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="flex flex-col gap-1.5">
             <label className="text-[11px] font-bold text-[var(--hc-text)]">Search logs</label>
@@ -155,7 +155,7 @@ export default function AdminAuditLogsPage() {
                 <input
                   type="text"
                   placeholder="Search by actor, target, or details..."
-                  className="w-full h-9 pl-9 pr-4 text-sm bg-white border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] focus:ring-1 focus:ring-[var(--hc-blue-500)]"
+                  className="w-full h-9 pl-9 pr-4 text-sm bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] focus:ring-1 focus:ring-[var(--hc-blue-500)]"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />
@@ -164,7 +164,7 @@ export default function AdminAuditLogsPage() {
 
           <div className="flex flex-col gap-1.5">
             <label className="text-[11px] font-bold text-[var(--hc-text)]">Actor</label>
-            <button className="flex items-center justify-between gap-3 h-9 px-3 bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
+            <button className="flex items-center justify-between gap-3 h-9 px-3 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
                 <span className="text-sm font-medium text-[var(--hc-text-secondary)]">All Actors</span>
                 <ChevronDown className="w-4 h-4 text-[var(--hc-text-secondary)]" />
             </button>
@@ -172,7 +172,7 @@ export default function AdminAuditLogsPage() {
 
           <div className="flex flex-col gap-1.5">
             <label className="text-[11px] font-bold text-[var(--hc-text)]">Action Type</label>
-            <button className="flex items-center justify-between gap-3 h-9 px-3 bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
+            <button className="flex items-center justify-between gap-3 h-9 px-3 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
                 <span className="text-sm font-medium text-[var(--hc-text-secondary)]">All Actions</span>
                 <ChevronDown className="w-4 h-4 text-[var(--hc-text-secondary)]" />
             </button>
@@ -180,7 +180,7 @@ export default function AdminAuditLogsPage() {
 
           <div className="flex flex-col gap-1.5">
             <label className="text-[11px] font-bold text-[var(--hc-text)]">Date Range</label>
-            <button className="flex items-center justify-start gap-3 h-9 px-3 bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
+            <button className="flex items-center justify-start gap-3 h-9 px-3 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
                 <CalendarIcon className="w-4 h-4 text-[var(--hc-text-secondary)]" />
                 <span className="text-sm font-medium text-[var(--hc-text)]">May 12, 2025 to May 15, 2025</span>
             </button>
@@ -190,7 +190,7 @@ export default function AdminAuditLogsPage() {
         <div className="flex items-end gap-4">
           <div className="flex flex-col gap-1.5 w-full max-w-[calc(25%-12px)]">
             <label className="text-[11px] font-bold text-[var(--hc-text)]">Department</label>
-            <button className="flex items-center justify-between gap-3 h-9 px-3 bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
+            <button className="flex items-center justify-between gap-3 h-9 px-3 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
                 <span className="text-sm font-medium text-[var(--hc-text-secondary)]">All Departments</span>
                 <ChevronDown className="w-4 h-4 text-[var(--hc-text-secondary)]" />
             </button>
@@ -198,7 +198,7 @@ export default function AdminAuditLogsPage() {
 
           <div className="flex flex-col gap-1.5 w-full max-w-[calc(25%-12px)]">
             <label className="text-[11px] font-bold text-[var(--hc-text)]">Severity</label>
-            <button className="flex items-center justify-between gap-3 h-9 px-3 bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
+            <button className="flex items-center justify-between gap-3 h-9 px-3 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
                 <span className="text-sm font-medium text-[var(--hc-text-secondary)]">All Severity</span>
                 <ChevronDown className="w-4 h-4 text-[var(--hc-text-secondary)]" />
             </button>
@@ -218,7 +218,7 @@ export default function AdminAuditLogsPage() {
       ) : null}
 
       {/* Main Table */}
-      <div className="bg-white rounded-xl border border-[var(--hc-border-soft)] overflow-hidden shadow-sm flex flex-col">
+      <div className="bg-[var(--hc-surface)] rounded-xl border border-[var(--hc-border-soft)] overflow-hidden shadow-sm flex flex-col">
         <div className="p-4 border-b border-[var(--hc-border-soft)] flex items-center gap-2">
             <Shield className="w-5 h-5 text-[var(--hc-blue-600)]" />
             <h2 className="text-lg font-bold text-[var(--hc-text)]">Audit Logs</h2>
@@ -251,7 +251,7 @@ export default function AdminAuditLogsPage() {
                             <td className="px-5 py-3 font-medium text-[var(--hc-text)] pt-4">{log.actorName ?? "System"}</td>
                             <td className="px-5 py-3 text-[var(--hc-text-secondary)] pt-4">{log.actorRole ?? "System"}</td>
                             <td className="px-5 py-3 pt-4">
-                                <Badge variant="secondary" className="text-[10px] uppercase tracking-wider font-bold text-[var(--hc-blue-600)] bg-blue-50 border-none">
+                                <Badge variant="secondary" className="text-[10px] uppercase tracking-wider font-bold text-[var(--hc-blue-600)] bg-[var(--hc-primary-bg)] border-none">
                                     {log.action}
                                 </Badge>
                             </td>
@@ -284,12 +284,12 @@ export default function AdminAuditLogsPage() {
             </table>
         </div>
 
-        <div className="p-4 border-t border-[var(--hc-border-soft)] flex items-center justify-between bg-white">
+        <div className="p-4 border-t border-[var(--hc-border-soft)] flex items-center justify-between bg-[var(--hc-surface)]">
             <p className="text-sm text-[var(--hc-text-secondary)]">Showing 1 to {Math.min(10, filteredLogs.length)} of {filteredLogs.length > 0 ? "24,851" : "0"} events</p>
             <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2 text-sm text-[var(--hc-text-secondary)] mr-4">
                     <span>Rows per page</span>
-                    <div className="flex items-center justify-between border border-[var(--hc-border-soft)] rounded bg-white px-2 py-1 min-w-[60px]">
+                    <div className="flex items-center justify-between border border-[var(--hc-border-soft)] rounded bg-[var(--hc-surface)] px-2 py-1 min-w-[60px]">
                         <span className="font-medium text-[var(--hc-text)]">10</span>
                         <ChevronDown className="w-3 h-3" />
                     </div>

@@ -369,19 +369,19 @@ export default function InventoryPage() {
               <HcIcon name="add" className="text-sm" />
               Add Item
             </button>
-            <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-white px-4 text-[12px] font-bold uppercase tracking-widest text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60 shadow-sm" disabled={items.length === 0} onClick={() => openLotForm()} type="button">
+            <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-[var(--hc-surface)] px-4 text-[12px] font-bold uppercase tracking-widest text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60 shadow-sm" disabled={items.length === 0} onClick={() => openLotForm()} type="button">
               <HcIcon name="inventory_2" className="text-sm" />
               Add Lot
             </button>
-            <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-white px-4 text-[12px] font-bold uppercase tracking-widest text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60 shadow-sm" disabled={items.length === 0} onClick={() => openMovementForm()} type="button">
+            <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-[var(--hc-surface)] px-4 text-[12px] font-bold uppercase tracking-widest text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60 shadow-sm" disabled={items.length === 0} onClick={() => openMovementForm()} type="button">
               <HcIcon name="sync_alt" className="text-sm" />
               Movement
             </button>
-            <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-white px-4 text-[12px] font-bold uppercase tracking-widest text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60 shadow-sm" disabled={items.length === 0 || lots.length === 0} onClick={() => openDispenseForm()} type="button">
+            <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-[var(--hc-surface)] px-4 text-[12px] font-bold uppercase tracking-widest text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60 shadow-sm" disabled={items.length === 0 || lots.length === 0} onClick={() => openDispenseForm()} type="button">
               <HcIcon name="medication" className="text-sm" />
               Dispense
             </button>
-            <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-white px-4 text-[12px] font-bold uppercase tracking-widest text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60 shadow-sm" onClick={loadInventory} disabled={isLoading} type="button">
+            <button className="flex h-9 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-[var(--hc-surface)] px-4 text-[12px] font-bold uppercase tracking-widest text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60 shadow-sm" onClick={loadInventory} disabled={isLoading} type="button">
               <HcIcon name="refresh" className="text-sm" />
               Refresh
             </button>
@@ -556,7 +556,7 @@ function InventoryPanel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="bg-white rounded-[var(--radius-xl)] border border-[var(--hc-border)] shadow-[var(--shadow-card)] p-6">
+    <section className="bg-[var(--hc-surface)] rounded-[var(--radius-xl)] border border-[var(--hc-border)] shadow-[var(--shadow-card)] p-6">
       <h2 className="mb-4 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text)] border-b border-[var(--hc-border-soft)] pb-4">
         {title}
       </h2>
@@ -714,7 +714,7 @@ function ItemSelect({
   return (
     <label className="grid gap-2 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
       Item
-      <select className="h-10 rounded-md border border-[var(--hc-border-soft)] bg-white px-3 text-[13px] font-medium text-[var(--hc-text)] focus:border-[var(--hc-blue-500)] focus:outline-none focus:ring-1 focus:ring-[var(--hc-blue-500)]" onChange={(event) => onChange(event.target.value)} required value={itemId}>
+      <select className="h-10 rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] px-3 text-[13px] font-medium text-[var(--hc-text)] focus:border-[var(--hc-blue-500)] focus:outline-none focus:ring-1 focus:ring-[var(--hc-blue-500)]" onChange={(event) => onChange(event.target.value)} required value={itemId}>
         <option value="">Select real item</option>
         {items.map((item) => (
           <option key={item.itemId} value={item.itemId}>{item.itemName}</option>
@@ -736,7 +736,7 @@ function LotSelect({
   return (
     <label className="grid gap-2 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
       Lot
-      <select className="h-10 rounded-md border border-[var(--hc-border-soft)] bg-white px-3 text-[13px] font-medium text-[var(--hc-text)] focus:border-[var(--hc-blue-500)] focus:outline-none focus:ring-1 focus:ring-[var(--hc-blue-500)]" onChange={(event) => onChange(event.target.value)} required value={lotId}>
+      <select className="h-10 rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] px-3 text-[13px] font-medium text-[var(--hc-text)] focus:border-[var(--hc-blue-500)] focus:outline-none focus:ring-1 focus:ring-[var(--hc-blue-500)]" onChange={(event) => onChange(event.target.value)} required value={lotId}>
         <option value="">Select lot with stock</option>
         {lots.map((lot) => (
           <option key={lot.lotId} value={lot.lotId}>
@@ -766,7 +766,7 @@ function TextField({
   return (
     <label className="grid gap-2 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
       {label}
-      <input className="h-10 rounded-md border border-[var(--hc-border-soft)] bg-white px-3 text-[13px] font-medium focus:border-[var(--hc-blue-500)] focus:outline-none focus:ring-1 focus:ring-[var(--hc-blue-500)] text-[var(--hc-text)] disabled:opacity-60" disabled={disabled} onChange={(event) => onChange(event.target.value)} required={required} type={type} value={value} />
+      <input className="h-10 rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] px-3 text-[13px] font-medium focus:border-[var(--hc-blue-500)] focus:outline-none focus:ring-1 focus:ring-[var(--hc-blue-500)] text-[var(--hc-text)] disabled:opacity-60" disabled={disabled} onChange={(event) => onChange(event.target.value)} required={required} type={type} value={value} />
     </label>
   );
 }
@@ -774,7 +774,7 @@ function TextField({
 function Dialog({ children, onClose, title }: { children: ReactNode; onClose: () => void; title: string }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6 backdrop-blur-sm">
-      <div className="w-full max-w-xl bg-white p-8 rounded-[var(--radius-xl)] shadow-2xl border border-[var(--hc-border-soft)]">
+      <div className="w-full max-w-xl bg-[var(--hc-surface)] p-8 rounded-[var(--radius-xl)] shadow-2xl border border-[var(--hc-border-soft)]">
         <div className="mb-6 flex items-center justify-between border-b border-[var(--hc-border-soft)] pb-4">
           <h2 className="text-xl font-bold text-[var(--hc-text)]">{title}</h2>
           <button className="text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] transition-colors" onClick={onClose} type="button">

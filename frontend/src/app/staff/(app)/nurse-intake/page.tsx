@@ -83,7 +83,7 @@ export default function NurseIntakeBoardPage() {
         description="Live checked-in patients from the queue and appointment APIs."
         action={
           <button
-            className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-white px-4 py-2 text-sm font-bold text-[var(--hc-text)] transition-colors hover:bg-slate-50 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-[var(--hc-surface)] px-4 py-2 text-sm font-bold text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60"
             type="button"
             onClick={loadAppointments}
             disabled={isLoading}
@@ -107,13 +107,13 @@ export default function NurseIntakeBoardPage() {
       ) : null}
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_380px]">
-        <section className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-white shadow-sm">
+        <section className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] shadow-sm">
           <div className="border-b border-[var(--hc-border-soft)] px-6 py-4">
             <h2 className="text-sm font-bold text-[var(--hc-text)]">Today&apos;s Intake Queue</h2>
           </div>
 
           {isLoading ? (
-            <div className="p-10 text-center text-xs font-bold uppercase tracking-widest text-slate-400" aria-busy="true">
+            <div className="p-10 text-center text-xs font-bold uppercase tracking-widest text-[var(--hc-text-muted)]" aria-busy="true">
               Loading live intake patients...
             </div>
           ) : appointments.length > 0 ? (
@@ -121,14 +121,14 @@ export default function NurseIntakeBoardPage() {
               {appointments.map((appointment) => (
                 <button
                   className={`flex w-full items-center justify-between gap-4 p-5 text-left transition-colors hover:bg-[var(--hc-primary-bg)] ${
-                    selectedAppointmentId === appointment.appointmentId ? "bg-[var(--hc-primary-bg)]" : "bg-white"
+                    selectedAppointmentId === appointment.appointmentId ? "bg-[var(--hc-primary-bg)]" : "bg-[var(--hc-surface)]"
                   }`}
                   key={appointment.appointmentId}
                   type="button"
                   onClick={() => setSelectedAppointmentId(appointment.appointmentId)}
                 >
                   <div className="flex min-w-0 items-center gap-4">
-                    <span className="grid size-11 shrink-0 place-items-center rounded-full bg-slate-100 text-xs font-bold text-[var(--hc-primary)]">
+                    <span className="grid size-11 shrink-0 place-items-center rounded-full bg-[var(--hc-surface-soft)] text-xs font-bold text-[var(--hc-primary)]">
                       {initials(appointment.patientFullName)}
                     </span>
                     <div className="min-w-0">
@@ -154,7 +154,7 @@ export default function NurseIntakeBoardPage() {
           )}
         </section>
 
-        <aside className="rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-white p-6 shadow-sm">
+        <aside className="rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] p-6 shadow-sm">
           <h2 className="mb-6 text-sm font-bold text-[var(--hc-text)]">Selected Patient</h2>
 
           {selectedAppointment ? (
@@ -209,7 +209,7 @@ function initials(fullName: string) {
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+      <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">
         {label}
       </p>
       <p className="break-words text-sm font-bold text-[var(--hc-text)]">

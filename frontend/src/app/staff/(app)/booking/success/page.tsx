@@ -7,7 +7,7 @@ export default function BookingSuccessPage() {
       <div className="w-full max-w-[720px] flex flex-col space-y-10">
 
         <header className="flex flex-col items-center text-center space-y-6">
-          <div className="w-20 h-20 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-sm">
+          <div className="w-20 h-20 flex items-center justify-center rounded-full bg-emerald-100 text-[var(--hc-success)] shadow-sm">
             <HcIcon name="check_circle" className="text-5xl" />
           </div>
           <div className="space-y-2">
@@ -20,10 +20,10 @@ export default function BookingSuccessPage() {
           </div>
         </header>
 
-        <section className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8 md:p-10 flex flex-col gap-8">
+        <section className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8 md:p-10 flex flex-col gap-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="flex flex-col space-y-4">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Practitioner</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Practitioner</span>
               <div className="flex items-center space-x-4">
                 <Image
                   alt="Doctor Profile"
@@ -33,13 +33,13 @@ export default function BookingSuccessPage() {
                 />
                 <div className="flex flex-col">
                   <h2 className="text-lg font-bold text-[var(--hc-text)]">Dr. Julian Sterling</h2>
-                  <p className="text-sm font-medium text-slate-500">Chief Cardiologist</p>
+                  <p className="text-sm font-medium text-[var(--hc-text-muted)]">Chief Cardiologist</p>
                 </div>
               </div>
             </div>
 
             <div className="flex flex-col space-y-4">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Schedule Details</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Schedule Details</span>
               <div className="space-y-3">
                 <div className="flex items-center space-x-3 text-[var(--hc-text)]">
                   <HcIcon name="calendar_today" className="text-[var(--hc-primary)] text-xl" />
@@ -56,13 +56,13 @@ export default function BookingSuccessPage() {
           <div className="h-px bg-[var(--hc-border-soft)] w-full"></div>
 
           <div className="space-y-4">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Instructions</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Instructions</span>
             <ul className="space-y-4">
-              <li className="flex items-start gap-3 bg-slate-50 p-4 rounded-[var(--radius-lg)]">
+              <li className="flex items-start gap-3 bg-[var(--hc-surface-soft)] p-4 rounded-[var(--radius-lg)]">
                 <HcIcon name="info" className="text-[var(--hc-primary)] mt-0.5 shrink-0" />
                 <p className="text-sm text-[var(--hc-text-secondary)] leading-relaxed font-medium">Please arrive 15 minutes prior to your appointment at the <strong className="text-[var(--hc-text)]">West Wing Cardiology Department, Level 4</strong>.</p>
               </li>
-              <li className="flex items-start gap-3 bg-slate-50 p-4 rounded-[var(--radius-lg)]">
+              <li className="flex items-start gap-3 bg-[var(--hc-surface-soft)] p-4 rounded-[var(--radius-lg)]">
                 <HcIcon name="mail" className="text-[var(--hc-primary)] mt-0.5 shrink-0" />
                 <p className="text-sm text-[var(--hc-text-secondary)] leading-relaxed font-medium">A confirmation email has been sent to your registered address with the digital check-in QR code.</p>
               </li>
@@ -80,7 +80,7 @@ export default function BookingSuccessPage() {
         </footer>
 
         <div className="pt-8 text-center">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--hc-text-muted)]">
             Automated Hospital Core System &copy; 2024 HOSPITAL CORE
           </p>
         </div>

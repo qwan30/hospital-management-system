@@ -51,9 +51,9 @@ export default function StaffSupportPage() {
       {/* Content Grid */}
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-6">
         {/* Support Form */}
-        <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+        <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
           <div className="px-6 py-4 border-b border-[var(--hc-border-soft)] flex items-center gap-3">
-            <div className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] bg-blue-50 text-[var(--hc-primary)]">
+            <div className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] bg-[var(--hc-primary-bg)] text-[var(--hc-primary)]">
               <HelpCircle className="w-5 h-5" />
             </div>
             <h2 className="text-sm font-bold text-[var(--hc-text)]">Open Request</h2>
@@ -64,7 +64,7 @@ export default function StaffSupportPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="station-id" className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Station or Staff ID</label>
+                <label htmlFor="station-id" className="block text-[10px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] mb-1.5">Station or Staff ID</label>
                 <input
                   id="station-id"
                   type="text"
@@ -75,7 +75,7 @@ export default function StaffSupportPage() {
                 />
               </div>
               <div>
-                <label htmlFor="support-category" className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Support Category</label>
+                <label htmlFor="support-category" className="block text-[10px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] mb-1.5">Support Category</label>
                 <select
                   id="support-category"
                   value={category}
@@ -88,7 +88,7 @@ export default function StaffSupportPage() {
                 </select>
               </div>
               <div className="md:col-span-2">
-                <label htmlFor="support-desc" className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Issue Description</label>
+                <label htmlFor="support-desc" className="block text-[10px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] mb-1.5">Issue Description</label>
                 <textarea
                   id="support-desc"
                   className="hc-input w-full min-h-[120px] resize-y"
@@ -112,7 +112,7 @@ export default function StaffSupportPage() {
         {/* Critical Escalation */}
         <div className="bg-slate-900 rounded-[var(--radius-xl)] shadow-sm overflow-hidden flex flex-col">
           <div className="px-6 py-4 border-b border-slate-700 flex items-center gap-3">
-            <div className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] bg-red-500/20 text-red-400">
+            <div className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] bg-[var(--hc-danger-bg)]0/20 text-red-400">
               <ShieldAlert className="w-5 h-5" />
             </div>
             <h2 className="text-sm font-bold text-white">Critical Escalation</h2>
@@ -122,14 +122,14 @@ export default function StaffSupportPage() {
               <p className="text-xl font-light text-slate-200 leading-relaxed">
                 For patient-safety blocking issues, page the active clinical command desk.
               </p>
-              <div className="mt-4 flex items-center gap-2 text-slate-400 text-sm">
+              <div className="mt-4 flex items-center gap-2 text-[var(--hc-text-muted)] text-sm">
                 <Clock className="w-4 h-4" />
                 <span>24/7 emergency support available</span>
               </div>
             </div>
             <Link
               href="/staff/queue"
-              className="mt-6 inline-flex items-center justify-center gap-2 h-12 border border-white/30 rounded-[var(--radius-md)] px-6 text-sm font-bold text-white hover:bg-white hover:text-slate-900 transition-all"
+              className="mt-6 inline-flex items-center justify-center gap-2 h-12 border border-white/30 rounded-[var(--radius-md)] px-6 text-sm font-bold text-white hover:bg-[var(--hc-surface)] hover:text-slate-900 transition-all"
             >
               <AlertTriangle className="w-4 h-4" />
               Open Queue Board

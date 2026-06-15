@@ -245,10 +245,10 @@ export default function AdminInventoryPage() {
       "In Stock": "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
       "Low Stock": "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
       Critical: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
-      Reorder: "bg-purple-50 text-purple-600",
+      Reorder: "bg-[var(--hc-purple-bg)] text-[var(--hc-purple)]",
     };
     return (
-      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-bold rounded-full ${colors[status] ?? "bg-slate-100 text-slate-600"}`}>
+      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-bold rounded-full ${colors[status] ?? "bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]"}`}>
         <span className={`w-1.5 h-1.5 rounded-full ${status === "In Stock" ? "bg-[var(--hc-success)]" : status === "Low Stock" ? "bg-[var(--hc-warning)]" : status === "Critical" ? "bg-[var(--hc-danger)]" : "bg-purple-600"}`} />
         {status}
       </span>
@@ -263,7 +263,7 @@ export default function AdminInventoryPage() {
     return (
       <div className="flex items-center gap-2">
         <span className="text-sm font-bold text-[var(--hc-text)] tabular-nums">{quantity.toLocaleString()}</span>
-        <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+        <div className="w-16 h-1.5 bg-[var(--hc-surface-soft)] rounded-full overflow-hidden">
           <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
         </div>
       </div>
@@ -306,7 +306,7 @@ export default function AdminInventoryPage() {
       {/* Filter Bar */}
       <section className="mt-6 flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px] max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--hc-text-muted)]" />
           <input
             type="search"
             placeholder="Search by item name or SKU…"
@@ -321,18 +321,18 @@ export default function AdminInventoryPage() {
         <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} className="hc-input min-w-[140px]">
           {statusOptions.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-colors">
+        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors">
           <Filter className="w-4 h-4" /> Advanced Filter
         </button>
-        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-colors">
+        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors">
           <Download className="w-4 h-4" /> Export
         </button>
       </section>
 
       {/* Table */}
-      <section className="mt-4 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+      <section className="mt-4 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
         {isLoading ? (
-          <div className="p-12 text-center text-slate-400">Loading inventory…</div>
+          <div className="p-12 text-center text-[var(--hc-text-muted)]">Loading inventory…</div>
         ) : (
           <>
             <div className="overflow-x-auto">
@@ -351,16 +351,16 @@ export default function AdminInventoryPage() {
                 </thead>
                 <tbody>
                   {paged.length === 0 ? (
-                    <tr><td colSpan={8} className="hc-td text-center py-12 text-slate-400">No items found</td></tr>
+                    <tr><td colSpan={8} className="hc-td text-center py-12 text-[var(--hc-text-muted)]">No items found</td></tr>
                   ) : (
                     paged.map((item) => {
                       const status = getItemStatus(item);
                       return (
-                        <tr key={item.itemId} className="hover:bg-slate-50/50 transition-colors">
+                        <tr key={item.itemId} className="hover:bg-[var(--hc-surface-soft)] transition-colors">
                           <td className="hc-td">
                             <div>
                               <p className="font-semibold text-[var(--hc-text)]">{item.itemName}</p>
-                              <p className="text-xs text-slate-400">{item.sku}</p>
+                              <p className="text-xs text-[var(--hc-text-muted)]">{item.sku}</p>
                             </div>
                           </td>
                           <td className="hc-td text-sm">{item.category}</td>
@@ -370,16 +370,16 @@ export default function AdminInventoryPage() {
                           <td className="hc-td text-sm tabular-nums">{item.reorderLevel.toLocaleString()}</td>
                           <td className="hc-td text-sm">{item.departmentName || "N/A"}</td>
                           <td className="hc-td"><StatusBadge status={status} /></td>
-                          <td className="hc-td text-sm text-slate-500">
+                          <td className="hc-td text-sm text-[var(--hc-text-muted)]">
                             {item.lastRestockedAt ? new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(item.lastRestockedAt)) : "N/A"}
                           </td>
                           <td className="hc-td text-right">
                             <div className="flex items-center justify-end gap-1">
-                              <button type="button" className="p-1.5 hover:bg-slate-100 rounded-[var(--radius-md)] transition-colors" title="View">
-                                <Eye className="w-4 h-4 text-slate-500" />
+                              <button type="button" className="p-1.5 hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" title="View">
+                                <Eye className="w-4 h-4 text-[var(--hc-text-muted)]" />
                               </button>
-                              <button type="button" onClick={() => openEdit(item)} className="p-1.5 hover:bg-slate-100 rounded-[var(--radius-md)] transition-colors" title="Edit">
-                                <MoreVertical className="w-4 h-4 text-slate-500" />
+                              <button type="button" onClick={() => openEdit(item)} className="p-1.5 hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" title="Edit">
+                                <MoreVertical className="w-4 h-4 text-[var(--hc-text-muted)]" />
                               </button>
                             </div>
                           </td>
@@ -393,25 +393,25 @@ export default function AdminInventoryPage() {
 
             {/* Pagination */}
             <div className="px-6 py-3 flex items-center justify-between border-t border-[var(--hc-border-soft)] text-sm">
-              <span className="text-slate-500">
+              <span className="text-[var(--hc-text-muted)]">
                 Showing {((page - 1) * PAGE_SIZE) + 1} to {Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length} items
               </span>
               <div className="flex items-center gap-1">
-                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 transition-colors">
+                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30 transition-colors">
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
-                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-slate-100"}`}>
+                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-[var(--hc-surface-soft)]"}`}>
                     {p}
                   </button>
                 ))}
-                {totalPages > 5 && <span className="px-1 text-slate-400">…</span>}
+                {totalPages > 5 && <span className="px-1 text-[var(--hc-text-muted)]">…</span>}
                 {totalPages > 5 && (
-                  <button type="button" onClick={() => setPage(totalPages)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === totalPages ? "bg-[var(--hc-primary)] text-white" : "hover:bg-slate-100"}`}>
+                  <button type="button" onClick={() => setPage(totalPages)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === totalPages ? "bg-[var(--hc-primary)] text-white" : "hover:bg-[var(--hc-surface-soft)]"}`}>
                     {totalPages}
                   </button>
                 )}
-                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 transition-colors">
+                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30 transition-colors">
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -476,7 +476,7 @@ function SortHeader({ label, field, current, dir, onSort }: { label: string; fie
     <th className="hc-th cursor-pointer select-none group" onClick={() => onSort(field)}>
       <span className="flex items-center gap-1">
         {label}
-        <ChevronsUpDown className={`w-3 h-3 transition-colors ${current === field ? "text-[var(--hc-primary)]" : "text-slate-300 group-hover:text-slate-500"}`} />
+        <ChevronsUpDown className={`w-3 h-3 transition-colors ${current === field ? "text-[var(--hc-primary)]" : "text-slate-300 group-hover:text-[var(--hc-text-muted)]"}`} />
       </span>
     </th>
   );

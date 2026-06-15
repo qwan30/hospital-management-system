@@ -163,7 +163,7 @@ export default function AdminUserDetailEditPage() {
         ) : (
           <div className="grid grid-cols-12 gap-8">
             <form className="col-span-12 lg:col-span-8" noValidate onSubmit={handleSubmit}>
-              <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl shadow-sm p-8 grid grid-cols-2 gap-5">
+              <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-xl shadow-sm p-8 grid grid-cols-2 gap-5">
                 <FormInput label="Full Name" onChange={(value) => setForm({ ...form, fullName: value })} required value={form.fullName} />
                 <FormInput label="Email" onChange={(value) => setForm({ ...form, email: value })} required type="email" value={form.email} />
                 <FormInput label="Phone" onChange={(value) => setForm({ ...form, phone: value })} value={form.phone} />
@@ -197,11 +197,11 @@ export default function AdminUserDetailEditPage() {
             </form>
 
             <aside className="col-span-12 lg:col-span-4 space-y-4">
-              <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl shadow-sm p-6">
+              <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-xl shadow-sm p-6">
                 <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">User ID</div>
                 <div className="text-sm font-mono break-all text-[var(--hc-text)]">{user.userId}</div>
               </div>
-              <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl shadow-sm p-6">
+              <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-xl shadow-sm p-6">
                 <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">Department</div>
                 <div className="text-2xl font-light text-[var(--hc-text)]">{user.departmentName || "Unassigned"}</div>
               </div>

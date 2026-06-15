@@ -44,9 +44,9 @@ export default function PrescriptionPreviewPage() {
 
           <div className="mt-auto">
             <div className="bg-[var(--hc-surface-soft)] border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] p-6 flex items-start gap-4 shadow-sm">
-              <HcIcon name="verified" className="text-blue-600 shrink-0 w-6 h-6" />
+              <HcIcon name="verified" className="text-[var(--hc-primary)] shrink-0 w-6 h-6" />
               <div>
-                <p className="text-[10px] text-blue-600 font-bold uppercase tracking-widest">Digital Signature</p>
+                <p className="text-[10px] text-[var(--hc-primary)] font-bold uppercase tracking-widest">Digital Signature</p>
                 <p className="text-xs font-bold text-[var(--hc-text)] mt-1">Verified by Dr. Sarah Chen</p>
               </div>
             </div>

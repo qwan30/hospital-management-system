@@ -93,7 +93,7 @@ export default function DoctorSchedulePage() {
             type="button"
             onClick={loadSchedule}
             disabled={isLoading}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)] transition-colors disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} /> Refresh
           </button>
@@ -111,7 +111,7 @@ export default function DoctorSchedulePage() {
       {/* Filter Bar */}
       <section className="mt-6 flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px] max-w-md">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--hc-text-muted)]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
           <input
             aria-label="Search by name, code, phone"
             type="search"
@@ -142,12 +142,12 @@ export default function DoctorSchedulePage() {
           <option>Done</option>
           <option>Cancelled</option>
         </select>
-        <div className="flex items-center p-1 bg-slate-100 rounded-[var(--radius-md)]">
+        <div className="flex items-center p-1 bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)]">
           <button
             className={`px-5 py-2 text-xs font-bold rounded-[var(--radius-sm)] transition-colors ${
               viewMode === "day"
-                ? "bg-white text-[var(--hc-primary)] shadow-sm"
-                : "text-slate-500 hover:bg-white/50"
+                ? "bg-[var(--hc-surface)] text-[var(--hc-primary)] shadow-sm"
+                : "text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface)]/50"
             }`}
             type="button"
             onClick={() => setViewMode("day")}
@@ -157,8 +157,8 @@ export default function DoctorSchedulePage() {
           <button
             className={`px-5 py-2 text-xs font-bold rounded-[var(--radius-sm)] transition-colors ${
               viewMode === "week"
-                ? "bg-white text-[var(--hc-primary)] shadow-sm"
-                : "text-slate-500 hover:bg-white/50"
+                ? "bg-[var(--hc-surface)] text-[var(--hc-primary)] shadow-sm"
+                : "text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface)]/50"
             }`}
             type="button"
             onClick={() => setViewMode("week")}
@@ -177,7 +177,7 @@ export default function DoctorSchedulePage() {
           <div className="flex-1">
             <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-danger)] mb-1">APPOINTMENT SCHEDULE UNAVAILABLE</p>
             <h3 className="text-lg font-bold text-[var(--hc-text)]">{error}</h3>
-            <p className="mt-1 text-sm text-slate-500">We&apos;re having trouble retrieving the appointment schedule right now.</p>
+            <p className="mt-1 text-sm text-[var(--hc-text-muted)]">We&apos;re having trouble retrieving the appointment schedule right now.</p>
           </div>
           <button type="button" onClick={loadSchedule} className="hc-button-primary flex items-center gap-2">
             <RefreshCw className="w-4 h-4" /> Retry
@@ -186,14 +186,14 @@ export default function DoctorSchedulePage() {
       )}
 
       {/* Table */}
-      <section className="mt-4 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+      <section className="mt-4 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="p-12 text-center" aria-busy="true">
             <div className="inline-block w-6 h-6 border-2 border-slate-200 border-t-[var(--hc-primary)] rounded-full animate-spin" />
-            <p className="mt-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Loading schedule…</p>
+            <p className="mt-3 text-sm font-bold text-[var(--hc-text-muted)] uppercase tracking-widest">Loading schedule…</p>
           </div>
         ) : appointments.length === 0 && !error ? (
-          <div className="p-12 text-center text-sm font-semibold text-slate-400">
+          <div className="p-12 text-center text-sm font-semibold text-[var(--hc-text-muted)]">
             No appointments scheduled for this {viewMode === "day" ? "date" : "week"}.
           </div>
         ) : appointments.length > 0 ? (
@@ -211,7 +211,7 @@ export default function DoctorSchedulePage() {
                 </thead>
                 <tbody>
                   {paged.map((appt) => (
-                    <tr key={appt.appointmentId} className="hover:bg-slate-50/50 transition-colors">
+                    <tr key={appt.appointmentId} className="hover:bg-[var(--hc-surface-soft)] transition-colors">
                       <td className="hc-td">
                         <span className="font-mono text-sm font-bold text-[var(--hc-primary)]">
                           {formatTime(appt.startTime)} to {formatTime(appt.endTime)}
@@ -226,7 +226,7 @@ export default function DoctorSchedulePage() {
                         </div>
                       </td>
                       <td className="hc-td"><ScheduleStatusBadge status={appt.status} /></td>
-                      <td className="hc-td text-sm font-mono text-slate-500">{appt.appointmentDate}</td>
+                      <td className="hc-td text-sm font-mono text-[var(--hc-text-muted)]">{appt.appointmentDate}</td>
                       <td className="hc-td text-sm text-[var(--hc-text)]">{appt.doctorName}</td>
                     </tr>
                   ))}
@@ -236,19 +236,19 @@ export default function DoctorSchedulePage() {
 
             {/* Pagination */}
             <div className="px-6 py-3 flex items-center justify-between border-t border-[var(--hc-border-soft)] text-sm">
-              <span className="text-slate-500">
+              <span className="text-[var(--hc-text-muted)]">
                 Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, appointments.length)} of {appointments.length}
               </span>
               <div className="flex items-center gap-1">
-                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30">
+                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30">
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
-                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-slate-100"}`}>
+                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-[var(--hc-surface-soft)]"}`}>
                     {p}
                   </button>
                 ))}
-                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30">
+                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30">
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -264,10 +264,10 @@ function ScheduleStatusBadge({ status }: { status: string }) {
   const config: Record<string, { dot: string; bg: string }> = {
     CONFIRMED: { dot: "bg-[var(--hc-primary)]", bg: "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]" },
     CHECKED_IN: { dot: "bg-[var(--hc-success)]", bg: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]" },
-    IN_PROGRESS: { dot: "bg-amber-500", bg: "bg-amber-50 text-amber-700" },
-    DONE: { dot: "bg-slate-400", bg: "bg-slate-100 text-slate-600" },
+    IN_PROGRESS: { dot: "bg-[var(--hc-amber-bg)]0", bg: "bg-[var(--hc-amber-bg)] text-amber-700" },
+    DONE: { dot: "bg-slate-400", bg: "bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]" },
     CANCELLED: { dot: "bg-[var(--hc-danger)]", bg: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]" },
-    PENDING: { dot: "bg-slate-400", bg: "bg-slate-100 text-slate-500" },
+    PENDING: { dot: "bg-slate-400", bg: "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]" },
   };
 
   const c = config[status] ?? config.PENDING;

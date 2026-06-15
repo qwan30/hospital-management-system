@@ -131,7 +131,7 @@ export default function StaffLabResultsPage() {
       {/* Filter Bar */}
       <section className="mt-6 flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px] max-w-md">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--hc-text-muted)]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
           <input
             aria-label="Search by report ID, patient, or test"
             type="search"
@@ -142,7 +142,7 @@ export default function StaffLabResultsPage() {
           />
         </div>
         <div className="flex flex-col min-w-[160px]">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Status</span>
+          <span className="text-[10px] font-bold text-[var(--hc-text-muted)] uppercase tracking-wider mb-1">Status</span>
           <select
             aria-label="Filter by status"
             value={statusFilter}
@@ -156,7 +156,7 @@ export default function StaffLabResultsPage() {
           </select>
         </div>
         <div className="flex flex-col min-w-[160px]">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Date Range</span>
+          <span className="text-[10px] font-bold text-[var(--hc-text-muted)] uppercase tracking-wider mb-1">Date Range</span>
           <select
             aria-label="Filter by date range"
             value={dateFilter}
@@ -168,17 +168,17 @@ export default function StaffLabResultsPage() {
             <option>All Time</option>
           </select>
         </div>
-        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-colors self-end">
+        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors self-end">
           <Download className="w-4 h-4" /> Export
         </button>
       </section>
 
       {/* Table */}
-      <section className="mt-4 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+      <section className="mt-4 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="p-12 text-center" aria-busy="true">
             <div className="inline-block w-6 h-6 border-2 border-slate-200 border-t-[var(--hc-primary)] rounded-full animate-spin" />
-            <p className="mt-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Loading lab results…</p>
+            <p className="mt-3 text-sm font-bold text-[var(--hc-text-muted)] uppercase tracking-widest">Loading lab results…</p>
           </div>
         ) : (
           <>
@@ -196,13 +196,13 @@ export default function StaffLabResultsPage() {
                 <tbody>
                   {paged.length > 0 ? (
                     paged.map((row) => (
-                      <tr key={row.labResultId} className="hover:bg-slate-50/50 transition-colors">
+                      <tr key={row.labResultId} className="hover:bg-[var(--hc-surface-soft)] transition-colors">
                         <td className="hc-td">
                           <div>
                             <Link href={`/staff/lab-results/${row.labResultId}`} className="font-mono text-sm font-bold text-[var(--hc-primary)] hover:underline">
                               {row.labResultId}
                             </Link>
-                            <p className="flex items-center gap-1 mt-0.5 text-[11px] text-slate-400">
+                            <p className="flex items-center gap-1 mt-0.5 text-[11px] text-[var(--hc-text-muted)]">
                               <Clock className="w-3 h-3" /> {row.appointmentDate}
                             </p>
                           </div>
@@ -231,7 +231,7 @@ export default function StaffLabResultsPage() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={5} className="hc-td text-center py-12 text-slate-400">
+                      <td colSpan={5} className="hc-td text-center py-12 text-[var(--hc-text-muted)]">
                         No lab results found.
                       </td>
                     </tr>
@@ -242,20 +242,20 @@ export default function StaffLabResultsPage() {
 
             {/* Footer */}
             <div className="px-6 py-3 border-t border-[var(--hc-border-soft)] flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2 text-slate-400">
+              <div className="flex items-center gap-2 text-[var(--hc-text-muted)]">
                 <Clock className="w-3.5 h-3.5" />
                 <span>All times shown in your local timezone</span>
               </div>
               <div className="flex items-center gap-1">
-                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 transition-colors">
+                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30 transition-colors">
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
-                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-slate-100"}`}>
+                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-[var(--hc-surface-soft)]"}`}>
                     {p}
                   </button>
                 ))}
-                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 transition-colors">
+                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30 transition-colors">
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -272,7 +272,7 @@ export default function StaffLabResultsPage() {
 function LabStatusBadge({ status }: { status: string }) {
   const lower = status.toLowerCase();
   let dotClass = "bg-slate-400";
-  let badgeClass = "bg-slate-100 text-slate-600";
+  let badgeClass = "bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]";
   let label = status;
 
   if (lower.includes("critical") || lower.includes("abnormal")) {
@@ -284,8 +284,8 @@ function LabStatusBadge({ status }: { status: string }) {
     badgeClass = "bg-[var(--hc-success-bg)] text-[var(--hc-success)]";
     label = "VERIFIED";
   } else if (lower.includes("pending")) {
-    dotClass = "bg-amber-500";
-    badgeClass = "bg-amber-50 text-amber-700";
+    dotClass = "bg-[var(--hc-amber-bg)]0";
+    badgeClass = "bg-[var(--hc-amber-bg)] text-amber-700";
     label = "PENDING SIGN-OFF";
   }
 

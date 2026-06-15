@@ -9,15 +9,15 @@ export default function BookingWizardSymptomsPage() {
             <span className="w-5 h-5 flex items-center justify-center border border-[var(--hc-primary)] rounded-[var(--radius-sm)] text-[10px] mr-2">1</span>
             Symptoms
           </div>
-          <div className="flex items-center px-6 py-4 text-slate-400 font-bold text-sm">
+          <div className="flex items-center px-6 py-4 text-[var(--hc-text-muted)] font-bold text-sm">
             <span className="w-5 h-5 flex items-center justify-center border border-slate-200 rounded-[var(--radius-sm)] text-[10px] mr-2">2</span>
             Triage
           </div>
-          <div className="flex items-center px-6 py-4 text-slate-400 font-bold text-sm">
+          <div className="flex items-center px-6 py-4 text-[var(--hc-text-muted)] font-bold text-sm">
             <span className="w-5 h-5 flex items-center justify-center border border-slate-200 rounded-[var(--radius-sm)] text-[10px] mr-2">3</span>
             Scheduling
           </div>
-          <div className="flex items-center px-6 py-4 text-slate-400 font-bold text-sm">
+          <div className="flex items-center px-6 py-4 text-[var(--hc-text-muted)] font-bold text-sm">
             <span className="w-5 h-5 flex items-center justify-center border border-slate-200 rounded-[var(--radius-sm)] text-[10px] mr-2">4</span>
             Confirmation
           </div>
@@ -27,8 +27,8 @@ export default function BookingWizardSymptomsPage() {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        <section className="col-span-12 lg:col-span-7 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Patient Input Section</h2>
+        <section className="col-span-12 lg:col-span-7 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--hc-text-muted)] mb-6">Patient Input Section</h2>
 
           <div className="mb-8">
             <label className="block text-sm font-bold mb-2 text-[var(--hc-text)]">Primary Complaint</label>
@@ -90,14 +90,14 @@ export default function BookingWizardSymptomsPage() {
           </div>
         </section>
 
-        <section className="col-span-12 lg:col-span-5 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8 sticky top-8">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Real-time Analysis</h2>
+        <section className="col-span-12 lg:col-span-5 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8 sticky top-8">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--hc-text-muted)] mb-6">Real-time Analysis</h2>
 
           <div className="space-y-6">
-            <div className="p-6 bg-slate-50 border-l-4 border-[var(--hc-danger)] rounded-r-[var(--radius-xl)]">
+            <div className="p-6 bg-[var(--hc-surface-soft)] border-l-4 border-[var(--hc-danger)] rounded-r-[var(--radius-xl)]">
               <div className="flex justify-between items-start mb-4">
                 <span className="bg-[var(--hc-danger)] text-[10px] text-white px-2 py-1 font-bold uppercase rounded-full">Urgency: High</span>
-                <span className="text-[10px] font-bold text-slate-400 uppercase">Code: CLIN-042</span>
+                <span className="text-[10px] font-bold text-[var(--hc-text-muted)] uppercase">Code: CLIN-042</span>
               </div>
               <h3 className="text-sm font-bold mb-2 text-[var(--hc-text)]">Preliminary Assessment</h3>
               <p className="text-xs text-[var(--hc-text-secondary)] leading-relaxed">
@@ -107,22 +107,22 @@ export default function BookingWizardSymptomsPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="p-5 border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)]">
-                <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Vital Match</p>
+                <p className="text-[10px] font-bold text-[var(--hc-text-muted)] uppercase mb-2">Vital Match</p>
                 <p className="text-2xl font-black text-[var(--hc-text)]">94%</p>
-                <div className="w-full bg-slate-100 h-1 mt-3 rounded-full overflow-hidden">
+                <div className="w-full bg-[var(--hc-surface-soft)] h-1 mt-3 rounded-full overflow-hidden">
                   <div className="bg-[var(--hc-primary)] w-[94%] h-full"></div>
                 </div>
               </div>
               <div className="p-5 border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)]">
-                <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Risk Level</p>
+                <p className="text-[10px] font-bold text-[var(--hc-text-muted)] uppercase mb-2">Risk Level</p>
                 <p className="text-2xl font-black text-[var(--hc-danger)]">Elevated</p>
-                <div className="w-full bg-slate-100 h-1 mt-3 rounded-full overflow-hidden">
+                <div className="w-full bg-[var(--hc-surface-soft)] h-1 mt-3 rounded-full overflow-hidden">
                   <div className="bg-[var(--hc-danger)] w-[75%] h-full"></div>
                 </div>
               </div>
             </div>
 
-            <div className="p-5 bg-blue-50 border border-blue-100 rounded-[var(--radius-lg)] flex gap-4 items-start">
+            <div className="p-5 bg-[var(--hc-primary-bg)] border border-blue-100 rounded-[var(--radius-lg)] flex gap-4 items-start">
               <HcIcon name="smart_toy" className="text-blue-500 shrink-0" />
               <div>
                 <h4 className="text-xs font-bold text-blue-900 mb-1">AI Recommendation</h4>

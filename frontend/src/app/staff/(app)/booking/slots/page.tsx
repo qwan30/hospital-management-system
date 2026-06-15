@@ -6,19 +6,19 @@ export default function BookingDoctorSlotSelectionPage() {
     <main className="max-w-[1400px] mx-auto p-8 pb-20">
       <header className="mb-8">
         <nav className="flex items-center gap-0 mb-8 border-b border-[var(--hc-border-soft)]">
-          <div className="flex items-center px-6 py-4 border-b-2 border-transparent text-slate-400 font-bold text-sm">
-            <span className="w-5 h-5 flex items-center justify-center border border-slate-200 bg-slate-100 rounded-[var(--radius-sm)] text-[10px] mr-2">1</span>
+          <div className="flex items-center px-6 py-4 border-b-2 border-transparent text-[var(--hc-text-muted)] font-bold text-sm">
+            <span className="w-5 h-5 flex items-center justify-center border border-slate-200 bg-[var(--hc-surface-soft)] rounded-[var(--radius-sm)] text-[10px] mr-2">1</span>
             Symptoms
           </div>
           <div className="flex items-center px-6 py-4 border-b-2 border-[var(--hc-primary)] text-[var(--hc-primary)] font-bold text-sm">
             <span className="w-5 h-5 flex items-center justify-center border border-[var(--hc-primary)] rounded-[var(--radius-sm)] text-[10px] mr-2">2</span>
             Triage & Slots
           </div>
-          <div className="flex items-center px-6 py-4 text-slate-400 font-bold text-sm">
+          <div className="flex items-center px-6 py-4 text-[var(--hc-text-muted)] font-bold text-sm">
             <span className="w-5 h-5 flex items-center justify-center border border-slate-200 rounded-[var(--radius-sm)] text-[10px] mr-2">3</span>
             Patient Info
           </div>
-          <div className="flex items-center px-6 py-4 text-slate-400 font-bold text-sm">
+          <div className="flex items-center px-6 py-4 text-[var(--hc-text-muted)] font-bold text-sm">
             <span className="w-5 h-5 flex items-center justify-center border border-slate-200 rounded-[var(--radius-sm)] text-[10px] mr-2">4</span>
             Confirmation
           </div>
@@ -31,15 +31,15 @@ export default function BookingDoctorSlotSelectionPage() {
         <div className="col-span-12 lg:col-span-8 flex flex-col gap-6">
           <section className="flex flex-col gap-4">
             <div className="flex items-center justify-between px-2">
-              <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400">Available Specialists</h2>
+              <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Available Specialists</h2>
               <div className="flex gap-4">
                 <span className="text-xs text-[var(--hc-primary)] font-bold cursor-pointer hover:underline">FILTER BY SENIORITY</span>
-                <span className="text-xs text-slate-400 font-bold cursor-pointer hover:text-[var(--hc-text)] transition-colors">SORT BY AVAILABILITY</span>
+                <span className="text-xs text-[var(--hc-text-muted)] font-bold cursor-pointer hover:text-[var(--hc-text)] transition-colors">SORT BY AVAILABILITY</span>
               </div>
             </div>
 
             {/* Doctor Card 1 */}
-            <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6 flex flex-col md:flex-row gap-8 hover:border-slate-300 transition-colors group">
+            <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6 flex flex-col md:flex-row gap-8 hover:border-slate-300 transition-colors group">
               <div className="shrink-0">
                 <Image
                   alt="Dr. Sarah Jenkins"
@@ -61,7 +61,7 @@ export default function BookingDoctorSlotSelectionPage() {
                 {/* Slot Groups */}
                 <div className="space-y-5">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-3">Morning Slots</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)] block mb-3">Morning Slots</span>
                     <div className="flex flex-wrap gap-2">
                       <button className="px-4 py-2 border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] text-sm font-medium hover:border-[var(--hc-primary)] hover:text-[var(--hc-primary)] transition-colors">08:30 AM</button>
                       <button className="px-4 py-2 bg-[var(--hc-primary)] border border-[var(--hc-primary)] rounded-[var(--radius-md)] text-white text-sm font-medium shadow-sm">09:15 AM</button>
@@ -70,11 +70,11 @@ export default function BookingDoctorSlotSelectionPage() {
                     </div>
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-3">Afternoon Slots</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)] block mb-3">Afternoon Slots</span>
                     <div className="flex flex-wrap gap-2">
                       <button className="px-4 py-2 border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] text-sm font-medium hover:border-[var(--hc-primary)] hover:text-[var(--hc-primary)] transition-colors">01:45 PM</button>
                       <button className="px-4 py-2 border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] text-sm font-medium hover:border-[var(--hc-primary)] hover:text-[var(--hc-primary)] transition-colors">02:30 PM</button>
-                      <button className="px-4 py-2 border border-slate-200 bg-slate-50 text-slate-300 rounded-[var(--radius-md)] text-sm font-medium cursor-not-allowed">03:15 PM</button>
+                      <button className="px-4 py-2 border border-slate-200 bg-[var(--hc-surface-soft)] text-slate-300 rounded-[var(--radius-md)] text-sm font-medium cursor-not-allowed">03:15 PM</button>
                       <button className="px-4 py-2 border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] text-sm font-medium hover:border-[var(--hc-primary)] hover:text-[var(--hc-primary)] transition-colors">04:00 PM</button>
                     </div>
                   </div>
@@ -83,7 +83,7 @@ export default function BookingDoctorSlotSelectionPage() {
             </div>
 
             {/* Doctor Card 2 */}
-            <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6 flex flex-col md:flex-row gap-8 hover:border-slate-300 transition-colors group">
+            <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6 flex flex-col md:flex-row gap-8 hover:border-slate-300 transition-colors group">
               <div className="shrink-0">
                 <Image
                   alt="Dr. Marcus Thorne"
@@ -104,14 +104,14 @@ export default function BookingDoctorSlotSelectionPage() {
                 {/* Slot Groups */}
                 <div className="space-y-5">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-3">Morning Slots</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)] block mb-3">Morning Slots</span>
                     <div className="flex flex-wrap gap-2">
                       <button className="px-4 py-2 border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] text-sm font-medium hover:border-[var(--hc-primary)] hover:text-[var(--hc-primary)] transition-colors">09:00 AM</button>
                       <button className="px-4 py-2 border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] text-sm font-medium hover:border-[var(--hc-primary)] hover:text-[var(--hc-primary)] transition-colors">10:30 AM</button>
                     </div>
                   </div>
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 block mb-3">Afternoon Slots</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)] block mb-3">Afternoon Slots</span>
                     <div className="flex flex-wrap gap-2">
                       <button className="px-4 py-2 border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] text-sm font-medium hover:border-[var(--hc-primary)] hover:text-[var(--hc-primary)] transition-colors">02:00 PM</button>
                       <button className="px-4 py-2 border border-[var(--hc-border-soft)] rounded-[var(--radius-md)] text-sm font-medium hover:border-[var(--hc-primary)] hover:text-[var(--hc-primary)] transition-colors">03:00 PM</button>
@@ -126,9 +126,9 @@ export default function BookingDoctorSlotSelectionPage() {
 
         {/* Right Column: Sticky Summary */}
         <div className="col-span-12 lg:col-span-4 sticky top-8">
-          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8 flex flex-col gap-6">
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8 flex flex-col gap-6">
             <div>
-              <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-6">Appointment Summary</h2>
+              <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--hc-text-muted)] mb-6">Appointment Summary</h2>
 
               <div className="mb-6">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-primary)]">Department</span>
@@ -153,11 +153,11 @@ export default function BookingDoctorSlotSelectionPage() {
 
               <div className="mb-2">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-primary)]">Selected Slot</span>
-                <div className="flex items-center gap-2 mt-2 bg-slate-50 border border-[var(--hc-border-soft)] px-3 py-2 rounded-[var(--radius-md)] inline-flex">
-                  <HcIcon name="calendar_today" className="w-4 h-4 text-slate-400" />
+                <div className="flex items-center gap-2 mt-2 bg-[var(--hc-surface-soft)] border border-[var(--hc-border-soft)] px-3 py-2 rounded-[var(--radius-md)] inline-flex">
+                  <HcIcon name="calendar_today" className="w-4 h-4 text-[var(--hc-text-muted)]" />
                   <span className="text-xs font-bold text-[var(--hc-text)]">Oct 24, 2023</span>
                   <span className="text-slate-300">|</span>
-                  <HcIcon name="schedule" className="w-4 h-4 text-slate-400" />
+                  <HcIcon name="schedule" className="w-4 h-4 text-[var(--hc-text-muted)]" />
                   <span className="text-xs font-bold text-[var(--hc-text)]">09:15 AM</span>
                 </div>
               </div>
@@ -172,15 +172,15 @@ export default function BookingDoctorSlotSelectionPage() {
                 <span>Continue to Patient Info</span>
                 <HcIcon name="arrow_forward" className="w-4 h-4" />
               </button>
-              <p className="text-[10px] text-slate-400 mt-4 text-center font-medium">Insurance eligibility will be verified in the next step.</p>
+              <p className="text-[10px] text-[var(--hc-text-muted)] mt-4 text-center font-medium">Insurance eligibility will be verified in the next step.</p>
             </div>
           </div>
 
-          <div className="mt-4 p-5 bg-slate-50 border border-slate-200 rounded-[var(--radius-lg)] flex items-start gap-4">
-            <HcIcon name="help_outline" className="text-slate-400 shrink-0" />
+          <div className="mt-4 p-5 bg-[var(--hc-surface-soft)] border border-slate-200 rounded-[var(--radius-lg)] flex items-start gap-4">
+            <HcIcon name="help_outline" className="text-[var(--hc-text-muted)] shrink-0" />
             <div>
-              <div className="text-xs font-bold text-slate-600 mb-1">Need help?</div>
-              <p className="text-[11px] text-slate-500 leading-relaxed font-medium">Contact the coordination desk at (555) 012-3456 for manual scheduling assistance.</p>
+              <div className="text-xs font-bold text-[var(--hc-text-secondary)] mb-1">Need help?</div>
+              <p className="text-[11px] text-[var(--hc-text-muted)] leading-relaxed font-medium">Contact the coordination desk at (555) 012-3456 for manual scheduling assistance.</p>
             </div>
           </div>
         </div>

@@ -234,13 +234,13 @@ export default function MedicalRecordEditorPage() {
         <div className="col-span-12 flex min-w-0 flex-col gap-6 sm:gap-8 xl:col-span-8">
 
           {formError ? (
-            <div className="bg-red-50 border border-red-200 text-red-700 rounded-[var(--radius-lg)] p-4 text-sm font-medium flex items-center gap-3" role="alert">
+            <div className="bg-[var(--hc-danger-bg)] border border-red-200 text-[var(--hc-danger)] rounded-[var(--radius-lg)] p-4 text-sm font-medium flex items-center gap-3" role="alert">
               <HcIcon name="warning" className="w-5 h-5 shrink-0" />
               {formError}
             </div>
           ) : null}
           {savedRecord ? (
-            <div className="bg-green-50 border border-green-200 text-green-700 rounded-[var(--radius-lg)] p-4 text-sm font-medium flex items-center gap-3" role="status">
+            <div className="bg-[var(--hc-success-bg)] border border-green-200 text-[var(--hc-success)] rounded-[var(--radius-lg)] p-4 text-sm font-medium flex items-center gap-3" role="status">
               <HcIcon name="check_circle" className="w-5 h-5 shrink-0" />
               Medical record saved. Appointment status is now {savedRecord.appointmentStatus}.
             </div>
@@ -265,7 +265,7 @@ export default function MedicalRecordEditorPage() {
                   <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)]">
                     Status
                   </label>
-                  <span className="inline-flex items-center bg-blue-50 text-blue-700 px-3 py-1 rounded-[var(--radius-sm)] text-[10px] font-bold uppercase tracking-widest">
+                  <span className="inline-flex items-center bg-[var(--hc-primary-bg)] text-blue-700 px-3 py-1 rounded-[var(--radius-sm)] text-[10px] font-bold uppercase tracking-widest">
                     {appointment.status}
                   </span>
                 </div>
@@ -334,7 +334,7 @@ export default function MedicalRecordEditorPage() {
                       <MedicationCell label={`Duration days ${index + 1}`} value={item.durationDays} onChange={(value) => updatePrescription(index, "durationDays", value)} />
                       <td className="px-6 py-4">
                         <button
-                          className="flex items-center justify-center w-8 h-8 rounded-full text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                          className="flex items-center justify-center w-8 h-8 rounded-full text-red-400 hover:text-[var(--hc-danger)] hover:bg-[var(--hc-danger-bg)] transition-colors"
                           type="button"
                           title="Remove medication"
                           onClick={() => removePrescription(index)}
@@ -415,16 +415,16 @@ export default function MedicalRecordEditorPage() {
             </div>
 
             {!canCreateRecord ? (
-              <div className="bg-red-50 border border-red-200 rounded-[var(--radius-xl)] p-6 shadow-sm" role="alert">
+              <div className="bg-[var(--hc-danger-bg)] border border-red-200 rounded-[var(--radius-xl)] p-6 shadow-sm" role="alert">
                 <div className="mb-3 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-red-100 text-[var(--hc-danger)] flex items-center justify-center">
                     <HcIcon name="warning" className="w-4 h-4" />
                   </div>
                   <h3 className="text-xs font-bold uppercase tracking-widest text-red-900">
                     Record Creation Blocked
                   </h3>
                 </div>
-                <p className="text-xs font-medium text-red-700 leading-relaxed">
+                <p className="text-xs font-medium text-[var(--hc-danger)] leading-relaxed">
                   This appointment is {appointment.status}. The backend only accepts records
                   for checked-in, in-progress, or done appointments.
                 </p>

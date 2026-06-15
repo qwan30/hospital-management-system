@@ -131,7 +131,7 @@ export default function VitalSignsEditorPage() {
         description="Record clinical telemetry for checked-in or in-progress appointments."
         action={
           <button
-            className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-white px-4 py-2 text-sm font-bold text-[var(--hc-text)] transition-colors hover:bg-slate-50 disabled:opacity-60"
+            className="inline-flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-[var(--hc-surface)] px-4 py-2 text-sm font-bold text-[var(--hc-text)] transition-colors hover:bg-[var(--hc-surface-soft)] disabled:opacity-60"
             type="button"
             onClick={loadAppointments}
             disabled={isLoading}
@@ -161,7 +161,7 @@ export default function VitalSignsEditorPage() {
       ) : null}
 
       <form className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px]" onSubmit={handleSubmit}>
-        <section className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-white shadow-sm">
+        <section className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] shadow-sm">
           <div className="border-b border-[var(--hc-border-soft)] px-6 py-4">
             <h2 className="text-sm font-bold text-[var(--hc-text)]">Record Vitals</h2>
           </div>
@@ -240,8 +240,8 @@ export default function VitalSignsEditorPage() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 border-t border-[var(--hc-border-soft)] bg-slate-50/50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+          <div className="flex flex-col gap-4 border-t border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)] px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">
               <Clock className="size-4" aria-hidden="true" />
               {selectedAppointment ? `Appointment ${selectedAppointment.confirmationCode}` : "No eligible appointment selected"}
             </p>
@@ -257,8 +257,8 @@ export default function VitalSignsEditorPage() {
         </section>
 
         <aside className="space-y-6">
-          <section className="rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-white p-6 shadow-sm">
-            <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-slate-400" htmlFor="vitals-appointment">
+          <section className="rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] p-6 shadow-sm">
+            <label className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]" htmlFor="vitals-appointment">
               Current Patient
             </label>
             <select
@@ -320,7 +320,7 @@ function VitalField({
 }) {
   return (
     <div>
-      <label className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400" htmlFor={id}>
+      <label className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)]" htmlFor={id}>
         <Icon className="size-4" aria-hidden="true" />
         {label}
       </label>
@@ -333,7 +333,7 @@ function VitalField({
           value={value}
           onChange={(event) => onChange(event.target.value)}
         />
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold uppercase text-slate-400">
+        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold uppercase text-[var(--hc-text-muted)]">
           {unit}
         </span>
       </div>
@@ -344,7 +344,7 @@ function VitalField({
 function Info({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+      <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">
         {label}
       </p>
       <p className="break-words text-sm font-bold text-[var(--hc-text)]">

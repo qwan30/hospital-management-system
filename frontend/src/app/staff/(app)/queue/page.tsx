@@ -162,9 +162,9 @@ export default function QueueBoardPage() {
     return (
       <main className="p-8 pb-20 max-w-[1400px] mx-auto" aria-busy="true">
         <PageHeader categoryLabel="QUEUE" title="Queue Board" description="Live nurse queue: today" />
-        <div className="mt-8 p-12 text-center bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm">
+        <div className="mt-8 p-12 text-center bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm">
           <div className="inline-block w-6 h-6 border-2 border-slate-200 border-t-[var(--hc-primary)] rounded-full animate-spin" />
-          <p className="mt-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Loading today&apos;s nurse queue…</p>
+          <p className="mt-3 text-sm font-bold text-[var(--hc-text-muted)] uppercase tracking-widest">Loading today&apos;s nurse queue…</p>
         </div>
       </main>
     );
@@ -206,7 +206,7 @@ export default function QueueBoardPage() {
         description="Live nurse queue: today"
         action={
           <button
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)] transition-colors disabled:opacity-50"
             type="button"
             onClick={loadQueue}
             disabled={isLoading}
@@ -225,7 +225,7 @@ export default function QueueBoardPage() {
 
       {/* Filter Bar */}
       <section className="mt-6 flex flex-wrap items-center gap-3">
-        <div className="flex items-center p-1 bg-slate-100 rounded-[var(--radius-md)]">
+        <div className="flex items-center p-1 bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)]">
           {filterOptions.map((option) => (
             <button
               key={option.value}
@@ -233,7 +233,7 @@ export default function QueueBoardPage() {
               className={`px-5 py-2 text-xs font-bold uppercase tracking-wider rounded-[var(--radius-sm)] transition-colors ${
                 activeFilter === option.value
                   ? "bg-[var(--hc-primary)] text-white shadow-sm"
-                  : "text-slate-500 hover:bg-white/70"
+                  : "text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface)]/70"
               }`}
               type="button"
               onClick={() => setActiveFilter(option.value)}
@@ -243,7 +243,7 @@ export default function QueueBoardPage() {
           ))}
         </div>
         <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--hc-text-muted)]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
           <input
             aria-label="Filter queue"
             className="hc-input w-full pl-10"
@@ -256,7 +256,7 @@ export default function QueueBoardPage() {
       </section>
 
       {/* Table */}
-      <section className="mt-4 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+      <section className="mt-4 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="hc-table w-full">
             <thead>
@@ -294,7 +294,7 @@ export default function QueueBoardPage() {
                 ))
               ) : (
                 <tr>
-                  <td className="hc-td text-center py-12 text-slate-400" colSpan={7} data-testid="queue-empty">
+                  <td className="hc-td text-center py-12 text-[var(--hc-text-muted)]" colSpan={7} data-testid="queue-empty">
                     {displayableAppointments.length === 0
                       ? "No appointments are currently in the staff queue."
                       : "No appointments match this queue filter."}
@@ -306,11 +306,11 @@ export default function QueueBoardPage() {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 border-t border-[var(--hc-border-soft)] flex flex-wrap items-center justify-between text-sm text-slate-500">
+        <div className="px-6 py-3 border-t border-[var(--hc-border-soft)] flex flex-wrap items-center justify-between text-sm text-[var(--hc-text-muted)]">
           <span>Displaying {filteredAppointments.length} of {displayableAppointments.length} queue patients</span>
           <div className="flex gap-4">
             <span className="flex items-center gap-1.5 text-xs"><span className="w-2 h-2 rounded-full bg-[var(--hc-success)]" /> Within target</span>
-            <span className="flex items-center gap-1.5 text-xs"><span className="w-2 h-2 rounded-full bg-amber-500" /> Review required</span>
+            <span className="flex items-center gap-1.5 text-xs"><span className="w-2 h-2 rounded-full bg-[var(--hc-amber-bg)]0" /> Review required</span>
             <span className="flex items-center gap-1.5 text-xs"><span className="w-2 h-2 rounded-full bg-[var(--hc-danger)]" /> SLA breach</span>
           </div>
         </div>
@@ -348,7 +348,7 @@ function QueueRow({
 
   return (
     <>
-      <tr className="hover:bg-slate-50/50 transition-colors" data-testid="queue-row">
+      <tr className="hover:bg-[var(--hc-surface-soft)] transition-colors" data-testid="queue-row">
         <td className="hc-td font-mono font-bold text-[var(--hc-primary)]">
           #{appointment.confirmationCode || appointment.appointmentId.slice(0, 8)}
         </td>
@@ -359,12 +359,12 @@ function QueueRow({
             </div>
             <div>
               <span className="font-semibold text-[var(--hc-text)]">{appointment.patientFullName}</span>
-              <span className="block text-[10px] font-bold text-slate-400 uppercase">{maskIdentifier(appointment.patientCccd)}</span>
+              <span className="block text-[10px] font-bold text-[var(--hc-text-muted)] uppercase">{maskIdentifier(appointment.patientCccd)}</span>
             </div>
           </div>
         </td>
         <td className="hc-td text-sm font-medium text-[var(--hc-text)]">{appointment.doctorName}</td>
-        <td className="hc-td text-sm text-slate-500">{appointment.checkedInAt ? formatTime(appointment.checkedInAt) : "Pending"}</td>
+        <td className="hc-td text-sm text-[var(--hc-text-muted)]">{appointment.checkedInAt ? formatTime(appointment.checkedInAt) : "Pending"}</td>
         <td className="hc-td">
           <span className={`inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase rounded-full ${getWaitBadgeClass(waitMinutes)}`}>
             {formatWait(waitMinutes)}
@@ -426,8 +426,8 @@ function ActionBtn({
 }) {
   const base = "inline-flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-bold uppercase rounded-[var(--radius-md)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
   const tones: Record<string, string> = {
-    primary: "bg-slate-100 text-[var(--hc-text)] hover:bg-[var(--hc-primary)] hover:text-white",
-    muted: "bg-slate-100 text-slate-500 hover:bg-slate-200",
+    primary: "bg-[var(--hc-surface-soft)] text-[var(--hc-text)] hover:bg-[var(--hc-primary)] hover:text-white",
+    muted: "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)] hover:bg-slate-200",
     success: "bg-[var(--hc-success-bg)] text-[var(--hc-success)] hover:bg-[var(--hc-success)] hover:text-white",
   };
 
@@ -463,7 +463,7 @@ function PhysicianAllocation({ loads }: { loads: PhysicianLoad[] }) {
         {loads.slice(0, 3).map((load) => (
           <div
             key={load.doctorId}
-            className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6"
+            className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6"
           >
             <div className="flex items-start justify-between mb-4">
               <div>
@@ -476,13 +476,13 @@ function PhysicianAllocation({ loads }: { loads: PhysicianLoad[] }) {
             </div>
             <div className="space-y-3">
               <div className="flex justify-between text-xs">
-                <span className="uppercase tracking-wider text-slate-400">Queue Load</span>
+                <span className="uppercase tracking-wider text-[var(--hc-text-muted)]">Queue Load</span>
                 <span className="font-bold text-[var(--hc-text)]">{load.total} Patients</span>
               </div>
-              <div className="h-1.5 w-full bg-slate-100 rounded-full">
+              <div className="h-1.5 w-full bg-[var(--hc-surface-soft)] rounded-full">
                 <div className="h-full bg-[var(--hc-primary)] rounded-full" style={{ width: `${Math.min(load.total * 12, 100)}%` }} />
               </div>
-              <p className="text-[10px] text-slate-500 leading-relaxed">
+              <p className="text-[10px] text-[var(--hc-text-muted)] leading-relaxed">
                 {load.waiting} waiting, {load.ready} ready, {load.inProgress} in progress.
               </p>
             </div>

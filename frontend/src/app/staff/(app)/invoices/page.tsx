@@ -196,7 +196,7 @@ export default function InvoicesPage() {
               type="button"
               onClick={loadInvoices as () => void}
               disabled={isLoading}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)] transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} /> Refresh
             </button>
@@ -221,9 +221,9 @@ export default function InvoicesPage() {
       </section>
 
       {/* Filter Bar */}
-      <section className="mt-6 flex flex-wrap items-center gap-3 bg-white p-4 border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] shadow-sm">
+      <section className="mt-6 flex flex-wrap items-center gap-3 bg-[var(--hc-surface)] p-4 border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] shadow-sm">
         <div className="relative flex-1 min-w-[200px] max-w-xs">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--hc-text-muted)]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
           <input
             aria-label="Search patients or invoices"
             className="hc-input w-full pl-10"
@@ -244,7 +244,7 @@ export default function InvoicesPage() {
         </select>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-slate-400 uppercase">From</span>
+          <span className="text-xs font-bold text-[var(--hc-text-muted)] uppercase">From</span>
           <input
             aria-label="Start date"
             type="date"
@@ -255,7 +255,7 @@ export default function InvoicesPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-slate-400 uppercase">To</span>
+          <span className="text-xs font-bold text-[var(--hc-text-muted)] uppercase">To</span>
           <input
             aria-label="End date"
             type="date"
@@ -279,7 +279,7 @@ export default function InvoicesPage() {
           <button
             type="button"
             onClick={handleExportCSV}
-            className="flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase tracking-wider border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-colors"
+            className="flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase tracking-wider border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors"
           >
             <Download className="w-3.5 h-3.5" /> Export CSV
           </button>
@@ -292,14 +292,14 @@ export default function InvoicesPage() {
       {success && <div className="mt-4 border border-[var(--hc-primary)]/20 bg-[var(--hc-success-bg)] p-4 rounded-[var(--radius-md)] text-sm font-semibold text-[var(--hc-success)]" role="status">{success}</div>}
 
       {/* Table */}
-      <section className="mt-4 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+      <section className="mt-4 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
         {isLoading ? (
           <div className="p-12 text-center" aria-busy="true">
             <div className="inline-block w-6 h-6 border-2 border-slate-200 border-t-[var(--hc-primary)] rounded-full animate-spin" />
-            <p className="mt-3 text-sm font-bold text-slate-400 uppercase tracking-widest">Loading invoices…</p>
+            <p className="mt-3 text-sm font-bold text-[var(--hc-text-muted)] uppercase tracking-widest">Loading invoices…</p>
           </div>
         ) : filteredInvoices.length === 0 ? (
-          <div className="p-12 text-center text-sm font-semibold text-slate-400">No invoices match the current filters.</div>
+          <div className="p-12 text-center text-sm font-semibold text-[var(--hc-text-muted)]">No invoices match the current filters.</div>
         ) : (
           <>
             <div className="overflow-x-auto">
@@ -318,7 +318,7 @@ export default function InvoicesPage() {
                   {paged.map((invoice) => (
                     <tr
                       key={invoice.invoiceId}
-                      className="hover:bg-slate-50/50 transition-colors cursor-pointer"
+                      className="hover:bg-[var(--hc-surface-soft)] transition-colors cursor-pointer"
                       onClick={() => { setSelectedInvoice(invoice); setPaymentMethod(""); }}
                     >
                       <td className="hc-td font-mono font-bold text-[var(--hc-primary)]">{invoice.invoiceId}</td>
@@ -329,11 +329,11 @@ export default function InvoicesPage() {
                           </div>
                           <div>
                             <span className="font-semibold text-[var(--hc-text)]">{invoice.patientFullName}</span>
-                            <span className="block text-[10px] font-bold text-slate-400">ID: {invoice.patientId}</span>
+                            <span className="block text-[10px] font-bold text-[var(--hc-text-muted)]">ID: {invoice.patientId}</span>
                           </div>
                         </div>
                       </td>
-                      <td className="hc-td text-sm text-slate-500">{formatDate(invoice.appointmentDate)}</td>
+                      <td className="hc-td text-sm text-[var(--hc-text-muted)]">{formatDate(invoice.appointmentDate)}</td>
                       <td className="hc-td text-sm font-bold text-[var(--hc-text)]">{formatCurrency(invoice.totalAmount)}</td>
                       <td className="hc-td">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-full ${statusClass(invoice.status)}`}>
@@ -354,7 +354,7 @@ export default function InvoicesPage() {
                             </button>
                             <button
                               type="button"
-                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-bold uppercase rounded-[var(--radius-md)] bg-slate-100 text-slate-500 hover:bg-slate-200 transition-colors disabled:opacity-50"
+                              className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[10px] font-bold uppercase rounded-[var(--radius-md)] bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)] hover:bg-slate-200 transition-colors disabled:opacity-50"
                               disabled={isMutating}
                               onClick={() => handleVoidInvoice(invoice)}
                             >
@@ -362,7 +362,7 @@ export default function InvoicesPage() {
                             </button>
                           </div>
                         ) : (
-                          <span className="text-[10px] font-bold text-slate-400 uppercase">No action</span>
+                          <span className="text-[10px] font-bold text-[var(--hc-text-muted)] uppercase">No action</span>
                         )}
                       </td>
                     </tr>
@@ -373,19 +373,19 @@ export default function InvoicesPage() {
 
             {/* Pagination */}
             <div className="px-6 py-3 flex items-center justify-between border-t border-[var(--hc-border-soft)] text-sm">
-              <span className="text-slate-500">
+              <span className="text-[var(--hc-text-muted)]">
                 Showing {(page - 1) * PAGE_SIZE + 1} to {Math.min(page * PAGE_SIZE, filteredInvoices.length)} of {filteredInvoices.length}
               </span>
               <div className="flex items-center gap-1">
-                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30">
+                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30">
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
-                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-slate-100"}`}>
+                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-[var(--hc-surface-soft)]"}`}>
                     {p}
                   </button>
                 ))}
-                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30">
+                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30">
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -401,9 +401,9 @@ export default function InvoicesPage() {
           <div className="absolute inset-0 bg-black/40 transition-opacity duration-300" onClick={() => setSelectedInvoice(null)} />
           {/* Drawer alignment */}
           <div className="absolute inset-y-0 right-0 max-w-full flex">
-            <div className="w-screen max-w-md bg-white border-l border-[var(--hc-border)] flex flex-col shadow-2xl animate-in slide-in-from-right duration-350">
+            <div className="w-screen max-w-md bg-[var(--hc-surface)] border-l border-[var(--hc-border)] flex flex-col shadow-2xl animate-in slide-in-from-right duration-350">
               {/* Header */}
-              <div className="px-6 py-5 border-b border-[var(--hc-border-soft)] bg-slate-50 flex items-center justify-between">
+              <div className="px-6 py-5 border-b border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)] flex items-center justify-between">
                 <div>
                   <span className="text-[10px] font-bold text-[var(--hc-primary)] uppercase tracking-wider">Financial Invoice</span>
                   <h2 className="text-base font-bold text-[var(--hc-text)] font-mono">{selectedInvoice.invoiceId}</h2>
@@ -411,7 +411,7 @@ export default function InvoicesPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedInvoice(null)}
-                  className="p-1.5 hover:bg-slate-200 rounded-[var(--radius-md)] text-slate-400 hover:text-slate-600 transition-colors"
+                  className="p-1.5 hover:bg-slate-200 rounded-[var(--radius-md)] text-[var(--hc-text-muted)] hover:text-[var(--hc-text-secondary)] transition-colors"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -422,23 +422,23 @@ export default function InvoicesPage() {
               {/* Body */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
                 {/* Details grid */}
-                <div className="p-4 bg-slate-50 rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] space-y-3">
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Billing Info</h3>
+                <div className="p-4 bg-[var(--hc-surface-soft)] rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] space-y-3">
+                  <h3 className="text-xs font-bold text-[var(--hc-text-muted)] uppercase tracking-widest">Billing Info</h3>
                   <div className="grid grid-cols-2 gap-4 text-xs">
                     <div>
-                      <span className="block text-slate-400 font-semibold uppercase">Patient Name</span>
+                      <span className="block text-[var(--hc-text-muted)] font-semibold uppercase">Patient Name</span>
                       <span className="font-bold text-[var(--hc-text)]">{selectedInvoice.patientFullName}</span>
                     </div>
                     <div>
-                      <span className="block text-slate-400 font-semibold uppercase">Patient ID</span>
-                      <span className="font-mono text-slate-600">{selectedInvoice.patientId}</span>
+                      <span className="block text-[var(--hc-text-muted)] font-semibold uppercase">Patient ID</span>
+                      <span className="font-mono text-[var(--hc-text-secondary)]">{selectedInvoice.patientId}</span>
                     </div>
                     <div>
-                      <span className="block text-slate-400 font-semibold uppercase">Admitting Doctor</span>
+                      <span className="block text-[var(--hc-text-muted)] font-semibold uppercase">Admitting Doctor</span>
                       <span className="font-bold text-[var(--hc-text)]">{selectedInvoice.doctorName}</span>
                     </div>
                     <div>
-                      <span className="block text-slate-400 font-semibold uppercase">Department</span>
+                      <span className="block text-[var(--hc-text-muted)] font-semibold uppercase">Department</span>
                       <span className="font-bold text-[var(--hc-text)]">{selectedInvoice.departmentName}</span>
                     </div>
                   </div>
@@ -446,13 +446,13 @@ export default function InvoicesPage() {
 
                 {/* Items */}
                 <div className="space-y-3">
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Itemized Charges</h3>
+                  <h3 className="text-xs font-bold text-[var(--hc-text-muted)] uppercase tracking-widest">Itemized Charges</h3>
                   <div className="border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] overflow-hidden">
                     <table className="w-full text-left border-collapse text-xs">
                       <thead>
-                        <tr className="bg-slate-50 border-b border-[var(--hc-border-soft)]">
-                          <th className="p-3 font-bold text-slate-500 uppercase">Service Description</th>
-                          <th className="p-3 text-right font-bold text-slate-500 uppercase">Amount</th>
+                        <tr className="bg-[var(--hc-surface-soft)] border-b border-[var(--hc-border-soft)]">
+                          <th className="p-3 font-bold text-[var(--hc-text-muted)] uppercase">Service Description</th>
+                          <th className="p-3 text-right font-bold text-[var(--hc-text-muted)] uppercase">Amount</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--hc-border-soft)]">
@@ -483,7 +483,7 @@ export default function InvoicesPage() {
                             </tr>
                           ));
                         })()}
-                        <tr className="bg-slate-50 font-bold border-t border-[var(--hc-border-strong)]">
+                        <tr className="bg-[var(--hc-surface-soft)] font-bold border-t border-[var(--hc-border-strong)]">
                           <td className="p-3 text-[var(--hc-text)]">Total Amount Due</td>
                           <td className="p-3 text-right text-[var(--hc-text)]">{formatCurrency(selectedInvoice.totalAmount)}</td>
                         </tr>
@@ -495,7 +495,7 @@ export default function InvoicesPage() {
                 {/* Inline Payment capture form */}
                 {selectedInvoice.status === "UNPAID" ? (
                   <div className="border-t border-[var(--hc-border-soft)] pt-6 space-y-4">
-                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Capture Immediate Payment</h3>
+                    <h3 className="text-xs font-bold text-[var(--hc-text-muted)] uppercase tracking-widest">Capture Immediate Payment</h3>
                     <form
                       onSubmit={async (e) => {
                         e.preventDefault();
@@ -518,7 +518,7 @@ export default function InvoicesPage() {
                       className="space-y-4"
                     >
                       <div>
-                        <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Payment Method</label>
+                        <label className="block text-[10px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] mb-1.5">Payment Method</label>
                         <select
                           className="hc-input w-full"
                           value={paymentMethod}
@@ -543,11 +543,11 @@ export default function InvoicesPage() {
                   </div>
                 ) : (
                   <div className="border-t border-[var(--hc-border-soft)] pt-6 space-y-3">
-                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Encounter Billing Status</h3>
+                    <h3 className="text-xs font-bold text-[var(--hc-text-muted)] uppercase tracking-widest">Encounter Billing Status</h3>
                     <div className={`p-4 rounded-[var(--radius-lg)] border flex items-center gap-3 ${
                       selectedInvoice.status === "PAID"
                         ? "bg-[var(--hc-success-bg)] border-[var(--hc-success)] text-[var(--hc-success)]"
-                        : "bg-slate-50 border-slate-200 text-slate-500"
+                        : "bg-[var(--hc-surface-soft)] border-slate-200 text-[var(--hc-text-muted)]"
                     }`}>
                       <span className={`w-2.5 h-2.5 rounded-full ${selectedInvoice.status === "PAID" ? "bg-[var(--hc-success)]" : "bg-slate-400"}`} />
                       <span className="text-xs font-bold uppercase tracking-wider">
@@ -565,18 +565,18 @@ export default function InvoicesPage() {
 
       {/* Audit Log + Sidebar */}
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
-        <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8">
+        <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-8">
           <h3 className="text-sm font-bold text-[var(--hc-text)] mb-2">Financial Audit Log</h3>
-          <p className="text-sm text-slate-500">Invoice audit events are not exposed by the current invoice API. Use the admin audit log flow for global audit history.</p>
+          <p className="text-sm text-[var(--hc-text-muted)]">Invoice audit events are not exposed by the current invoice API. Use the admin audit log flow for global audit history.</p>
         </div>
         <div className="space-y-4">
           <div className="bg-slate-900 rounded-[var(--radius-xl)] p-6">
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/70 mb-2">Collection Target</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">Collection target reporting belongs to the revenue reports slice.</p>
+            <p className="text-xs text-[var(--hc-text-muted)] leading-relaxed">Collection target reporting belongs to the revenue reports slice.</p>
           </div>
-          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Automated Billing</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">Batch billing controls are not exposed by the current backend API.</p>
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)] mb-2">Automated Billing</h3>
+            <p className="text-xs text-[var(--hc-text-muted)] leading-relaxed">Batch billing controls are not exposed by the current backend API.</p>
           </div>
         </div>
       </div>
@@ -586,7 +586,7 @@ export default function InvoicesPage() {
         <Dialog title="Create Invoice" onClose={() => setIsCreateOpen(false)}>
           <form className="space-y-6" onSubmit={handleCreateInvoice}>
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Completed Appointment ID</label>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] mb-1.5">Completed Appointment ID</label>
               <input aria-label="Completed Appointment ID" className="hc-input w-full" onChange={(e) => setAppointmentId(e.target.value)} value={appointmentId} />
             </div>
             <ModalActions cancelLabel="Cancel" confirmLabel={isMutating ? "Creating…" : "Create Invoice"} disabled={isMutating} onCancel={() => setIsCreateOpen(false)} />
@@ -599,7 +599,7 @@ export default function InvoicesPage() {
         <Dialog title={`Record Payment: ${paymentInvoice.invoiceId}`} onClose={() => setPaymentInvoice(null)}>
           <form className="space-y-6" onSubmit={handleRecordPayment}>
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Payment Method</label>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] mb-1.5">Payment Method</label>
               <input aria-label="Payment Method" className="hc-input w-full" onChange={(e) => setPaymentMethod(e.target.value)} value={paymentMethod} />
             </div>
             <ModalActions cancelLabel="Cancel" confirmLabel={isMutating ? "Saving…" : "Record Payment"} disabled={isMutating} onCancel={() => setPaymentInvoice(null)} />
@@ -614,11 +614,11 @@ export default function InvoicesPage() {
 function Dialog({ children, title, onClose }: { children: ReactNode; title: string; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/30 p-6">
-      <div className="w-full max-w-lg bg-white rounded-[var(--radius-xl)] p-8 shadow-xl">
+      <div className="w-full max-w-lg bg-[var(--hc-surface)] rounded-[var(--radius-xl)] p-8 shadow-xl">
         <div className="mb-6 flex items-center justify-between">
           <h3 className="text-lg font-bold text-[var(--hc-text)]">{title}</h3>
-          <button aria-label="Close dialog" className="p-2 rounded-[var(--radius-md)] hover:bg-slate-100" onClick={onClose} type="button">
-            <XCircle className="w-5 h-5 text-slate-400" />
+          <button aria-label="Close dialog" className="p-2 rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)]" onClick={onClose} type="button">
+            <XCircle className="w-5 h-5 text-[var(--hc-text-muted)]" />
           </button>
         </div>
         {children}
@@ -630,7 +630,7 @@ function Dialog({ children, title, onClose }: { children: ReactNode; title: stri
 function ModalActions({ cancelLabel, confirmLabel, disabled, onCancel }: { cancelLabel: string; confirmLabel: string; disabled: boolean; onCancel: () => void }) {
   return (
     <div className="flex justify-end gap-3">
-      <button type="button" disabled={disabled} onClick={onCancel} className="px-5 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-100 transition-colors">
+      <button type="button" disabled={disabled} onClick={onCancel} className="px-5 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors">
         {cancelLabel}
       </button>
       <button type="submit" disabled={disabled} className="hc-button-primary px-5 py-2.5 text-sm disabled:opacity-60">
@@ -681,8 +681,8 @@ function statusLabel(status: InvoiceStatus) {
 function statusClass(status: InvoiceStatus) {
   const map: Record<InvoiceStatus, string> = {
     PAID: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
-    UNPAID: "bg-amber-50 text-amber-700",
-    CANCELLED: "bg-slate-100 text-slate-500",
+    UNPAID: "bg-[var(--hc-amber-bg)] text-amber-700",
+    CANCELLED: "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]",
   };
   return map[status];
 }
@@ -690,7 +690,7 @@ function statusClass(status: InvoiceStatus) {
 function statusDot(status: InvoiceStatus) {
   const map: Record<InvoiceStatus, string> = {
     PAID: "bg-[var(--hc-success)]",
-    UNPAID: "bg-amber-500",
+    UNPAID: "bg-[var(--hc-amber-bg)]0",
     CANCELLED: "bg-slate-400",
   };
   return map[status];

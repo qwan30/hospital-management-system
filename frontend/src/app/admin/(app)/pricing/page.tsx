@@ -215,7 +215,7 @@ export default function AdminPricingPage() {
           <div className="flex items-center gap-3">
             <button
               type="button"
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors disabled:opacity-60"
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)] transition-colors disabled:opacity-60"
               disabled={filtered.length === 0}
               onClick={handleExportCSV}
             >
@@ -242,7 +242,7 @@ export default function AdminPricingPage() {
         <div>
           {/* Search */}
           <div className="mb-4 relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--hc-text-muted)]" />
             <input
               type="search"
               aria-label="Search pricing"
@@ -254,9 +254,9 @@ export default function AdminPricingPage() {
           </div>
 
           {/* Table Card */}
-          <section className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+          <section className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
             {isLoading ? (
-              <div className="p-12 text-center text-slate-400">Loading pricing…</div>
+              <div className="p-12 text-center text-[var(--hc-text-muted)]">Loading pricing…</div>
             ) : (
               <>
                 <div className="overflow-x-auto">
@@ -273,20 +273,20 @@ export default function AdminPricingPage() {
                     </thead>
                     <tbody>
                       {paged.length === 0 ? (
-                        <tr><td colSpan={6} className="hc-td text-center py-12 text-slate-400">No services found</td></tr>
+                        <tr><td colSpan={6} className="hc-td text-center py-12 text-[var(--hc-text-muted)]">No services found</td></tr>
                       ) : (
                         paged.map((p) => (
-                          <tr key={p.pricingId} className="hover:bg-slate-50/50 transition-colors">
+                          <tr key={p.pricingId} className="hover:bg-[var(--hc-surface-soft)] transition-colors">
                             <td className="hc-td font-medium text-[var(--hc-text)]">
                               {p.departmentName || "Global"}
                             </td>
-                            <td className="hc-td text-sm uppercase tracking-wider text-slate-500 font-medium">
+                            <td className="hc-td text-sm uppercase tracking-wider text-[var(--hc-text-muted)] font-medium">
                               {p.serviceName}
                             </td>
                             <td className="hc-td font-semibold text-[var(--hc-text)] tabular-nums">
                               ${p.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                             </td>
-                            <td className="hc-td text-sm text-slate-500">
+                            <td className="hc-td text-sm text-[var(--hc-text-muted)]">
                               {new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "numeric" }).format(new Date(p.effectiveDate))}
                             </td>
                             <td className="hc-td">
@@ -297,8 +297,8 @@ export default function AdminPricingPage() {
                             </td>
                             <td className="hc-td text-right">
                               <div className="flex items-center justify-end gap-1">
-                                <button type="button" onClick={() => openEdit(p)} className="p-1.5 hover:bg-slate-100 rounded-[var(--radius-md)] transition-colors" title="Edit">
-                                  <Edit3 className="w-4 h-4 text-slate-500" />
+                                <button type="button" onClick={() => openEdit(p)} className="p-1.5 hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" title="Edit">
+                                  <Edit3 className="w-4 h-4 text-[var(--hc-text-muted)]" />
                                 </button>
                                 <button
                                   type="button"
@@ -307,7 +307,7 @@ export default function AdminPricingPage() {
                                   disabled
                                   title="Delete is not exposed by the current pricing API."
                                 >
-                                  <Trash2 className="w-4 h-4 text-slate-400" />
+                                  <Trash2 className="w-4 h-4 text-[var(--hc-text-muted)]" />
                                 </button>
                               </div>
                             </td>
@@ -320,19 +320,19 @@ export default function AdminPricingPage() {
 
                 {/* Pagination */}
                 <div className="px-6 py-3 flex items-center justify-between border-t border-[var(--hc-border-soft)] text-sm">
-                  <span className="text-slate-500">
+                  <span className="text-[var(--hc-text-muted)]">
                     Showing {((page - 1) * PAGE_SIZE) + 1} to {Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length} services
                   </span>
                   <div className="flex items-center gap-1">
-                    <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 transition-colors">
+                    <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30 transition-colors">
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
-                      <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-slate-100"}`}>
+                      <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-[var(--hc-surface-soft)]"}`}>
                         {p}
                       </button>
                     ))}
-                    <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 transition-colors">
+                    <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30 transition-colors">
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -344,37 +344,37 @@ export default function AdminPricingPage() {
 
         {/* Right: Sidebar KPIs */}
         <div className="space-y-4">
-          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6 text-center">
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6 text-center">
             <div className="grid size-12 mx-auto place-items-center rounded-full bg-[var(--hc-blue-50)] text-[var(--hc-primary)] mb-3">
               <DollarSign className="w-6 h-6" />
             </div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">TOTAL CATALOG VALUE</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">TOTAL CATALOG VALUE</p>
             <p className="text-3xl font-bold text-[var(--hc-text)] mt-1 tabular-nums">${totalCatalogValue.toLocaleString("en-US", { minimumFractionDigits: 0 })}</p>
             <p className="text-xs text-[var(--hc-primary)] font-semibold mt-1">{activeServices} API pricing rules</p>
           </div>
 
-          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6 text-center">
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6 text-center">
             <div className="grid size-12 mx-auto place-items-center rounded-full bg-[var(--hc-success-bg)] text-[var(--hc-success)] mb-3">
               <CheckCircle2 className="w-6 h-6" />
             </div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">ACTIVE SERVICES</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">ACTIVE SERVICES</p>
             <p className="text-3xl font-bold text-[var(--hc-text)] mt-1">{activeServices}</p>
-            <p className="text-xs text-slate-500 mt-1">Derived from current API data</p>
+            <p className="text-xs text-[var(--hc-text-muted)] mt-1">Derived from current API data</p>
           </div>
 
-          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">
-            <div className="grid size-12 mx-auto place-items-center rounded-full bg-slate-100 text-slate-500 mb-3">
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">
+            <div className="grid size-12 mx-auto place-items-center rounded-full bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)] mb-3">
               <FileText className="w-6 h-6" />
             </div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 text-center">PRICING RULES</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)] text-center">PRICING RULES</p>
             <div className="mt-4 space-y-3">
               <div className="flex items-start gap-2">
                 <Info className="w-4 h-4 text-[var(--hc-primary)] shrink-0 mt-0.5" />
-                <p className="text-xs text-slate-500">Department ID is optional; the backend accepts global pricing when it is empty.</p>
+                <p className="text-xs text-[var(--hc-text-muted)]">Department ID is optional; the backend accepts global pricing when it is empty.</p>
               </div>
               <div className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-[var(--hc-success)] shrink-0 mt-0.5" />
-                <p className="text-xs text-slate-500">Delete is not exposed by the current pricing API.</p>
+                <p className="text-xs text-[var(--hc-text-muted)]">Delete is not exposed by the current pricing API.</p>
               </div>
             </div>
           </div>
@@ -428,7 +428,7 @@ function SortHeader({ label, field, current, dir, onSort }: { label: string; fie
     <th className="hc-th cursor-pointer select-none group" onClick={() => onSort(field)}>
       <span className="flex items-center gap-1">
         {label}
-        <ChevronsUpDown className={`w-3 h-3 transition-colors ${current === field ? "text-[var(--hc-primary)]" : "text-slate-300 group-hover:text-slate-500"}`} />
+        <ChevronsUpDown className={`w-3 h-3 transition-colors ${current === field ? "text-[var(--hc-primary)]" : "text-slate-300 group-hover:text-[var(--hc-text-muted)]"}`} />
       </span>
     </th>
   );

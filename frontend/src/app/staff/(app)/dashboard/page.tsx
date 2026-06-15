@@ -49,7 +49,7 @@ export default function StaffDashboardPage() {
       return (
         <div className="p-12 text-center text-[var(--hc-danger)]">
           <p className="text-sm font-bold uppercase tracking-wider">Access Restrained</p>
-          <p className="text-xs mt-2 text-slate-500">
+          <p className="text-xs mt-2 text-[var(--hc-text-muted)]">
             Your profile role is not recognized by the workspace router.
           </p>
         </div>

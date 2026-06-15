@@ -191,18 +191,18 @@ export default function AdminPublicContentPage() {
       </div>
 
       {error ? (
-        <div className="bg-red-50 text-red-600 p-4 rounded-md border border-red-200" role="alert">
+        <div className="bg-[var(--hc-danger-bg)] text-[var(--hc-danger)] p-4 rounded-md border border-red-200" role="alert">
           {error}
         </div>
       ) : null}
 
       {success ? (
-        <div className="bg-green-50 text-green-600 p-4 rounded-md border border-green-200" role="status">
+        <div className="bg-[var(--hc-success-bg)] text-[var(--hc-success)] p-4 rounded-md border border-green-200" role="status">
           {success}
         </div>
       ) : null}
 
-      <div className="flex flex-wrap items-center gap-4 mb-6 bg-white p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
+      <div className="flex flex-wrap items-center gap-4 mb-6 bg-[var(--hc-surface)] p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
         <div className="relative flex-1 min-w-[280px]">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)]" />
           <input
@@ -216,29 +216,29 @@ export default function AdminPublicContentPage() {
         </div>
       </div>
 
-      <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="hc-table">
             <thead>
               <tr>
                 <th className="w-[30%]">
                   <div className="flex items-center gap-2 cursor-pointer group">
-                    TITLE & CONTENT <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                    TITLE & CONTENT <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
                   </div>
                 </th>
                 <th className="w-[20%]">
                   <div className="flex items-center gap-2 cursor-pointer group">
-                    SLUG <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                    SLUG <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
                   </div>
                 </th>
                 <th className="w-[15%]">
                   <div className="flex items-center gap-2 cursor-pointer group">
-                    SORT ORDER <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                    SORT ORDER <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
                   </div>
                 </th>
                 <th className="w-[20%]">
                   <div className="flex items-center gap-2 cursor-pointer group">
-                    CTA LABEL <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                    CTA LABEL <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
                   </div>
                 </th>
                 <th className="w-[15%] text-right">ACTIONS</th>
@@ -262,8 +262,8 @@ export default function AdminPublicContentPage() {
                   <tr key={section.id} className="group hover:bg-[var(--hc-background)] transition-colors">
                     <td>
                       <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center shrink-0 border border-slate-200">
-                          <LayoutTemplate className="w-5 h-5 text-slate-400" />
+                        <div className="w-10 h-10 rounded-xl bg-[var(--hc-surface-soft)] flex items-center justify-center shrink-0 border border-slate-200">
+                          <LayoutTemplate className="w-5 h-5 text-[var(--hc-text-muted)]" />
                         </div>
                         <div className="flex-1 min-w-0 pt-0.5">
                           <div className="text-sm font-bold text-[var(--hc-text)] truncate">{section.title}</div>
@@ -275,19 +275,19 @@ export default function AdminPublicContentPage() {
                       <div className="text-sm font-medium text-[var(--hc-text-secondary)] font-mono">{section.slug}</div>
                     </td>
                     <td>
-                      <div className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 rounded-md bg-slate-100 text-slate-600 text-xs font-medium font-mono border border-slate-200">
+                      <div className="inline-flex items-center justify-center min-w-[24px] h-6 px-2 rounded-md bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)] text-xs font-medium font-mono border border-slate-200">
                         {section.sortOrder}
                       </div>
                     </td>
                     <td>
-                      <div className="text-sm text-[var(--hc-text)]">{section.ctaLabel || <span className="text-slate-400 italic">None</span>}</div>
+                      <div className="text-sm text-[var(--hc-text)]">{section.ctaLabel || <span className="text-[var(--hc-text-muted)] italic">None</span>}</div>
                     </td>
                     <td>
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => openEditForm(section)}
                           aria-label={`Edit ${section.title}`}
-                          className="h-8 px-3 text-xs font-semibold text-[var(--hc-blue-600)] bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-slate-50 hover:border-slate-300 transition-colors disabled:opacity-50"
+                          className="h-8 px-3 text-xs font-semibold text-[var(--hc-blue-600)] bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-surface-soft)] hover:border-slate-300 transition-colors disabled:opacity-50"
                         >
                           Edit
                         </button>
@@ -298,18 +298,18 @@ export default function AdminPublicContentPage() {
               )}
             </tbody>
           </table>
-          <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-slate-50/50">
+          <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)]">
             <span className="text-xs text-[var(--hc-text-secondary)] font-medium">
               Showing 1 to {sections.length} of {sections.length} sections
             </span>
             <div className="flex items-center gap-2">
-              <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+              <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50">
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium">
                 1
               </button>
-              <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+              <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50">
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -321,7 +321,7 @@ export default function AdminPublicContentPage() {
         <Dialog title={editingSection ? "Edit Section" : "Create Section"} onClose={() => setIsFormOpen(false)}>
           <form onSubmit={handleSubmit} className="space-y-6 mt-4">
             {formError ? (
-              <div className="bg-red-50 text-red-600 p-3 rounded-md border border-red-200 text-sm" role="alert">
+              <div className="bg-[var(--hc-danger-bg)] text-[var(--hc-danger)] p-3 rounded-md border border-red-200 text-sm" role="alert">
                 {formError}
               </div>
             ) : null}
@@ -474,7 +474,7 @@ function Dialog({
 }) {
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/40 backdrop-blur-sm p-6">
-      <div className="w-full max-w-2xl bg-white rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] p-8 border border-[var(--hc-border)]">
+      <div className="w-full max-w-2xl bg-[var(--hc-surface)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] p-8 border border-[var(--hc-border)]">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-bold text-[var(--hc-text)]">{title}</h2>
           <button aria-label="Close dialog" className="p-2 text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" onClick={onClose} type="button">

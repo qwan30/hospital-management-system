@@ -217,7 +217,7 @@ export default function LabResultDetailPage() {
                   Clinician Comment
                 </h3>
               </div>
-              <div className="bg-white p-8 border-l-4 border-[var(--hc-blue-600)] rounded-[var(--radius-sm)]">
+              <div className="bg-[var(--hc-surface)] p-8 border-l-4 border-[var(--hc-blue-600)] rounded-[var(--radius-sm)]">
                 <p className="text-lg text-[var(--hc-text)] leading-relaxed italic">
                   &quot;{result.doctorComment}&quot;
                 </p>

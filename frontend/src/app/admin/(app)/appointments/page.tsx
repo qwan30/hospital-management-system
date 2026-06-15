@@ -73,8 +73,8 @@ export default function AdminAppointmentsPage() {
                 title={
                     <div className="flex items-center gap-4">
                         <span>Appointment Management</span>
-                        <Badge variant="outline" className="rounded-full bg-green-50 text-green-700 border-green-200 px-2.5 py-0.5 text-[11px] font-bold tracking-wide uppercase flex items-center">
-                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2"></span>
+                        <Badge variant="outline" className="rounded-full bg-[var(--hc-success-bg)] text-[var(--hc-success)] border-green-200 px-2.5 py-0.5 text-[11px] font-bold tracking-wide uppercase flex items-center">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[var(--hc-success-bg)]0 mr-2"></span>
                             Live queue
                         </Badge>
                     </div>
@@ -86,7 +86,7 @@ export default function AdminAppointmentsPage() {
                             <Plus className="w-4 h-4" />
                             <span className="font-bold text-[11px] uppercase tracking-widest">New Appointment</span>
                         </button>
-                        <button className="hc-button-outline flex items-center gap-2 h-10 px-5 bg-white hover:bg-[var(--hc-background)]">
+                        <button className="hc-button-outline flex items-center gap-2 h-10 px-5 bg-[var(--hc-surface)] hover:bg-[var(--hc-background)]">
                             <Download className="w-4 h-4" />
                             <span className="font-bold text-[11px] uppercase tracking-widest">Export CSV</span>
                         </button>
@@ -154,7 +154,7 @@ export default function AdminAppointmentsPage() {
             </div>
 
             {/* Filters Row */}
-            <div className="flex flex-wrap items-center gap-4 mb-6 bg-white p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
+            <div className="flex flex-wrap items-center gap-4 mb-6 bg-[var(--hc-surface)] p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
                 <div className="relative flex-1 min-w-[280px]">
                     <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)]" />
                     <input type="text" placeholder="Search patient or appointment..." className="w-full h-9 pl-9 pr-4 text-sm bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-md focus:outline-none focus:border-[var(--hc-blue-500)] focus:ring-1 focus:ring-[var(--hc-blue-500)]" />
@@ -162,15 +162,15 @@ export default function AdminAppointmentsPage() {
 
                 <div className="flex items-center gap-1 p-0.5 bg-[var(--hc-background)] border border-[var(--hc-border-soft)] rounded-lg">
                     <button className="px-4 py-1.5 rounded-md text-xs font-semibold bg-[var(--hc-blue-600)] text-white shadow-sm">All</button>
-                    <button className="px-4 py-1.5 rounded-md text-xs font-medium text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] hover:bg-white transition-colors">Confirmed</button>
-                    <button className="px-4 py-1.5 rounded-md text-xs font-medium text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] hover:bg-white transition-colors">Checked-In</button>
-                    <button className="px-4 py-1.5 rounded-md text-xs font-medium text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] hover:bg-white transition-colors">Pending</button>
-                    <button className="px-4 py-1.5 rounded-md text-xs font-medium text-[var(--hc-red-600)] hover:bg-red-50 hover:text-[var(--hc-red-700)] transition-colors">High Risk</button>
+                    <button className="px-4 py-1.5 rounded-md text-xs font-medium text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] hover:bg-[var(--hc-surface)] transition-colors">Confirmed</button>
+                    <button className="px-4 py-1.5 rounded-md text-xs font-medium text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] hover:bg-[var(--hc-surface)] transition-colors">Checked-In</button>
+                    <button className="px-4 py-1.5 rounded-md text-xs font-medium text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] hover:bg-[var(--hc-surface)] transition-colors">Pending</button>
+                    <button className="px-4 py-1.5 rounded-md text-xs font-medium text-[var(--hc-red-600)] hover:bg-[var(--hc-danger-bg)] hover:text-[var(--hc-red-700)] transition-colors">High Risk</button>
                 </div>
 
                 <div className="w-px h-6 bg-[var(--hc-border-soft)] mx-2"></div>
 
-                <button className="flex items-center justify-between gap-3 h-9 px-3 bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors min-w-[160px]">
+                <button className="flex items-center justify-between gap-3 h-9 px-3 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors min-w-[160px]">
                     <div className="flex items-center gap-2">
                         <Building2 className="w-4 h-4 text-[var(--hc-text-secondary)]" />
                         <span className="text-sm font-medium text-[var(--hc-text)]">All Departments</span>
@@ -178,7 +178,7 @@ export default function AdminAppointmentsPage() {
                     <ChevronDown className="w-4 h-4 text-[var(--hc-text-secondary)]" />
                 </button>
 
-                <button className="flex items-center justify-between gap-3 h-9 px-3 bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors min-w-[140px]">
+                <button className="flex items-center justify-between gap-3 h-9 px-3 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors min-w-[140px]">
                     <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4 text-[var(--hc-text-secondary)]" />
                         <span className="text-sm font-medium text-[var(--hc-text)]">All Time</span>
@@ -197,7 +197,7 @@ export default function AdminAppointmentsPage() {
                         <h2 className="text-lg font-bold text-[var(--hc-text)]">Upcoming Queue</h2>
                     </div>
 
-                    <div className="bg-white rounded-xl border border-[var(--hc-border-soft)] overflow-hidden shadow-sm flex flex-col h-full">
+                    <div className="bg-[var(--hc-surface)] rounded-xl border border-[var(--hc-border-soft)] overflow-hidden shadow-sm flex flex-col h-full">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-sm whitespace-nowrap">
                                 <thead>
@@ -252,7 +252,7 @@ export default function AdminAppointmentsPage() {
                             </table>
                         </div>
 
-                        <div className="p-4 border-t border-[var(--hc-border-soft)] flex items-center justify-between mt-auto bg-white">
+                        <div className="p-4 border-t border-[var(--hc-border-soft)] flex items-center justify-between mt-auto bg-[var(--hc-surface)]">
                             <p className="text-sm text-[var(--hc-text-secondary)]">Showing 4 of 4 appointments</p>
                             <div className="flex items-center gap-4">
                                 <nav aria-label="appointments pagination" className="flex items-center justify-end gap-1">
@@ -282,7 +282,7 @@ export default function AdminAppointmentsPage() {
 
                                 <div className="flex items-center gap-2 text-sm text-[var(--hc-text-secondary)] ml-4">
                                     <span>Rows per page</span>
-                                    <div className="flex items-center justify-between border border-[var(--hc-border-soft)] rounded bg-white px-2 py-1 min-w-[60px]">
+                                    <div className="flex items-center justify-between border border-[var(--hc-border-soft)] rounded bg-[var(--hc-surface)] px-2 py-1 min-w-[60px]">
                                         <span className="font-medium text-[var(--hc-text)]">10</span>
                                         <ChevronDown className="w-3 h-3" />
                                     </div>
@@ -302,12 +302,12 @@ export default function AdminAppointmentsPage() {
                         </div>
                     </div>
 
-                    <div className="bg-white rounded-xl border border-[var(--hc-border-soft)] p-2 shadow-sm">
+                    <div className="bg-[var(--hc-surface)] rounded-xl border border-[var(--hc-border-soft)] p-2 shadow-sm">
                         <div className="flex flex-col gap-2">
                             {/* Average Wait Time */}
                             <div className="flex items-center justify-between p-4 rounded-lg border border-[var(--hc-border-soft)] hover:bg-[var(--hc-background)] transition-colors group cursor-pointer">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-teal-600 group-hover:bg-teal-100 transition-colors">
+                                    <div className="w-10 h-10 rounded-full bg-[var(--hc-teal-bg)] flex items-center justify-center text-[var(--hc-teal-600)] group-hover:bg-teal-100 transition-colors">
                                         <Clock className="w-5 h-5" />
                                     </div>
                                     <div>
@@ -315,13 +315,13 @@ export default function AdminAppointmentsPage() {
                                         <p className="text-lg font-bold text-[var(--hc-text)]">18 min</p>
                                     </div>
                                 </div>
-                                <Badge variant="success" className="bg-teal-50 text-teal-700 border-none font-medium px-2 py-0.5">Good</Badge>
+                                <Badge variant="success" className="bg-[var(--hc-teal-bg)] text-teal-700 border-none font-medium px-2 py-0.5">Good</Badge>
                             </div>
 
                             {/* Delayed Appointments */}
                             <div className="flex items-center justify-between p-4 rounded-lg border border-[var(--hc-border-soft)] hover:bg-[var(--hc-background)] transition-colors group cursor-pointer">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 group-hover:bg-orange-100 transition-colors">
+                                    <div className="w-10 h-10 rounded-full bg-[var(--hc-amber-bg)] flex items-center justify-center text-[var(--hc-amber-600)] group-hover:bg-orange-100 transition-colors">
                                         <AlertTriangle className="w-5 h-5" />
                                     </div>
                                     <div>
@@ -329,13 +329,13 @@ export default function AdminAppointmentsPage() {
                                         <p className="text-lg font-bold text-[var(--hc-text)]">3</p>
                                     </div>
                                 </div>
-                                <Badge variant="warning" className="bg-orange-50 text-orange-700 border-none font-medium px-2 py-0.5">Attention</Badge>
+                                <Badge variant="warning" className="bg-[var(--hc-amber-bg)] text-[var(--hc-amber-700)] border-none font-medium px-2 py-0.5">Attention</Badge>
                             </div>
 
                             {/* Rooms Available */}
                             <div className="flex items-center justify-between p-4 rounded-lg border border-[var(--hc-border-soft)] hover:bg-[var(--hc-background)] transition-colors group cursor-pointer">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
+                                    <div className="w-10 h-10 rounded-full bg-[var(--hc-primary-bg)] flex items-center justify-center text-[var(--hc-primary)] group-hover:bg-blue-100 transition-colors">
                                         <DoorClosed className="w-5 h-5" />
                                     </div>
                                     <div>
@@ -343,11 +343,11 @@ export default function AdminAppointmentsPage() {
                                         <p className="text-lg font-bold text-[var(--hc-text)]">7 / 24</p>
                                     </div>
                                 </div>
-                                <Badge variant="success" className="bg-green-50 text-green-700 border-none font-medium px-2 py-0.5">Available</Badge>
+                                <Badge variant="success" className="bg-[var(--hc-success-bg)] text-[var(--hc-success)] border-none font-medium px-2 py-0.5">Available</Badge>
                             </div>
                         </div>
 
-                        <button className="w-full mt-2 flex items-center justify-between p-3 text-sm font-semibold text-[var(--hc-blue-600)] hover:bg-blue-50 rounded-lg transition-colors">
+                        <button className="w-full mt-2 flex items-center justify-between p-3 text-sm font-semibold text-[var(--hc-blue-600)] hover:bg-[var(--hc-primary-bg)] rounded-lg transition-colors">
                             View full queue analytics
                             <ArrowRight className="w-4 h-4" />
                         </button>

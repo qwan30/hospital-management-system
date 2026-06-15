@@ -222,7 +222,7 @@ export default function AdminRoomsPage() {
         action={
           <div className="flex gap-3">
             <button
-              className="flex items-center justify-center gap-2 h-10 px-4 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] bg-white text-[var(--hc-text)] hover:bg-slate-50 transition-colors shadow-sm disabled:opacity-60"
+              className="flex items-center justify-center gap-2 h-10 px-4 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text)] hover:bg-[var(--hc-surface-soft)] transition-colors shadow-sm disabled:opacity-60"
               disabled={filteredRooms.length === 0}
               onClick={handleExportCSV}
               type="button"
@@ -244,7 +244,7 @@ export default function AdminRoomsPage() {
 
       <div className="flex flex-col lg:flex-row gap-6 mt-6">
         <div className="flex-1 flex flex-col min-w-0 gap-6">
-          <div className="bg-white p-5 rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] shadow-sm">
+          <div className="bg-[var(--hc-surface)] p-5 rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] shadow-sm">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="flex flex-wrap items-center gap-8">
                 <div>
@@ -278,7 +278,7 @@ export default function AdminRoomsPage() {
                       {departments.map((department) => <option key={department} value={department}>{department}</option>)}
                     </select>
                     <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)] pointer-events-none" />
-                    <Activity className="w-3 h-3 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    <Activity className="w-3 h-3 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-muted)] pointer-events-none" />
                     <style jsx>{`select { padding-left: 1.75rem; }`}</style>
                   </div>
                 </div>
@@ -294,7 +294,7 @@ export default function AdminRoomsPage() {
               </div>
 
               <button
-                className="flex items-center gap-2 px-4 h-10 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] text-sm font-semibold text-[var(--hc-text-secondary)] hover:bg-slate-50 transition-colors"
+                className="flex items-center gap-2 px-4 h-10 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)] text-sm font-semibold text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] transition-colors"
                 onClick={() => {
                   setStatusFilter("ALL");
                   setDepartmentFilter("ALL");
@@ -307,7 +307,7 @@ export default function AdminRoomsPage() {
             </div>
           </div>
 
-          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm flex-1 flex flex-col">
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm flex-1 flex flex-col">
             {isLoading ? (
               <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">Loading rooms...</div>
             ) : (
@@ -319,18 +319,18 @@ export default function AdminRoomsPage() {
                   rooms={filteredRooms}
                   selectedRoomId={selectedRoom?.roomId ?? null}
                 />
-                <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-slate-50/50 mt-auto">
+                <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)] mt-auto">
                   <span className="text-xs text-[var(--hc-text-secondary)] font-medium">
                     Showing 1 to {filteredRooms.length} of {rooms.length} rooms
                   </span>
                   <div className="flex items-center gap-2">
-                    <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50" disabled type="button">
+                    <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50" disabled type="button">
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium" type="button">
                       1
                     </button>
-                    <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50" disabled type="button">
+                    <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50" disabled type="button">
                       <ChevronRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -341,7 +341,7 @@ export default function AdminRoomsPage() {
         </div>
 
         <div className="w-full lg:w-[380px] shrink-0">
-          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm sticky top-6">
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm sticky top-6">
             <RoomDetails
               isSaving={isSaving}
               onDeactivate={deactivateRoom}
@@ -385,22 +385,22 @@ function RoomsTable({
           <tr>
             <th className="w-[20%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                Room ID <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                Room ID <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[30%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                Department <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                Department <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[20%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                Status <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                Status <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[15%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                Active <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                Active <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[15%] text-right">Actions</th>
@@ -411,7 +411,7 @@ function RoomsTable({
             const isSelected = selectedRoomId === room.roomId;
             return (
               <tr
-                className={`cursor-pointer transition-colors relative group ${isSelected ? "bg-blue-50/50" : "hover:bg-[var(--hc-background)]"}`}
+                className={`cursor-pointer transition-colors relative group ${isSelected ? "bg-[var(--hc-primary-bg)]/50" : "hover:bg-[var(--hc-background)]"}`}
                 key={room.roomId}
                 onClick={() => onSelect(room)}
               >
@@ -423,7 +423,7 @@ function RoomsTable({
                 </td>
                 <td>
                   <div className="flex items-center gap-2">
-                    <Activity className="w-4 h-4 text-slate-400" />
+                    <Activity className="w-4 h-4 text-[var(--hc-text-muted)]" />
                     <span className="text-sm font-medium text-[var(--hc-text)]">{room.departmentName || "Unassigned"}</span>
                   </div>
                 </td>
@@ -438,7 +438,7 @@ function RoomsTable({
                 </td>
                 <td>
                   <div className="flex items-center justify-end gap-2">
-                    <button className="w-8 h-8 flex items-center justify-center text-[var(--hc-blue-600)] hover:bg-blue-50 rounded-md transition-colors"
+                    <button className="w-8 h-8 flex items-center justify-center text-[var(--hc-blue-600)] hover:bg-[var(--hc-primary-bg)] rounded-md transition-colors"
                       onClick={(e) => {
                         e.stopPropagation();
                         onEdit(room);
@@ -492,8 +492,8 @@ function RoomDetails({
             <div>
               <div className="text-sm font-medium text-[var(--hc-text-secondary)] mb-3">Current Active Entity</div>
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center shrink-0 border border-red-100">
-                  <Activity className="w-8 h-8 text-red-500" />
+                <div className="w-16 h-16 rounded-2xl bg-[var(--hc-danger-bg)] flex items-center justify-center shrink-0 border border-red-100">
+                  <Activity className="w-8 h-8 text-[var(--hc-danger)]" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-[var(--hc-text)] mb-2">{room.name}</div>
@@ -504,9 +504,9 @@ function RoomDetails({
 
             <div>
               <div className="text-sm font-medium text-[var(--hc-text-secondary)] mb-3">Department</div>
-              <div className="p-4 rounded-xl border border-[var(--hc-border-soft)] bg-slate-50/50 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center shrink-0">
-                  <Activity className="w-5 h-5 text-red-500" />
+              <div className="p-4 rounded-xl border border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)] flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-[var(--hc-danger-bg)] flex items-center justify-center shrink-0">
+                  <Activity className="w-5 h-5 text-[var(--hc-danger)]" />
                 </div>
                 <div className="text-sm font-bold text-[var(--hc-text)]">{room.departmentName || "Unassigned"}</div>
               </div>
@@ -519,7 +519,7 @@ function RoomDetails({
                   className={`flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-xl border transition-all ${
                     room.status === "READY"
                       ? "bg-[var(--hc-success-bg)] border-[var(--hc-success)] text-[var(--hc-success)] shadow-sm"
-                      : "bg-white border-[var(--hc-success)] text-[var(--hc-success)] hover:bg-[var(--hc-success-bg)]"
+                      : "bg-[var(--hc-surface)] border-[var(--hc-success)] text-[var(--hc-success)] hover:bg-[var(--hc-success-bg)]"
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                   disabled={isSaving || room.status === "READY"}
                   onClick={() => onStatusChange(room, "READY")}
@@ -533,8 +533,8 @@ function RoomDetails({
                 <button
                   className={`flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-xl border transition-all ${
                     room.status === "IN_USE"
-                      ? "bg-red-50 border-red-500 text-red-600 shadow-sm"
-                      : "bg-white border-red-300 text-red-600 hover:bg-red-50"
+                      ? "bg-[var(--hc-danger-bg)] border-red-500 text-[var(--hc-danger)] shadow-sm"
+                      : "bg-[var(--hc-surface)] border-red-300 text-[var(--hc-danger)] hover:bg-[var(--hc-danger-bg)]"
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                   disabled={isSaving || room.status === "IN_USE"}
                   onClick={() => onStatusChange(room, "IN_USE")}
@@ -548,8 +548,8 @@ function RoomDetails({
                 <button
                   className={`flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-xl border transition-all ${
                     room.status === "BREAK"
-                      ? "bg-amber-50 border-amber-500 text-amber-600 shadow-sm"
-                      : "bg-white border-amber-300 text-amber-600 hover:bg-amber-50"
+                      ? "bg-[var(--hc-amber-bg)] border-amber-500 text-[var(--hc-amber-600)] shadow-sm"
+                      : "bg-[var(--hc-surface)] border-amber-300 text-[var(--hc-amber-600)] hover:bg-[var(--hc-amber-bg)]"
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                   disabled={isSaving || room.status === "BREAK"}
                   onClick={() => onStatusChange(room, "BREAK")}
@@ -563,8 +563,8 @@ function RoomDetails({
                 <button
                   className={`flex flex-col items-center justify-center gap-2 py-4 px-2 rounded-xl border transition-all ${
                     room.status === "MAINTENANCE"
-                      ? "bg-slate-100 border-slate-400 text-slate-600 shadow-sm"
-                      : "bg-white border-slate-300 text-slate-600 hover:bg-slate-50"
+                      ? "bg-[var(--hc-surface-soft)] border-slate-400 text-[var(--hc-text-secondary)] shadow-sm"
+                      : "bg-[var(--hc-surface)] border-slate-300 text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)]"
                   } disabled:opacity-50 disabled:cursor-not-allowed`}
                   disabled={isSaving || room.status === "MAINTENANCE"}
                   onClick={() => onStatusChange(room, "MAINTENANCE")}
@@ -583,7 +583,7 @@ function RoomDetails({
       {room && (
         <div className="p-6">
           <button
-            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border transition-colors disabled:opacity-50 border-red-200 text-red-600 hover:bg-red-50 bg-white"
+            className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border transition-colors disabled:opacity-50 border-red-200 text-[var(--hc-danger)] hover:bg-[var(--hc-danger-bg)] bg-[var(--hc-surface)]"
             disabled={isSaving || !room.active}
             onClick={() => onDeactivate(room)}
             type="button"
@@ -608,7 +608,7 @@ function StatusBadge({ status }: { status: RoomStatus }) {
   }
   if (status === "IN_USE") {
     return (
-      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-red-300 bg-red-50 text-red-600">
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-red-300 bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]">
         <div className="w-1.5 h-1.5 rounded-full bg-red-600" />
         <span className="text-[11px] font-semibold leading-none">In Use</span>
       </div>
@@ -616,15 +616,15 @@ function StatusBadge({ status }: { status: RoomStatus }) {
   }
   if (status === "BREAK") {
     return (
-      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-amber-300 bg-amber-50 text-amber-600">
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-amber-300 bg-[var(--hc-amber-bg)] text-[var(--hc-amber-600)]">
         <div className="w-1.5 h-1.5 rounded-full bg-amber-600" />
         <span className="text-[11px] font-semibold leading-none">Break</span>
       </div>
     );
   }
   return (
-    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-300 bg-slate-100 text-slate-600">
-      <div className="w-1.5 h-1.5 rounded-full bg-slate-500" />
+    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-300 bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]">
+      <div className="w-1.5 h-1.5 rounded-full bg-[var(--hc-surface-soft)]0" />
       <span className="text-[11px] font-semibold leading-none">Maintenance</span>
     </div>
   );
@@ -691,7 +691,7 @@ function FormInput({
 function Dialog({ children, title, onClose }: { children: ReactNode; title: string; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/40 backdrop-blur-sm p-6">
-      <div className="w-full max-w-xl bg-white rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] p-8 border border-[var(--hc-border)]">
+      <div className="w-full max-w-xl bg-[var(--hc-surface)] rounded-[var(--radius-xl)] shadow-[var(--shadow-card)] p-8 border border-[var(--hc-border)]">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-bold text-[var(--hc-text)]">{title}</h2>
           <button aria-label="Close dialog" className="p-2 text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" onClick={onClose} type="button">

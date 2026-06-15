@@ -140,7 +140,7 @@ export default function NewLabResultPage() {
       ) : null}
 
       <form className="mt-6 grid gap-6 lg:grid-cols-[1fr_320px]" noValidate onSubmit={handleSubmit}>
-        <section className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-white shadow-sm">
+        <section className="overflow-hidden rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] shadow-sm">
           <div className="border-b border-[var(--hc-border-soft)] px-6 py-4">
             <h2 className="text-sm font-bold text-[var(--hc-text)]">Result Details</h2>
           </div>
@@ -218,8 +218,8 @@ export default function NewLabResultPage() {
             />
           </div>
 
-          <div className="flex flex-col gap-4 border-t border-[var(--hc-border-soft)] bg-slate-50/50 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
-            <p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+          <div className="flex flex-col gap-4 border-t border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)] px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">
               <FileText className="size-4" aria-hidden="true" />
               {selectedAppointment ? `Appointment ${selectedAppointment.confirmationCode}` : "No appointment selected"}
             </p>
@@ -234,7 +234,7 @@ export default function NewLabResultPage() {
           </div>
         </section>
 
-        <aside className="rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-white p-6 shadow-sm">
+        <aside className="rounded-[var(--radius-xl)] border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] p-6 shadow-sm">
           <h2 className="text-sm font-bold text-[var(--hc-text)]">Selected Patient</h2>
           {selectedAppointment ? (
             <dl className="mt-5 space-y-4 text-sm">

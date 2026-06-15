@@ -104,10 +104,10 @@ export default function AdminSupportPage() {
       Critical: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
       High: "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
       Medium: "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]",
-      Low: "bg-slate-100 text-slate-500",
+      Low: "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]",
     };
     return (
-      <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold rounded-full ${c[priority] ?? "bg-slate-100 text-slate-500"}`}>
+      <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold rounded-full ${c[priority] ?? "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]"}`}>
         <span className={`w-1.5 h-1.5 rounded-full ${priority === "Critical" ? "bg-[var(--hc-danger)]" : priority === "High" ? "bg-[var(--hc-warning)]" : priority === "Medium" ? "bg-[var(--hc-primary)]" : "bg-slate-400"}`} />
         {priority}
       </span>
@@ -120,10 +120,10 @@ export default function AdminSupportPage() {
       Open: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
       "In Progress": "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]",
       "Pending Info": "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
-      Resolved: "bg-slate-100 text-slate-500",
+      Resolved: "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]",
     };
     return (
-      <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold rounded-full ${c[status] ?? "bg-slate-100 text-slate-500"}`}>
+      <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold rounded-full ${c[status] ?? "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]"}`}>
         <span className={`w-1.5 h-1.5 rounded-full ${status === "Open" ? "bg-[var(--hc-success)]" : status === "In Progress" ? "bg-[var(--hc-primary)]" : status === "Pending Info" ? "bg-[var(--hc-warning)]" : "bg-slate-400"}`} />
         {status}
       </span>
@@ -157,11 +157,11 @@ export default function AdminSupportPage() {
           {/* Filter bar */}
           <div className="mb-4 grid gap-3 sm:flex sm:flex-wrap sm:items-center">
             <div className="relative min-w-0 sm:min-w-[200px] sm:max-w-sm sm:flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--hc-text-muted)]" />
               <input type="search" placeholder="Search tickets by ID, requester, or keyword…" value={query} onChange={(e) => { setQuery(e.target.value); setPage(1); }} className="hc-input w-full pl-10" />
             </div>
             <div className="grid gap-1.5 text-sm sm:flex sm:items-center">
-              <label className="text-xs font-bold text-slate-500 uppercase">Priority</label>
+              <label className="text-xs font-bold text-[var(--hc-text-muted)] uppercase">Priority</label>
               <select value={priorityFilter} onChange={(e) => { setPriorityFilter(e.target.value); setPage(1); }} className="hc-input">
                 <option value="All">All</option>
                 <option value="Critical">Critical</option>
@@ -171,7 +171,7 @@ export default function AdminSupportPage() {
               </select>
             </div>
             <div className="grid gap-1.5 text-sm sm:flex sm:items-center">
-              <label className="text-xs font-bold text-slate-500 uppercase">Status</label>
+              <label className="text-xs font-bold text-[var(--hc-text-muted)] uppercase">Status</label>
               <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} className="hc-input">
                 <option value="All">All</option>
                 <option value="Open">Open</option>
@@ -181,7 +181,7 @@ export default function AdminSupportPage() {
               </select>
             </div>
             <div className="grid gap-1.5 text-sm sm:flex sm:items-center">
-              <label className="text-xs font-bold text-slate-500 uppercase">Owner</label>
+              <label className="text-xs font-bold text-[var(--hc-text-muted)] uppercase">Owner</label>
               <select value={ownerFilter} onChange={(e) => { setOwnerFilter(e.target.value); setPage(1); }} className="hc-input">
                 <option value="All">All</option>
                 {[...new Set(tickets.map((t) => t.ownerName))].map((n) => <option key={n} value={n}>{n}</option>)}
@@ -203,13 +203,13 @@ export default function AdminSupportPage() {
                   key={tab.label}
                   type="button"
                   onClick={() => { setActiveTab(i); setPage(1); }}
-                  className={`shrink-0 px-3 py-3 text-sm font-medium border-b-2 transition-colors sm:px-4 ${i === activeTab ? "border-[var(--hc-primary)] text-[var(--hc-primary)]" : "border-transparent text-slate-500 hover:text-slate-700"}`}
+                  className={`shrink-0 px-3 py-3 text-sm font-medium border-b-2 transition-colors sm:px-4 ${i === activeTab ? "border-[var(--hc-primary)] text-[var(--hc-primary)]" : "border-transparent text-[var(--hc-text-muted)] hover:text-slate-700"}`}
                 >
-                  {tab.label} <span className="ml-1 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-slate-100">{tab.count}</span>
+                  {tab.label} <span className="ml-1 px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-[var(--hc-surface-soft)]">{tab.count}</span>
                 </button>
               ))}
             </div>
-            <div className="flex flex-wrap items-center gap-2 pb-3 text-sm text-slate-500 lg:ml-auto lg:gap-3 lg:pb-1">
+            <div className="flex flex-wrap items-center gap-2 pb-3 text-sm text-[var(--hc-text-muted)] lg:ml-auto lg:gap-3 lg:pb-1">
               <span>Sort by</span>
               <select className="hc-input min-w-0 max-w-full text-xs py-1">
                 <option>Wait Time (High → Low)</option>
@@ -223,7 +223,7 @@ export default function AdminSupportPage() {
           </div>
 
           {/* Table */}
-          <section className="bg-white border border-[var(--hc-border-soft)] border-t-0 rounded-b-[var(--radius-xl)] shadow-sm overflow-hidden">
+          <section className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] border-t-0 rounded-b-[var(--radius-xl)] shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="hc-table w-full">
                 <thead>
@@ -240,10 +240,10 @@ export default function AdminSupportPage() {
                 </thead>
                 <tbody>
                   {paged.length === 0 ? (
-                    <tr><td colSpan={8} className="hc-td text-center py-12 text-slate-400">No tickets found</td></tr>
+                    <tr><td colSpan={8} className="hc-td text-center py-12 text-[var(--hc-text-muted)]">No tickets found</td></tr>
                   ) : (
                     paged.map((t) => (
-                      <tr key={t.ticketId} className="hover:bg-slate-50/50 transition-colors">
+                      <tr key={t.ticketId} className="hover:bg-[var(--hc-surface-soft)] transition-colors">
                         <td className="hc-td">
                           <span className="font-semibold text-[var(--hc-primary)]">{t.ticketId}</span>
                         </td>
@@ -254,32 +254,32 @@ export default function AdminSupportPage() {
                             </div>
                             <div>
                               <p className="text-sm font-medium text-[var(--hc-text)]">{t.requesterName}</p>
-                              <p className="text-xs text-slate-400">{t.requesterRole}</p>
+                              <p className="text-xs text-[var(--hc-text-muted)]">{t.requesterRole}</p>
                             </div>
                           </div>
                         </td>
                         <td className="hc-td">
                           <p className="text-sm font-medium">{t.department}</p>
-                          <p className="text-xs text-slate-400">{t.departmentSub}</p>
+                          <p className="text-xs text-[var(--hc-text-muted)]">{t.departmentSub}</p>
                         </td>
                         <td className="hc-td"><PriorityBadge priority={t.priority} /></td>
                         <td className="hc-td"><StatusBadge status={t.status} /></td>
                         <td className="hc-td">
                           <div className="flex items-center gap-2">
-                            <div className="grid size-7 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold">
+                            <div className="grid size-7 shrink-0 place-items-center rounded-full bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)] text-[10px] font-bold">
                               {t.ownerInitials}
                             </div>
                             <div>
                               <p className="text-sm font-medium text-[var(--hc-text)]">{t.ownerName}</p>
-                              <p className="text-xs text-slate-400">{t.ownerTitle}</p>
+                              <p className="text-xs text-[var(--hc-text-muted)]">{t.ownerTitle}</p>
                             </div>
                           </div>
                         </td>
                         <td className="hc-td">
-                          <span className={`text-sm font-semibold tabular-nums ${t.status === "Resolved" ? "text-slate-400" : t.priority === "Critical" || t.priority === "High" ? "text-[var(--hc-danger)]" : "text-[var(--hc-text)]"}`}>
+                          <span className={`text-sm font-semibold tabular-nums ${t.status === "Resolved" ? "text-[var(--hc-text-muted)]" : t.priority === "Critical" || t.priority === "High" ? "text-[var(--hc-danger)]" : "text-[var(--hc-text)]"}`}>
                             {t.waitTime}
                           </span>
-                          <p className="text-[10px] text-slate-400">{t.sla}</p>
+                          <p className="text-[10px] text-[var(--hc-text-muted)]">{t.sla}</p>
                         </td>
                         <td className="hc-td text-right">
                           <div className="flex items-center justify-end gap-1">
@@ -287,7 +287,7 @@ export default function AdminSupportPage() {
                               View unavailable
                             </button>
                             <button type="button" className="p-1.5 rounded-[var(--radius-md)] transition-colors opacity-60" disabled title="Ticket row actions are not exposed by the current support API.">
-                              <MoreVertical className="w-4 h-4 text-slate-400" />
+                              <MoreVertical className="w-4 h-4 text-[var(--hc-text-muted)]" />
                             </button>
                           </div>
                         </td>
@@ -300,19 +300,19 @@ export default function AdminSupportPage() {
 
             {/* Pagination */}
             <div className="flex flex-col gap-3 border-t border-[var(--hc-border-soft)] px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
-              <span className="text-slate-500">
+              <span className="text-[var(--hc-text-muted)]">
                 Showing {((page - 1) * PAGE_SIZE) + 1} to {Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length} tickets
               </span>
               <div className="flex items-center gap-1">
-                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 transition-colors">
+                <button type="button" onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page <= 1} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30 transition-colors">
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((p) => (
-                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-slate-100"}`}>
+                  <button key={p} type="button" onClick={() => setPage(p)} className={`min-w-[32px] h-8 rounded-[var(--radius-md)] text-sm font-medium ${page === p ? "bg-[var(--hc-primary)] text-white" : "hover:bg-[var(--hc-surface-soft)]"}`}>
                     {p}
                   </button>
                 ))}
-                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-slate-100 disabled:opacity-30 transition-colors">
+                <button type="button" onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page >= totalPages} className="p-1.5 rounded hover:bg-[var(--hc-surface-soft)] disabled:opacity-30 transition-colors">
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -323,7 +323,7 @@ export default function AdminSupportPage() {
         {/* Right: Sidebar */}
         <div className="space-y-4">
           {/* SLA Health */}
-          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-5">
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold text-[var(--hc-text)]">SLA HEALTH</h3>
               <button type="button" className="text-xs font-semibold text-[var(--hc-primary)] opacity-60" disabled title="SLA detail drilldown is not exposed by the current support API.">View all unavailable</button>
@@ -339,7 +339,7 @@ export default function AdminSupportPage() {
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-2xl font-bold text-[var(--hc-text)]">{totalActive}</span>
-                  <span className="text-[10px] text-slate-500">Total</span>
+                  <span className="text-[10px] text-[var(--hc-text-muted)]">Total</span>
                 </div>
               </div>
             </div>
@@ -352,7 +352,7 @@ export default function AdminSupportPage() {
           </div>
 
           {/* Escalation Guide */}
-          <div className="bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-5">
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-5">
             <h3 className="text-sm font-bold text-[var(--hc-text)] mb-4">ESCALATION GUIDE</h3>
             <div className="space-y-3">
               <EscalationItem icon={AlertTriangle} color="text-[var(--hc-danger)]" bg="bg-[var(--hc-danger-bg)]" title={`${urgentCount} urgent escalations`} desc="Require immediate attention" />
@@ -377,7 +377,7 @@ function EscalationItem({ icon: Icon, color, bg, title, desc }: { icon: React.El
       </div>
       <div className="min-w-0 flex-1">
         <p className={`text-sm font-semibold ${color}`}>{title}</p>
-        <p className="text-xs text-slate-500">{desc}</p>
+        <p className="text-xs text-[var(--hc-text-muted)]">{desc}</p>
       </div>
       <ExternalLink className="w-3.5 h-3.5 text-slate-300 shrink-0" />
     </div>

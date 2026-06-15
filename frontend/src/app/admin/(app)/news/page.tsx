@@ -188,7 +188,7 @@ export default function AdminNewsPage() {
         <KpiCard label="TOTAL" value={articles.length.toString()} icon={Newspaper} tone="teal" helper="All articles" />
       </div>
 
-      <div className="flex flex-wrap items-center gap-4 mb-6 bg-white p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
+      <div className="flex flex-wrap items-center gap-4 mb-6 bg-[var(--hc-surface)] p-3 rounded-xl border border-[var(--hc-border-soft)] shadow-sm">
         <div className="relative flex-1 min-w-[280px]">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--hc-text-secondary)]" />
           <input
@@ -223,7 +223,7 @@ export default function AdminNewsPage() {
         </button>
       </div>
 
-      <div className="bg-white border border-[var(--hc-border-soft)] rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-xl overflow-hidden shadow-sm">
         {isLoading ? (
           <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">Loading news articles...</div>
         ) : (
@@ -262,22 +262,22 @@ function NewsTable({
           <tr>
             <th className="w-[30%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                TITLE & SUMMARY <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                TITLE & SUMMARY <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[20%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                SLUG <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                SLUG <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[20%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                PUBLISH DATE <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                PUBLISH DATE <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[15%]">
               <div className="flex items-center gap-2 cursor-pointer group">
-                STATUS <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                STATUS <ChevronsUpDown className="w-3 h-3 text-slate-300 group-hover:text-[var(--hc-text-muted)] transition-colors" />
               </div>
             </th>
             <th className="w-[15%] text-right">ACTIONS</th>
@@ -288,8 +288,8 @@ function NewsTable({
             <tr key={article.id} className="group hover:bg-[var(--hc-background)] transition-colors">
               <td>
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center shrink-0 border border-slate-200">
-                    <Newspaper className="w-5 h-5 text-slate-400" />
+                  <div className="w-10 h-10 rounded-xl bg-[var(--hc-surface-soft)] flex items-center justify-center shrink-0 border border-slate-200">
+                    <Newspaper className="w-5 h-5 text-[var(--hc-text-muted)]" />
                   </div>
                   <div className="flex-1 min-w-0 pt-0.5">
                     <div className="text-sm font-bold text-[var(--hc-text)] truncate">{article.title}</div>
@@ -309,7 +309,7 @@ function NewsTable({
               <td>
                 <div className="flex items-center justify-end gap-2">
                   <button
-                    className="h-8 px-3 text-xs font-semibold text-[var(--hc-blue-600)] bg-white border border-[var(--hc-border-soft)] rounded-md hover:bg-slate-50 hover:border-slate-300 transition-colors disabled:opacity-50"
+                    className="h-8 px-3 text-xs font-semibold text-[var(--hc-blue-600)] bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-surface-soft)] hover:border-slate-300 transition-colors disabled:opacity-50"
                     disabled={isSaving}
                     onClick={() => onEdit(article)}
                     aria-label={`Edit ${article.title}`}
@@ -324,18 +324,18 @@ function NewsTable({
         </tbody>
       </table>
 
-      <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-slate-50/50">
+      <div className="px-6 py-4 flex items-center justify-between border-t border-[var(--hc-border-soft)] bg-[var(--hc-surface-soft)]">
         <span className="text-xs text-[var(--hc-text-secondary)] font-medium">
           Showing 1 to {articles.length} of {articles.length} articles
         </span>
         <div className="flex items-center gap-2">
-          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50">
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button className="w-8 h-8 flex items-center justify-center rounded-md bg-[var(--hc-blue-600)] text-white text-xs font-medium">
             1
           </button>
-          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-white text-slate-400 hover:bg-slate-50 disabled:opacity-50">
+          <button className="w-8 h-8 flex items-center justify-center rounded-md border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] text-[var(--hc-text-muted)] hover:bg-[var(--hc-surface-soft)] disabled:opacity-50">
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -466,7 +466,7 @@ function StatusBadge({ status }: { status: ArticleStatus }) {
   }
 
   return (
-    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-300 bg-slate-50 text-slate-600">
+    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-300 bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]">
       <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
       <span className="text-[10px] font-bold uppercase tracking-widest leading-none">Draft</span>
     </div>
