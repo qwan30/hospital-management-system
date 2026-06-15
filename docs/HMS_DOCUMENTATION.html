@@ -3,1179 +3,618 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hospital Management System — Documentation</title>
+<title>Hospital Management System — Documentation Portal</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#1e3a5f',
+      primaryTextColor: '#ffffff',
+      primaryBorderColor: '#2d5a8e',
+      lineColor: '#64748b',
+      secondaryColor: '#f1f5f9',
+      tertiaryColor: '#ecfdf5',
+      edgeLabelBackground: '#ffffff',
+      fontSize: '13px'
+    }
+  });
+</script>
 <style>
   :root {
-    --canvas: #ffffff;
-    --primary: #111111;
-    --surface-card: #f5f5f5;
-    --surface-dark: #101010;
-    --surface-soft: #fafafa;
-    --border: #e5e5e5;
-    --border-soft: #f0f0f0;
-    --text: #111111;
-    --text-secondary: #555555;
-    --text-muted: #888888;
-    --accent: #0057b3;
-    --accent-soft: #e8f2fa;
-    --success: #0d7c4b;
-    --success-soft: #e6f4ed;
-    --warning: #b85c00;
-    --warning-soft: #fef3e6;
-    --danger: #c01010;
-    --danger-soft: #fce8e8;
-    --radius-sm: 4px;
-    --radius-md: 8px;
-    --radius-lg: 12px;
-    --radius-xl: 16px;
-    --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-    --shadow-nav: 0 1px 0 rgba(0,0,0,0.06);
+    --navy: #1e3a5f; --navy-light: #2d5a8e;
+    --teal: #0891b2; --teal-soft: #e6f7fa;
+    --emerald: #059669; --emerald-soft: #ecfdf5;
+    --amber: #d97706; --amber-soft: #fffbeb;
+    --red: #dc2626; --red-soft: #fef2f2;
+    --purple: #7c3aed; --purple-soft: #f5f3ff;
+    --slate: #64748b;
+    --canvas: #f8fafc; --card: #ffffff;
+    --text: #0f172a; --text-secondary: #475569; --text-muted: #94a3b8;
+    --border: #e2e8f0; --border-soft: #f1f5f9;
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-hover: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
   }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { scroll-behavior: smooth; }
-
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--canvas);
-    color: var(--text);
-    font-size: 15px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    background: var(--canvas); color: var(--text);
+    font-size: 15px; line-height: 1.6; -webkit-font-smoothing: antialiased;
   }
-
-  /* ── Nav ── */
+  /* Nav */
   nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.94); backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    box-shadow: var(--shadow-nav);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
   }
-  nav .nav-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    padding: 0 32px;
-    height: 52px;
-  }
-  nav .nav-logo {
-    font-weight: 700;
-    font-size: 15px;
-    letter-spacing: -0.3px;
-    color: var(--primary);
-    white-space: nowrap;
-  }
-  nav .nav-logo span { color: var(--accent); }
-  nav .nav-links {
-    display: flex;
-    gap: 4px;
-    overflow-x: auto;
-    flex: 1;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+  nav .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 20px; padding: 0 28px; height: 52px; }
+  nav .nav-logo { font-weight: 800; font-size: 15px; letter-spacing: -0.3px; white-space: nowrap; }
+  nav .nav-logo span { color: var(--teal); }
+  nav .nav-links { display: flex; gap: 2px; overflow-x: auto; flex: 1; scrollbar-width: none; }
   nav .nav-links::-webkit-scrollbar { display: none; }
-  nav .nav-links a {
-    font-size: 12.5px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    text-decoration: none;
-    padding: 6px 12px;
-    border-radius: var(--radius-sm);
-    white-space: nowrap;
-    transition: color 0.15s, background 0.15s;
-  }
-  nav .nav-links a:hover { color: var(--primary); background: var(--surface-card); }
-  nav .nav-status {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--success);
-    background: var(--success-soft);
-    padding: 4px 10px;
-    border-radius: 999px;
-    white-space: nowrap;
-    letter-spacing: 0.3px;
-  }
+  nav .nav-links a { font-size: 12px; font-weight: 500; color: var(--text-secondary); text-decoration: none; padding: 6px 10px; border-radius: var(--radius-sm); white-space: nowrap; transition: all 0.15s; }
+  nav .nav-links a:hover { color: var(--navy); background: var(--border-soft); }
+  nav .nav-badge { font-size: 10.5px; font-weight: 700; color: var(--emerald); background: var(--emerald-soft); padding: 4px 10px; border-radius: 999px; letter-spacing: 0.4px; white-space: nowrap; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
 
-  /* ── Layout ── */
-  .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+  /* Hero */
+  .hero { padding: 60px 0 40px; text-align: center; }
+  .hero .hero-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 600; color: var(--emerald); background: var(--emerald-soft); padding: 5px 14px; border-radius: 999px; margin-bottom: 16px; }
+  .hero .hero-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--emerald); display: inline-block; }
+  .hero h1 { font-size: 46px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.15; margin-bottom: 12px; }
+  .hero h1 span { color: var(--teal); }
+  .hero .subtitle { font-size: 16px; color: var(--text-secondary); max-width: 640px; margin: 0 auto 20px; }
+  .hero .tech-stack { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+  .hero .tech-stack .badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 999px; font-size: 11.5px; font-weight: 600; letter-spacing: 0.1px; }
 
-  /* ── Hero ── */
-  .hero {
-    padding: 64px 0 32px;
-    text-align: center;
-  }
-  .hero h1 {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    font-size: 48px;
-    letter-spacing: -1.5px;
-    line-height: 1.1;
-    color: var(--primary);
-    margin-bottom: 12px;
-  }
-  .hero h1 span { color: var(--accent); }
-  .hero .hero-version {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    background: var(--surface-card);
-    padding: 6px 16px;
-    border-radius: 999px;
-    margin-bottom: 20px;
-    letter-spacing: 0.2px;
-  }
-  .hero .hero-version .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--success);
-    display: inline-block;
-  }
-  .hero .subtitle {
-    font-size: 17px;
-    color: var(--text-secondary);
-    max-width: 680px;
-    margin: 0 auto 24px;
-    line-height: 1.5;
-  }
-  .hero .badge-row {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .hero .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.1px;
-  }
-  .badge-java  { background: #fff4e6; color: #b85c00; }
-  .badge-spring{ background: #e6f4ed; color: #0d7c4b; }
-  .badge-next  { background: #111111; color: #ffffff; }
-  .badge-react { background: #e8f2fa; color: #0057b3; }
-  .badge-pg    { background: #e8f0fe; color: #1a56b8; }
-  .badge-pw   { background: #f0e6f6; color: #6b21a8; }
-
-  /* ── Callout ── */
-  .callout {
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 20px 24px;
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    background: var(--surface-soft);
-  }
-  .callout-success { border-color: var(--success); background: var(--success-soft); }
-  .callout .callout-icon { font-size: 22px; line-height: 1.4; flex-shrink: 0; }
-  .callout .callout-body { flex: 1; }
-  .callout .callout-title {
-    font-weight: 700;
-    font-size: 15px;
-    color: var(--primary);
-    margin-bottom: 4px;
-  }
-  .callout .callout-desc {
-    font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
-  .callout .callout-stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 16px;
-    margin-top: 8px;
-    font-size: 12.5px;
-    color: var(--text-secondary);
-  }
-  .callout .callout-stats strong { color: var(--primary); }
-
-  /* ── Sections ── */
-  section { padding: 56px 0; }
+  /* Sections */
+  section { padding: 52px 0; }
   section + section { border-top: 1px solid var(--border-soft); }
+  .section-header { margin-bottom: 32px; }
+  .section-eyebrow { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--teal); margin-bottom: 6px; }
+  .section-header h2 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .section-header p { font-size: 14.5px; color: var(--text-secondary); max-width: 600px; }
 
-  .section-header { margin-bottom: 36px; }
-  .section-eyebrow {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--accent);
-    margin-bottom: 8px;
-  }
-  .section-header h2 {
-    font-weight: 700;
-    font-size: 28px;
-    letter-spacing: -0.6px;
-    color: var(--primary);
-    margin-bottom: 8px;
-  }
-  .section-header p {
-    font-size: 15px;
-    color: var(--text-secondary);
-    max-width: 640px;
-    line-height: 1.5;
-  }
+  /* Stat grid */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border-soft); border-radius: var(--radius-md); padding: 22px 18px; text-align: center; transition: box-shadow 0.2s; border-left: 3px solid var(--border); }
+  .stat-card:hover { box-shadow: var(--shadow-hover); }
+  .stat-card .stat-value { font-size: 34px; font-weight: 800; letter-spacing: -1px; line-height: 1; margin-bottom: 4px; }
+  .stat-card .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); }
+  .stat-card.bd-navy { border-left-color: var(--navy); }
+  .stat-card.bd-teal { border-left-color: var(--teal); }
+  .stat-card.bd-emerald { border-left-color: var(--emerald); }
+  .stat-card.bd-amber { border-left-color: var(--amber); }
+  .stat-card.bd-red { border-left-color: var(--red); }
+  .stat-card.bd-purple { border-left-color: var(--purple); }
 
-  /* ── Cards ── */
-  .card {
-    background: var(--surface-card);
-    border: 1px solid var(--border-soft);
-    border-radius: var(--radius-lg);
-    padding: 24px 28px;
-    transition: box-shadow 0.2s, border-color 0.2s;
-  }
-  .card:hover { box-shadow: var(--shadow-card-hover); border-color: var(--border); }
-
+  /* Card grids */
   .card-grid { display: grid; gap: 16px; }
   .card-grid-2 { grid-template-columns: repeat(2, 1fr); }
   .card-grid-3 { grid-template-columns: repeat(3, 1fr); }
-  .card-grid-4 { grid-template-columns: repeat(4, 1fr); }
+  .card { background: var(--card); border: 1px solid var(--border-soft); border-radius: var(--radius-md); padding: 22px 26px; transition: box-shadow 0.2s; }
+  .card:hover { box-shadow: var(--shadow-hover); }
 
-  /* ── Doc Cards (Documentation Structure) ── */
-  .doc-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 16px;
-  }
-  .doc-card {
-    background: var(--surface-card);
-    border: 1px solid var(--border-soft);
-    border-radius: var(--radius-lg);
-    padding: 20px 24px;
-    transition: box-shadow 0.2s, border-color 0.2s;
-  }
-  .doc-card:hover { box-shadow: var(--shadow-card-hover); border-color: var(--border); }
-  .doc-card .doc-cat {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--accent);
-    margin-bottom: 4px;
-  }
-  .doc-card h3 {
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: -0.2px;
-    margin-bottom: 12px;
-    color: var(--primary);
-  }
-  .doc-card ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .doc-card ul li {
-    font-size: 13px;
-    padding: 4px 0;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .doc-card ul li::before {
-    content: "";
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--text-muted);
-    flex-shrink: 0;
-  }
-  .doc-card ul li a {
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 500;
-  }
+  /* Callout */
+  .callout { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px 22px; display: flex; gap: 14px; background: var(--card); }
+  .callout-success { border-color: var(--emerald); background: var(--emerald-soft); }
+  .callout .callout-icon { font-size: 20px; flex-shrink: 0; }
+  .callout .callout-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .callout .callout-desc { font-size: 13px; color: var(--text-secondary); }
+  .callout .callout-stats { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; font-size: 12px; color: var(--text-secondary); }
+  .callout .callout-stats strong { color: var(--text); }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border-soft); border-radius: var(--radius-md); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead { background: var(--border-soft); }
+  th { text-align: left; padding: 10px 14px; font-weight: 700; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--canvas); }
+
+  /* Mermaid */
+  .mermaid-wrap { background: var(--card); border: 1px solid var(--border-soft); border-radius: var(--radius-md); padding: 20px; margin: 12px 0 24px; overflow-x: auto; }
+  .mermaid-wrap .mermaid { display: flex; justify-content: center; }
+
+  /* Screenshot gallery */
+  .screenshot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .screenshot-card { background: var(--card); border: 1px solid var(--border-soft); border-radius: var(--radius-md); overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; }
+  .screenshot-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+  .screenshot-card img { width: 100%; height: 180px; object-fit: cover; display: block; border-bottom: 1px solid var(--border-soft); }
+  .screenshot-card .screenshot-info { padding: 12px 14px; }
+  .screenshot-card .screenshot-role { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--teal); margin-bottom: 3px; }
+  .screenshot-card .screenshot-desc { font-size: 12.5px; color: var(--text-secondary); line-height: 1.4; }
+  .screenshot-placeholder { background: var(--border-soft); height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 13px; gap: 4px; }
+  .screenshot-placeholder small { font-size: 11px; }
+
+  /* ADR timeline */
+  .adr-timeline { position: relative; padding-left: 28px; }
+  .adr-timeline::before { content: ''; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+  .adr-entry { position: relative; margin-bottom: 24px; }
+  .adr-entry::before { content: ''; position: absolute; left: -25px; top: 6px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--teal); background: var(--card); }
+  .adr-entry .adr-num { font-size: 11px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 2px; }
+  .adr-entry .adr-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .adr-entry .adr-rationale { font-size: 13px; color: var(--text-secondary); }
+  .adr-entry .adr-link { font-size: 12px; color: var(--navy); text-decoration: none; font-weight: 600; }
+  .adr-entry .adr-link:hover { text-decoration: underline; }
+
+  /* Code & pre */
+  pre { background: #0f172a; color: #e2e8f0; padding: 18px 22px; border-radius: var(--radius-md); font-family: 'JetBrains Mono', 'Consolas', monospace; font-size: 12.5px; line-height: 1.7; overflow-x: auto; margin: 8px 0; }
+  :not(pre) > code { background: var(--border-soft); padding: 2px 6px; border-radius: 4px; font-size: 12.5px; font-family: 'JetBrains Mono', 'Consolas', monospace; }
+
+  /* Doc grid */
+  .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .doc-card { background: var(--card); border: 1px solid var(--border-soft); border-radius: var(--radius-md); padding: 18px 20px; transition: box-shadow 0.2s; }
+  .doc-card:hover { box-shadow: var(--shadow-hover); }
+  .doc-card .doc-cat { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--teal); margin-bottom: 4px; }
+  .doc-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+  .doc-card ul { list-style: none; padding: 0; }
+  .doc-card ul li { font-size: 12.5px; padding: 3px 0; color: var(--text-secondary); }
+  .doc-card ul li a { color: var(--navy); text-decoration: none; font-weight: 500; }
   .doc-card ul li a:hover { text-decoration: underline; }
 
-  /* ── Metric Cards ── */
-  .metric-card {
-    background: var(--surface-card);
-    border: 1px solid var(--border-soft);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-    text-align: center;
-  }
-  .metric-card .value {
-    font-size: 40px;
-    font-weight: 700;
-    letter-spacing: -1px;
-    color: var(--primary);
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-  .metric-card .label {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text-muted);
-  }
+  /* Permissions */
+  .perm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 8px; }
+  .perm-item { background: var(--card); border: 1px solid var(--border-soft); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 12.5px; }
 
-  /* ── Tables ── */
-  .table-wrap {
-    overflow-x: auto;
-    border: 1px solid var(--border-soft);
-    border-radius: var(--radius-lg);
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13.5px;
-  }
-  thead { background: var(--surface-card); }
-  th {
-    text-align: left;
-    padding: 12px 16px;
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
-  }
-  td {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border-soft);
-    vertical-align: top;
-  }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: var(--surface-soft); }
+  /* Footer */
+  footer { background: var(--navy); color: #94a3b8; padding: 40px 0; font-size: 13px; line-height: 1.7; }
+  footer .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; }
+  footer strong { color: #e2e8f0; }
 
-  /* ── Code ── */
-  pre {
-    background: var(--surface-dark);
-    color: #e0e0e0;
-    padding: 20px 24px;
-    border-radius: var(--radius-md);
-    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-    font-size: 13px;
-    line-height: 1.6;
-    overflow-x: auto;
-    margin: 8px 0;
-  }
-  code {
-    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-    font-size: 13px;
-  }
-  :not(pre) > code {
-    background: var(--surface-card);
-    padding: 2px 6px;
-    border-radius: var(--radius-sm);
-    font-size: 13px;
-  }
-
-  /* ── Architecture diagram ── */
-  .arch-diagram {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 8px 0;
-  }
-  .arch-box {
-    background: var(--surface-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 14px 22px;
-    font-size: 13px;
-    font-weight: 600;
-    text-align: center;
-    min-width: 120px;
-  }
-  .arch-arrow {
-    color: var(--text-muted);
-    font-size: 18px;
-    font-weight: 300;
-  }
-  .arch-box.domain { border-left: 3px solid #6b21a8; }
-  .arch-box.infra  { border-left: 3px solid #1a56b8; }
-  .arch-box.app    { border-left: 3px solid #0d7c4b; }
-  .arch-box.ctrl   { border-left: 3px solid #b85c00; }
-  .arch-box.start  { border-left: 3px solid #c01010; }
-
-  /* ── Flow cards ── */
-  .flow-card {
-    background: var(--surface-card);
-    border: 1px solid var(--border-soft);
-    border-radius: var(--radius-lg);
-    padding: 24px;
-  }
-  .flow-card h3 {
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: -0.3px;
-    margin-bottom: 4px;
-  }
-  .flow-card .flow-roles {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--accent);
-    margin-bottom: 10px;
-  }
-  .flow-card .flow-endpoints {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-family: 'JetBrains Mono', 'Consolas', monospace;
-    line-height: 1.5;
-  }
-
-  /* ── Status pills ── */
-  .pill {
-    display: inline-flex;
-    padding: 3px 10px;
-    border-radius: 999px;
-    font-size: 10.5px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-  }
-  .pill-active  { background: var(--success-soft); color: var(--success); }
-  .pill-partial { background: var(--warning-soft); color: var(--warning); }
-  .pill-planned { background: var(--surface-card); color: var(--text-muted); }
-  .pill-removed { background: var(--danger-soft); color: var(--danger); }
-
-  /* ── Footer ── */
-  footer {
-    background: var(--surface-dark);
-    color: #999;
-    padding: 48px 0;
-    font-size: 13px;
-    line-height: 1.7;
-    margin-top: 0;
-  }
-  footer .footer-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 32px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-  footer strong { color: #ddd; }
-  footer code { color: #aaa; }
-
-  /* ── Responsive ── */
+  /* Responsive */
   @media (max-width: 900px) {
-    .hero h1 { font-size: 34px; letter-spacing: -1px; }
-    .card-grid-2, .card-grid-3, .card-grid-4 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 32px; }
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    .card-grid-2, .card-grid-3 { grid-template-columns: 1fr; }
+    .screenshot-grid { grid-template-columns: 1fr; }
     .doc-grid { grid-template-columns: 1fr; }
-    .arch-diagram { flex-direction: column; }
-    .arch-arrow { transform: rotate(90deg); }
-    nav .nav-inner { padding: 0 16px; }
-    .container { padding: 0 20px; }
   }
-
+  @media (max-width: 540px) {
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .hero h1 { font-size: 26px; }
+    nav .nav-inner { padding: 0 14px; }
+    .container { padding: 0 16px; }
+  }
   @media print {
     nav { position: static; }
-    body { font-size: 12px; }
-    section { padding: 24px 0; page-break-inside: avoid; }
-    footer { background: #f5f5f5; color: #333; }
+    body { font-size: 11px; }
+    section { padding: 18px 0; page-break-inside: avoid; }
+    footer { background: #f1f5f9; color: #333; }
   }
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
   <div class="nav-inner">
     <div class="nav-logo">HMS<span>Docs</span></div>
     <div class="nav-links">
       <a href="#overview">Overview</a>
+      <a href="#stats">Metrics</a>
+      <a href="#screenshots">Screenshots</a>
       <a href="#architecture">Architecture</a>
       <a href="#flows">Flows</a>
       <a href="#api">API</a>
       <a href="#database">Database</a>
       <a href="#testing">Testing</a>
       <a href="#cicd">CI/CD</a>
+      <a href="#adrs">Decisions</a>
       <a href="#accounts">Accounts</a>
-      <a href="#metrics">Metrics</a>
       <a href="#docs">Docs</a>
       <a href="#setup">Setup</a>
     </div>
-    <div class="nav-status">RC 1.0</div>
+    <div class="nav-badge">RC 1.0</div>
   </div>
 </nav>
 
+<!-- HERO -->
 <header class="hero container" id="overview">
-  <div class="hero-version"><span class="dot"></span> Release Candidate 1.0 — June 14, 2026</div>
+  <div class="hero-badge"><span class="dot"></span> Release Candidate 1.0 — June 14, 2026</div>
   <h1>Hospital <span>Management</span> System</h1>
   <p class="subtitle">
     Enterprise Healthcare ERP — full-stack clinical workflows, patient self-service,
     pharmacy dispensing, billing, and administrative operations. Built with
-    Domain-Driven Design on Spring Boot and Next.js. Documented across <strong>12 structured categories</strong> in the <code>docs/</code> directory.
+    Domain-Driven Design on Spring Boot 3.3 and Next.js 16.
   </p>
-  <div class="badge-row">
-    <span class="badge badge-java">Java 17</span>
-    <span class="badge badge-spring">Spring Boot 3.3</span>
-    <span class="badge badge-pg">PostgreSQL 15</span>
-    <span class="badge badge-next">Next.js 16</span>
-    <span class="badge badge-react">React 19</span>
-    <span class="badge badge-pw">Playwright</span>
+  <div class="tech-stack">
+    <span class="badge" style="background:#fff7ed;color:#c2410c;">Java 17</span>
+    <span class="badge" style="background:#ecfdf5;color:#059669;">Spring Boot 3.3</span>
+    <span class="badge" style="background:#f8fafc;border:1px solid #e2e8f0;color:#0f172a;">PostgreSQL 15</span>
+    <span class="badge" style="background:#f8fafc;border:1px solid #e2e8f0;color:#0f172a;font-weight:800;">Next.js 16</span>
+    <span class="badge" style="background:#eff6ff;color:#2563eb;">React 19</span>
+    <span class="badge" style="background:#f5f3ff;color:#7c3aed;">Playwright</span>
   </div>
 </header>
 
-<section style="padding-top:0;border:none;">
+<!-- STATS -->
+<section id="stats" style="border-top:none;">
   <div class="container">
-    <div class="callout callout-success">
-      <div class="callout-icon">&#x1F7E2;</div>
-      <div class="callout-body">
-        <div class="callout-title">Production Status: Release Candidate</div>
-        <div class="callout-desc">
-          All quality gates pass — the system is ready for UAT deployment. Release Candidate 1.0 represents the culmination of all core clinical, pharmacy, billing, and administrative workflows.
-        </div>
-        <div class="callout-stats">
-          <span><strong>148</strong> backend tests</span>
-          <span><strong>183+</strong> E2E scenarios</span>
-          <span><strong>80.48%</strong> FE branch coverage</span>
-          <span><strong>0</strong> npm audit vulnerabilities</span>
-          <span><strong>36</strong> RBAC permissions</span>
-          <span><strong>4</strong> CI/CD workflows</span>
-        </div>
-      </div>
+    <div class="section-header" style="text-align:center;">
+      <p class="section-eyebrow">System at a Glance</p>
+      <h2>Verified Engineering Metrics</h2>
+      <p style="margin:0 auto;">Source-derived counts from the codebase as of June 2026</p>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card bd-teal"><div class="stat-value">118</div><div class="stat-label">REST API Endpoints</div></div>
+      <div class="stat-card bd-navy"><div class="stat-value">35</div><div class="stat-label">Database Tables</div></div>
+      <div class="stat-card bd-purple"><div class="stat-value">17</div><div class="stat-label">Bounded Contexts</div></div>
+      <div class="stat-card bd-amber"><div class="stat-value">7</div><div class="stat-label">User Roles</div></div>
+      <div class="stat-card bd-red"><div class="stat-value">36</div><div class="stat-label">RBAC Permissions</div></div>
+      <div class="stat-card bd-emerald"><div class="stat-value">148</div><div class="stat-label">Backend Tests</div></div>
+      <div class="stat-card bd-purple"><div class="stat-value">183+</div><div class="stat-label">E2E Scenarios</div></div>
+      <div class="stat-card bd-emerald"><div class="stat-value">80.48%</div><div class="stat-label">FE Branch Coverage</div></div>
+      <div class="stat-card bd-teal"><div class="stat-value">20</div><div class="stat-label">Flyway Migrations</div></div>
+      <div class="stat-card bd-navy"><div class="stat-value">72</div><div class="stat-label">Frontend Pages</div></div>
+      <div class="stat-card bd-amber"><div class="stat-value">4</div><div class="stat-label">CI/CD Pipelines</div></div>
+      <div class="stat-card bd-red"><div class="stat-value">40</div><div class="stat-label">REST Controllers</div></div>
     </div>
   </div>
 </section>
 
-<section>
+<!-- SCREENSHOTS -->
+<section id="screenshots">
   <div class="container">
     <div class="section-header">
-      <p class="section-eyebrow">Project Summary</p>
-      <h2>A complete clinical operations platform</h2>
-      <p>From public appointment booking through clinical consultation, pharmacy dispensing, and billing — every clinical workflow is modeled as a bounded context in the backend and surfaced through role-specific frontend routes.</p>
+      <p class="section-eyebrow">Product Tour</p>
+      <h2>Screenshots — System in Action</h2>
+      <p>Visual walkthrough of key clinical and administrative workflows.</p>
     </div>
-    <div class="card-grid card-grid-2">
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:6px;">Public Booking & Discovery</h3>
-        <p style="font-size:13px;color:var(--text-secondary);">Department directory, doctor profiles, news, and a multi-step booking wizard with slot-locking transactions. Patient identifiers encrypted with AES-GCM and indexed by SHA-256 hash.</p>
-      </div>
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:6px;">Clinical Intake & Queue</h3>
-        <p style="font-size:13px;color:var(--text-secondary);">Full queue lifecycle — check-in, room assignment, consultation start, completion, and skip. Nurse vital-sign capture integrated with the clinical record.</p>
-      </div>
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:6px;">EHR & Prescriptions</h3>
-        <p style="font-size:13px;color:var(--text-secondary);">Electronic health records with digital prescriptions. Automated PDF generation via Apache PDFBox. Follow-up scheduling and Gmail-based reminder delivery.</p>
-      </div>
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:6px;">Pharmacy & Inventory</h3>
-        <p style="font-size:13px;color:var(--text-secondary);">Lot/movement-tracked drug inventory with dispense traceability linked to prescription IDs. Stock alerts and audit-trail for every movement.</p>
-      </div>
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:6px;">Billing & Revenue</h3>
-        <p style="font-size:13px;color:var(--text-secondary);">Auto-generated invoices from service pricing tables. Payment recording, void support, and daily/monthly revenue reports for accounting.</p>
-      </div>
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:6px;">Patient Portal</h3>
-        <p style="font-size:13px;color:var(--text-secondary);">Self-service access to appointments, lab results, messages, and profile. JWT + httpOnly refresh-cookie authentication. Claim-based initial access.</p>
-      </div>
+    <div class="screenshot-grid">
+      <a href="screenshots/01-homepage.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/01-homepage.png" alt="Homepage"><div class="screenshot-info"><div class="screenshot-role">Guest</div><div class="screenshot-desc">Public homepage with department search and booking CTA</div></div></a>
+      <a href="screenshots/02-departments.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/02-departments.png" alt="Departments"><div class="screenshot-info"><div class="screenshot-role">Guest</div><div class="screenshot-desc">Department listing with doctor counts</div></div></a>
+      <a href="screenshots/03-doctors.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/03-doctors.png" alt="Doctors"><div class="screenshot-info"><div class="screenshot-role">Guest</div><div class="screenshot-desc">Doctor directory with specialties and available slots</div></div></a>
+      <a href="screenshots/04-booking.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/04-booking.png" alt="Booking"><div class="screenshot-info"><div class="screenshot-role">Guest</div><div class="screenshot-desc">Multi-step appointment booking wizard</div></div></a>
+      <a href="screenshots/05-news.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/05-news.png" alt="News"><div class="screenshot-info"><div class="screenshot-role">Guest</div><div class="screenshot-desc">Hospital news and health articles</div></div></a>
+      <a href="screenshots/06-staff-login.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/06-staff-login.png" alt="Staff Login"><div class="screenshot-info"><div class="screenshot-role">All Staff</div><div class="screenshot-desc">JWT-based staff authentication page</div></div></a>
+      <a href="screenshots/07-staff-dashboard.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/07-staff-dashboard.png" alt="Staff Dashboard"><div class="screenshot-info"><div class="screenshot-role">Nurse</div><div class="screenshot-desc">Clinical dashboard with today's schedule and queue status</div></div></a>
+      <a href="screenshots/08-queue-management.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/08-queue-management.png" alt="Queue Management"><div class="screenshot-info"><div class="screenshot-role">Receptionist</div><div class="screenshot-desc">Patient queue with check-in, room assignment, consultation tracking</div></div></a>
+      <a href="screenshots/09-patient-records.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/09-patient-records.png" alt="Patient Records"><div class="screenshot-info"><div class="screenshot-role">Doctor / Nurse</div><div class="screenshot-desc">Patient history with medical records and prescriptions</div></div></a>
+      <a href="screenshots/10-admin-dashboard.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/10-admin-dashboard.png" alt="Admin Dashboard"><div class="screenshot-info"><div class="screenshot-role">Admin</div><div class="screenshot-desc">System overview with KPI cards and health status</div></div></a>
+      <a href="screenshots/11-admin-users.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/11-admin-users.png" alt="User Management"><div class="screenshot-info"><div class="screenshot-role">Admin</div><div class="screenshot-desc">Staff user management with role assignment and activation controls</div></div></a>
+      <a href="screenshots/12-admin-audit-logs.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/12-admin-audit-logs.png" alt="Audit Logs"><div class="screenshot-info"><div class="screenshot-role">Admin / Accountant</div><div class="screenshot-desc">Security audit log with filtering and metadata</div></div></a>
+      <a href="screenshots/13-pharmacy-inventory.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/13-pharmacy-inventory.png" alt="Pharmacy Inventory"><div class="screenshot-info"><div class="screenshot-role">Pharmacist</div><div class="screenshot-desc">Lot-tracked drug inventory with stock levels and alerts</div></div></a>
+      <a href="screenshots/14-pharmacy-dispense.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/14-pharmacy-dispense.png" alt="Pharmacy Dispense"><div class="screenshot-info"><div class="screenshot-role">Pharmacist</div><div class="screenshot-desc">Dispense workflow with prescription traceability</div></div></a>
+      <a href="screenshots/15-billing-invoice.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/15-billing-invoice.png" alt="Invoice & Billing"><div class="screenshot-info"><div class="screenshot-role">Accountant</div><div class="screenshot-desc">Invoice details with service line items and payment status</div></div></a>
+      <a href="screenshots/16-revenue-report.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/16-revenue-report.png" alt="Revenue Report"><div class="screenshot-info"><div class="screenshot-role">Accountant</div><div class="screenshot-desc">Revenue dashboard with daily/monthly breakdowns</div></div></a>
+      <a href="screenshots/17-doctor-ehr.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/17-doctor-ehr.png" alt="Doctor EHR"><div class="screenshot-info"><div class="screenshot-role">Doctor</div><div class="screenshot-desc">Electronic health record with diagnosis and e-prescriptions</div></div></a>
+      <a href="screenshots/18-patient-portal.png" class="screenshot-card" style="text-decoration:none;color:inherit;"><img loading="lazy" src="screenshots/18-patient-portal.png" alt="Patient Portal"><div class="screenshot-info"><div class="screenshot-role">Patient</div><div class="screenshot-desc">Self-service portal with appointments, lab results, and messages</div></div></a>
     </div>
   </div>
 </section>
 
+<!-- ARCHITECTURE -->
 <section id="architecture">
   <div class="container">
     <div class="section-header">
       <p class="section-eyebrow">Architecture</p>
-      <h2>Domain-Driven Design, modular monolith</h2>
-      <p>The backend is organized as a DDD modular monolith with strict dependency rules. The frontend is a canonical Next.js App Router application.</p>
+      <h2>Domain-Driven Design — Modular Monolith</h2>
+      <p>5 Maven modules with strict dependency flow. 17 bounded contexts.</p>
     </div>
+    <h3 style="font-weight:700;font-size:16px;margin-bottom:12px;">System Architecture Diagram</h3>
+    <div class="mermaid-wrap"><div class="mermaid">
+graph TB
+    subgraph Clients["Client Layer"]
+        A["Staff Dashboard"]
+        B["Admin Panel"]
+        C["Patient Portal"]
+        D["Public Website"]
+    end
+    subgraph Infra["Infrastructure"]
+        N["Nginx"]
+        F["Next.js 16"]
+    end
+    subgraph API["API Gateway"]
+        G["Spring Security + JWT"]
+        H["40 Controllers"]
+    end
+    subgraph Core["Application Core"]
+        I["Application Services"]
+        J["Domain Model - 17 Contexts"]
+        K["Infrastructure Adapters"]
+    end
+    subgraph Data["Data"]
+        L[("PostgreSQL 15")]
+        M["Prometheus / Grafana"]
+    end
+    A --> N --> F --> G --> H --> I --> J --> K --> L
+    H -.-> M
+    style A fill:#1e40af,stroke:#3b82f6,color:#fff
+    style B fill:#7c3aed,stroke:#a78bfa,color:#fff
+    style C fill:#059669,stroke:#34d399,color:#fff
+    style D fill:#0891b2,stroke:#22d3ee,color:#fff
+    style F fill:#000,stroke:#666,color:#fff
+    style G fill:#dc2626,stroke:#f87171,color:#fff
+    style H fill:#b91c1c,stroke:#ef4444,color:#fff
+    style I fill:#1d4ed8,stroke:#60a5fa,color:#fff
+    style J fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style K fill:#4b5563,stroke:#9ca3af,color:#fff
+    style L fill:#1e40af,stroke:#60a5fa,color:#fff
+    style M fill:#d97706,stroke:#fbbf24,color:#000
+    </div></div>
 
-    <h3 style="font-weight:700;font-size:17px;margin-bottom:16px;letter-spacing:-0.2px;">Backend Module Dependency Flow</h3>
-    <div class="arch-diagram" style="margin-bottom:32px;">
-      <div class="arch-box domain">domain<br><span style="font-size:10px;font-weight:400;color:var(--text-muted);">Entities &middot; Enums &middot; DTOs</span></div>
-      <span class="arch-arrow">&larr;</span>
-      <div class="arch-box infra">infrastructure<br><span style="font-size:10px;font-weight:400;color:var(--text-muted);">Repositories &middot; Adapters</span></div>
-      <span class="arch-arrow">&larr;</span>
-      <div class="arch-box app">application<br><span style="font-size:10px;font-weight:400;color:var(--text-muted);">Services &middot; Use Cases</span></div>
-      <span class="arch-arrow">&larr;</span>
-      <div class="arch-box ctrl">controller<br><span style="font-size:10px;font-weight:400;color:var(--text-muted);">REST &middot; Security</span></div>
-      <span class="arch-arrow">&larr;</span>
-      <div class="arch-box start">start<br><span style="font-size:10px;font-weight:400;color:var(--text-muted);">Composition Root</span></div>
-    </div>
+    <h3 style="font-weight:700;font-size:16px;margin-bottom:12px;">Module Dependency Flow</h3>
+    <div class="mermaid-wrap"><div class="mermaid">
+graph LR
+    domain["domain"] --> infra["infrastructure"]
+    infra --> app["application"]
+    app --> ctrl["controller"]
+    ctrl --> start["start / Composition Root"]
+    style domain fill:#7c3aed,stroke:#a78bfa,color:#fff
+    style infra fill:#4b5563,stroke:#9ca3af,color:#fff
+    style app fill:#1d4ed8,stroke:#60a5fa,color:#fff
+    style ctrl fill:#dc2626,stroke:#f87171,color:#fff
+    style start fill:#059669,stroke:#34d399,color:#fff
+    </div></div>
 
-    <h3 style="font-weight:700;font-size:17px;margin-bottom:16px;letter-spacing:-0.2px;">Frontend Route Groups</h3>
-    <div class="table-wrap">
-    <table>
-      <thead><tr><th>Route Group</th><th>Example Routes</th><th>Purpose</th><th>Auth</th></tr></thead>
-      <tbody>
-        <tr><td><code>(public)</code></td><td><code>/</code>, <code>/booking</code>, <code>/departments</code>, <code>/doctors</code>, <code>/news</code></td><td>Public-facing pages</td><td>None</td></tr>
-        <tr><td><code>staff/(auth)</code></td><td><code>/staff/login</code></td><td>Staff authentication</td><td>JWT login</td></tr>
-        <tr><td><code>staff/(app)</code></td><td><code>/staff/dashboard</code>, <code>/staff/queue</code>, <code>/staff/doctor/&hellip;</code></td><td>Clinical staff workflows</td><td>JWT + RBAC</td></tr>
-        <tr><td><code>admin/(app)</code></td><td><code>/admin/dashboard</code>, <code>/admin/users</code>, <code>/admin/departments</code></td><td>Administrative operations</td><td>JWT + ADMIN</td></tr>
-        <tr><td><code>portal/(auth)</code></td><td><code>/portal/login</code>, <code>/portal/claim</code></td><td>Patient portal auth</td><td>Claim/JWT</td></tr>
-        <tr><td><code>portal/(app)</code></td><td><code>/portal/appointments</code>, <code>/portal/lab-results</code>, <code>/portal/profile</code></td><td>Patient self-service</td><td>JWT + PATIENT</td></tr>
-      </tbody>
-    </table>
-    </div>
-
-    <h3 style="font-weight:700;font-size:17px;margin:28px 0 16px;letter-spacing:-0.2px;">Technology Stack</h3>
-    <div class="table-wrap">
-    <table>
+    <h4 style="font-weight:700;margin:24px 0 10px;">Technology Stack</h4>
+    <div class="table-wrap"><table>
       <thead><tr><th>Layer</th><th>Technology</th><th>Details</th></tr></thead>
       <tbody>
-        <tr><td>Backend Language</td><td>Java 17</td><td>LTS, record types, sealed classes</td></tr>
-        <tr><td>Framework</td><td>Spring Boot 3.3</td><td>Web, Security, Data JPA, Actuator, Validation</td></tr>
-        <tr><td>Security</td><td>Spring Security + JJWT</td><td>36 RBAC permissions, JWT access + httpOnly refresh cookie</td></tr>
-        <tr><td>Database</td><td>PostgreSQL 15</td><td>pgvector/pgvector:pg15 image, 35 tables, 26 indexes</td></tr>
-        <tr><td>Migrations</td><td>Flyway</td><td>20 versioned migrations (V1&ndash;V20)</td></tr>
-        <tr><td>PDF</td><td>Apache PDFBox 3.0.4</td><td>Prescription PDF generation</td></tr>
-        <tr><td>Frontend Runtime</td><td>React 19 + Next.js 16</td><td>App Router, Server Components</td></tr>
+        <tr><td>Backend</td><td>Java 17 + Spring Boot 3.3</td><td>Web, Security, Data JPA, Actuator, Validation</td></tr>
+        <tr><td>Security</td><td>Spring Security + JJWT</td><td>36 RBAC permissions, JWT + httpOnly refresh cookie</td></tr>
+        <tr><td>Database</td><td>PostgreSQL 15</td><td>pgvector, 35 tables, 26 indexes</td></tr>
+        <tr><td>Migrations</td><td>Flyway</td><td>20 versioned migrations (V1–V20)</td></tr>
+        <tr><td>Frontend</td><td>React 19 + Next.js 16</td><td>App Router, Server Components</td></tr>
         <tr><td>Styling</td><td>Tailwind CSS 4</td><td>Custom --hc-* design tokens</td></tr>
-        <tr><td>UI Primitives</td><td>Base UI + Lucide React</td><td>Headless UI components + icons</td></tr>
-        <tr><td>Testing</td><td>JUnit 5 + Testcontainers + Playwright + Vitest</td><td>148 backend tests, 183+ E2E scenarios, 80.48% FE coverage</td></tr>
-        <tr><td>Observability</td><td>Prometheus + Grafana + Loki + Tempo</td><td>Optional docker-compose overlay</td></tr>
-        <tr><td>Deployment</td><td>Docker Compose + GitHub Actions</td><td>Images pushed to GHCR, deployed to VPS</td></tr>
+        <tr><td>Testing</td><td>JUnit 5 + Testcontainers + Playwright + Vitest</td><td>148 backend, 183+ E2E, 80.48% FE coverage</td></tr>
       </tbody>
-    </table>
-    </div>
+    </table></div>
   </div>
 </section>
 
+<!-- FLOWS -->
 <section id="flows">
   <div class="container">
     <div class="section-header">
-      <p class="section-eyebrow">System Flows</p>
-      <h2>End-to-end clinical workflows</h2>
-      <p>Seven primary flow families connect roles, frontend routes, and backend API families.</p>
+      <p class="section-eyebrow">Clinical Workflows</p>
+      <h2>End-to-End Patient Journey</h2>
+      <p>7 clinical workflow families spanning booking through billing.</p>
     </div>
 
-    <div class="card-grid card-grid-2">
-      <div class="flow-card">
-        <h3>1. Public Discovery &amp; Booking</h3>
-        <p class="flow-roles">Guest</p>
-        <p style="font-size:13px;color:var(--text-secondary);margin:6px 0 10px;">Home page, department/doctor directory, news, and multi-step booking wizard with slot-lock transactions.</p>
-        <p class="flow-endpoints">/content/home &middot; /departments &middot; /doctors &middot; /appointments &middot; /chatbot/messages</p>
-      </div>
-      <div class="flow-card">
-        <h3>2. Staff Authentication</h3>
-        <p class="flow-roles">All Staff Roles</p>
-        <p style="font-size:13px;color:var(--text-secondary);margin:6px 0 10px;">JWT login with httpOnly refresh cookie. Access token stored in session storage. Route guards on frontend.</p>
-        <p class="flow-endpoints">/auth/login &middot; /auth/refresh &middot; /auth/logout</p>
-      </div>
-      <div class="flow-card">
-        <h3>3. Queue Operations</h3>
-        <p class="flow-roles">Admin &middot; Nurse &middot; Receptionist</p>
-        <p style="font-size:13px;color:var(--text-secondary);margin:6px 0 10px;">Full queue lifecycle: check-in, room assignment, consultation start, completion, skip. Nurse intake with vital signs.</p>
-        <p class="flow-endpoints">/queue/today &middot; /appointments/{id}/checkin &middot; /queue/{id}/call &middot; /queue/{id}/assign-room &middot; /queue/{id}/start-consultation &middot; /queue/{id}/complete &middot; /queue/{id}/skip</p>
-      </div>
-      <div class="flow-card">
-        <h3>4. Doctor Clinical Work</h3>
-        <p class="flow-roles">Admin &middot; Doctor &middot; Nurse</p>
-        <p style="font-size:13px;color:var(--text-secondary);margin:6px 0 10px;">Medical records, prescriptions with PDF generation, follow-up scheduling, lab results, vital signs. Role-gated at backend.</p>
-        <p class="flow-endpoints">/me/schedule &middot; /patient-records &middot; /medical-records &middot; /appointments/{id}/status &middot; /appointments/{id}/follow-up &middot; /lab-results &middot; /vital-signs</p>
-      </div>
-      <div class="flow-card">
-        <h3>5. Patient Portal</h3>
-        <p class="flow-roles">Patient</p>
-        <p style="font-size:13px;color:var(--text-secondary);margin:6px 0 10px;">Claim-based initial access, overview dashboard, appointment list, lab results, messages (read-only), and profile.</p>
-        <p class="flow-endpoints">/patient-auth/claim &middot; /patient-auth/login &middot; /patient-portal/overview &middot; /patient-portal/appointments &middot; /patient-portal/lab-results</p>
-      </div>
-      <div class="flow-card">
-        <h3>6. Inventory &amp; Pharmacy</h3>
-        <p class="flow-roles">Admin &middot; Pharmacist</p>
-        <p style="font-size:13px;color:var(--text-secondary);margin:6px 0 10px;">Lot/movement-tracked inventory, dispense with prescription traceability, stock alerts.</p>
-        <p class="flow-endpoints">/inventory/items &middot; /inventory/lots &middot; /inventory/movements &middot; /inventory/dispense &middot; /inventory/alerts</p>
-      </div>
-      <div class="flow-card">
-        <h3>7. Finance &amp; Admin</h3>
-        <p class="flow-roles">Admin &middot; Accountant</p>
-        <p style="font-size:13px;color:var(--text-secondary);margin:6px 0 10px;">Invoices, payments, void, pricing management, daily/monthly revenue reports, audit logs, user/room management.</p>
-        <p class="flow-endpoints">/invoices &middot; /pricing &middot; /reports/revenue/* &middot; /admin/users &middot; /admin/departments &middot; /admin/audit-logs &middot; /admin/stats</p>
-      </div>
-    </div>
+    <div class="mermaid-wrap"><div class="mermaid">
+graph LR
+    B["1. Booking"] --> I["2. Intake & Queue"] --> C["3. Consultation"]
+    C --> P["4. Pharmacy"] --> BL["5. Billing"] --> D["6. Complete"]
+    C --> BL
+    style B fill:#0891b2,stroke:#22d3ee,color:#fff
+    style I fill:#1e40af,stroke:#3b82f6,color:#fff
+    style C fill:#7c3aed,stroke:#a78bfa,color:#fff
+    style P fill:#ea580c,stroke:#fb923c,color:#fff
+    style BL fill:#dc2626,stroke:#f87171,color:#fff
+    style D fill:#059669,stroke:#34d399,color:#fff
+    </div></div>
 
-    <div class="card" style="margin-top:24px;">
-      <h3 style="font-weight:700;font-size:15px;margin-bottom:8px;">Current Limitations</h3>
-      <ul style="font-size:13px;color:var(--text-secondary);padding-left:18px;display:flex;flex-direction:column;gap:4px;">
-        <li>Patient portal message send/reply not implemented (read-only).</li>
-        <li>Patient self-cancel and reschedule APIs not implemented.</li>
-        <li>Separate live nurse room-board API not implemented; queue assign-room is the active room workflow.</li>
-        <li>External payment-gateway integration is out of scope.</li>
-        <li>Selected frontend routes exist but are not fully backend-integrated.</li>
-      </ul>
+    <div class="card-grid card-grid-2" style="margin-top:20px;">
+      <div class="card"><h4 style="font-weight:700;margin-bottom:4px;">1. Public Discovery & Booking</h4><p style="font-size:13px;color:var(--text-secondary);">Department/doctor browsing, slot-locked booking with AES-GCM encrypted PHI.</p></div>
+      <div class="card"><h4 style="font-weight:700;margin-bottom:4px;">2. Staff Auth & RBAC</h4><p style="font-size:13px;color:var(--text-secondary);">JWT login + httpOnly refresh cookie. 36 method-level @PreAuthorize permissions.</p></div>
+      <div class="card"><h4 style="font-weight:700;margin-bottom:4px;">3. Queue Operations</h4><p style="font-size:13px;color:var(--text-secondary);">Check-in → Room assign → Consultation start → Complete → Skip.</p></div>
+      <div class="card"><h4 style="font-weight:700;margin-bottom:4px;">4. Doctor Clinical Work</h4><p style="font-size:13px;color:var(--text-secondary);">Medical records, e-prescriptions (PDF), follow-ups, lab results.</p></div>
+      <div class="card"><h4 style="font-weight:700;margin-bottom:4px;">5. Patient Portal</h4><p style="font-size:13px;color:var(--text-secondary);">Claim-based access, overview dashboard, appointments, lab results.</p></div>
+      <div class="card"><h4 style="font-weight:700;margin-bottom:4px;">6. Pharmacy & Inventory</h4><p style="font-size:13px;color:var(--text-secondary);">Lot/movement-tracked inventory, dispense with prescription traceability.</p></div>
+      <div class="card"><h4 style="font-weight:700;margin-bottom:4px;">7. Finance & Admin</h4><p style="font-size:13px;color:var(--text-secondary);">Invoices, payments, pricing, revenue reports, audit logs.</p></div>
     </div>
   </div>
 </section>
 
+<!-- API -->
 <section id="api">
   <div class="container">
     <div class="section-header">
       <p class="section-eyebrow">API Contract</p>
-      <h2>118 REST endpoints at /api/v1</h2>
-      <p>All responses use a consistent envelope. 36 granular RBAC permissions control access at the method level.</p>
+      <h2>118 REST Endpoints at /api/v1</h2>
+      <p>Consistent response envelope. 36 RBAC permissions control access.</p>
     </div>
-
-    <h3 style="font-weight:700;font-size:17px;margin-bottom:16px;letter-spacing:-0.2px;">Active Endpoint Families</h3>
-    <div class="table-wrap">
-    <table>
+    <div class="table-wrap"><table>
       <thead><tr><th>Domain</th><th>Base Path</th><th>Key Endpoints</th><th>Roles</th></tr></thead>
       <tbody>
-        <tr><td>Staff Auth</td><td><code>/api/v1/auth</code></td><td>POST login, refresh, logout</td><td>All staff</td></tr>
-        <tr><td>Patient Auth</td><td><code>/api/v1/patient-auth</code></td><td>POST claim, login, refresh, logout</td><td>Patient</td></tr>
-        <tr><td>Public Content</td><td><code>/api/v1/content</code>, <code>/api/v1/news</code>, <code>/api/v1/departments</code>, <code>/api/v1/doctors</code></td><td>GET home, news, departments, doctors</td><td>Guest</td></tr>
-        <tr><td>Booking</td><td><code>/api/v1/appointments</code></td><td>POST public booking, chatbot messages</td><td>Guest</td></tr>
-        <tr><td>Clinical</td><td><code>/api/v1/appointments</code>, <code>/api/v1/queue</code>, <code>/api/v1/medical-records</code>, <code>/api/v1/patient-records</code>, <code>/api/v1/patients</code>, <code>/api/v1/vital-signs</code>, <code>/api/v1/lab-results</code></td><td>Full CRUD + status transitions</td><td>Doctor, Nurse, Admin</td></tr>
-        <tr><td>Finance</td><td><code>/api/v1/invoices</code>, <code>/api/v1/pricing</code>, <code>/api/v1/reports/revenue</code></td><td>CRUD + payment/void + revenue reports</td><td>Admin, Accountant</td></tr>
-        <tr><td>Inventory</td><td><code>/api/v1/inventory</code></td><td>Items, lots, movements, dispense, alerts</td><td>Admin, Pharmacist</td></tr>
-        <tr><td>Patient Portal</td><td><code>/api/v1/patient-portal</code></td><td>Overview, appointments, lab-results, messages, profile</td><td>Patient</td></tr>
-        <tr><td>Admin</td><td><code>/api/v1/admin</code></td><td>Users, departments, rooms, schedule-templates, slots, stats, monitoring, audit-logs, content, news</td><td>Admin</td></tr>
+        <tr><td>Auth</td><td><code>/api/v1/auth</code></td><td>POST login, refresh, logout</td><td>All staff</td></tr>
+        <tr><td>Patient Auth</td><td><code>/api/v1/patient-auth</code></td><td>POST claim, login, refresh</td><td>Patient</td></tr>
+        <tr><td>Public</td><td><code>/api/v1/content</code>, <code>/news</code>, <code>/departments</code></td><td>GET home, news, departments, doctors</td><td>Guest</td></tr>
+        <tr><td>Booking</td><td><code>/api/v1/appointments</code></td><td>POST booking, chatbot messages</td><td>Guest</td></tr>
+        <tr><td>Clinical</td><td><code>/api/v1/appointments</code>, <code>/queue</code>, <code>/medical-records</code></td><td>CRUD + status transitions</td><td>Doctor, Nurse, Admin</td></tr>
+        <tr><td>Finance</td><td><code>/api/v1/invoices</code>, <code>/pricing</code>, <code>/reports</code></td><td>CRUD + payment + revenue reports</td><td>Admin, Accountant</td></tr>
+        <tr><td>Inventory</td><td><code>/api/v1/inventory</code></td><td>Items, lots, movements, dispense</td><td>Admin, Pharmacist</td></tr>
+        <tr><td>Portal</td><td><code>/api/v1/patient-portal</code></td><td>Overview, appointments, lab results</td><td>Patient</td></tr>
+        <tr><td>Admin</td><td><code>/api/v1/admin</code></td><td>Users, departments, rooms, stats, audit</td><td>Admin</td></tr>
       </tbody>
-    </table>
-    </div>
-
-    <h3 style="font-weight:700;font-size:17px;margin:28px 0 16px;letter-spacing:-0.2px;">Response Envelope</h3>
-    <pre>{
-  "success": true,
-  "data": { ... },
-  "message": "string",
-  "error": null,
-  "pagination": null,
-  "timestamp": "2026-06-14T00:00:00Z"
-}</pre>
-
-    <h3 style="font-weight:700;font-size:17px;margin:28px 0 16px;letter-spacing:-0.2px;">RBAC Permissions (36 total)</h3>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:6px;font-size:12.5px;">
-      <div style="padding:6px 10px;background:var(--surface-card);border-radius:var(--radius-sm);"><strong>Admin:</strong> USERS_MANAGE, DEPARTMENTS_MANAGE, ROOMS_MANAGE, SCHEDULE_MANAGE, CONTENT_MANAGE, MONITORING_READ, STATS_READ</div>
-      <div style="padding:6px 10px;background:var(--surface-card);border-radius:var(--radius-sm);"><strong>Queue:</strong> QUEUE_READ, QUEUE_CHECK_IN, QUEUE_MANAGE</div>
-      <div style="padding:6px 10px;background:var(--surface-card);border-radius:var(--radius-sm);"><strong>Appointments:</strong> APPOINTMENT_READ, APPOINTMENT_WRITE, APPOINTMENT_CANCEL, APPOINTMENT_STATUS_WRITE</div>
-      <div style="padding:6px 10px;background:var(--surface-card);border-radius:var(--radius-sm);"><strong>Clinical:</strong> PATIENT_RECORD_READ, PATIENT_HISTORY_READ, MEDICAL_RECORD_WRITE, PRESCRIPTION_READ</div>
-      <div style="padding:6px 10px;background:var(--surface-card);border-radius:var(--radius-sm);"><strong>Lab &amp; Vitals:</strong> LAB_RESULT_READ, LAB_RESULT_WRITE, VITAL_SIGNS_READ, VITAL_SIGNS_WRITE</div>
-      <div style="padding:6px 10px;background:var(--surface-card);border-radius:var(--radius-sm);"><strong>Finance:</strong> INVOICE_READ, INVOICE_WRITE, PRICING_MANAGE, REVENUE_READ</div>
-      <div style="padding:6px 10px;background:var(--surface-card);border-radius:var(--radius-sm);"><strong>Inventory:</strong> INVENTORY_READ, INVENTORY_MANAGE</div>
-      <div style="padding:6px 10px;background:var(--surface-card);border-radius:var(--radius-sm);"><strong>Patient:</strong> PATIENT_PORTAL_READ, PATIENT_PORTAL_WRITE</div>
-      <div style="padding:6px 10px;background:var(--surface-card);border-radius:var(--radius-sm);"><strong>Shared:</strong> FOLLOW_UP_READ, FOLLOW_UP_WRITE, SCHEDULE_READ, AUDIT_LOG_READ</div>
-    </div>
-
-    <div class="card" style="margin-top:24px;">
-      <h3 style="font-weight:700;font-size:15px;margin-bottom:8px;">Removed Endpoints</h3>
-      <ul style="font-size:13px;color:var(--text-muted);padding-left:18px;margin-top:6px;display:flex;flex-direction:column;gap:2px;">
-        <li><code>/api/v1/ai/analyze-symptoms</code></li>
-        <li><code>/api/v1/internal-assistant/**</code></li>
-        <li><code>/api/v1/admin/knowledge-documents/**</code></li>
-        <li><code>/api/v1/admin/monitoring/internal-assistant</code></li>
-      </ul>
+    </table></div>
+    <h4 style="font-weight:700;margin:20px 0 8px;">36 RBAC Permissions</h4>
+    <div class="perm-grid">
+      <div class="perm-item"><strong>Admin:</strong> USERS_MANAGE, DEPARTMENTS_MANAGE, ROOMS_MANAGE, SCHEDULE_MANAGE, CONTENT_MANAGE, MONITORING_READ, STATS_READ</div>
+      <div class="perm-item"><strong>Queue:</strong> QUEUE_READ, QUEUE_CHECK_IN, QUEUE_MANAGE</div>
+      <div class="perm-item"><strong>Appointments:</strong> APPOINTMENT_READ, APPOINTMENT_WRITE, APPOINTMENT_CANCEL, APPOINTMENT_STATUS_WRITE</div>
+      <div class="perm-item"><strong>Clinical:</strong> PATIENT_RECORD_READ, PATIENT_HISTORY_READ, MEDICAL_RECORD_WRITE, PRESCRIPTION_READ</div>
+      <div class="perm-item"><strong>Lab/Vitals:</strong> LAB_RESULT_READ, LAB_RESULT_WRITE, VITAL_SIGNS_READ, VITAL_SIGNS_WRITE</div>
+      <div class="perm-item"><strong>Finance:</strong> INVOICE_READ, INVOICE_WRITE, PRICING_MANAGE, REVENUE_READ</div>
+      <div class="perm-item"><strong>Inventory:</strong> INVENTORY_READ, INVENTORY_MANAGE</div>
+      <div class="perm-item"><strong>Patient:</strong> PATIENT_PORTAL_READ, PATIENT_PORTAL_WRITE</div>
+      <div class="perm-item"><strong>Shared:</strong> FOLLOW_UP_READ, FOLLOW_UP_WRITE, SCHEDULE_READ, AUDIT_LOG_READ</div>
     </div>
   </div>
 </section>
 
+<!-- DATABASE -->
 <section id="database">
   <div class="container">
     <div class="section-header">
       <p class="section-eyebrow">Database</p>
-      <h2>20 Flyway migrations, 35 tables</h2>
-      <p>PostgreSQL 15 with pgvector image. Schema managed by Flyway with JPA validation.</p>
+      <h2>20 Flyway Migrations · 35 Tables</h2>
+      <p>PostgreSQL 15 with pgvector. Schema managed by Flyway.</p>
     </div>
-
-    <div class="table-wrap">
-    <table>
-      <thead><tr><th>Version</th><th>Summary</th><th style="width:80px;">Status</th></tr></thead>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Version</th><th>Summary</th></tr></thead>
       <tbody>
-        <tr><td><code>V1</code></td><td>Base schema: departments, users, slots, patients, appointments, medical records, prescriptions, invoices, pricing</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V2</code></td><td>Clinical workflow column expansion</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V3</code></td><td>Patient email and follow-up schedule support</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V4</code></td><td>Patient identifier and security hardening</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V5</code></td><td>Public content and wider operational foundation</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V6</code></td><td>Room and schedule operational flags</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V7</code></td><td>Inventory items, lots, movements</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V8</code></td><td>Patient portal tables, threads, messages, lab results</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V9</code></td><td>Historical assistant knowledge tables</td><td><span class="pill pill-removed">Dropped</span></td></tr>
-        <tr><td><code>V10</code></td><td>Historical assistant session, message, feedback tables</td><td><span class="pill pill-removed">Dropped</span></td></tr>
-        <tr><td><code>V11</code></td><td>Removes AI assistant features and vector extension</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V12</code></td><td>Appointment follow-ups table</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V13</code></td><td>Appointment vital-sign capture table</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V14</code></td><td>Appointment metadata columns (notes, reason)</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V15</code></td><td>Lab result column alignment for portal + clinical</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V16</code></td><td>User role constraint expansion for RBAC</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V17</code></td><td>Inventory quantity constraints</td><td><span class="pill pill-active">Active</span></td></tr>
-        <tr><td><code>V18&ndash;V20</code></td><td>Additional schema refinements</td><td><span class="pill pill-active">Active</span></td></tr>
+        <tr><td><code>V1</code></td><td>Base schema: departments, users, slots, patients, appointments, medical records, prescriptions, invoices, pricing</td></tr>
+        <tr><td><code>V2–V6</code></td><td>Clinical workflow columns, patient email, PHI security, public content, room/schedule flags</td></tr>
+        <tr><td><code>V7–V8</code></td><td>Inventory (items, lots, movements) + Patient portal (threads, messages, lab results)</td></tr>
+        <tr><td><code>V9–V11</code></td><td>AI assistant removal, vector extension cleanup</td></tr>
+        <tr><td><code>V12–V14</code></td><td>Follow-ups, vital-sign capture, appointment metadata (notes, reason)</td></tr>
+        <tr><td><code>V15–V20</code></td><td>Lab result alignment, RBAC expansion, inventory constraints, schema refinements</td></tr>
       </tbody>
-    </table>
-    </div>
+    </table></div>
   </div>
 </section>
 
+<!-- TESTING -->
 <section id="testing">
   <div class="container">
     <div class="section-header">
       <p class="section-eyebrow">Quality Assurance</p>
-      <h2>Three-layer test strategy</h2>
-      <p>Backend integration tests with Testcontainers, frontend unit tests with Vitest, and E2E scenarios with Playwright.</p>
+      <h2>Three-Layer Test Strategy</h2>
+      <p>Backend (Testcontainers), frontend unit (Vitest), and E2E (Playwright).</p>
     </div>
-
-    <h3 style="font-weight:700;font-size:17px;margin-bottom:16px;letter-spacing:-0.2px;">Backend Tests (148 total)</h3>
-    <div class="table-wrap" style="margin-bottom:24px;">
-    <table>
-      <thead><tr><th>Suite</th><th>Type</th><th>Coverage</th></tr></thead>
-      <tbody>
-        <tr><td>Unit tests in <code>backend/application</code></td><td>Service-level unit</td><td>Appointment write, medical records, prescriptions, inventory, lab results, RBAC, vital signs, reminders, monitoring</td></tr>
-        <tr><td>Integration tests in <code>backend/start</code></td><td>Spring Boot + Testcontainers</td><td>ClinicalWorkflowIntegrationTest, SecurityHardeningIntegrationTest, ModuleBoundaryTest</td></tr>
-      </tbody>
-    </table>
-    </div>
-
-    <h3 style="font-weight:700;font-size:17px;margin-bottom:16px;letter-spacing:-0.2px;">Frontend Tests</h3>
-    <div class="table-wrap" style="margin-bottom:24px;">
-    <table>
+    <div class="card-grid card-grid-3" style="margin-bottom:20px;">
+      <div class="card" style="text-align:center;"><div style="font-size:48px;font-weight:800;color:var(--navy);">148</div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);">Backend Tests</div></div>
+      <div class="card" style="text-align:center;"><div style="font-size:48px;font-weight:800;color:var(--emerald);">184</div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);">E2E CI Scenarios</div></div>
+      <div class="card" style="text-align:center;"><div style="font-size:48px;font-weight:800;color:var(--teal);">80.48%</div><div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);">FE Coverage</div></div>
+	    </div>
+	    <div class="card" style="text-align:center;margin-bottom:20px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid var(--emerald);"><div style="font-size:36px;font-weight:800;color:var(--emerald);">100% PASS</div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-secondary);">Interactive Real-User Test Suite — 68 checks, 9 staff roles, 6 patients, 0 failures</div><div style="margin-top:8px;"><code style="background:var(--emerald);color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;">npx tsx e2e/interactive/real-user-test.ts</code></div></div>
+    <div class="table-wrap"><table>
       <thead><tr><th>Command</th><th>Type</th><th>Scenarios</th></tr></thead>
       <tbody>
+        <tr><td><code>mvn verify</code></td><td>JUnit 5 + Testcontainers</td><td>148 integration tests</td></tr>
         <tr><td><code>npm run test:unit</code></td><td>Vitest</td><td>80.48% branch coverage</td></tr>
-        <tr><td><code>npm run test:e2e:ui</code></td><td>Playwright UI</td><td>323+ route smoke, accessibility, responsive</td></tr>
-        <tr><td><code>npm run test:e2e:ci</code></td><td>Playwright CI</td><td>183 RBAC, API client, operations, security, all routes</td></tr>
-        <tr><td><code>npm run test:e2e:integrated</code></td><td>Playwright Integrated</td><td>92 backend-backed auth, claim, booking, queue</td></tr>
+	        <tr><td><code>npx tsx e2e/interactive/real-user-test.ts</code></td><td>Playwright headless (real-user clicks)</td><td>68 interactive checks — all personas</td></tr>
+        <tr><td><code>npm run test:e2e:ui</code></td><td>Playwright UI</td><td>323+ route smoke & a11y</td></tr>
+        <tr><td><code>npm run test:e2e:ci</code></td><td>Playwright CI</td><td>184 RBAC + operations + security</td></tr>
+        <tr><td><code>npm run test:e2e:integrated</code></td><td>Playwright (backend-backed)</td><td>92 auth + booking + queue</td></tr>
         <tr><td><code>npm run test:e2e:visual</code></td><td>Playwright Visual</td><td>14 baseline snapshots</td></tr>
       </tbody>
-    </table>
-    </div>
-
-    <div class="card-grid card-grid-3">
-      <div class="metric-card"><div class="value">148</div><div class="label">Backend Tests Passed</div></div>
-      <div class="metric-card"><div class="value">80.48%</div><div class="label">Frontend Branch Coverage</div></div>
-      <div class="metric-card"><div class="value">183</div><div class="label">E2E Scenarios Passed</div></div>
-    </div>
+    </table></div>
   </div>
 </section>
 
+<!-- CI/CD -->
 <section id="cicd">
   <div class="container">
     <div class="section-header">
-      <p class="section-eyebrow">CI/CD &amp; DevOps</p>
-      <h2>Automated pipelines with observability</h2>
-      <p>Four GitHub Actions workflows cover build, deploy, rollback, and security scanning.</p>
+      <p class="section-eyebrow">CI/CD & DevOps</p>
+      <h2>4 Automated GitHub Actions Pipelines</h2>
+      <p>Build, deploy, rollback, and security scanning — all automated.</p>
     </div>
-
     <div class="card-grid card-grid-2">
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:6px;">CI Pipeline</h3>
-        <p style="font-size:13px;color:var(--text-secondary);">Builds Java backend (Maven), runs integration tests with Testcontainers, lints frontend, runs Vitest and Playwright suites, builds Docker images, and pushes to GHCR.</p>
-      </div>
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:6px;">CD Pipeline</h3>
-        <p style="font-size:13px;color:var(--text-secondary);">Deploys to VPS via Docker Compose. Pulls latest images from GHCR, runs database migrations, and restarts services.</p>
-      </div>
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:6px;">Rollback</h3>
-        <p style="font-size:13px;color:var(--text-secondary);">Automated rollback workflow for reverting to a previous deployment state if a release fails health checks.</p>
-      </div>
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:6px;">Security Scan</h3>
-        <p style="font-size:13px;color:var(--text-secondary);">Secret scanning (high-confidence), dependency vulnerability audit, and SAST checks on every push.</p>
-      </div>
-    </div>
-
-    <h3 style="font-weight:700;font-size:17px;margin:28px 0 16px;letter-spacing:-0.2px;">Docker Services</h3>
-    <div class="table-wrap">
-    <table>
-      <thead><tr><th>Service</th><th>Image</th><th>Port</th><th>Notes</th></tr></thead>
-      <tbody>
-        <tr><td>postgres</td><td>pgvector/pgvector:pg15</td><td>5432</td><td>Health-checked; data persisted via named volume</td></tr>
-        <tr><td>backend</td><td>ghcr.io/&hellip;/backend:latest</td><td>8081</td><td>Spring Boot; Actuator health at /actuator/health</td></tr>
-        <tr><td>frontend</td><td>ghcr.io/&hellip;/frontend:latest</td><td>3000</td><td>Next.js production; health-checked via curl</td></tr>
-        <tr><td colspan="4" style="color:var(--text-muted);font-size:12px;"><em>Optional observability overlay: Prometheus (9090), Grafana (3001), Loki (3100), Tempo (3200)</em></td></tr>
-      </tbody>
-    </table>
-    </div>
-
-    <h3 style="font-weight:700;font-size:17px;margin:28px 0 16px;letter-spacing:-0.2px;">Key Environment Variables</h3>
-    <div class="table-wrap">
-    <table>
-      <thead><tr><th>Variable</th><th>Purpose</th><th>Default</th></tr></thead>
-      <tbody>
-        <tr><td><code>POSTGRES_PASSWORD</code></td><td>Database password</td><td><em>Required</em></td></tr>
-        <tr><td><code>JWT_SECRET</code></td><td>JWT signing key (min 32 chars)</td><td><em>Required</em></td></tr>
-        <tr><td><code>PATIENT_IDENTIFIER_SECRET</code></td><td>AES-GCM encryption key for PHI</td><td><em>Required</em></td></tr>
-        <tr><td><code>HMS_RELEASE_DEMO_SEED_ENABLED</code></td><td>Enable synthetic UAT demo data</td><td>false</td></tr>
-        <tr><td><code>HMS_PUBLIC_RATE_LIMIT_PER_MINUTE</code></td><td>Public endpoint rate limit</td><td>30</td></tr>
-        <tr><td><code>GMAIL_ENABLED</code></td><td>Enable Gmail API for reminders</td><td>false</td></tr>
-        <tr><td><code>SPRING_PROFILES_ACTIVE</code></td><td>Spring profile</td><td>dev</td></tr>
-        <tr><td><code>NEXT_PUBLIC_API_BASE_URL</code></td><td>Frontend API base URL</td><td>http://localhost:8081/api/v1</td></tr>
-      </tbody>
-    </table>
+      <div class="card"><h4 style="font-weight:700;margin-bottom:4px;">CI Pipeline</h4><p style="font-size:13px;color:var(--text-secondary);">Java build + Testcontainers + Vitest + Playwright + Docker build → GHCR.</p></div>
+      <div class="card"><h4 style="font-weight:700;margin-bottom:4px;">CD Pipeline</h4><p style="font-size:13px;color:var(--text-secondary);">Deploy to VPS — pull images, run migrations, restart, smoke test.</p></div>
+      <div class="card"><h4 style="font-weight:700;margin-bottom:4px;">Rollback</h4><p style="font-size:13px;color:var(--text-secondary);">Manual trigger to revert with health check gate.</p></div>
+      <div class="card"><h4 style="font-weight:700;margin-bottom:4px;">Security Scan</h4><p style="font-size:13px;color:var(--text-secondary);">OWASP DC + TruffleHog + Trivy on push + schedule.</p></div>
     </div>
   </div>
 </section>
 
+<!-- ADRs -->
+<section id="adrs">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-eyebrow">Architecture Decisions</p>
+      <h2>Key Design Choices & Rationale</h2>
+      <p>4 Architecture Decision Records documenting intentional trade-offs.</p>
+    </div>
+    <div class="adr-timeline">
+      <div class="adr-entry">
+        <div class="adr-num">ADR-001</div>
+        <div class="adr-title">Modular Monolith over Microservices</div>
+        <div class="adr-rationale">Healthcare has tightly-coupled workflows (appointment → queue → ehr → prescription → billing). A modular monolith preserves transactional consistency while DDD bounded contexts prevent coupling. Microservices would add distributed transaction complexity and operational overhead without benefit at this scale.</div>
+        <a class="adr-link" href="04-architecture/adr/ADR-001-modular-monolith.md">Read full ADR →</a>
+      </div>
+      <div class="adr-entry">
+        <div class="adr-num">ADR-002</div>
+        <div class="adr-title">Repository Interfaces in Domain Layer</div>
+        <div class="adr-rationale">Placing repository contracts in the domain enforces the Dependency Inversion Principle — domain owns the contract, infrastructure implements it. Prevents infrastructure concerns from leaking into business logic.</div>
+        <a class="adr-link" href="04-architecture/adr/ADR-002-repositories-in-domain.md">Read full ADR →</a>
+      </div>
+      <div class="adr-entry">
+        <div class="adr-num">ADR-003</div>
+        <div class="adr-title">JWT + httpOnly Refresh Cookies</div>
+        <div class="adr-rationale">Short-lived JWT access tokens (15min) + httpOnly refresh cookies (7-day rotation). httpOnly prevents XSS token theft. Stateless JWTs eliminate server-side session storage.</div>
+        <a class="adr-link" href="04-architecture/adr/ADR-003-jwt-auth.md">Read full ADR →</a>
+      </div>
+      <div class="adr-entry">
+        <div class="adr-num">ADR-004</div>
+        <div class="adr-title">AES-GCM PHI Encryption with SHA-256 Indexing</div>
+        <div class="adr-rationale">Patient identifiers (CCCD/CMND) encrypted at rest with AES-GCM, indexed by SHA-256 hash for lookup without decryption. Plaintext never stored. Satisfies healthcare PHI compliance.</div>
+        <a class="adr-link" href="04-architecture/adr/ADR-004-phi-encryption.md">Read full ADR →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCOUNTS -->
 <section id="accounts">
   <div class="container">
     <div class="section-header">
       <p class="section-eyebrow">Demo Accounts</p>
-      <h2>Pre-seeded staff and patient accounts</h2>
-      <p>Available when the backend starts with empty tables. Release demo seed adds synthetic UAT data when enabled.</p>
+      <h2>8 Pre-Seeded Accounts Across 7 Roles</h2>
+      <p>Available on first start. Enable <code>HMS_RELEASE_DEMO_SEED_ENABLED=true</code> for rich UAT data.</p>
     </div>
-
-    <h3 style="font-weight:700;font-size:17px;margin-bottom:16px;">Staff Accounts (7 roles)</h3>
-    <div class="table-wrap" style="margin-bottom:24px;">
-    <table>
+    <div class="table-wrap"><table>
       <thead><tr><th>Email</th><th>Password</th><th>Role</th><th>Notes</th></tr></thead>
       <tbody>
         <tr><td><code>doctor1@hospital.vn</code></td><td><code>Doctor@1234</code></td><td>DOCTOR</td><td>Internal Medicine</td></tr>
         <tr><td><code>doctor2@hospital.vn</code></td><td><code>Doctor@1234</code></td><td>DOCTOR</td><td>Cardiology</td></tr>
-        <tr><td><code>nurse@hospital.vn</code></td><td><code>Nurse@1234</code></td><td>NURSE</td><td>Queue and vitals workflows</td></tr>
-        <tr><td><code>receptionist@hospital.vn</code></td><td><code>Reception@1234</code></td><td>RECEPTIONIST</td><td>Booking and queue workflows</td></tr>
-        <tr><td><code>pharmacist@hospital.vn</code></td><td><code>Pharma@1234</code></td><td>PHARMACIST</td><td>Inventory and prescription preview</td></tr>
-        <tr><td><code>accountant@hospital.vn</code></td><td><code>Acc@1234</code></td><td>ACCOUNTANT</td><td>Finance and audit-log workflows</td></tr>
-        <tr><td><code>admin@hospital.vn</code></td><td><code>Admin@1234</code></td><td>ADMIN</td><td>Full admin workflows</td></tr>
+        <tr><td><code>nurse@hospital.vn</code></td><td><code>Nurse@1234</code></td><td>NURSE</td><td>Queue + vitals</td></tr>
+        <tr><td><code>receptionist@hospital.vn</code></td><td><code>Reception@1234</code></td><td>RECEPTIONIST</td><td>Booking + queue</td></tr>
+        <tr><td><code>pharmacist@hospital.vn</code></td><td><code>Pharma@1234</code></td><td>PHARMACIST</td><td>Inventory + dispense</td></tr>
+        <tr><td><code>accountant@hospital.vn</code></td><td><code>Acc@1234</code></td><td>ACCOUNTANT</td><td>Finance + audit</td></tr>
+        <tr><td><code>admin@hospital.vn</code></td><td><code>Admin@1234</code></td><td>ADMIN</td><td>Full system admin</td></tr>
+        <tr><td><code>patient@example.com</code></td><td><code>Patient@1234</code></td><td>PATIENT</td><td>Portal: Nguyen Thi Hoa</td></tr>
       </tbody>
-    </table>
-    </div>
-
-    <h3 style="font-weight:700;font-size:17px;margin-bottom:16px;">Patient Portal Account</h3>
-    <div class="table-wrap" style="margin-bottom:24px;">
-    <table>
-      <thead><tr><th>Email</th><th>Password</th><th>Patient</th><th>CCCD</th></tr></thead>
-      <tbody>
-        <tr><td><code>patient@example.com</code></td><td><code>Patient@1234</code></td><td>Nguyen Thi Hoa</td><td>012345678901</td></tr>
-      </tbody>
-    </table>
-    </div>
-
-    <div class="card">
-      <h3 style="font-weight:700;font-size:15px;margin-bottom:8px;">Release Demo Seed</h3>
-      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">Enable with <code>HMS_RELEASE_DEMO_SEED_ENABLED=true</code> to generate synthetic cross-role UAT data:</p>
-      <ul style="font-size:13px;color:var(--text-secondary);padding-left:18px;display:flex;flex-direction:column;gap:2px;">
-        <li>Configurable target counts: patients (default 8), appointments (12), inventory items (8), audit logs (16)</li>
-        <li>Generates appointments across all statuses (PENDING &rarr; DONE) with associated medical records, prescriptions, invoices</li>
-        <li>Creates slot availability for future days (configurable, default 14 days)</li>
-        <li>Keep disabled (<code>false</code>) for production imports</li>
-      </ul>
-    </div>
+    </table></div>
   </div>
 </section>
 
-<section id="metrics">
-  <div class="container">
-    <div class="section-header">
-      <p class="section-eyebrow">Project Metrics</p>
-      <h2>Verified engineering metrics</h2>
-      <p>Source-derived counts from the current codebase as of June 14, 2026.</p>
-    </div>
-
-    <div class="card-grid card-grid-4">
-      <div class="metric-card"><div class="value">5</div><div class="label">Maven Modules</div></div>
-      <div class="metric-card"><div class="value">40</div><div class="label">REST Controllers</div></div>
-      <div class="metric-card"><div class="value">118</div><div class="label">API Mappings</div></div>
-      <div class="metric-card"><div class="value">20</div><div class="label">Flyway Migrations</div></div>
-      <div class="metric-card"><div class="value">35</div><div class="label">DB Tables</div></div>
-      <div class="metric-card"><div class="value">72</div><div class="label">Frontend Pages</div></div>
-      <div class="metric-card"><div class="value">34</div><div class="label">Backend Test Files</div></div>
-      <div class="metric-card"><div class="value">25</div><div class="label">Playwright Specs</div></div>
-      <div class="metric-card"><div class="value">183+</div><div class="label">E2E Scenarios</div></div>
-      <div class="metric-card"><div class="value">80.48%</div><div class="label">FE Branch Coverage</div></div>
-      <div class="metric-card"><div class="value">36</div><div class="label">RBAC Permissions</div></div>
-      <div class="metric-card"><div class="value">4</div><div class="label">CI/CD Workflows</div></div>
-    </div>
-
-    <h3 style="font-weight:700;font-size:17px;margin:28px 0 16px;">Release Readiness</h3>
-    <div class="card">
-      <p style="font-size:14px;font-weight:600;color:var(--warning);margin-bottom:8px;">Release Candidate / Ship with fixes</p>
-      <p style="font-size:13px;color:var(--text-secondary);">Three waiver-closure items completed in the 2026-06-01 pass: lab results creation, pharmacy dispense workflow, and notification delivery persistence. All quality gates pass — 148 backend tests, 183 E2E scenarios, 80.48% frontend coverage, 0 npm audit vulnerabilities.</p>
-      <p style="font-size:13px;color:var(--text-secondary);margin-top:8px;">The label remains conservative pending: patient self-service scope decisions, remaining click-path review, clinical record locking policy, and drug/allergy interaction scope definition.</p>
-    </div>
-  </div>
-</section>
-
+<!-- DOCS INDEX -->
 <section id="docs">
   <div class="container">
     <div class="section-header">
-      <p class="section-eyebrow">Documentation Structure</p>
-      <h2>12 categories of technical documentation</h2>
-      <p>The <code>docs/</code> directory is organized into numbered categories, each containing focused markdown documents that serve as the single source of truth for the project.</p>
+      <p class="section-eyebrow">Documentation</p>
+      <h2>12 Categories of Technical Documentation</h2>
+      <p>Organized in <code>docs/</code> with numbered categories.</p>
     </div>
-
     <div class="doc-grid">
-      <div class="doc-card">
-        <div class="doc-cat">00-overview</div>
-        <h3>Project Foundation</h3>
-        <ul>
-          <li><a href="00-overview/project-foundation.md">project-foundation.md</a></li>
-          <li><a href="00-overview/project-context.md">project-context.md</a></li>
-          <li><a href="00-overview/git-workflow.md">git-workflow.md</a></li>
-          <li><a href="00-overview/code-review-checklist.md">code-review-checklist.md</a></li>
-        </ul>
-      </div>
-
-      <div class="doc-card">
-        <div class="doc-cat">01-business</div>
-        <h3>Business Context</h3>
-        <ul>
-          <li><a href="01-business/stakeholders.md">stakeholders.md</a></li>
-          <li><a href="01-business/scope.md">scope.md</a></li>
-          <li><a href="01-business/glossary.md">glossary.md</a></li>
-          <li><a href="01-business/business-rules.md">business-rules.md</a></li>
-        </ul>
-      </div>
-
-      <div class="doc-card">
-        <div class="doc-cat">02-product</div>
-        <h3>Product Definition</h3>
-        <ul>
-          <li><a href="02-product/prd.md">prd.md</a></li>
-          <li><a href="02-product/feature-list.md">feature-list.md</a></li>
-        </ul>
-      </div>
-
-      <div class="doc-card">
-        <div class="doc-cat">03-requirements</div>
-        <h3>Requirements &amp; Specifications</h3>
-        <ul>
-          <li><a href="03-requirements/permissions-matrix.md">permissions-matrix.md</a></li>
-          <li><a href="03-requirements/HMS_SRS.md">HMS_SRS.md</a></li>
-        </ul>
-      </div>
-
-      <div class="doc-card">
-        <div class="doc-cat">04-architecture</div>
-        <h3>System Architecture</h3>
-        <ul>
-          <li><a href="04-architecture/architecture.md">architecture.md</a></li>
-          <li><a href="04-architecture/domain-driven-design.md">domain-driven-design.md</a></li>
-          <li><a href="04-architecture/security-architecture.md">security-architecture.md</a></li>
-          <li><a href="04-architecture/tech-stack.md">tech-stack.md</a></li>
-          <li><a href="04-architecture/coding-standards.md">coding-standards.md</a></li>
-        </ul>
-      </div>
-
-      <div class="doc-card">
-        <div class="doc-cat">05-api</div>
-        <h3>API Documentation</h3>
-        <ul>
-          <li><a href="05-api/api-overview.md">api-overview.md</a></li>
-          <li><a href="05-api/auth-api.md">auth-api.md</a></li>
-          <li><a href="05-api/error-codes.md">error-codes.md</a></li>
-          <li><a href="05-api/API_CONTRACT.md">API_CONTRACT.md</a></li>
-        </ul>
-      </div>
-
-      <div class="doc-card">
-        <div class="doc-cat">06-database</div>
-        <h3>Database &amp; Data</h3>
-        <ul>
-          <li><a href="06-database/db-schema.md">db-schema.md</a></li>
-          <li><a href="06-database/migration-guide.md">migration-guide.md</a></li>
-          <li><a href="06-database/seed-data.md">seed-data.md</a></li>
-        </ul>
-      </div>
-
-      <div class="doc-card">
-        <div class="doc-cat">07-flows</div>
-        <h3>System Flows</h3>
-        <ul>
-          <li><a href="07-flows/end-to-end-business-flow.md">end-to-end-business-flow.md</a></li>
-          <li><a href="07-flows/state-machine.md">state-machine.md</a></li>
-        </ul>
-      </div>
-
-      <div class="doc-card">
-        <div class="doc-cat">09-testing</div>
-        <h3>Testing &amp; Quality</h3>
-        <ul>
-          <li><a href="09-testing/test-strategy.md">test-strategy.md</a></li>
-          <li><a href="09-testing/test-plan.md">test-plan.md</a></li>
-        </ul>
-      </div>
-
-      <div class="doc-card">
-        <div class="doc-cat">10-deployment</div>
-        <h3>Deployment &amp; Operations</h3>
-        <ul>
-          <li><a href="10-deployment/deployment-guide.md">deployment-guide.md</a></li>
-          <li><a href="10-deployment/ci-cd.md">ci-cd.md</a></li>
-          <li><a href="10-deployment/docker.md">docker.md</a></li>
-          <li><a href="10-deployment/env-variables.md">env-variables.md</a></li>
-        </ul>
-      </div>
-
-      <div class="doc-card">
-        <div class="doc-cat">12-handover</div>
-        <h3>Handover &amp; Onboarding</h3>
-        <ul>
-          <li><a href="12-handover/handover-document.md">handover-document.md</a></li>
-          <li><a href="12-handover/developer-onboarding.md">developer-onboarding.md</a></li>
-          <li><a href="12-handover/known-issues.md">known-issues.md</a></li>
-        </ul>
-      </div>
-
-      <div class="doc-card">
-        <div class="doc-cat">reference</div>
-        <h3>Reference &amp; Reports</h3>
-        <ul>
-          <li><a href="reference/repository-status.md">repository-status.md</a></li>
-          <li><a href="reference/engineering-metrics.md">engineering-metrics.md</a></li>
-          <li><a href="reference/frontend-route-inventory.md">frontend-route-inventory.md</a></li>
-          <li><a href="reference/current-system-flows.md">current-system-flows.md</a></li>
-        </ul>
-      </div>
+      <div class="doc-card"><div class="doc-cat">00-overview</div><h4>Project Foundation</h4><ul><li><a href="00-overview/project-foundation.md">project-foundation.md</a></li><li><a href="00-overview/git-workflow.md">git-workflow.md</a></li></ul></div>
+      <div class="doc-card"><div class="doc-cat">01-business</div><h4>Business Context</h4><ul><li><a href="01-business/stakeholders.md">stakeholders.md</a></li><li><a href="01-business/scope.md">scope.md</a></li><li><a href="01-business/glossary.md">glossary.md</a></li><li><a href="01-business/business-rules.md">business-rules.md</a></li></ul></div>
+      <div class="doc-card"><div class="doc-cat">02-product</div><h4>Product Definition</h4><ul><li><a href="02-product/prd.md">prd.md</a></li><li><a href="02-product/feature-list.md">feature-list.md</a></li></ul></div>
+      <div class="doc-card"><div class="doc-cat">03-requirements</div><h4>Requirements</h4><ul><li><a href="03-requirements/permissions-matrix.md">permissions-matrix.md</a></li><li><a href="03-requirements/srs.md">srs.md</a></li><li><a href="03-requirements/use-cases.md">use-cases.md</a></li></ul></div>
+      <div class="doc-card"><div class="doc-cat">04-architecture</div><h4>Architecture</h4><ul><li><a href="04-architecture/architecture.md">architecture.md</a></li><li><a href="04-architecture/domain-driven-design.md">domain-driven-design.md</a></li><li><a href="04-architecture/security-architecture.md">security-architecture.md</a></li><li><a href="04-architecture/tech-stack.md">tech-stack.md</a></li></ul></div>
+      <div class="doc-card"><div class="doc-cat">05-api</div><h4>API Docs</h4><ul><li><a href="05-api/api-contract.md">api-contract.md</a></li></ul></div>
+      <div class="doc-card"><div class="doc-cat">06-database</div><h4>Database</h4><ul><li><a href="06-database/db-schema.md">db-schema.md</a></li><li><a href="06-database/migration-guide.md">migration-guide.md</a></li></ul></div>
+      <div class="doc-card"><div class="doc-cat">07-flows</div><h4>System Flows</h4><ul><li><a href="07-flows/end-to-end-business-flow.md">end-to-end-business-flow.md</a></li><li><a href="07-flows/state-machine.md">state-machine.md</a></li></ul></div>
+      <div class="doc-card"><div class="doc-cat">08-ui-ux</div><h4>UI/UX</h4><ul><li><a href="08-ui-ux/02_design-system/design-system.md">design-system.md</a></li></ul></div>
+      <div class="doc-card"><div class="doc-cat">09-testing</div><h4>Testing</h4><ul><li><a href="09-testing/test-strategy.md">test-strategy.md</a></li><li><a href="09-testing/test-plan-full.md">test-plan-full.md</a></li></ul></div>
+      <div class="doc-card"><div class="doc-cat">10-deployment</div><h4>DevOps</h4><ul><li><a href="10-deployment/deployment-guide.md">deployment-guide.md</a></li><li><a href="10-deployment/ci-cd.md">ci-cd.md</a></li></ul></div>
+      <div class="doc-card"><div class="doc-cat">12-handover</div><h4>Handover</h4><ul><li><a href="12-handover/handover-document.md">handover-document.md</a></li><li><a href="12-handover/developer-onboarding.md">developer-onboarding.md</a></li></ul></div>
     </div>
   </div>
 </section>
 
+<!-- QUICK START -->
 <section id="setup">
   <div class="container">
     <div class="section-header">
-      <p class="section-eyebrow">Getting Started</p>
-      <h2>Run the system locally</h2>
-      <p>Prerequisites: Java 17+, Node.js 22+, Docker Desktop. Copy <code>.env.example</code> to <code>.env</code> and fill in required secrets.</p>
+      <p class="section-eyebrow">Quick Start</p>
+      <h2>Get Running in Under a Minute</h2>
+      <p>Prerequisites: Java 17+, Node.js 22+, Docker Desktop.</p>
     </div>
-
-    <div class="card-grid card-grid-2">
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:10px;">Docker Compose (Full Stack)</h3>
-        <pre>docker compose up -d
-# PostgreSQL + Backend + Frontend
-# http://localhost:3000</pre>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Observability: <code>docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d</code></p>
-      </div>
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:10px;">Backend (Development)</h3>
-        <pre>.\backend\run.ps1
-# or manual:
+    <div class="card-grid card-grid-3">
+      <div class="card"><div style="font-size:32px;margin-bottom:8px;">1</div><h4 style="font-weight:700;margin-bottom:6px;">Start PostgreSQL</h4><pre style="font-size:11px;">docker compose -f infra/docker-compose.yml up -d postgres</pre></div>
+      <div class="card"><div style="font-size:32px;margin-bottom:8px;">2</div><h4 style="font-weight:700;margin-bottom:6px;">Backend</h4><pre style="font-size:11px;">cp .env.example .env
 cd backend
-mvn install -DskipTests
-mvn spring-boot:run -f start/pom.xml
-# http://localhost:8081</pre>
-      </div>
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:10px;">Frontend (Development)</h3>
-        <pre>cd web
-npm install
-npm run dev
-# http://localhost:3000</pre>
-      </div>
-      <div class="card">
-        <h3 style="font-weight:700;font-size:15px;margin-bottom:10px;">Verification Commands</h3>
-        <pre># Backend health
-curl http://localhost:8081/actuator/health
-
-# Backend tests
-cd backend && mvn verify
-
-# Frontend tests
-cd web
-npm run test:unit
-npm run test:e2e:ui</pre>
+mvn spring-boot:run -f start/pom.xml</pre><p style="font-size:11px;color:var(--text-muted);">:8081/actuator/health</p></div>
+      <div class="card"><div style="font-size:32px;margin-bottom:8px;">3</div><h4 style="font-weight:700;margin-bottom:6px;">Frontend</h4><pre style="font-size:11px;">cd frontend
+npm install && npm run dev</pre><p style="font-size:11px;color:var(--text-muted);">localhost:3000</p></div>
+    </div>
+    <div class="callout callout-success" style="margin-top:20px;">
+      <div class="callout-icon">🐳</div>
+      <div class="callout-body">
+        <div class="callout-title">One-Command Start (Docker Compose)</div>
+        <div class="callout-desc"><code>docker compose -f infra/docker-compose.yml up -d --build</code> — starts PostgreSQL + backend + frontend in one command. Add <code>-f infra/docker-compose.observability.yml</code> for monitoring.</div>
       </div>
     </div>
   </div>
@@ -1183,15 +622,8 @@ npm run test:e2e:ui</pre>
 
 <footer>
   <div class="footer-inner">
-    <div>
-      <strong>Hospital Management System</strong><br>
-      Enterprise Healthcare ERP &middot; DDD Modular Monolith<br>
-      Java 17 &middot; Spring Boot 3.3 &middot; PostgreSQL 15 &middot; Next.js 16 &middot; React 19
-    </div>
-    <div style="text-align:right;">
-      Documentation refreshed <strong>June 14, 2026</strong><br>
-      Branch: <code>master</code> &middot; HEAD: <code>2ab7e3f</code> &middot; Release: <strong>RC 1.0</strong>
-    </div>
+    <div><strong>Hospital Management System</strong> — RC 1.0<br>Domain-Driven Design · Clean Architecture · Healthcare Compliance</div>
+    <div style="text-align:right;">Java 17 · Spring Boot 3.3 · PostgreSQL 15<br>Next.js 16 · React 19 · Playwright</div>
   </div>
 </footer>
 
