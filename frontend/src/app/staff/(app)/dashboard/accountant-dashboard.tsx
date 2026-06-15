@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 interface FinancialTransaction {
   id: string;
@@ -45,19 +46,6 @@ export function AccountantDashboardView() {
     });
   }, [searchQuery, paymentFilter]);
 
-  function getStatusBadge(status: FinancialTransaction["status"]) {
-    const classes = {
-      Completed: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
-      Pending: "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
-      Refunded: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
-    };
-    return (
-      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${classes[status]}`}>
-        {status}
-      </span>
-    );
-  }
-
   return (
     <div className="p-8 pb-20 max-w-[1400px] mx-auto">
       <PageHeader
@@ -66,11 +54,11 @@ export function AccountantDashboardView() {
         description="Verify daily patient collections, review unresolved invoices, verify clinical fee tariffs, and issue refunds."
         action={
           <div className="flex gap-2">
-            <Link href="/staff/invoices" className="flex items-center gap-2 px-4 py-2 text-sm font-bold bg-[var(--hc-primary)] hover:bg-[var(--hc-primary-hover)] text-white rounded-[var(--radius-md)] transition-all">
+            <Link href="/staff/invoices" className="flex items-center gap-2 px-4 py-2 text-sm font-bold bg-[var(--hc-primary)] hover:bg-[var(--hc-blue-700)] text-white rounded-[var(--radius-md)] transition-all">
               <FileText className="w-4 h-4" /> View Invoice Registry
             </Link>
-            <button type="button" className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors">
-              <Download className="w-4 h-4 text-slate-400" /> Export Ledger
+            <button type="button" className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)] transition-colors">
+              <Download className="w-4 h-4 text-[var(--hc-text-muted)]" /> Export Ledger
             </button>
           </div>
         }
@@ -86,33 +74,33 @@ export function AccountantDashboardView() {
 
       {/* Accountant Quick Actions */}
       <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm">
+        <div className="bg-[var(--hc-surface)] p-6 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm">
           <h3 className="text-sm font-bold text-[var(--hc-text)] mb-3">Reconciliation Presets</h3>
           <div className="flex flex-col gap-2">
-            <button type="button" className="flex items-center justify-between p-3 border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-all text-left">
+            <button type="button" className="flex items-center justify-between p-3 border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-all text-left">
               <div>
                 <p className="text-xs font-bold text-[var(--hc-text)]">Generate Daily Bank Reconciliation</p>
-                <p className="text-[10px] text-slate-500">Crosscheck bank statement logs against system ledger payouts.</p>
+                <p className="text-[10px] text-[var(--hc-text-muted)]">Crosscheck bank statement logs against system ledger payouts.</p>
               </div>
               <TrendingUp className="w-4 h-4 text-[var(--hc-primary)]" />
             </button>
-            <button type="button" className="flex items-center justify-between p-3 border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-all text-left">
+            <button type="button" className="flex items-center justify-between p-3 border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-all text-left">
               <div>
                 <p className="text-xs font-bold text-[var(--hc-text)]">Audit Pricing Tariff Exceptions</p>
-                <p className="text-[10px] text-slate-500">Review clinical waivers and patient discounts applied during checkout.</p>
+                <p className="text-[10px] text-[var(--hc-text-muted)]">Review clinical waivers and patient discounts applied during checkout.</p>
               </div>
               <Percent className="w-4 h-4 text-[var(--hc-primary)]" />
             </button>
           </div>
         </div>
 
-        <div className="bg-white p-6 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm flex flex-col justify-between">
+        <div className="bg-[var(--hc-surface)] p-6 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm flex flex-col justify-between">
           <div>
             <h3 className="text-sm font-bold text-[var(--hc-text)] mb-2">Reconciliation Target Progress</h3>
-            <div className="w-full bg-slate-100 h-2.5 rounded-full mb-2">
+            <div className="w-full bg-[var(--hc-surface-soft)] h-2.5 rounded-full mb-2">
               <div className="bg-[var(--hc-success)] h-2.5 rounded-full" style={{ width: "78%" }}></div>
             </div>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <p className="text-xs text-[var(--hc-text-muted)] leading-relaxed">
               <strong>78%</strong> of today&apos;s invoice settlements have been successfully reconciled and locked into the financial ledger. Target: 100% before shift wrapup.
             </p>
           </div>
@@ -120,12 +108,12 @@ export function AccountantDashboardView() {
       </section>
 
       {/* Financial Transactions Logs Table */}
-      <section className="mt-8 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+      <section className="mt-8 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-[var(--hc-border-soft)] flex flex-wrap items-center justify-between gap-4">
           <h3 className="text-sm font-bold text-[var(--hc-text)]">Daily Collections Ledger</h3>
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--hc-text-muted)]" />
               <input
                 type="text"
                 placeholder="Search Patient or Invoice..."
@@ -164,21 +152,21 @@ export function AccountantDashboardView() {
             <tbody>
               {filteredTxns.length > 0 ? (
                 filteredTxns.map((txn) => (
-                  <tr key={txn.id} className="hover:bg-slate-50/50 transition-colors">
+                  <tr key={txn.id} className="hover:bg-[var(--hc-surface-soft)]/50 transition-colors">
                     <td className="hc-td font-mono font-bold text-xs text-[var(--hc-text)]">{txn.id}</td>
                     <td className="hc-td font-semibold text-[var(--hc-text)]">{txn.patientName}</td>
                     <td className="hc-td text-sm text-[var(--hc-primary)] font-medium hover:underline">
                       <Link href={`/staff/invoices?search=${txn.invoiceId}`}>{txn.invoiceId}</Link>
                     </td>
                     <td className="hc-td text-sm font-mono font-bold text-[var(--hc-text)]">${txn.amount.toFixed(2)}</td>
-                    <td className="hc-td text-sm text-slate-600">{txn.paymentMethod}</td>
-                    <td className="hc-td">{getStatusBadge(txn.status)}</td>
-                    <td className="hc-td text-sm font-mono text-slate-400 text-right">{txn.timestamp}</td>
+                    <td className="hc-td text-sm text-[var(--hc-text-secondary)]">{txn.paymentMethod}</td>
+                    <td className="hc-td"><StatusBadge label={txn.status} tone={txn.status === "Completed" ? "green" : txn.status === "Pending" ? "amber" : txn.status === "Refunded" ? "red" : "neutral"} /></td>
+                    <td className="hc-td text-sm font-mono text-[var(--hc-text-muted)] text-right">{txn.timestamp}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="hc-td text-center py-12 text-slate-400">
+                  <td colSpan={7} className="hc-td text-center py-12 text-[var(--hc-text-muted)]">
                     No transactions found matching search query.
                   </td>
                 </tr>

@@ -15,6 +15,7 @@ import {
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 interface TriagePatient {
   id: string;
@@ -67,11 +68,11 @@ export function NurseDashboardView() {
         description="Monitor checking-in queue flows, record patient intake vitals, and coordinate clinical room handoffs."
         action={
           <div className="flex gap-2">
-            <Link href="/staff/nurse-intake" className="flex items-center gap-2 px-4 py-2 text-sm font-bold bg-[var(--hc-primary)] hover:bg-[var(--hc-primary-hover)] text-white rounded-[var(--radius-md)] transition-all">
+            <Link href="/staff/nurse-intake" className="flex items-center gap-2 px-4 py-2 text-sm font-bold bg-[var(--hc-primary)] hover:bg-[var(--hc-blue-700)] text-white rounded-[var(--radius-md)] transition-all">
               <PlusCircle className="w-4 h-4" /> Start New Triage
             </Link>
-            <Link href="/staff/queue" className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors">
-              <Activity className="w-4 h-4 text-slate-400" /> Queue Board
+            <Link href="/staff/queue" className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)] transition-colors">
+              <Activity className="w-4 h-4 text-[var(--hc-text-muted)]" /> Queue Board
             </Link>
           </div>
         }
@@ -87,35 +88,35 @@ export function NurseDashboardView() {
 
       {/* Quick Action Shortcuts */}
       <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm">
+        <div className="bg-[var(--hc-surface)] p-6 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm">
           <h3 className="text-sm font-bold text-[var(--hc-text)] mb-3">Triage Operations Shortcuts</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Link href="/staff/vital-signs" className="flex items-center gap-3 p-4 border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-all">
+            <Link href="/staff/vital-signs" className="flex items-center gap-3 p-4 border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-all">
               <Heart className="w-5 h-5 text-[var(--hc-danger)]" />
               <div>
                 <p className="text-sm font-bold text-[var(--hc-text)]">Record Vitals</p>
-                <p className="text-xs text-slate-500">Record BP, SpO2, Temp</p>
+                <p className="text-xs text-[var(--hc-text-muted)]">Record BP, SpO2, Temp</p>
               </div>
             </Link>
-            <Link href="/staff/queue" className="flex items-center gap-3 p-4 border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-all">
+            <Link href="/staff/queue" className="flex items-center gap-3 p-4 border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-all">
               <Clock className="w-5 h-5 text-[var(--hc-primary)]" />
               <div>
                 <p className="text-sm font-bold text-[var(--hc-text)]">Assign Rooms</p>
-                <p className="text-xs text-slate-500">Allocate clinical slot rooms</p>
+                <p className="text-xs text-[var(--hc-text-muted)]">Allocate clinical slot rooms</p>
               </div>
             </Link>
           </div>
         </div>
         
-        <div className="bg-white p-6 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm flex flex-col justify-between">
+        <div className="bg-[var(--hc-surface)] p-6 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm flex flex-col justify-between">
           <div>
             <h3 className="text-sm font-bold text-[var(--hc-text)] mb-2">Triage Nurse Guidelines</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <p className="text-xs text-[var(--hc-text-muted)] leading-relaxed">
               Ensure all checking-in patients undergo immediate heart rate, blood pressure, and SpO2 vital assessments.
               Highlight waiting times exceeding 20 minutes to the shift supervisor.
             </p>
           </div>
-          <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-[var(--radius-md)] text-xs text-red-700 flex gap-2 items-center">
+          <div className="mt-4 p-3 bg-[var(--hc-danger-bg)] border border-[var(--hc-danger)]/20 rounded-[var(--radius-md)] text-xs text-[var(--hc-danger)] flex gap-2 items-center">
             <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
             <span>CRITICAL: High fever (≥39.0C) or O2 SpO2 &lt; 94% must be escalated immediately.</span>
           </div>
@@ -123,12 +124,12 @@ export function NurseDashboardView() {
       </section>
 
       {/* Main Triage Table */}
-      <section className="mt-8 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+      <section className="mt-8 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-[var(--hc-border-soft)] flex flex-wrap items-center justify-between gap-4">
           <h3 className="text-sm font-bold text-[var(--hc-text)]">Active Intake Queue</h3>
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--hc-text-muted)]" />
               <input
                 type="text"
                 placeholder="Search patient or CCCD..."
@@ -166,21 +167,21 @@ export function NurseDashboardView() {
             <tbody>
               {filteredQueue.length > 0 ? (
                 filteredQueue.map((patient) => (
-                  <tr key={patient.id} className="hover:bg-slate-50/50 transition-colors">
+                  <tr key={patient.id} className="hover:bg-[var(--hc-surface-soft)]/50 transition-colors">
                     <td className="hc-td">
                       <div>
                         <p className="text-sm font-semibold text-[var(--hc-text)]">{patient.name}</p>
-                        <p className="text-xs text-slate-400">CCCD: {patient.cccd}</p>
+                        <p className="text-xs text-[var(--hc-text-muted)]">CCCD: {patient.cccd}</p>
                       </div>
                     </td>
                     <td className="hc-td text-sm font-mono text-[var(--hc-text)]">{patient.checkInTime}</td>
-                    <td className="hc-td">{getStatusBadge(patient.status)}</td>
+                    <td className="hc-td"><StatusBadge label={patient.status} tone={patient.status === "Waiting Triage" ? "amber" : patient.status === "Vitals Completed" ? "green" : patient.status === "Priority Triage" ? "red" : "neutral"} /></td>
                     <td className="hc-td text-sm max-w-[300px] truncate" title={patient.symptoms}>{patient.symptoms}</td>
-                    <td className="hc-td text-sm text-slate-600">{patient.assignedDoc}</td>
+                    <td className="hc-td text-sm text-[var(--hc-text-secondary)]">{patient.assignedDoc}</td>
                     <td className="hc-td text-right">
                       <Link
                         href={`/staff/vital-signs?cccd=${patient.cccd}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors"
                       >
                         Record Vitals
                       </Link>
@@ -189,7 +190,7 @@ export function NurseDashboardView() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={6} className="hc-td text-center py-12 text-slate-400">
+                  <td colSpan={6} className="hc-td text-center py-12 text-[var(--hc-text-muted)]">
                     No intake records found.
                   </td>
                 </tr>

@@ -15,6 +15,7 @@ import {
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 interface DrugItem {
   id: string;
@@ -67,11 +68,11 @@ export function PharmacistDashboardView() {
         description="Verify drug inventory stock, check about-to-expire lots, track prescription dispensing queues, and log inventory movements."
         action={
           <div className="flex gap-2">
-            <Link href="/staff/inventory" className="flex items-center gap-2 px-4 py-2 text-sm font-bold bg-[var(--hc-primary)] hover:bg-[var(--hc-primary-hover)] text-white rounded-[var(--radius-md)] transition-all">
+            <Link href="/staff/inventory" className="flex items-center gap-2 px-4 py-2 text-sm font-bold bg-[var(--hc-primary)] hover:bg-[var(--hc-blue-700)] text-white rounded-[var(--radius-md)] transition-all">
               <Package className="w-4 h-4" /> View Inventory List
             </Link>
-            <Link href="/staff/prescriptions" className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-white hover:bg-slate-50 transition-colors">
-              <ClipboardList className="w-4 h-4 text-slate-400" /> Prescriptions Queue
+            <Link href="/staff/prescriptions" className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)] transition-colors">
+              <ClipboardList className="w-4 h-4 text-[var(--hc-text-muted)]" /> Prescriptions Queue
             </Link>
           </div>
         }
@@ -87,33 +88,33 @@ export function PharmacistDashboardView() {
 
       {/* Quick Alerts and Activities */}
       <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-6 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm">
+        <div className="bg-[var(--hc-surface)] p-6 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm">
           <h3 className="text-sm font-bold text-[var(--hc-text)] mb-3">Pharmacist Shortcuts</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Link href="/staff/inventory?action=movement" className="flex items-center gap-3 p-4 border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-all">
+            <Link href="/staff/inventory?action=movement" className="flex items-center gap-3 p-4 border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-all">
               <Truck className="w-5 h-5 text-[var(--hc-primary)]" />
               <div>
                 <p className="text-sm font-bold text-[var(--hc-text)]">Stock Inbound</p>
-                <p className="text-xs text-slate-500">Log shipment deliveries</p>
+                <p className="text-xs text-[var(--hc-text-muted)]">Log shipment deliveries</p>
               </div>
             </Link>
-            <Link href="/staff/prescriptions" className="flex items-center gap-3 p-4 border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-slate-50 transition-all">
+            <Link href="/staff/prescriptions" className="flex items-center gap-3 p-4 border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-all">
               <Layers className="w-5 h-5 text-[var(--hc-primary)]" />
               <div>
                 <p className="text-sm font-bold text-[var(--hc-text)]">Dispense Drugs</p>
-                <p className="text-xs text-slate-500">Verify & complete orders</p>
+                <p className="text-xs text-[var(--hc-text-muted)]">Verify & complete orders</p>
               </div>
             </Link>
           </div>
         </div>
 
-        <div className="bg-white p-6 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm flex flex-col justify-between">
+        <div className="bg-[var(--hc-surface)] p-6 border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm flex flex-col justify-between">
           <div>
             <h3 className="text-sm font-bold text-[var(--hc-text)] mb-2">Drug Expiration Warning</h3>
-            <p className="text-xs text-slate-500 leading-relaxed mb-3">
+            <p className="text-xs text-[var(--hc-text-muted)] leading-relaxed mb-3">
               Review and isolate lots expiring within the next 30 days. Transfer nearing-expiry items to outpatient units first.
             </p>
-            <div className="p-3 bg-amber-50 border border-amber-100 rounded-[var(--radius-md)] text-xs text-amber-800 flex gap-2 items-center">
+            <div className="p-3 bg-[var(--hc-amber-bg)] border border-[var(--hc-amber-100)] rounded-[var(--radius-md)] text-xs text-[var(--hc-amber-700)] flex gap-2 items-center">
               <AlertCircle className="w-4 h-4 text-amber-500 shrink-0" />
               <span>Notice: Insulin lot #IN-9812 expires in 12 days. Current stock: 8 vials.</span>
             </div>
@@ -122,12 +123,12 @@ export function PharmacistDashboardView() {
       </section>
 
       {/* Stock Alerts Table */}
-      <section className="mt-8 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
+      <section className="mt-8 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-[var(--hc-border-soft)] flex flex-wrap items-center justify-between gap-4">
           <h3 className="text-sm font-bold text-[var(--hc-text)]">Stock Levels & Expiration Monitor</h3>
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--hc-text-muted)]" />
               <input
                 type="text"
                 placeholder="Search drug name..."
@@ -166,19 +167,19 @@ export function PharmacistDashboardView() {
             <tbody>
               {filteredItems.length > 0 ? (
                 filteredItems.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="hc-td font-mono font-bold text-xs text-slate-400">{item.id}</td>
+                  <tr key={item.id} className="hover:bg-[var(--hc-surface-soft)]/50 transition-colors">
+                    <td className="hc-td font-mono font-bold text-xs text-[var(--hc-text-muted)]">{item.id}</td>
                     <td className="hc-td font-semibold text-[var(--hc-text)]">{item.name}</td>
-                    <td className="hc-td text-sm text-slate-500">{item.category}</td>
+                    <td className="hc-td text-sm text-[var(--hc-text-muted)]">{item.category}</td>
                     <td className="hc-td text-sm font-mono font-bold text-[var(--hc-text)]">{item.stockLevel}</td>
-                    <td className="hc-td text-sm font-mono text-slate-400">{item.minLevel}</td>
-                    <td className="hc-td">{getStatusBadge(item.status)}</td>
-                    <td className="hc-td text-sm font-semibold text-right text-orange-600">{item.expiringLots > 0 ? `${item.expiringLots} lots` : "0"}</td>
+                    <td className="hc-td text-sm font-mono text-[var(--hc-text-muted)]">{item.minLevel}</td>
+                    <td className="hc-td"><StatusBadge label={item.status} tone={item.status === "Normal" ? "green" : item.status === "Low Stock" ? "amber" : item.status === "Critical" ? "red" : "neutral"} /></td>
+                    <td className="hc-td text-sm font-semibold text-right text-[var(--hc-amber-600)]">{item.expiringLots > 0 ? `${item.expiringLots} lots` : "0"}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="hc-td text-center py-12 text-slate-400">
+                  <td colSpan={7} className="hc-td text-center py-12 text-[var(--hc-text-muted)]">
                     No matching stock items.
                   </td>
                 </tr>
