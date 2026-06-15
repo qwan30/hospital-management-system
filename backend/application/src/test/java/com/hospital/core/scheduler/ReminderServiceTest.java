@@ -117,6 +117,23 @@ class ReminderServiceTest {
     verify(emailService, never()).sendFollowUpReminder(any(), any(), any(), any());
   }
 
+  @Test
+  void planReminderWithNullFollowUpDateDoesNotSchedule() {
+    var record = record(null);
+    reminderService.planReminder(record);
+    assertThat(record.getReminderScheduledAt()).isNull();
+  }
+
+  @Test
+  void dispatchDueRemindersWithEmptyRepositoryReturnsZero() {
+    when(medicalRecordRepository.findByReminderSentFalseAndReminderScheduledAtLessThanEqualOrderByReminderScheduledAtAsc(any()))
+        .thenReturn(List.of());
+
+    var sentCount = reminderService.dispatchDueReminders();
+
+    assertThat(sentCount).isEqualTo(0);
+  }
+
   private MedicalRecordEntity record(LocalDate followUpDate) {
     var patient = new PatientEntity();
     patient.setId(UUID.randomUUID());
@@ -136,7 +153,9 @@ class ReminderServiceTest {
     var record = new MedicalRecordEntity();
     record.setId(UUID.randomUUID());
     record.setAppointment(appointment);
-    record.setFollowUpDate(followUpDate);
+    if (followUpDate != null) {
+      record.setFollowUpDate(followUpDate);
+    }
     return record;
   }
 }

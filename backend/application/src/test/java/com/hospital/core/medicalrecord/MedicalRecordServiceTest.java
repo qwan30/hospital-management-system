@@ -195,6 +195,44 @@ class MedicalRecordServiceTest {
         .hasMessageContaining("another doctor's");
   }
 
+  @Test
+  void rejectsNullDiagnosis() {
+    var doctor = doctor();
+    var appointment = appointment(doctor, LocalDate.of(2026, 3, 16), LocalTime.of(8, 0));
+    when(appointmentRepository.findDetailedById(appointment.getId())).thenReturn(Optional.of(appointment));
+    when(medicalRecordRepository.existsByAppointmentId(appointment.getId())).thenReturn(false);
+
+    assertThatThrownBy(() -> medicalRecordService.createMedicalRecord(
+        doctor.getId(),
+        new MedicalRecordCreateRequest(appointment.getId(), null, "Notes",
+            new VitalSignsPayload("120/80", 36.8, 65.0, 170.0),
+            LocalDate.of(2026, 3, 20), List.of())))
+        .isInstanceOf(RuntimeException.class);
+  }
+
+  @Test
+  void rejectsNullAppointmentId() {
+    var doctor = doctor();
+    assertThatThrownBy(() -> medicalRecordService.createMedicalRecord(
+        doctor.getId(),
+        new MedicalRecordCreateRequest(null, "Diagnosis", "Notes",
+            new VitalSignsPayload("120/80", 36.8, 65.0, 170.0),
+            LocalDate.of(2026, 3, 20), List.of())))
+        .isInstanceOf(com.hospital.core.common.NotFoundException.class);
+  }
+
+  @Test
+  void rejectsGetPatientHistoryWithNullCccd() {
+    assertThatThrownBy(() -> medicalRecordService.getPatientHistory(null))
+        .isInstanceOf(com.hospital.core.common.NotFoundException.class);
+  }
+
+  @Test
+  void rejectsGetPatientHistoryWithEmptyCccd() {
+    assertThatThrownBy(() -> medicalRecordService.getPatientHistory(""))
+        .isInstanceOf(com.hospital.core.common.NotFoundException.class);
+  }
+
   private UserEntity doctor() {
     var doctor = new UserEntity();
     doctor.setId(UUID.randomUUID());

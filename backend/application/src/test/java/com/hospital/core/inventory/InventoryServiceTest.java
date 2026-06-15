@@ -48,6 +48,16 @@ class InventoryServiceTest {
     assertThat(alerts.get(1).daysUntilExpiry()).isEqualTo(14);
   }
 
+  @Test
+  void listAlerts_emptyRepositoryReturnsEmptyList() {
+    when(itemRepository.findAllByOrderByItemNameAsc()).thenReturn(List.of());
+    when(lotRepository.findAllByOrderByExpiresOnAsc()).thenReturn(List.of());
+
+    var alerts = service.listAlerts(LocalDate.of(2026, 4, 26));
+
+    assertThat(alerts).isEmpty();
+  }
+
   private InventoryItemEntity item(
       String sku,
       String itemName,

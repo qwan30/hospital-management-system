@@ -22,9 +22,9 @@ backend/
 
 frontend/
 ├── src/app/         # Next.js App Router — staff, admin, portal, public routes
-├── src/components/  # Shared UI components (hc-icon, data-panel, sidebar, etc.)
+├── src/components/  # Shared UI components — 19 UI components tested (140 tests)
 ├── src/lib/         # API client, auth helpers, utility modules
-└── e2e/             # Playwright specs + page objects (25 spec files, 183+ scenarios)
+└── e2e/             # Playwright specs + page objects (30 spec files, 203+ scenarios)
 ```
 
 Dependency flow: `domain` ← `infrastructure` ← `application` ← `controller` ← `start`
@@ -74,14 +74,19 @@ npm run dev                    # http://localhost:3000
 ### Backend
 ```bash
 cd backend
-mvn verify                     # 148 integration tests (Spring Boot + Testcontainers)
+mvn test -pl application        # 122 service-layer tests (unit + edge case)
+mvn test -pl infrastructure     # 30 repository @DataJpaTest tests
+mvn test -pl controller         # 73 controller @WebMvcTest / standalone tests
+mvn verify                       # ~183 full-stack integration tests (Testcontainers)
 ```
+JaCoCo coverage thresholds enforced: instruction ≥ 40%, branch ≥ 30%.
 
 ### Frontend
 ```bash
 cd frontend
-npm run test:unit              # Vitest unit tests (80.48% branch coverage)
-npm run test:e2e:ui            # Playwright UI route smoke & accessibility (323+ scenarios)
+npm run test:unit              # Vitest unit tests — 72 test files, 611+ tests
+npm run test:unit:coverage     # Coverage report (thresholds enforced: 40% stmts, 35% branch)
+npm run test:e2e:ui            # Playwright UI route smoke & accessibility (30 specs, 203+ scenarios)
 npm run test:e2e:integrated    # Backend-backed auth, claim, booking, queue checks
 npm run test:e2e:ci            # Full CI suite — RBAC, API client, operations, security
 npm run test:e2e:visual        # Visual baseline snapshots
@@ -99,8 +104,11 @@ node .agents/tests/run-all.js  # ECC framework unit tests (hooks, lib, scripts)
 - **118 REST API mappings** across 40 controllers
 - **72 Next.js page files** covering staff, admin, patient portal, and public routes
 - **20 Flyway migrations** building 35 database tables with 26 indexes
-- **148 backend integration tests** + **80.48% frontend branch coverage**
-- **183+ Playwright E2E scenarios** covering RBAC, clinical workflows, and click-path safety
+- **~408 backend tests** (122 service + 73 controller + 30 repository + ~183 integration)
+- **611+ frontend unit tests** across 72 test files (19 UI components, 12 lib, 6 hooks, 35+ pages)
+- **203+ Playwright E2E scenarios** across 30 specs — RBAC, clinical workflows, error paths, network failure, rate limiting
+- **Coverage thresholds enforced**: backend instruction ≥ 40% / branch ≥ 30%; frontend statements ≥ 40% / branches ≥ 35%
+- **Edge/bad case coverage**: null params, empty strings, extreme numerics, XSS, SQL injection, session expiry, double-submit, network failures, concurrent sessions
 
 ## CI/CD
 

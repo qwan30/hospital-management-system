@@ -230,5 +230,74 @@ describe('api-client', () => {
       const response = await apiRequest('/empty');
       expect(response).toEqual({});
     });
+
+    it('handles 429 rate limit response', async () => {
+      mockErrorResponse(429, {
+        error: {
+          code: 'RATE_LIMIT_EXCEEDED',
+          message: 'Too many requests. Please wait before retrying.',
+        },
+      });
+
+      await expect(apiRequest('/rate-limited')).rejects.toMatchObject({
+        name: 'ApiClientError',
+        message: 'Too many requests. Please wait before retrying.',
+        status: 429,
+        code: 'RATE_LIMIT_EXCEEDED',
+        requestId: expect.any(String),
+        durationMs: expect.any(Number),
+      });
+    });
+
+    it('handles response with unexpected content type (non-JSON body)', async () => {
+      fetchMock().mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'Content-Type': 'text/html' }),
+        text: () => Promise.resolve('<html><body>Server error</body></html>'),
+      } as Response);
+
+      // The api-client reads text() then JSON.parse() - this should throw a JSON parse error
+      await expect(apiRequest('/bad-content-type')).rejects.toThrow();
+    });
+
+    it('handles 503 service unavailable gracefully', async () => {
+      mockErrorResponse(503, {
+        error: {
+          code: 'SERVICE_UNAVAILABLE',
+          message: 'Service temporarily unavailable. Please try again later.',
+        },
+      });
+
+      await expect(apiRequest('/unavailable')).rejects.toMatchObject({
+        name: 'ApiClientError',
+        message: 'Service temporarily unavailable. Please try again later.',
+        status: 503,
+        code: 'SERVICE_UNAVAILABLE',
+        requestId: expect.any(String),
+        durationMs: expect.any(Number),
+      });
+    });
+
+    it('propagates non-Error rejection from fetch correctly', async () => {
+      fetchMock().mockRejectedValueOnce('string rejection');
+
+      await expect(apiRequest('/fail')).rejects.toMatchObject({
+        name: 'ApiClientError',
+        message: 'Unable to reach the hospital server. Check your connection and try again.',
+        status: 0,
+        code: 'NETWORK_ERROR',
+        requestId: expect.any(String),
+        durationMs: expect.any(Number),
+      });
+    });
+
+    it('handles very large response body without crashing', async () => {
+      const largeData = { data: 'x'.repeat(100000) };
+      mockSuccessResponse(largeData);
+
+      const response = await apiRequest('/large-response');
+      expect(response.data).toBe(largeData.data);
+    });
   });
 });

@@ -169,6 +169,12 @@ class AppointmentWorkflowServiceTest {
       assertThatThrownBy(() -> service.cancelAppointment(appointmentId))
           .isInstanceOf(ConflictException.class);
     }
+
+    @Test
+    void shouldRejectCancelWithNullId() {
+      assertThatThrownBy(() -> service.cancelAppointment(null))
+          .isInstanceOf(com.hospital.core.common.NotFoundException.class);
+    }
   }
 
   @Nested
@@ -248,6 +254,28 @@ class AppointmentWorkflowServiceTest {
           new AppointmentVitalSignsRequest("120/80", 36.5, 70.0, 170.0, 75, 16, 98.0)))
           .isInstanceOf(ConflictException.class)
           .hasMessageContaining("already recorded");
+    }
+
+    @Test
+    void shouldRejectExtremeTemperature() {
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(vitalSignsRepository.existsByAppointmentId(appointmentId)).thenReturn(false);
+
+      assertThatThrownBy(() -> service.recordVitalSigns(appointmentId,
+          new AppointmentVitalSignsRequest("120/80", 45.0, 70.0, 170.0, 75, 16, 98.0)))
+          .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void shouldRejectZeroHeartRate() {
+      when(appointmentRepository.findDetailedById(appointmentId))
+          .thenReturn(Optional.of(sampleAppointment));
+      when(vitalSignsRepository.existsByAppointmentId(appointmentId)).thenReturn(false);
+
+      assertThatThrownBy(() -> service.recordVitalSigns(appointmentId,
+          new AppointmentVitalSignsRequest("120/80", 36.5, 0.0, 170.0, 0, 16, 98.0)))
+          .isInstanceOf(RuntimeException.class);
     }
   }
 
@@ -372,6 +400,12 @@ class AppointmentWorkflowServiceTest {
       assertThatThrownBy(() -> service.checkInAppointment(appointmentId, LocalDateTime.now()))
           .isInstanceOf(ConflictException.class);
     }
+
+    @Test
+    void shouldRejectCheckInWithNullTimestamp() {
+      assertThatThrownBy(() -> service.checkInAppointment(appointmentId, null))
+          .isInstanceOf(com.hospital.core.common.NotFoundException.class);
+    }
   }
 
   @Nested
@@ -451,6 +485,20 @@ class AppointmentWorkflowServiceTest {
       assertThatThrownBy(() -> service.completeQueueVisit(appointmentId))
           .isInstanceOf(ConflictException.class)
           .hasMessageContaining("in consultation");
+    }
+
+    @Test
+    void shouldRejectCompletingVisitWithNullAppointmentId() {
+      // Service passes null to repository which returns empty Optional -> NotFoundException
+      assertThatThrownBy(() -> service.completeQueueVisit(null))
+          .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void shouldRejectAssignRoomWithEmptyName() {
+      // Service validates room name before using repository
+      assertThatThrownBy(() -> service.assignQueueRoom(appointmentId, ""))
+          .isInstanceOf(RuntimeException.class);
     }
   }
 }

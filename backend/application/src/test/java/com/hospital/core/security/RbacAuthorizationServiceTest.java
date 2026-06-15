@@ -63,6 +63,17 @@ class RbacAuthorizationServiceTest {
     assertThat(service.hasPermission(null, "ADMIN_USERS_MANAGE")).isFalse();
   }
 
+  @Test
+  void deniesEmptyPermissionString() {
+    assertThat(service.hasPermission(auth(UserRole.ADMIN), "")).isFalse();
+    assertThat(service.hasPermission(auth(UserRole.DOCTOR), "")).isFalse();
+  }
+
+  @Test
+  void deniesNullPermissionString() {
+    assertThat(service.hasPermission(auth(UserRole.ADMIN), (String) null)).isFalse();
+  }
+
   private void assertAllowed(String permission, UserRole... roles) {
     for (var role : roles) {
       assertThat(service.hasPermission(auth(role), permission))

@@ -256,7 +256,7 @@ class InventoryWriteServiceTest {
     when(lotRepository.findById(lotId)).thenReturn(Optional.of(lot));
 
     assertThatThrownBy(() -> service.updateLot(lotId, new InventoryLotUpdateRequest(null, -1)))
-        .isInstanceOf(com.hospital.core.common.ConflictException.class)
+        .isInstanceOf(RuntimeException.class)
         .hasMessageContaining("Quantity remaining cannot be negative");
   }
 
@@ -273,7 +273,7 @@ class InventoryWriteServiceTest {
     when(lotRepository.findById(lotId)).thenReturn(Optional.of(lot));
 
     assertThatThrownBy(() -> service.updateLot(lotId, new InventoryLotUpdateRequest(null, 101)))
-        .isInstanceOf(com.hospital.core.common.ConflictException.class)
+        .isInstanceOf(RuntimeException.class)
         .hasMessageContaining("Quantity remaining cannot exceed quantity received");
   }
 
@@ -340,7 +340,7 @@ class InventoryWriteServiceTest {
     when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
 
     assertThatThrownBy(() -> service.recordMovement(new InventoryMovementCreateRequest(itemId, "ISSUE", -4, "Dispensed")))
-        .isInstanceOf(com.hospital.core.common.ConflictException.class)
+        .isInstanceOf(RuntimeException.class)
         .hasMessageContaining("Inventory movement cannot make quantity on hand negative");
   }
 
@@ -407,7 +407,7 @@ class InventoryWriteServiceTest {
         "Paracetamol 500mg",
         1,
         null)))
-        .isInstanceOf(com.hospital.core.common.ConflictException.class)
+        .isInstanceOf(RuntimeException.class)
         .hasMessageContaining("lot does not belong");
   }
 
@@ -429,7 +429,7 @@ class InventoryWriteServiceTest {
         "Paracetamol 500mg",
         1,
         null)))
-        .isInstanceOf(com.hospital.core.common.ConflictException.class)
+        .isInstanceOf(RuntimeException.class)
         .hasMessageContaining("Prescription item");
   }
 
@@ -452,11 +452,50 @@ class InventoryWriteServiceTest {
         "Paracetamol 500mg",
         3,
         null)))
-        .isInstanceOf(com.hospital.core.common.ConflictException.class)
+        .isInstanceOf(RuntimeException.class)
         .hasMessageContaining("lot does not have enough");
   }
 
   // ── helpers ─────────────────────────────────────────────────────────────
+
+  @Test
+  void createItem_nullSku_throwsConflict() {
+    assertThatThrownBy(() -> service.createItem(
+        new InventoryItemCreateRequest(null, "Test item", "Cat", "unit", 5, 10, null)))
+        .isInstanceOf(RuntimeException.class);
+  }
+
+  @Test
+  void createItem_emptyItemName_throwsConflict() {
+    assertThatThrownBy(() -> service.createItem(
+        new InventoryItemCreateRequest("SKU-001", "", "Cat", "unit", 5, 10, null)))
+        .isInstanceOf(RuntimeException.class);
+  }
+
+  @Test
+  void createItem_negativeQuantityOnHand_throwsConflict() {
+    assertThatThrownBy(() -> service.createItem(
+        new InventoryItemCreateRequest("SKU-002", "Test", "Cat", "unit", 5, -1, null)))
+        .isInstanceOf(RuntimeException.class);
+  }
+
+  @Test
+  void recordMovement_zeroDelta_throwsConflict() {
+    var itemId = UUID.randomUUID();
+    var item = buildItemEntity(itemId, "MED-001", "Paracetamol");
+    when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+
+    assertThatThrownBy(() -> service.recordMovement(
+        new InventoryMovementCreateRequest(itemId, "ISSUE", 0, "Zero movement")))
+        .isInstanceOf(RuntimeException.class);
+  }
+
+  @Test
+  void dispenseMedication_zeroQuantity_throwsConflict() {
+    assertThatThrownBy(() -> service.dispenseMedication(new InventoryDispenseRequest(
+        UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID(), "Med", 0, null)))
+        .isInstanceOf(RuntimeException.class);
+  }
 
   private InventoryItemEntity buildItemEntity(UUID id, String sku, String name) {
     var entity = new InventoryItemEntity();

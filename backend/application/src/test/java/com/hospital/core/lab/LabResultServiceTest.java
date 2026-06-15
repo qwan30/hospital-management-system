@@ -122,6 +122,46 @@ class LabResultServiceTest {
         .isInstanceOf(NotFoundException.class);
   }
 
+  @Test
+  void createLabResult_nullTestName_throwsBadRequest() {
+    assertThatThrownBy(() -> service.createLabResult(
+        new LabResultCreateRequest(UUID.randomUUID(), null, "Normal", "4.5-11.0", "COMPLETED", "notes")))
+        .isInstanceOf(RuntimeException.class);
+  }
+
+  @Test
+  void createLabResult_emptyResultValue_throwsBadRequest() {
+    var appointmentId = UUID.randomUUID();
+    var appointment = new AppointmentEntity();
+    appointment.setId(appointmentId);
+    appointment.setPatient(new PatientEntity());
+    when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(appointment));
+
+    assertThatThrownBy(() -> service.createLabResult(
+        new LabResultCreateRequest(appointmentId, "CBC", "", null, null, null)))
+        .isInstanceOf(RuntimeException.class);
+  }
+
+  @Test
+  void getLabResultsByAppointment_nonExistentReturnsEmptyList() {
+    var appointmentId = UUID.randomUUID();
+    when(labResultRepository.findByAppointmentIdAndDeletedFalseOrderByCreatedAtDesc(appointmentId))
+        .thenReturn(List.of());
+
+    var responses = service.getLabResultsByAppointment(appointmentId);
+
+    assertThat(responses).isEmpty();
+  }
+
+  @Test
+  void deleteLabResult_alreadyDeleted_throwsNotFound() {
+    var resultId = UUID.randomUUID();
+    when(labResultRepository.findByIdAndDeletedFalse(resultId)).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> service.deleteLabResult(resultId))
+        .isInstanceOf(NotFoundException.class);
+  }
+
   private LabResultEntity buildLabResult(UUID id) {
     var appointment = new AppointmentEntity();
     appointment.setId(UUID.randomUUID());

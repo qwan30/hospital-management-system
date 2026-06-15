@@ -130,6 +130,33 @@ class VitalSignsServiceTest {
         .isInstanceOf(NotFoundException.class);
   }
 
+  @Test
+  void createVitalSigns_nullAppointmentId_throwsBadRequest() {
+    assertThatThrownBy(() -> service.createVitalSigns(
+        new VitalSignsCreateRequest(null, "120/80", 36.5, 72.0, 170.0, 70, 16, 98.0)))
+        .isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  void createVitalSigns_negativeWeight_throwsBadRequest() {
+    var appointmentId = UUID.randomUUID();
+    when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(new AppointmentEntity()));
+
+    assertThatThrownBy(() -> service.createVitalSigns(
+        new VitalSignsCreateRequest(appointmentId, "120/80", 36.5, 72.0, -1.0, 70, 16, 98.0)))
+        .isInstanceOf(RuntimeException.class);
+  }
+
+  @Test
+  void createVitalSigns_zeroHeight_throwsBadRequest() {
+    var appointmentId = UUID.randomUUID();
+    when(appointmentRepository.findById(appointmentId)).thenReturn(Optional.of(new AppointmentEntity()));
+
+    assertThatThrownBy(() -> service.createVitalSigns(
+        new VitalSignsCreateRequest(appointmentId, "120/80", 36.5, 72.0, 0.0, 70, 16, 98.0)))
+        .isInstanceOf(RuntimeException.class);
+  }
+
   private AppointmentVitalSignsEntity buildVitalSigns(UUID id, UUID appointmentId) {
     var appointment = new AppointmentEntity();
     appointment.setId(appointmentId);

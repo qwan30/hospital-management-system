@@ -9,13 +9,13 @@
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
 [![GitHub Actions](https://img.shields.io/badge/CI%2FCD-Active-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/tranhquan099-commits/hospital-management-system/actions)
 [![Release](https://img.shields.io/badge/Release-RC_1.0-0d7c4b?style=for-the-badge)](https://github.com/qwan30/hospital-management-system)
-[![Tests](https://img.shields.io/badge/Tests-331_Passing-22C55E?style=for-the-badge)](https://github.com/qwan30/hospital-management-system/actions)
-[![Coverage](https://img.shields.io/badge/Coverage-80.48%25-22C55E?style=for-the-badge)](https://github.com/qwan30/hospital-management-system)
+[![Tests](https://img.shields.io/badge/Tests-800+_Passing-22C55E?style=for-the-badge)](https://github.com/qwan30/hospital-management-system/actions)
+[![Coverage](https://img.shields.io/badge/Coverage-Enforced-22C55E?style=for-the-badge)](https://github.com/qwan30/hospital-management-system)
 
 **A full-stack healthcare ERP system** supporting end-to-end hospital clinical workflows — from public appointment booking, patient intake & queue triage, electronic health records (EHR), pharmacy dispensing with lot-level traceability, to billing & revenue reporting. Built with **Domain-Driven Design (DDD)** principles and strict **PHI (Protected Health Information)** compliance — AES-GCM encryption, SHA-256 hashed indexing, JWT-based RBAC with 36 granular permissions.
 
-> **🟢 Production Status: Release Candidate 1.0 — June 14, 2026**
-> All 7 clinical workflows implemented and verified. 148 backend integration tests + 183+ Playwright E2E scenarios passing. 80.48% frontend branch coverage.
+> **🟢 Production Status: Release Candidate 1.0 — June 15, 2026**
+> All 7 clinical workflows implemented and verified. ~408 backend tests (service + controller + repository + integration) + 611+ frontend unit tests + 203+ Playwright E2E scenarios. Coverage thresholds enforced at build time. Comprehensive edge/bad case coverage across all layers.
 >
 > 📚 **[Interactive Documentation Portal →](docs/HMS_DOCUMENTATION.html)** | 📂 **[Documentation Index →](docs/README.md)** | 📋 **[API Contract →](docs/05-api/api-contract.md)** | 📝 **[Changelog →](CHANGELOG.md)**
 

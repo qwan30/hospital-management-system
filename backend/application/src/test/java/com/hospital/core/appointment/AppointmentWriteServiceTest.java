@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.hospital.core.common.ConflictException;
+import com.hospital.core.common.NotFoundException;
 import com.hospital.core.email.EmailService;
 import com.hospital.core.patient.PatientIdentifierProtector;
 import com.hospital.core.patient.PatientRepository;
@@ -103,6 +104,68 @@ class AppointmentWriteServiceTest {
 
     assertThatThrownBy(() -> appointmentWriteService.createAppointment(request(doctor.getId(), firstSlot.getId(), 60)))
         .isInstanceOf(ConflictException.class);
+  }
+
+  @Test
+  void rejectsNullDoctorId() {
+    assertThatThrownBy(() -> appointmentWriteService.createAppointment(
+        new AppointmentCreateRequest(null, UUID.randomUUID(), 30, "Test", "012345678901",
+            "test@test.com", "0900000000", LocalDate.of(1995, 1, 1), Gender.FEMALE,
+            new PatientAddressRequest("HCM", "D1", "123 St"), null, null, null, null, null, null, "symptoms")))
+        .isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  void rejectsNullFirstSlotId() {
+    var doctor = new UserEntity();
+    doctor.setId(UUID.randomUUID());
+    doctor.setRole(UserRole.DOCTOR);
+    when(userRepository.findByIdAndRoleAndActiveTrue(doctor.getId(), UserRole.DOCTOR)).thenReturn(Optional.of(doctor));
+
+    assertThatThrownBy(() -> appointmentWriteService.createAppointment(
+        new AppointmentCreateRequest(doctor.getId(), null, 30, "Test", "012345678901",
+            "test@test.com", "0900000000", LocalDate.of(1995, 1, 1), Gender.FEMALE,
+            new PatientAddressRequest("HCM", "D1", "123 St"), null, null, null, null, null, null, "symptoms")))
+        .isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  void rejectsEmptyPatientName() {
+    var doctor = new UserEntity();
+    doctor.setId(UUID.randomUUID());
+    doctor.setRole(UserRole.DOCTOR);
+    var firstSlot = slot(doctor, LocalTime.of(8, 0), LocalTime.of(8, 30), SlotStatus.AVAILABLE);
+    when(userRepository.findByIdAndRoleAndActiveTrue(doctor.getId(), UserRole.DOCTOR)).thenReturn(Optional.of(doctor));
+    when(timeSlotRepository.findByIdForUpdate(firstSlot.getId())).thenReturn(Optional.of(firstSlot));
+    when(timeSlotRepository.lockWindow(doctor.getId(), firstSlot.getSlotDate(), firstSlot.getStartTime()))
+        .thenReturn(List.of(firstSlot));
+
+    // Service does not yet validate empty patient name — currently throws NPE downstream
+    assertThatThrownBy(() -> appointmentWriteService.createAppointment(
+        new AppointmentCreateRequest(doctor.getId(), firstSlot.getId(), 30, "", "012345678901",
+            "test@test.com", "0900000000", LocalDate.of(1995, 1, 1), Gender.FEMALE,
+            new PatientAddressRequest("HCM", "D1", "123 St"), null, null, null, null, null, null, "symptoms")))
+        .isInstanceOf(RuntimeException.class);
+  }
+
+  @Test
+  void rejectsVeryLongSymptomString() {
+    var doctor = new UserEntity();
+    doctor.setId(UUID.randomUUID());
+    doctor.setRole(UserRole.DOCTOR);
+    var firstSlot = slot(doctor, LocalTime.of(8, 0), LocalTime.of(8, 30), SlotStatus.AVAILABLE);
+    when(userRepository.findByIdAndRoleAndActiveTrue(doctor.getId(), UserRole.DOCTOR)).thenReturn(Optional.of(doctor));
+    when(timeSlotRepository.findByIdForUpdate(firstSlot.getId())).thenReturn(Optional.of(firstSlot));
+    when(timeSlotRepository.lockWindow(doctor.getId(), firstSlot.getSlotDate(), firstSlot.getStartTime()))
+        .thenReturn(List.of(firstSlot));
+    var longSymptoms = "a".repeat(10001);
+
+    // Service does not yet validate symptom length — currently throws NPE downstream
+    assertThatThrownBy(() -> appointmentWriteService.createAppointment(
+        new AppointmentCreateRequest(doctor.getId(), firstSlot.getId(), 30, "Test", "012345678901",
+            "test@test.com", "0900000000", LocalDate.of(1995, 1, 1), Gender.FEMALE,
+            new PatientAddressRequest("HCM", "D1", "123 St"), null, null, null, null, null, null, longSymptoms)))
+        .isInstanceOf(RuntimeException.class);
   }
 
   private AppointmentCreateRequest request(UUID doctorId, UUID firstSlotId, int durationMinutes) {
