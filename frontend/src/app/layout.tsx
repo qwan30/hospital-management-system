@@ -31,7 +31,16 @@ export default function RootLayout({
       <body
         className={`${firaSans.variable} ${firaCode.variable} min-h-screen antialiased`}
       >
-        {children}
+        {/* Skip-to-content link for keyboard users */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[9999] focus:rounded-[var(--radius-md)] focus:bg-[var(--hc-primary)] focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white focus:no-underline"
+        >
+          Skip to main content
+        </a>
+        <div id="main-content" tabIndex={-1}>
+          {children}
+        </div>
       </body>
     </html>
   );
