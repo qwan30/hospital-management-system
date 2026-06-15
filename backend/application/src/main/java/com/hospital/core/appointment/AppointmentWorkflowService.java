@@ -2,6 +2,7 @@ package com.hospital.core.appointment;
 
 import com.hospital.core.common.ConflictException;
 import com.hospital.core.common.NotFoundException;
+import com.hospital.core.common.NumberUtils;
 import com.hospital.core.audit.AuditLogService;
 import com.hospital.core.patient.PatientIdentifierProtector;
 import com.hospital.core.user.UserRepository;
@@ -180,12 +181,12 @@ public class AppointmentWorkflowService {
     var entity = new AppointmentVitalSignsEntity();
     entity.setAppointment(appointment);
     entity.setBloodPressure(request.bloodPressure());
-    entity.setTemperature(toBigDecimal(request.temperature()));
-    entity.setWeight(toBigDecimal(request.weight()));
-    entity.setHeight(toBigDecimal(request.height()));
+    entity.setTemperature(NumberUtils.toBigDecimal(request.temperature()));
+    entity.setWeight(NumberUtils.toBigDecimal(request.weight()));
+    entity.setHeight(NumberUtils.toBigDecimal(request.height()));
     entity.setHeartRate(request.heartRate());
     entity.setRespiratoryRate(request.respiratoryRate());
-    entity.setOxygenSaturation(toBigDecimal(request.oxygenSaturation()));
+    entity.setOxygenSaturation(NumberUtils.toBigDecimal(request.oxygenSaturation()));
     var saved = vitalSignsRepository.save(entity);
     return toVitalSignsResponse(saved);
   }
@@ -401,14 +402,6 @@ public class AppointmentWorkflowService {
     return existingNotes + System.lineSeparator() + queueNote;
   }
 
-  private BigDecimal toBigDecimal(Double value) {
-    return value == null ? null : BigDecimal.valueOf(value);
-  }
-
-  private Double toDouble(BigDecimal value) {
-    return value == null ? null : value.doubleValue();
-  }
-
   private AppointmentListResponse toListResponse(AppointmentEntity appointment) {
     return new AppointmentListResponse(
         appointment.getId(),
@@ -431,12 +424,12 @@ public class AppointmentWorkflowService {
         entity.getId(),
         entity.getAppointment().getId(),
         entity.getBloodPressure(),
-        toDouble(entity.getTemperature()),
-        toDouble(entity.getWeight()),
-        toDouble(entity.getHeight()),
+        NumberUtils.toDouble(entity.getTemperature()),
+        NumberUtils.toDouble(entity.getWeight()),
+        NumberUtils.toDouble(entity.getHeight()),
         entity.getHeartRate(),
         entity.getRespiratoryRate(),
-        toDouble(entity.getOxygenSaturation()),
+        NumberUtils.toDouble(entity.getOxygenSaturation()),
         entity.getRecordedAt());
   }
 

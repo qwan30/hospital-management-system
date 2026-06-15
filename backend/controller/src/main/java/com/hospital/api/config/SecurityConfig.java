@@ -56,15 +56,20 @@ public class SecurityConfig {
             .frameOptions(frameOptions -> frameOptions.sameOrigin()))
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .exceptionHandling(handling -> handling
-            .authenticationEntryPoint((request, response, authException) ->
-                securityErrorResponseWriter.write(request, response, 401, "unauthorized", "Authentication is required"))
-            .accessDeniedHandler((request, response, accessDeniedException) ->
-                securityErrorResponseWriter.write(request, response, 403, "forbidden", "Access is denied")))
+            .authenticationEntryPoint((request, response, authException) -> securityErrorResponseWriter.write(request,
+                response, 401, "unauthorized", "Authentication is required"))
+            .accessDeniedHandler((request, response, accessDeniedException) -> securityErrorResponseWriter
+                .write(request, response, 403, "forbidden", "Access is denied")))
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers(new AntPathRequestMatcher("/actuator/health"), new AntPathRequestMatcher("/actuator/health/**"), new AntPathRequestMatcher("/actuator/prometheus"), new AntPathRequestMatcher("/swagger-ui/**"), new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
+            .requestMatchers(new AntPathRequestMatcher("/actuator/health"),
+                new AntPathRequestMatcher("/actuator/health/**"), new AntPathRequestMatcher("/actuator/prometheus"),
+                new AntPathRequestMatcher("/swagger-ui/**"), new AntPathRequestMatcher("/v3/api-docs/**"))
+            .permitAll()
             .requestMatchers("/api/v1/auth/**").permitAll()
             .requestMatchers("/api/v1/patient-auth/**").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/v1/departments/**", "/api/v1/doctors/**", "/api/v1/content/**", "/api/v1/news").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/v1/departments/**", "/api/v1/doctors/**", "/api/v1/content/**",
+                "/api/v1/news")
+            .permitAll()
             .requestMatchers(HttpMethod.POST, "/api/v1/appointments", "/api/v1/chatbot/messages").permitAll()
             .anyRequest().authenticated())
         .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
@@ -81,7 +86,8 @@ public class SecurityConfig {
         ? List.of("http://localhost:3000", "http://localhost:4173")
         : securityHttpProperties.allowedOrigins());
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", RequestCorrelationFilter.REQUEST_ID_HEADER));
+    configuration.setAllowedHeaders(
+        List.of("Authorization", "Content-Type", "Accept", "Origin", RequestCorrelationFilter.REQUEST_ID_HEADER));
     configuration.setExposedHeaders(List.of("Set-Cookie", RequestCorrelationFilter.REQUEST_ID_HEADER));
     configuration.setAllowCredentials(securityHttpProperties.allowCredentials());
     configuration.setMaxAge(3600L);

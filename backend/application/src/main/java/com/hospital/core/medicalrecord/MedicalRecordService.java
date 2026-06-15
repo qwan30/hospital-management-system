@@ -3,6 +3,7 @@ package com.hospital.core.medicalrecord;
 import com.hospital.core.appointment.AppointmentRepository;
 import com.hospital.core.common.ConflictException;
 import com.hospital.core.common.NotFoundException;
+import com.hospital.core.common.NumberUtils;
 import com.hospital.core.email.EmailService;
 import com.hospital.core.patient.PatientIdentifierProtector;
 import com.hospital.core.patient.PatientRepository;
@@ -211,9 +212,9 @@ public class MedicalRecordService {
     }
 
     record.setBloodPressure(vitalSigns.bloodPressure());
-    record.setTemperature(toBigDecimal(vitalSigns.temperature()));
-    record.setWeight(toBigDecimal(vitalSigns.weight()));
-    record.setHeight(toBigDecimal(vitalSigns.height()));
+    record.setTemperature(NumberUtils.toBigDecimal(vitalSigns.temperature()));
+    record.setWeight(NumberUtils.toBigDecimal(vitalSigns.weight()));
+    record.setHeight(NumberUtils.toBigDecimal(vitalSigns.height()));
   }
 
   private MedicalRecordResponse toMedicalRecordResponse(MedicalRecordEntity record) {
@@ -239,19 +240,11 @@ public class MedicalRecordService {
         record.getClinicalNotes(),
         new VitalSignsPayload(
             record.getBloodPressure(),
-            toDouble(record.getTemperature()),
-            toDouble(record.getWeight()),
-            toDouble(record.getHeight())),
+            NumberUtils.toDouble(record.getTemperature()),
+            NumberUtils.toDouble(record.getWeight()),
+            NumberUtils.toDouble(record.getHeight())),
         record.getFollowUpDate(),
         prescriptionItems,
         record.getAppointment().getStatus());
-  }
-
-  private BigDecimal toBigDecimal(Double value) {
-    return value == null ? null : BigDecimal.valueOf(value);
-  }
-
-  private Double toDouble(BigDecimal value) {
-    return value == null ? null : value.doubleValue();
   }
 }

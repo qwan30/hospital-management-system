@@ -2,6 +2,7 @@ package com.hospital.core.patientrecord;
 
 import com.hospital.core.appointment.AppointmentRepository;
 import com.hospital.core.common.NotFoundException;
+import com.hospital.core.common.NumberUtils;
 import com.hospital.core.medicalrecord.MedicalRecordEntity;
 import com.hospital.core.medicalrecord.MedicalRecordRepository;
 import com.hospital.core.patient.PatientEntity;
@@ -138,15 +139,11 @@ public class PatientRecordService {
         record.getClinicalNotes(),
         new VitalSignsPayload(
             record.getBloodPressure(),
-            toDouble(record.getTemperature()),
-            toDouble(record.getWeight()),
-            toDouble(record.getHeight())),
+            NumberUtils.toDouble(record.getTemperature()),
+            NumberUtils.toDouble(record.getWeight()),
+            NumberUtils.toDouble(record.getHeight())),
         record.getFollowUpDate(),
         prescriptionItems,
         record.getAppointment().getStatus());
-  }
-
-  private Double toDouble(BigDecimal value) {
-    return value == null ? null : value.doubleValue();
   }
 }

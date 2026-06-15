@@ -15,10 +15,13 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
+  private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionHandler.class);
   @ExceptionHandler(NotFoundException.class)
   ResponseEntity<ApiResponse<Void>> handleNotFound(NotFoundException exception) {
     return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -93,6 +96,7 @@ public class RestExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   ResponseEntity<ApiResponse<Void>> handleGeneric(Exception exception) {
+    LOGGER.error("Unhandled exception", exception);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
         .body(ApiResponse.fail("internal_error", "Internal server error"));
   }
