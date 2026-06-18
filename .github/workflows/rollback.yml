@@ -69,7 +69,7 @@ jobs:
           fi
 
       - name: Rollback via SSH
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ steps.params.outputs.host }}
           username: ${{ steps.params.outputs.user }}
