@@ -193,7 +193,7 @@ jobs:
     if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name != 'pull_request' }}
     defaults:
       run:
-        working-directory: web
+        working-directory: frontend
 
     steps:
       - name: Checkout
@@ -358,7 +358,7 @@ jobs:
         id: frontend-image
         uses: docker/build-push-action@v7
         with:
-          context: ./web
+          context: ./frontend
           file: frontend/Dockerfile
           build-args: |
             NEXT_PUBLIC_API_BASE_URL=http://localhost:8081/api/v1

@@ -28,7 +28,7 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
 
       - name: npm audit
-        working-directory: web
+        working-directory: frontend
         run: npm audit --audit-level=high
         continue-on-error: true
 
