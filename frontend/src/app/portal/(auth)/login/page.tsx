@@ -70,12 +70,15 @@ export default function PortalLoginPage() {
 
         {/* Left Column - Information Panel */}
         <section className="relative z-10 hidden w-full flex-col justify-center px-8 py-10 lg:flex lg:w-[45%] lg:px-16 xl:px-24 bg-[var(--hc-surface-muted)]">
-          <div className="absolute left-8 top-8 flex items-center gap-3 lg:left-12">
+          <Link
+            href="/"
+            className="absolute left-8 top-8 flex items-center gap-3 lg:left-12 hover:opacity-85 transition-opacity"
+          >
             <span className="grid size-9 place-items-center rounded-lg bg-[var(--hc-primary)] text-white">
               <Hospital className="size-5" aria-hidden="true" />
             </span>
             <span className="text-[15px] font-bold tracking-wide text-[var(--hc-primary)] uppercase">Hospital Core</span>
-          </div>
+          </Link>
 
           <div className="mt-8 max-w-[480px]">
             <h1 className="text-[52px] font-bold leading-[1.1] tracking-tight text-[var(--hc-navy-900)]">

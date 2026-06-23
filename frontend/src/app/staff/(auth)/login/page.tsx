@@ -2,6 +2,7 @@
 
 import { type FormEvent, type ReactNode, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   ArrowRight,
   Eye,
@@ -58,17 +59,26 @@ export default function StaffLoginPage() {
 
   return (
     <main className="relative flex min-h-screen flex-col overflow-hidden bg-white text-[var(--hc-text)]">
-      <div className="flex flex-1">
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 bg-cover bg-no-repeat"
+        style={{ backgroundImage: "url('/staff-login-background.png')", backgroundPosition: "15% center" }}
+        aria-hidden="true"
+      />
+      <div className="relative z-10 flex flex-1">
         {/* Left Column - Feature Panel */}
-        <section className="relative z-10 hidden w-full flex-col justify-center px-8 py-10 lg:flex lg:w-[45%] lg:px-16 xl:px-24 bg-[var(--hc-surface-muted)]">
-          <div className="absolute left-8 top-8 flex items-center gap-3 lg:left-12">
+        <section className="relative z-10 hidden w-full flex-col justify-center px-8 py-10 lg:flex lg:w-[45%] lg:px-16 xl:px-24">
+          <Link
+            href="/"
+            className="absolute left-8 top-8 flex items-center gap-3 lg:left-12 hover:opacity-85 transition-opacity"
+          >
             <span className="grid size-9 place-items-center rounded-lg bg-[var(--hc-primary)] text-white">
               <Stethoscope className="size-5" aria-hidden="true" />
             </span>
             <span className="text-[15px] font-bold tracking-wide text-[var(--hc-primary)] uppercase">
               Hospital Core
             </span>
-          </div>
+          </Link>
 
           <div className="mt-8 max-w-[480px]">
             <h1 className="text-[44px] font-bold leading-[1.08] tracking-tight text-[var(--hc-text)]">
@@ -121,14 +131,6 @@ export default function StaffLoginPage() {
 
         {/* Right Column - Login Form */}
         <section className="relative flex w-full items-center justify-center lg:w-[55%] overflow-hidden">
-          {/* Background Image */}
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: "url('/staff-login-bg.png')" }}
-            aria-hidden="true"
-          />
-          {/* Overlay for readability */}
-          <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px]" aria-hidden="true" />
           <div className="relative z-10 w-full max-w-[500px] px-6 py-10 lg:px-0">
             <div className="rounded-[var(--radius-2xl)] border border-[var(--hc-border)] bg-white px-8 py-10 shadow-[var(--shadow-card)]">
               <header className="mb-8 flex flex-col items-center text-center">
