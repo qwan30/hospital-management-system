@@ -231,6 +231,6 @@ class SecurityHardeningIntegrationTest extends AbstractIntegrationTest {
   void originValidationFilter_allowsValidOriginOnRefresh() throws Exception {
     mockMvc.perform(post("/api/v1/auth/refresh")
             .header(HttpHeaders.ORIGIN, "http://localhost:4173"))
-        .andExpect(status().isBadRequest());
+        .andExpect(status().isUnauthorized());
   }
 }

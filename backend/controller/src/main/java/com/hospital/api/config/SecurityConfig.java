@@ -88,7 +88,7 @@ public class SecurityConfig {
               .anyRequest().authenticated();
         })
         .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(originValidationFilter, RateLimitFilter.class)
+        .addFilterBefore(originValidationFilter, org.springframework.security.web.header.HeaderWriterFilter.class)
         .addFilterBefore(authorizationDenialAuditFilter, RateLimitFilter.class)
         .addFilterAfter(jwtAuthenticationFilter, RateLimitFilter.class);
 

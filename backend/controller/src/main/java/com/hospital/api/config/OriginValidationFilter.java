@@ -27,7 +27,6 @@ public class OriginValidationFilter extends OncePerRequestFilter {
       HttpServletRequest request,
       HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
-
     // Cookie-backed auth endpoints rely on browser ambient credentials, so Origin/Referer must match CORS.
     String path = request.getRequestURI();
     if (isProtectedPath(path)) {
