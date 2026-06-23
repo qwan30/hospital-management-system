@@ -56,19 +56,19 @@
 
   /* HC surface aliases for Tailwind utility classes */
   --color-hc-navy-950: #061735;
-  --color-hc-navy-900: #071B3A;
+  --color-hc-navy-900: #1E3A8A;
   --color-hc-navy-850: #0A2148;
   --color-hc-navy-800: #0C2A5A;
-  --color-hc-blue-700: #0B4EDB;
-  --color-hc-blue-600: #0F62FE;
-  --color-hc-blue-500: #1D6FFF;
-  --color-hc-blue-400: #5B9BFF;
+  --color-hc-blue-700: #1D4ED8;
+  --color-hc-blue-600: #2563EB;
+  --color-hc-blue-500: #3B82F6;
+  --color-hc-blue-400: #60A5FA;
   --color-hc-blue-300: #93C5FD;
   --color-hc-blue-100: #DBEAFE;
   --color-hc-blue-50: #EFF6FF;
   --color-hc-primary: var(--color-hc-blue-600);
   --color-hc-primary-bg: var(--color-hc-blue-50);
-  --color-hc-cyan: #00B8FF;
+  --color-hc-cyan: #0891B2;
   --color-hc-teal-700: #0F766E;
   --color-hc-teal-600: #0D9488;
   --color-hc-teal-500: #14B8A6;
@@ -80,9 +80,9 @@
   --color-hc-purple-400: #A78BFA;
   --color-hc-purple-300: #C4B5FD;
   --color-hc-purple-bg: #F3E8FF;
-  --color-hc-bg: #F6F8FB;
+  --color-hc-bg: #F8FAFC;
   --color-hc-content-bg: #FFFFFF;
-  --color-hc-sidebar-bg: #FBFCFE;
+  --color-hc-sidebar-bg: #F8FAFC;
   --color-hc-surface: #FFFFFF;
   --color-hc-surface-muted: #F8FAFC;
   --color-hc-surface-soft: #F1F5F9;
@@ -93,7 +93,7 @@
   --color-hc-text-secondary: #475569;
   --color-hc-text-muted: #64748B;
   --color-hc-text-placeholder: #94A3B8;
-  --color-hc-success: #079669;
+  --color-hc-success: #059669;
   --color-hc-success-bg: #DDFBEA;
   --color-hc-warning: #F97316;
   --color-hc-warning-bg: #FFEDD5;
@@ -128,7 +128,7 @@
   --color-inverse-surface: #0F172A;
   --color-inverse-on-surface: #F8FAFC;
   --color-inverse-primary: #93B4FF;
-  --color-surface-tint: #0F62FE;
+  --color-surface-tint: #2563EB;
   --color-surface-variant: var(--color-hc-border-strong);
 }
 
@@ -145,22 +145,22 @@
 
   /* Brand navy / topbar */
   --hc-navy-950: #061735;
-  --hc-navy-900: #071B3A;
+  --hc-navy-900: #1E3A8A;
   --hc-navy-850: #0A2148;
   --hc-navy-800: #0C2A5A;
 
   /* Primary blue */
-  --hc-blue-700: #0B4EDB;
-  --hc-blue-600: #0F62FE;
-  --hc-blue-500: #1D6FFF;
-  --hc-blue-400: #5B9BFF;
+  --hc-blue-700: #1D4ED8;
+  --hc-blue-600: #2563EB;
+  --hc-blue-500: #3B82F6;
+  --hc-blue-400: #60A5FA;
   --hc-blue-300: #93C5FD;
   --hc-blue-100: #DBEAFE;
   --hc-blue-50: #EFF6FF;
   --hc-primary: var(--hc-blue-600);
   --hc-primary-bg: var(--hc-blue-50);
 
-  /* Accent � amber */
+  /* Accent  amber */
   --hc-amber-700: #B45309;
   --hc-amber-600: #D97706;
   --hc-amber-500: #F59E0B;
@@ -169,8 +169,8 @@
   --hc-amber-100: #FEF3C7;
   --hc-amber-50: #FFFBEB;
 
-  /* Accent � cyan */
-  --hc-cyan: #00B8FF;
+  /* Accent  cyan */
+  --hc-cyan: #0891B2;
   --hc-teal-700: #0F766E;
   --hc-teal-600: #0D9488;
   --hc-teal-500: #14B8A6;
@@ -184,10 +184,10 @@
   --hc-purple-bg: #F3E8FF;
 
   /* App surfaces */
-  --hc-bg: #F6F8FB;
-  --hc-background: #F6F8FB;
+  --hc-bg: #F8FAFC;
+  --hc-background: #F8FAFC;
   --hc-content-bg: #FFFFFF;
-  --hc-sidebar-bg: #FBFCFE;
+  --hc-sidebar-bg: #F8FAFC;
   --hc-surface: #FFFFFF;
   --hc-surface-muted: #F8FAFC;
   --hc-surface-soft: #F1F5F9;
@@ -204,8 +204,15 @@
   --hc-text-placeholder: #94A3B8;
   --hc-white: #FFFFFF;
 
+  /* Sidebar Specific Colors */
+  --hc-sidebar-text: #334155;
+  --hc-sidebar-text-active: #2563EB;
+  --hc-sidebar-icon: #64748B;
+  --hc-sidebar-icon-active: #2563EB;
+  --hc-sidebar-active-bg: #EFF6FF;
+
   /* Semantic */
-  --hc-success: #079669;
+  --hc-success: #059669;
   --hc-success-bg: #DDFBEA;
   --hc-warning: #F97316;
   --hc-warning-bg: #FFEDD5;
@@ -258,13 +265,13 @@
   --space-12: 48px;
 
   /* ── shadcn/Tailwind semantic mappings ── */
-  --background: #F6F8FB;
+  --background: #F8FAFC;
   --foreground: #0F172A;
   --card: #FFFFFF;
   --card-foreground: #0F172A;
   --popover: #FFFFFF;
   --popover-foreground: #0F172A;
-  --primary: #0F62FE;
+  --primary: #2563EB;
   --primary-foreground: #FFFFFF;
   --secondary: #F8FAFC;
   --secondary-foreground: #0F172A;
@@ -275,21 +282,21 @@
   --destructive: #DC2626;
   --border: #E2E8F0;
   --input: #E2E8F0;
-  --ring: #0F62FE;
-  --chart-1: #0F62FE;
-  --chart-2: #079669;
+  --ring: #2563EB;
+  --chart-1: #2563EB;
+  --chart-2: #059669;
   --chart-3: #F97316;
   --chart-4: #7C3AED;
   --chart-5: #64748B;
   --radius: 10px;
-  --sidebar: #FBFCFE;
+  --sidebar: #F8FAFC;
   --sidebar-foreground: #0F172A;
-  --sidebar-primary: #0F62FE;
+  --sidebar-primary: #2563EB;
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #EFF6FF;
-  --sidebar-accent-foreground: #0F62FE;
+  --sidebar-accent-foreground: #2563EB;
   --sidebar-border: #E2E8F0;
-  --sidebar-ring: #0F62FE;
+  --sidebar-ring: #2563EB;
 }
 
 .dark {
@@ -341,6 +348,13 @@
   --hc-background: #0F172A;
   --hc-content-bg: #1E293B;
   --hc-sidebar-bg: #0F172A;
+
+  /* Sidebar overrides */
+  --hc-sidebar-text: #94A3B8;
+  --hc-sidebar-text-active: #93B4FF;
+  --hc-sidebar-icon: #64748B;
+  --hc-sidebar-icon-active: #93B4FF;
+  --hc-sidebar-active-bg: #334155;
 
   /* Borders — subtle in dark mode */
   --hc-border: rgba(255, 255, 255, 0.08);

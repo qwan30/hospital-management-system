@@ -47,7 +47,7 @@ describe("PublicTopNav", () => {
     const activeLink = screen.getByRole("link", { name: /departments/i });
     expect(activeLink).toHaveAttribute("data-active", "true");
     expect(activeLink.className).toContain("border-b-[3px]");
-    expect(activeLink.className).toContain("text-white");
+    expect(activeLink.className).toContain("text-foreground");
   });
 
   it("does not mark home active for non-home routes", () => {

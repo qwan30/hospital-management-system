@@ -66,6 +66,49 @@ export default function AdminSpecialClosuresPage() {
   const [editingClosure, setEditingClosure] = useState<SpecialClosureResponse | null>(null);
   const [form, setForm] = useState<ClosureFormState>(emptyForm);
 
+  const handleExportCSV = () => {
+    const headers = ["Closure ID", "Title", "Reason", "Closure Date", "Doctor Name", "Room Name", "Status"];
+    const csvRows = [
+      headers.join(","),
+      ...filteredClosures.map((c) =>
+        [
+          `"${c.closureId}"`,
+          `"${c.title}"`,
+          `"${(c.reason || "").replace(/"/g, '""')}"`,
+          `"${c.closureDate}"`,
+          `"${c.doctorName || "All doctors"}"`,
+          `"${c.roomName || "All rooms"}"`,
+          `"${c.active ? "Active" : "Inactive"}"`,
+        ].join(",")
+      ),
+    ];
+    const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `special_closures_export_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleToggleActive = async (closure: SpecialClosureResponse) => {
+    try {
+      await updateAdminSpecialClosure(closure.closureId, {
+        title: closure.title,
+        closureDate: closure.closureDate,
+        doctorId: closure.doctorId,
+        roomId: closure.roomId,
+        reason: closure.reason,
+        active: !closure.active,
+      });
+      alert(`Closure "${closure.title}" ${closure.active ? "deactivated" : "activated"} successfully.`);
+      await loadData();
+    } catch (err) {
+      alert("Failed to update closure status: " + (err instanceof Error ? err.message : String(err)));
+    }
+  };
+
   const loadData = useCallback(async (isMounted: () => boolean = () => true) => {
     if (isMounted()) {
       setIsLoading(true);
@@ -240,7 +283,11 @@ export default function AdminSpecialClosuresPage() {
           </select>
         </div>
 
-        <button className="hc-button-secondary flex items-center gap-2 h-9 px-4 ml-auto opacity-60" disabled title="Special closure export is not exposed by the current backend API." type="button">
+        <button
+          onClick={handleExportCSV}
+          className="hc-button-secondary flex items-center gap-2 h-9 px-4 ml-auto"
+          type="button"
+        >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10M11.3333 7.33333L8 10.6667M8 10.6667L4.66667 7.33333M8 10.6667V2" stroke="currentColor" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
@@ -252,7 +299,7 @@ export default function AdminSpecialClosuresPage() {
         {isLoading ? (
           <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">Loading special closures...</div>
         ) : (
-          <ClosuresTable closures={filteredClosures} isSaving={isSaving} onEdit={openEditForm} />
+          <ClosuresTable closures={filteredClosures} isSaving={isSaving} onEdit={openEditForm} onToggleActive={handleToggleActive} />
         )}
       </div>
 
@@ -269,11 +316,14 @@ function ClosuresTable({
   closures,
   isSaving,
   onEdit,
+  onToggleActive,
 }: {
   closures: SpecialClosureResponse[];
   isSaving: boolean;
   onEdit: (closure: SpecialClosureResponse) => void;
+  onToggleActive: (closure: SpecialClosureResponse) => void;
 }) {
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   if (closures.length === 0) {
     return <div className="p-8 text-center text-sm font-medium text-[var(--hc-text-secondary)]">No special closures match the current filters.</div>;
   }
@@ -360,7 +410,7 @@ function ClosuresTable({
                 )}
               </td>
               <td>
-                <div className="flex items-center justify-end gap-2">
+                <div className="flex items-center justify-end gap-2 relative">
                   <button
                     className="h-8 px-3 text-xs font-semibold text-[var(--hc-blue-600)] bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-surface-soft)] hover:border-slate-300 transition-colors"
                     disabled={isSaving}
@@ -369,9 +419,25 @@ function ClosuresTable({
                   >
                     Edit
                   </button>
-                  <button className="w-8 h-8 flex items-center justify-center text-[var(--hc-text-muted)] rounded-md transition-colors opacity-60" disabled title="Closure row actions are limited to edit until a delete/deactivate API contract is exposed." type="button">
+                  <button
+                    onClick={() => setActiveMenuId(prev => prev === closure.closureId ? null : closure.closureId)}
+                    className="w-8 h-8 flex items-center justify-center text-[var(--hc-text-muted)] rounded-md transition-colors hover:bg-[var(--hc-surface-soft)]"
+                    type="button"
+                    aria-label="More actions"
+                  >
                     <MoreVertical className="w-4 h-4" />
                   </button>
+                  {activeMenuId === closure.closureId && (
+                    <div className="absolute right-0 top-9 bg-white border border-[var(--hc-border-soft)] rounded-lg shadow-lg py-1 z-20 min-w-[140px] text-left">
+                      <button
+                        onClick={() => { onToggleActive(closure); setActiveMenuId(null); }}
+                        className="w-full px-4 py-2 text-xs hover:bg-[var(--hc-surface-soft)] font-medium text-[var(--hc-text)] text-left"
+                        type="button"
+                      >
+                        {closure.active ? "Deactivate" : "Activate"}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </td>
             </tr>

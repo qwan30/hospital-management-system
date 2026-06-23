@@ -43,8 +43,8 @@ export default function PatientAppointmentsPage() {
 {/* Segmented Control */}
 <div className="flex bg-surface-container-high p-1">
 <button className="px-6 py-2 text-xs font-bold uppercase tracking-widest bg-white text-primary shadow-sm">Upcoming</button>
-<button className="px-6 py-2 text-xs font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] hover:bg-white/50 transition-colors">Past</button>
-<button className="px-6 py-2 text-xs font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] hover:bg-white/50 transition-colors">All</button>
+<button className="px-6 py-2 text-xs font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] hover:bg-muted transition-colors">Past</button>
+<button className="px-6 py-2 text-xs font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] hover:bg-muted transition-colors">All</button>
 </div>
 </div>
 {/* Appointment List Area */}

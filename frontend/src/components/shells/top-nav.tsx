@@ -3,11 +3,27 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Bell, CircleHelp, Menu, Search, Settings, ShieldPlus, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Bell, CircleHelp, LogOut, Menu, Search, Settings, ShieldPlus, User, X } from "lucide-react";
 import { filterNavigationLinks, type AppRole } from "@/lib/rbac";
 import { useStoredRole } from "@/lib/use-stored-role";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export interface TopNavLink {
   label: string;
@@ -113,22 +129,25 @@ export function HcTopbar({
   supportHref,
 }: HcTopbarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const role = useStoredRole(roleScope);
   const defaultLinks = defaultLinksForScope(roleScope);
   const navLinks = showModuleNav ? filterNavigationLinks(links || defaultLinks, role) : [];
   const mobileNavLinks = filterNavigationLinks(mobileLinks || links || defaultLinks, role);
   const profile = profileForRole(role, roleScope, userName, userRole);
+  void alertHref;
+  void settingsHref;
   const effectiveAlertCount = alertCount ?? profile.alertCount;
   const hasMobileNavigation = mobileNavLinks.length > 0;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40 flex h-[var(--hc-topbar-h)] items-center justify-between border-b border-white/10 bg-[var(--hc-navy-950)] pl-4 pr-4 text-white shadow-sm md:left-[var(--hc-sidebar-w)] md:pl-7 md:pr-5">
+    <header className="fixed inset-x-0 top-0 z-40 flex h-[var(--hc-topbar-h)] items-center justify-between border-b border-border bg-white pl-4 pr-4 text-foreground md:left-[var(--hc-sidebar-w)] md:pl-7 md:pr-5">
       <div className="flex min-w-0 items-center gap-3">
         {hasMobileNavigation ? (
           <button
             type="button"
-            className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-md)] border border-white/10 text-white/85 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)] md:hidden"
+            className="grid size-11 shrink-0 place-items-center rounded-[var(--radius-md)] border border-border text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
             aria-controls="hc-auth-mobile-menu"
             aria-expanded={isMobileMenuOpen}
             aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
@@ -143,10 +162,10 @@ export function HcTopbar({
         ) : null}
         <Link
           href={homeHref}
-          className="flex min-w-0 items-center gap-3 rounded-[var(--radius-md)] text-[16px] font-bold leading-6 tracking-normal text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)] md:hidden"
+          className="flex min-w-0 items-center gap-3 rounded-[var(--radius-md)] text-[16px] font-bold leading-6 tracking-normal text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
           aria-label="Hospital Core home"
         >
-          <span className="grid size-9 shrink-0 place-items-center rounded-[10px] border border-white/10 bg-white/5 text-[var(--hc-blue-500)]">
+          <span className="grid size-9 shrink-0 place-items-center rounded-[10px] border border-border bg-muted/50 text-[var(--hc-blue-500)]">
             <ShieldPlus className="size-5" aria-hidden="true" />
           </span>
           <span className="hidden shrink-0 whitespace-nowrap min-[430px]:inline">HOSPITAL CORE</span>
@@ -166,8 +185,8 @@ export function HcTopbar({
                   href={link.href}
                   data-active={isActive ? "true" : undefined}
                   className={cn(
-                    "relative flex h-full items-center px-2 text-sm font-semibold text-white/75 transition-colors duration-150 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)]",
-                    isActive && "border-b-[3px] border-b-[var(--hc-blue-500)] text-white",
+                    "relative flex h-full items-center px-2 text-sm font-semibold text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                    isActive && "border-b-[3px] border-b-[var(--hc-blue-500)] text-foreground",
                   )}
                 >
                   {link.label}
@@ -177,14 +196,14 @@ export function HcTopbar({
           </nav>
         ) : null}
         <div className="relative mr-6 w-64 xl:w-80">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/50" aria-hidden="true" />
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
           <input
             aria-label="Search across modules"
             type="text"
             placeholder="Search across modules..."
-            className="h-9 w-full rounded-md border border-white/10 bg-white/5 pl-9 pr-10 text-sm text-white placeholder:text-white/40 transition-colors focus:border-[var(--hc-blue-500)] focus:bg-white/10 focus:outline-none"
+            className="h-9 w-full rounded-md border border-input bg-muted pl-9 pr-10 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-[var(--hc-blue-500)] focus:bg-muted focus:outline-none"
           />
-          <kbd className="absolute right-2 top-1/2 -translate-y-1/2 rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[10px] font-medium text-white/50">
+          <kbd className="absolute right-2 top-1/2 -translate-y-1/2 rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
             Ctrl K
           </kbd>
         </div>
@@ -192,30 +211,92 @@ export function HcTopbar({
 
       <div className="ml-auto flex items-center gap-2 sm:gap-4">
         <div className="flex items-center gap-1">
-          <Link
-            href={alertHref}
-            className="relative grid size-9 place-items-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)]"
-            aria-label={alertLabel}
-            title={alertLabel}
-          >
-            <Bell className="size-5" aria-hidden="true" />
-            {effectiveAlertCount > 0 ? (
-              <span className="absolute right-[6px] top-[7px] h-4 min-w-4 rounded-full bg-[var(--hc-danger)] px-1 text-center text-[10px] font-bold leading-4 text-white">
-                {effectiveAlertCount}
-              </span>
-            ) : null}
-          </Link>
-          <Link
-            href={settingsHref}
-            className="grid size-9 place-items-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)]"
+          <Sheet>
+            <SheetTrigger
+              className="relative grid size-9 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              aria-label={alertLabel}
+              title={alertLabel}
+            >
+              <Bell className="size-5" aria-hidden="true" />
+              {effectiveAlertCount > 0 ? (
+                <span className="absolute right-[6px] top-[7px] h-4 min-w-4 rounded-full bg-[var(--hc-danger)] px-1 text-center text-[10px] font-bold leading-4 text-white">
+                  {effectiveAlertCount}
+                </span>
+              ) : null}
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[380px] sm:w-[420px]">
+              <SheetHeader>
+                <SheetTitle>Notifications</SheetTitle>
+                <SheetDescription>
+                  {effectiveAlertCount > 0
+                    ? `You have ${effectiveAlertCount} unread notification${effectiveAlertCount !== 1 ? "s" : ""}.`
+                    : "No new notifications."}
+                </SheetDescription>
+              </SheetHeader>
+              <div className="mt-6 flex flex-col gap-3">
+                {effectiveAlertCount > 0 ? (
+                  <>
+                    <div className="rounded-lg border border-border bg-muted/30 p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-foreground">New patient admitted</p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            Patient #1042 has been admitted to Ward 4C. Please review the intake form.
+                          </p>
+                        </div>
+                        <span className="shrink-0 rounded-full bg-[var(--hc-blue-100)] px-2 py-0.5 text-[10px] font-bold text-[var(--hc-blue-600)]">New</span>
+                      </div>
+                      <p className="mt-2 text-[11px] text-muted-foreground">10 minutes ago</p>
+                    </div>
+                    <div className="rounded-lg border border-border bg-muted/30 p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-foreground">Lab results ready</p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            CBC panel for Patient #88219 is available for review.
+                          </p>
+                        </div>
+                        <span className="shrink-0 rounded-full bg-[var(--hc-blue-100)] px-2 py-0.5 text-[10px] font-bold text-[var(--hc-blue-600)]">New</span>
+                      </div>
+                      <p className="mt-2 text-[11px] text-muted-foreground">1 hour ago</p>
+                    </div>
+                    <div className="rounded-lg border border-border p-4 opacity-60">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-foreground">Inventory alert</p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            Paracetamol 500mg stock below reorder threshold.
+                          </p>
+                        </div>
+                      </div>
+                      <p className="mt-2 text-[11px] text-muted-foreground">3 hours ago</p>
+                    </div>
+                  </>
+                ) : (
+                  <div className="py-12 text-center">
+                    <Bell className="mx-auto size-10 text-muted-foreground/40" aria-hidden="true" />
+                    <p className="mt-3 text-sm text-muted-foreground">All caught up!</p>
+                    <p className="mt-1 text-xs text-muted-foreground/70">No new notifications at this time.</p>
+                  </div>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
+          <button
+            type="button"
+            onClick={() => {
+              const settingsPath = roleScope === "patient" ? "/portal/settings" : "/staff/settings";
+              window.location.href = settingsPath;
+            }}
+            className="grid size-9 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label={settingsLabel}
             title={settingsLabel}
           >
             <Settings className="size-5" aria-hidden="true" />
-          </Link>
+          </button>
           <Link
             href={supportHref || "/support"}
-            className="hidden size-9 place-items-center rounded-full text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)] sm:grid"
+            className="hidden size-9 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:grid"
             aria-label="Open support"
             title="Open support"
           >
@@ -223,48 +304,76 @@ export function HcTopbar({
           </Link>
         </div>
 
-        <Link
-          href={profileHref}
-          className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-1 text-white transition hover:bg-[var(--hc-navy-900)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)] sm:pr-3"
-          aria-label={profileLabel}
-          title={profileLabel}
-        >
-          <span className="grid size-[38px] shrink-0 place-items-center overflow-hidden rounded-full bg-[var(--hc-surface-muted)] text-[13px] font-bold text-[var(--hc-navy-950)]">
-            {profileImageSrc ? (
-              <Image
-                alt={profile.name}
-                src={profileImageSrc}
-                className="size-full object-cover"
-                width={1200}
-                height={800}
-              />
-            ) : (
-              initialsFor(profile.name)
-            )}
-          </span>
-          <span className="hidden text-left xl:block">
-            <span className="block text-sm font-bold leading-[18px] text-white">{profile.name}</span>
-            <span className="block text-xs leading-[16px] text-white/70">{profile.role}</span>
-          </span>
-        </Link>
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-1 text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:pr-3"
+            aria-label={profileLabel}
+            title={profileLabel}
+          >
+            <span className="grid size-[38px] shrink-0 place-items-center overflow-hidden rounded-full bg-[var(--hc-surface-muted)] text-[13px] font-bold text-[var(--hc-primary)]">
+              {profileImageSrc ? (
+                <Image
+                  alt={profile.name}
+                  src={profileImageSrc}
+                  className="size-full object-cover"
+                  width={1200}
+                  height={800}
+                />
+              ) : (
+                initialsFor(profile.name)
+              )}
+            </span>
+            <span className="hidden text-left xl:block">
+              <span className="block text-sm font-bold leading-[18px] text-foreground">{profile.name}</span>
+              <span className="block text-xs leading-[16px] text-muted-foreground">{profile.role}</span>
+            </span>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" sideOffset={8} className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => router.push(profileHref)}
+            >
+              <User className="size-4" aria-hidden="true" />
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => router.push(roleScope === "patient" ? "/portal/settings" : "/staff/settings")}
+            >
+              <Settings className="size-4" aria-hidden="true" />
+              Settings
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              variant="destructive"
+              className="cursor-pointer"
+              onClick={() => router.push(roleScope === "patient" ? "/portal/login" : "/staff/login")}
+            >
+              <LogOut className="size-4" aria-hidden="true" />
+              Log out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {isMobileMenuOpen && hasMobileNavigation ? (
         <div
           id="hc-auth-mobile-menu"
-          className="fixed inset-x-0 bottom-0 top-[var(--hc-topbar-h)] z-50 bg-slate-950/50 backdrop-blur-sm md:hidden"
+          className="fixed inset-x-0 bottom-0 top-[var(--hc-topbar-h)] z-50 bg-black/20 backdrop-blur-sm md:hidden"
           role="dialog"
           aria-modal="true"
           aria-label="Mobile navigation"
         >
-          <div className="flex max-h-full flex-col border-t border-white/10 bg-[var(--hc-navy-950)] p-4 shadow-2xl">
+          <div className="flex max-h-full flex-col border-t border-border bg-white p-4 shadow-2xl">
             <div className="mb-3 flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-[0.18em] text-white/55">
+              <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
                 Navigation
               </span>
               <button
                 type="button"
-                className="grid size-11 place-items-center rounded-[var(--radius-md)] text-white/80 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)]"
+                className="grid size-11 place-items-center rounded-[var(--radius-md)] text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 aria-label="Close navigation menu"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -285,8 +394,8 @@ export function HcTopbar({
                     href={link.href}
                     data-active={isActive ? "true" : undefined}
                     className={cn(
-                      "flex min-h-12 items-center rounded-[var(--radius-md)] px-4 text-sm font-semibold text-white/78 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)]",
-                      isActive && "bg-white/10 text-white ring-1 ring-white/15",
+                      "flex min-h-12 items-center rounded-[var(--radius-md)] px-4 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                      isActive && "bg-muted text-foreground ring-1 ring-border",
                     )}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
@@ -309,15 +418,15 @@ export function StaffTopNav({ links, mobileLinks, profileImageSrc }: StaffTopNav
       mobileLinks={mobileLinks || links || defaultStaffLinks}
       roleScope="staff"
       homeHref="/staff/dashboard"
-      alertHref="/staff/queue"
-      settingsHref="/staff/schedule"
+      alertHref=""
+      settingsHref="/staff/settings"
       supportHref="/staff/support"
-      profileHref="/staff/doctor/dashboard"
+      profileHref="/staff/profile"
       userName="Staff Ops"
       userRole="Clinical team"
       profileImageSrc={profileImageSrc}
-      alertLabel="Open staff alerts"
-      settingsLabel="Open schedule settings"
+      alertLabel="Open notifications"
+      settingsLabel="Open settings"
       profileLabel="Open staff profile"
     />
   );
@@ -330,8 +439,8 @@ export function PortalTopNav({ links, mobileLinks, profileImageSrc }: StaffTopNa
       mobileLinks={mobileLinks || links || defaultPortalLinks}
       roleScope="patient"
       homeHref="/"
-      alertHref="/portal/messages"
-      settingsHref="/portal/profile#security-settings"
+      alertHref=""
+      settingsHref="/portal/settings"
       supportHref="/portal/support"
       profileHref="/portal/profile"
       userName="Patient"
@@ -339,7 +448,7 @@ export function PortalTopNav({ links, mobileLinks, profileImageSrc }: StaffTopNa
       profileImageSrc={profileImageSrc}
       alertCount={1}
       alertLabel="Open notifications"
-      settingsLabel="Open profile settings"
+      settingsLabel="Open settings"
       profileLabel="Open patient profile"
     />
   );

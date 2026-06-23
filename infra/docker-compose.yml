@@ -18,7 +18,7 @@ services:
   backend:
     image: ghcr.io/tranhquan099-commits/hospital-management-system/backend:latest
     build:
-      context: ./backend
+      context: ../backend
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
@@ -47,7 +47,7 @@ services:
   frontend:
     image: ghcr.io/tranhquan099-commits/hospital-management-system/frontend:latest
     build:
-      context: ./frontend
+      context: ../frontend
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8081/api/v1}
@@ -59,7 +59,7 @@ services:
     ports:
       - "${HMS_FRONTEND_HOST_PORT:-3000}:3000"
     healthcheck:
-      test: ["CMD-SHELL", "curl -sSf http://localhost:3000 > /dev/null || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ > /dev/null || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 5

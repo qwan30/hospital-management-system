@@ -80,6 +80,9 @@ export default function AdminInventoryPage() {
   const [page, setPage] = useState(1);
   const [sortField, setSortField] = useState<SortField>("itemName");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [departmentIdFilter, setDepartmentIdFilter] = useState("All Departments");
+  const [viewingItem, setViewingItem] = useState<InventoryItemResponse | null>(null);
 
   /* ─── Data Loading ─── */
   const loadData = useCallback(async (isMounted: () => boolean = () => true) => {
@@ -122,6 +125,10 @@ export default function AdminInventoryPage() {
     return "In Stock";
   }
 
+  const departments = useMemo(() => {
+    return ["All Departments", ...Array.from(new Set(items.map((i) => i.departmentName).filter(Boolean)))];
+  }, [items]);
+
   const filtered = useMemo(() => {
     let result = items;
     if (query) {
@@ -136,6 +143,9 @@ export default function AdminInventoryPage() {
     if (statusFilter !== "All Status") {
       result = result.filter((i) => getItemStatus(i) === statusFilter);
     }
+    if (departmentIdFilter !== "All Departments") {
+      result = result.filter((i) => i.departmentName === departmentIdFilter);
+    }
     // Sort
     result = [...result].sort((a, b) => {
       let cmp = 0;
@@ -148,7 +158,7 @@ export default function AdminInventoryPage() {
     });
     return result;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items, query, categoryFilter, statusFilter, sortField, sortDir, alerts]);
+  }, [items, query, categoryFilter, statusFilter, departmentIdFilter, sortField, sortDir, alerts]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -221,6 +231,19 @@ export default function AdminInventoryPage() {
       setIsSaving(false);
     }
   }
+
+  const handleExportCSV = () => {
+    const headers = "SKU,Item Name,Category,Quantity On Hand,Reorder Level,Location,Status\n";
+    const rows = filtered.map(i =>
+      `"${i.sku}","${i.itemName}","${i.category}",${i.quantityOnHand},${i.reorderLevel},"${i.departmentName || 'N/A'}","${getItemStatus(i)}"`
+    ).join("\n");
+    const blob = new Blob([headers + rows], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.setAttribute("href", url);
+    a.setAttribute("download", "admin_inventory_export.csv");
+    a.click();
+  };
 
   function toggleSort(field: SortField) {
     if (sortField === field) {
@@ -321,13 +344,44 @@ export default function AdminInventoryPage() {
         <select value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} className="hc-input min-w-[140px]">
           {statusOptions.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors">
+        <button
+          type="button"
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm border rounded-[var(--radius-md)] transition-colors ${
+            showAdvanced ? "border-[var(--hc-primary)] bg-[var(--hc-primary-bg)] text-[var(--hc-primary)]" : "border-[var(--hc-border)] hover:bg-[var(--hc-surface-soft)]"
+          }`}
+        >
           <Filter className="w-4 h-4" /> Advanced Filter
         </button>
-        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors">
+        <button
+          type="button"
+          onClick={handleExportCSV}
+          className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors"
+        >
           <Download className="w-4 h-4" /> Export
         </button>
       </section>
+
+      {showAdvanced && (
+        <section className="mt-2 p-4 border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] rounded-[var(--radius-xl)] flex items-center gap-4 flex-wrap shadow-sm animate-in fade-in duration-200">
+          <span className="text-xs font-bold text-[var(--hc-text-muted)] uppercase">Advanced Filters:</span>
+          <select
+            aria-label="Filter by department"
+            value={departmentIdFilter}
+            onChange={(e) => { setDepartmentIdFilter(e.target.value); setPage(1); }}
+            className="hc-input text-xs min-w-[180px]"
+          >
+            {departments.map((dept) => <option key={dept} value={dept}>{dept}</option>)}
+          </select>
+          <button
+            type="button"
+            onClick={() => { setDepartmentIdFilter("All Departments"); setShowAdvanced(false); }}
+            className="text-xs text-[var(--hc-text-secondary)] hover:text-[var(--hc-primary)] hover:underline ml-auto"
+          >
+            Reset Advanced Filters
+          </button>
+        </section>
+      )}
 
       {/* Table */}
       <section className="mt-4 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
@@ -375,7 +429,7 @@ export default function AdminInventoryPage() {
                           </td>
                           <td className="hc-td text-right">
                             <div className="flex items-center justify-end gap-1">
-                              <button type="button" className="p-1.5 hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" title="View">
+                              <button type="button" onClick={() => setViewingItem(item)} className="p-1.5 hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" title="View">
                                 <Eye className="w-4 h-4 text-[var(--hc-text-muted)]" />
                               </button>
                               <button type="button" onClick={() => openEdit(item)} className="p-1.5 hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" title="Edit">
@@ -463,6 +517,55 @@ export default function AdminInventoryPage() {
             <button type="submit" disabled={isSaving} className="hc-button-primary">{isSaving ? "Saving…" : editingItem ? "Update Item" : "Create Item"}</button>
           </div>
         </form>
+      </Dialog>
+
+      {/* ── View Item Details Dialog ── */}
+      <Dialog isOpen={!!viewingItem} onClose={() => setViewingItem(null)} title="Item Details" description="Detailed specification of the inventory item.">
+        {viewingItem && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <span className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">SKU</span>
+                <div className="text-sm font-semibold text-[var(--hc-text)] bg-[var(--hc-surface-soft)] p-2.5 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)]">{viewingItem.sku}</div>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">Item Name</span>
+                <div className="text-sm font-semibold text-[var(--hc-text)] bg-[var(--hc-surface-soft)] p-2.5 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)]">{viewingItem.itemName}</div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <span className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">Category</span>
+                <div className="text-sm font-semibold text-[var(--hc-text)] bg-[var(--hc-surface-soft)] p-2.5 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)]">{viewingItem.category || "N/A"}</div>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">Unit</span>
+                <div className="text-sm font-semibold text-[var(--hc-text)] bg-[var(--hc-surface-soft)] p-2.5 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)]">{viewingItem.unit || "N/A"}</div>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <span className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">In Stock</span>
+                <div className="text-sm font-semibold text-[var(--hc-text)] bg-[var(--hc-surface-soft)] p-2.5 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)]">{viewingItem.quantityOnHand}</div>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">Reorder Level</span>
+                <div className="text-sm font-semibold text-[var(--hc-text)] bg-[var(--hc-surface-soft)] p-2.5 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)]">{viewingItem.reorderLevel}</div>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">Status</span>
+                <div className="text-[13px] font-semibold"><StatusBadge status={getItemStatus(viewingItem)} /></div>
+              </div>
+            </div>
+            <div>
+              <span className="block text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-secondary)] mb-1">Location</span>
+              <div className="text-sm font-semibold text-[var(--hc-text)] bg-[var(--hc-surface-soft)] p-2.5 rounded-[var(--radius-md)] border border-[var(--hc-border-soft)]">{viewingItem.departmentName || "N/A"}</div>
+            </div>
+            <div className="flex justify-end gap-3 pt-4 border-t border-[var(--hc-border-soft)]">
+              <button type="button" onClick={() => setViewingItem(null)} className="hc-button-ghost">Close</button>
+            </div>
+          </div>
+        )}
       </Dialog>
     </main>
   );

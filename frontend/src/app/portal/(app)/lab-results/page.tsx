@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   listPatientPortalLabResults,
   type PatientPortalLabResultResponse,
@@ -9,13 +9,20 @@ import {
 import { HcIcon } from "@/components/ui/hc-icon";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
-import { AlertTriangle, Hourglass, Paperclip, FlaskConical } from "lucide-react";
+import { AlertTriangle, Download, Hourglass, Paperclip, FlaskConical } from "lucide-react";
 
 function formatDateTime(value: string) {
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(value));
+}
+
+function escapeCsvValue(value: string): string {
+  if (value.includes(",") || value.includes('"') || value.includes("\n")) {
+    return `"${value.replace(/"/g, '""')}"`;
+  }
+  return value;
 }
 
 function getStatusBadge(status: string) {
@@ -32,6 +39,7 @@ function getStatusBadge(status: string) {
 export default function PatientLabResultsPage() {
   const [labResults, setLabResults] = useState<PatientPortalLabResultResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -77,6 +85,37 @@ export default function PatientLabResultsPage() {
 
   const latestResult = labResults[0] ?? null;
 
+  const handleExportCSV = useCallback(() => {
+    if (labResults.length === 0) return;
+
+    setIsExporting(true);
+
+    try {
+      const headers = ["Test Name", "Status", "Result Summary", "Doctor Comment", "Collected At"];
+      const rows = labResults.map((r) => [
+        escapeCsvValue(r.testName),
+        escapeCsvValue(r.status),
+        escapeCsvValue(r.resultSummary ?? ""),
+        escapeCsvValue(r.doctorComment ?? ""),
+        escapeCsvValue(r.collectedAt),
+      ]);
+
+      const csvContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `lab-results-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      URL.revokeObjectURL(url);
+    } finally {
+      setIsExporting(false);
+    }
+  }, [labResults]);
+
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-8">
       <div className="flex justify-between items-start">
@@ -87,12 +126,23 @@ export default function PatientLabResultsPage() {
         />
         <div className="flex gap-4">
           <button
-            className="hc-button-secondary opacity-60"
+            className="hc-button-secondary"
             type="button"
-            disabled
-            title="Bulk PDF export is not supported by the current patient portal API"
+            disabled={isExporting || labResults.length === 0}
+            onClick={handleExportCSV}
+            title={labResults.length === 0 ? "No lab results to export" : "Download lab results as CSV"}
           >
-            Export Unsupported
+            {isExporting ? (
+              <>
+                <Download className="size-4 mr-1.5 animate-pulse" aria-hidden="true" />
+                Exporting…
+              </>
+            ) : (
+              <>
+                <Download className="size-4 mr-1.5" aria-hidden="true" />
+                Export CSV
+              </>
+            )}
           </button>
           <button
             className="hc-button-primary opacity-60"

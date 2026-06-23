@@ -1,8 +1,12 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { HcIcon } from "@/components/ui/hc-icon";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 export default function BookingWizardSymptomsPage() {
+  const router = useRouter();
   return (
     <main className="max-w-[1400px] mx-auto p-8 pb-20">
       <header className="mb-8">
@@ -82,11 +86,14 @@ export default function BookingWizardSymptomsPage() {
           </div>
 
           <div className="flex gap-4">
-            <Button className="flex items-center group">
+            <Button
+              className="flex items-center group"
+              onClick={() => router.push("/staff/booking/slots")}
+            >
               Next: Analyze Results
               <HcIcon name="arrow_forward" className="ml-2 transition-transform group-hover:translate-x-1 w-4 h-4" />
             </Button>
-            <Button variant="secondary">
+            <Button variant="secondary" onClick={() => { alert("Draft booking saved successfully."); router.push("/staff/dashboard"); }}>
               Save Draft
             </Button>
           </div>

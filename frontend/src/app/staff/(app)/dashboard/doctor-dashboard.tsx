@@ -118,6 +118,8 @@ export function DoctorDashboardView({
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [wardFilter, setWardFilter] = useState("All Wards");
   const [page, setPage] = useState(1);
+  const [showMoreFilters, setShowMoreFilters] = useState(false);
+  const [nurseFilter, setNurseFilter] = useState("All Nurses");
 
   const patients = externalPatients ?? MOCK_PATIENTS;
 
@@ -126,9 +128,23 @@ export function DoctorDashboardView({
       const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.id.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = statusFilter === "All Status" || p.status === statusFilter;
       const matchesWard = wardFilter === "All Wards" || p.ward === wardFilter;
-      return matchesSearch && matchesStatus && matchesWard;
+      const matchesNurse = nurseFilter === "All Nurses" || p.nurse === nurseFilter;
+      return matchesSearch && matchesStatus && matchesWard && matchesNurse;
     });
-  }, [patients, searchQuery, statusFilter, wardFilter]);
+  }, [patients, searchQuery, statusFilter, wardFilter, nurseFilter]);
+
+  const handleExport = () => {
+    const headers = "Case ID,Name,Status,Ward,BP,HR,O2,Attending Nurse\n";
+    const rows = filteredPatients.map(p => 
+      `"${p.id}","${p.name}","${p.status}","${p.ward}","${p.bp}",${p.hr},${p.o2},"${p.nurse}"`
+    ).join("\n");
+    const blob = new Blob([headers + rows], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.setAttribute("href", url);
+    a.setAttribute("download", "patient_records_export.csv");
+    a.click();
+  };
 
   const totalPages = Math.max(1, Math.ceil(filteredPatients.length / PAGE_SIZE));
   const paged = filteredPatients.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -144,7 +160,7 @@ export function DoctorDashboardView({
         action={
           <button
             type="button"
-            onClick={onRefresh}
+            onClick={onRefresh || (() => window.location.reload())}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)] transition-colors"
           >
             <RefreshCw className="size-4 text-[var(--hc-text-muted)]" /> Refresh
@@ -204,13 +220,44 @@ export function DoctorDashboardView({
           <option value="ER">ER</option>
           <option value="Observation">Observation</option>
         </select>
-        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors">
-          <Filter className="size-4" /> More Filters
+        <button
+          type="button"
+          onClick={() => setShowMoreFilters(v => !v)}
+          className={`flex items-center gap-2 px-4 py-2.5 text-sm border rounded-[var(--radius-md)] transition-colors ${showMoreFilters ? "border-[var(--hc-primary)] bg-[var(--hc-primary-bg)] text-[var(--hc-primary)]" : "border-[var(--hc-border)] hover:bg-[var(--hc-surface-soft)]"}`}
+        >
+          <Filter className="size-4" /> More Filters {showMoreFilters ? "▲" : "▼"}
         </button>
-        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors">
+        <button
+          type="button"
+          onClick={handleExport}
+          className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors"
+        >
           <Download className="size-4" /> Export
         </button>
       </section>
+
+      {showMoreFilters && (
+        <section className="mt-2 p-4 border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] rounded-[var(--radius-xl)] flex items-center gap-4 flex-wrap shadow-sm">
+          <span className="text-xs font-bold text-[var(--hc-text-muted)] uppercase">Advanced Filters:</span>
+          <select
+            aria-label="Filter by attending nurse"
+            value={nurseFilter}
+            onChange={(e) => { setNurseFilter(e.target.value); setPage(1); }}
+            className="hc-input text-xs min-w-[160px]"
+          >
+            <option value="All Nurses">All Attending Nurses</option>
+            <option value="Nurse S. Miller">Nurse S. Miller</option>
+            <option value="Nurse R. Chen">Nurse R. Chen</option>
+          </select>
+          <button
+            type="button"
+            onClick={() => { setNurseFilter("All Nurses"); setShowMoreFilters(false); }}
+            className="text-xs text-[var(--hc-text-secondary)] hover:text-[var(--hc-primary)] hover:underline ml-auto"
+          >
+            Reset Advanced Filters
+          </button>
+        </section>
+      )}
 
       {/* Patient Table */}
       <section className="mt-4 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden">
@@ -268,10 +315,27 @@ export function DoctorDashboardView({
                       <td className="text-sm font-medium text-[var(--hc-text)]">{patient.nurse}</td>
                       <td className="text-right">
                         <div className="flex items-center justify-end gap-1">
-                          <button type="button" aria-label={`View ${patient.name}`} className="p-1.5 hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" title="View">
+                          <button
+                            type="button"
+                            onClick={() => alert(`Patient: ${patient.name}\nCase ID: ${patient.id}\nStatus: ${patient.status}\nWard: ${patient.ward}\nBP: ${patient.bp} | HR: ${patient.hr} | O2: ${patient.o2}%\nNurse: ${patient.nurse}`)}
+                            aria-label={`View ${patient.name}`}
+                            className="p-1.5 hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors"
+                            title="View"
+                          >
                             <Eye className="size-4 text-[var(--hc-text-muted)]" />
                           </button>
-                          <button type="button" aria-label={`More actions for ${patient.name}`} className="p-1.5 hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors" title="More">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const action = prompt(`Select action for ${patient.name}:\n1. Discharge\n2. Transfer Ward\n3. Record Vitals`, "1");
+                              if (action === "1") alert("Patient discharge initiated.");
+                              if (action === "2") alert("Ward transfer request submitted.");
+                              if (action === "3") alert("Record vitals modal opened.");
+                            }}
+                            aria-label={`More actions for ${patient.name}`}
+                            className="p-1.5 hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors"
+                            title="More"
+                          >
                             <MoreVertical className="size-4 text-[var(--hc-text-placeholder)]" />
                           </button>
                         </div>
@@ -372,7 +436,11 @@ export function DoctorDashboardView({
             ))}
           </div>
           <div className="p-4">
-            <button type="button" className="w-full flex items-center justify-center gap-2 h-[42px] border border-[var(--hc-primary)] text-[var(--hc-primary)] rounded-[var(--radius-md)] text-sm font-bold hover:bg-[var(--hc-primary-bg)] transition-all">
+            <button
+              type="button"
+              onClick={() => alert("Reassigning staffing resources: ER Resident Pool request dispatched. Optimizing shifts.")}
+              className="w-full flex items-center justify-center gap-2 h-[42px] border border-[var(--hc-primary)] text-[var(--hc-primary)] rounded-[var(--radius-md)] text-sm font-bold hover:bg-[var(--hc-primary-bg)] transition-all"
+            >
               <Stethoscope className="size-4" /> Reassign Resources
             </button>
           </div>

@@ -41,6 +41,7 @@ export default function StaffLabResultsPage() {
   const [statusFilter, setStatusFilter] = useState("All Statuses");
   const [dateFilter, setDateFilter] = useState("Last 7 Days");
   const [page, setPage] = useState(1);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(null);
   const role = useStoredRole("staff");
 
   const canWrite = role === "ADMIN" || role === "DOCTOR";
@@ -91,8 +92,43 @@ export default function StaffLabResultsPage() {
     });
   }, [rows, searchQuery, statusFilter]);
 
-  const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
-  const paged = filteredRows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const sortedRows = useMemo(() => {
+    if (!sortDirection) return filteredRows;
+    return [...filteredRows].sort((a, b) => {
+      const aVal = a.labResultId.toLowerCase();
+      const bVal = b.labResultId.toLowerCase();
+      if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [filteredRows, sortDirection]);
+
+  const totalPages = Math.max(1, Math.ceil(sortedRows.length / PAGE_SIZE));
+  const paged = sortedRows.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const handleExportCSV = () => {
+    const headers = ["Report ID", "Patient Name", "Test Name", "Status", "Appointment Date"];
+    const csvRows = [
+      headers.join(","),
+      ...sortedRows.map((r) =>
+        [
+          `"${r.labResultId}"`,
+          `"${r.patientName.replace(/"/g, '""')}"`,
+          `"${r.testName.replace(/"/g, '""')}"`,
+          `"${r.status.replace(/"/g, '""')}"`,
+          `"${r.appointmentDate}"`,
+        ].join(",")
+      ),
+    ];
+    const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `lab_results_export_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   /* ─── KPI computations ─── */
   const openReports = rows.filter((r) => !r.status.toLowerCase().includes("verified")).length;
@@ -168,7 +204,11 @@ export default function StaffLabResultsPage() {
             <option>All Time</option>
           </select>
         </div>
-        <button type="button" className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors self-end">
+        <button
+          type="button"
+          onClick={handleExportCSV}
+          className="flex items-center gap-2 px-4 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors self-end"
+        >
           <Download className="w-4 h-4" /> Export
         </button>
       </section>
@@ -186,7 +226,12 @@ export default function StaffLabResultsPage() {
               <table className="hc-table w-full">
                 <thead>
                   <tr>
-                    <th className="hc-th">REPORT ID ↕</th>
+                    <th
+                      className="hc-th cursor-pointer hover:bg-[var(--hc-surface-soft)] select-none"
+                      onClick={() => setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"))}
+                    >
+                      REPORT ID {sortDirection === "asc" ? "▲" : sortDirection === "desc" ? "▼" : "↕"}
+                    </th>
                     <th className="hc-th">PATIENT</th>
                     <th className="hc-th">TEST</th>
                     <th className="hc-th">STATUS</th>

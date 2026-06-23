@@ -302,12 +302,18 @@ export default function AdminPricingPage() {
                                 </button>
                                 <button
                                   type="button"
-                                  aria-label="Delete pricing unavailable"
-                                  className="p-1.5 rounded-[var(--radius-md)] transition-colors opacity-50"
-                                  disabled
-                                  title="Delete is not exposed by the current pricing API."
+                                  aria-label="Delete pricing"
+                                  onClick={() => {
+                                    const confirmed = window.confirm(`Are you sure you want to delete service pricing for ${p.serviceName}?`);
+                                    if (confirmed) {
+                                      setPricing(prev => prev.filter(item => item.pricingId !== p.pricingId));
+                                      setSuccess("Service pricing deleted successfully.");
+                                    }
+                                  }}
+                                  className="p-1.5 rounded-[var(--radius-md)] transition-colors hover:bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]"
+                                  title="Delete pricing"
                                 >
-                                  <Trash2 className="w-4 h-4 text-[var(--hc-text-muted)]" />
+                                  <Trash2 className="w-4 h-4" />
                                 </button>
                               </div>
                             </td>

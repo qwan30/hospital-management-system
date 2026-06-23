@@ -180,7 +180,7 @@ export function HcSidebar({
 
       <div className="flex min-h-0 flex-1 flex-col px-[18px] pb-[22px]">
         <div className="mb-[18px] flex items-center gap-3">
-          <div className="grid size-[54px] shrink-0 place-items-center rounded-[var(--radius-lg)] border border-[var(--hc-border)] bg-white text-[var(--hc-navy-800)] shadow-[var(--shadow-xs)]">
+          <div className="grid size-[54px] shrink-0 place-items-center rounded-[var(--radius-lg)] border border-[var(--hc-border)] bg-white text-[var(--hc-primary)] shadow-[var(--shadow-xs)]">
             <ShieldPlus className="size-6" aria-hidden="true" />
           </div>
           <div className="min-w-0">
@@ -215,15 +215,15 @@ export function HcSidebar({
                 href={link.href}
                 data-active={isActive ? "true" : undefined}
                 className={cn(
-                  "group relative flex h-12 items-center gap-[14px] px-4 text-sm font-medium text-[var(--hc-text)] transition-colors duration-150 hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-blue-600)]",
+                  "group relative flex h-12 items-center gap-[14px] px-4 text-sm font-medium text-[var(--hc-sidebar-text)] transition-colors duration-150 border-b border-border hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-sidebar-text-active)]",
                   isActive &&
-                    "bg-[var(--hc-blue-50)] font-bold text-[var(--hc-blue-600)] hover:bg-[var(--hc-blue-50)] hover:text-[var(--hc-blue-600)] border-l-4 border-l-[var(--hc-blue-600)]",
+                    "bg-[var(--hc-sidebar-active-bg)] font-bold text-[var(--hc-sidebar-text-active)] hover:bg-[var(--hc-sidebar-active-bg)] hover:text-[var(--hc-sidebar-text-active)] border-l-4 border-l-[var(--hc-sidebar-text-active)] border-b-0",
                 )}
               >
                 <Icon
                   className={cn(
-                    "size-5 shrink-0 text-[var(--hc-text-secondary)] transition-colors group-hover:text-[var(--hc-blue-600)]",
-                    isActive && "text-[var(--hc-blue-600)] group-hover:text-[var(--hc-blue-600)]",
+                    "size-5 shrink-0 text-[var(--hc-sidebar-icon)] transition-colors group-hover:text-[var(--hc-sidebar-icon-active)]",
+                    isActive && "text-[var(--hc-sidebar-icon-active)] group-hover:text-[var(--hc-sidebar-icon-active)]",
                   )}
                   aria-hidden="true"
                 />
@@ -239,7 +239,7 @@ export function HcSidebar({
           {supportHref ? (
             <Link
               href={supportHref}
-              className="flex h-10 items-center gap-3 px-2 text-sm font-medium text-[var(--hc-text-secondary)] transition hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-blue-600)]"
+              className="flex h-10 items-center gap-3 px-2 text-sm font-medium text-[var(--hc-sidebar-text)] transition hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-sidebar-text-active)]"
             >
               <LifeBuoy className="size-5" aria-hidden="true" />
               {supportLabel}
@@ -248,7 +248,7 @@ export function HcSidebar({
           {logoutHref ? (
             <Link
               href={logoutHref}
-              className="flex h-10 items-center gap-3 px-2 text-sm font-medium text-[var(--hc-text-secondary)] transition hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-danger)]"
+              className="flex h-10 items-center gap-3 px-2 text-sm font-medium text-[var(--hc-sidebar-text)] transition hover:bg-[var(--hc-surface-soft)] hover:text-[var(--hc-danger)]"
             >
               <LogOut className="size-5" aria-hidden="true" />
               Logout

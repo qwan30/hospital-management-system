@@ -345,15 +345,18 @@ export default function AdminUsersPage() {
 
       <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm flex flex-col min-h-[400px]">
         {isLoading ? (
-          <table className="hc-table w-full">
-            <thead><tr><th className="hc-th">Name</th><th className="hc-th">Role</th><th className="hc-th">Status</th><th className="hc-th">Phone</th><th className="hc-th">Actions</th></tr></thead>
-            <tbody>
-              <TableRowSkeleton columns={5} />
-              <TableRowSkeleton columns={5} />
-              <TableRowSkeleton columns={5} />
-              <TableRowSkeleton columns={5} />
-            </tbody>
-          </table>
+          <div className="relative w-full">
+            <span className="sr-only">Loading staff users...</span>
+            <table className="hc-table w-full">
+              <thead><tr><th className="hc-th">Name</th><th className="hc-th">Role</th><th className="hc-th">Status</th><th className="hc-th">Phone</th><th className="hc-th">Actions</th></tr></thead>
+              <tbody>
+                <TableRowSkeleton columns={5} />
+                <TableRowSkeleton columns={5} />
+                <TableRowSkeleton columns={5} />
+                <TableRowSkeleton columns={5} />
+              </tbody>
+            </table>
+          </div>
         ) : (
           <>
             <UsersTable

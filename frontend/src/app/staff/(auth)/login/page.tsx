@@ -120,7 +120,15 @@ export default function StaffLoginPage() {
         </section>
 
         {/* Right Column - Login Form */}
-        <section className="relative flex w-full items-center justify-center lg:w-[55%]">
+        <section className="relative flex w-full items-center justify-center lg:w-[55%] overflow-hidden">
+          {/* Background Image */}
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: "url('/staff-login-bg.png')" }}
+            aria-hidden="true"
+          />
+          {/* Overlay for readability */}
+          <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px]" aria-hidden="true" />
           <div className="relative z-10 w-full max-w-[500px] px-6 py-10 lg:px-0">
             <div className="rounded-[var(--radius-2xl)] border border-[var(--hc-border)] bg-white px-8 py-10 shadow-[var(--shadow-card)]">
               <header className="mb-8 flex flex-col items-center text-center">

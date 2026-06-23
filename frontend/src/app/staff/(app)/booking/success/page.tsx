@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { HcIcon } from "@/components/ui/hc-icon";
 
 export default function BookingSuccessPage() {
+  const router = useRouter();
   return (
     <main className="max-w-[1400px] mx-auto p-8 pb-20 flex flex-col items-center justify-center min-h-[calc(100vh-100px)]">
       <div className="w-full max-w-[720px] flex flex-col space-y-10">
@@ -71,10 +75,10 @@ export default function BookingSuccessPage() {
         </section>
 
         <footer className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-          <button className="w-full sm:w-auto px-12 py-3 hc-button-primary">
+          <button onClick={() => router.push("/staff/dashboard")} className="w-full sm:w-auto px-12 py-3 hc-button-primary">
             Go Home
           </button>
-          <button className="w-full sm:w-auto px-12 py-3 hc-button-secondary">
+          <button onClick={() => router.push("/staff/booking")} className="w-full sm:w-auto px-12 py-3 hc-button-secondary">
             Book Another
           </button>
         </footer>

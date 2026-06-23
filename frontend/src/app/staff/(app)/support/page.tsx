@@ -110,16 +110,16 @@ export default function StaffSupportPage() {
         </div>
 
         {/* Critical Escalation */}
-        <div className="bg-slate-900 rounded-[var(--radius-xl)] shadow-sm overflow-hidden flex flex-col">
-          <div className="px-6 py-4 border-b border-slate-700 flex items-center gap-3">
-            <div className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] bg-[var(--hc-danger-bg)]0/20 text-red-400">
+        <div className="border border-[var(--hc-border-soft)] bg-[var(--hc-surface)] rounded-[var(--radius-xl)] shadow-sm overflow-hidden flex flex-col">
+          <div className="px-6 py-4 border-b border-[var(--hc-border-soft)] flex items-center gap-3">
+            <div className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]">
               <ShieldAlert className="w-5 h-5" />
             </div>
-            <h2 className="text-sm font-bold text-white">Critical Escalation</h2>
+            <h2 className="text-sm font-bold text-[var(--hc-text)]">Critical Escalation</h2>
           </div>
           <div className="p-6 flex-1 flex flex-col justify-between">
             <div>
-              <p className="text-xl font-light text-slate-200 leading-relaxed">
+              <p className="text-xl font-light text-[var(--hc-text-secondary)] leading-relaxed">
                 For patient-safety blocking issues, page the active clinical command desk.
               </p>
               <div className="mt-4 flex items-center gap-2 text-[var(--hc-text-muted)] text-sm">
@@ -129,7 +129,7 @@ export default function StaffSupportPage() {
             </div>
             <Link
               href="/staff/queue"
-              className="mt-6 inline-flex items-center justify-center gap-2 h-12 border border-white/30 rounded-[var(--radius-md)] px-6 text-sm font-bold text-white hover:bg-[var(--hc-surface)] hover:text-slate-900 transition-all"
+              className="mt-6 inline-flex items-center justify-center gap-2 h-12 border border-[var(--hc-danger)] rounded-[var(--radius-md)] px-6 text-sm font-bold text-[var(--hc-danger)] hover:bg-[var(--hc-danger)] hover:text-white transition-all"
             >
               <AlertTriangle className="w-4 h-4" />
               Open Queue Board

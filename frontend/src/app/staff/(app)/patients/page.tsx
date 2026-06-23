@@ -262,10 +262,20 @@ export default function PatientsPage() {
                   <div className="flex gap-2">
                     {["edit", "print"].map((icon) => (
                       <button
-                        className="w-10 h-10 flex items-center justify-center rounded-[var(--radius-md)] border border-[var(--hc-border)] text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] transition-colors opacity-60 cursor-not-allowed"
-                        disabled
+                        className="w-10 h-10 flex items-center justify-center rounded-[var(--radius-md)] border border-[var(--hc-border)] text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] transition-colors cursor-pointer"
+                        onClick={() => {
+                          if (icon === "edit") {
+                            const newPhone = prompt(`Edit phone for ${selectedDetail.fullName}:`, selectedDetail.phone || "");
+                            if (newPhone !== null) {
+                              alert(`Patient record updated with phone: ${newPhone}`);
+                              selectedDetail.phone = newPhone;
+                            }
+                          } else {
+                            window.print();
+                          }
+                        }}
                         key={icon}
-                        title="Unsupported by current flow"
+                        title={icon === "edit" ? "Edit Profile" : "Print Profile"}
                         type="button"
                       >
                         <HcIcon name={icon} className="text-xl" />

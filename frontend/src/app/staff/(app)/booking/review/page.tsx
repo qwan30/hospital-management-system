@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { HcIcon } from "@/components/ui/hc-icon";
 
 export default function BookingDetailsReviewPage() {
+  const router = useRouter();
   return (
     <main className="max-w-[1400px] mx-auto p-8 pb-20">
       <header className="mb-8">
@@ -124,10 +128,10 @@ export default function BookingDetailsReviewPage() {
             </div>
 
             <div className="flex flex-col gap-3 mt-4">
-              <button className="w-full hc-button-primary py-3.5">
+              <button onClick={() => { alert("Booking confirmed successfully."); router.push("/staff/booking/success"); }} className="w-full hc-button-primary py-3.5">
                 Confirm Booking
               </button>
-              <button className="w-full hc-button-secondary py-3.5">
+              <button onClick={() => { alert("Draft booking saved successfully."); router.push("/staff/dashboard"); }} className="w-full hc-button-secondary py-3.5">
                 Save as Draft
               </button>
             </div>

@@ -34,9 +34,9 @@ export default function StaffDashboardPage() {
 
   switch (role) {
     case "ADMIN":
-      return <DoctorDashboardView />;
+      return <DoctorDashboardView onRefresh={() => window.location.reload()} />;
     case "DOCTOR":
-      return <DoctorDashboardView />;
+      return <DoctorDashboardView onRefresh={() => window.location.reload()} />;
     case "NURSE":
       return <NurseDashboardView />;
     case "RECEPTIONIST":

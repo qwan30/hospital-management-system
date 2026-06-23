@@ -124,6 +124,7 @@ export default function PublicDepartmentsPage() {
 
           {isLoading ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
+              <span className="sr-only">Loading departments from the hospital system...</span>
               {Array.from({ length: 6 }, (_, i) => (
                 <div key={i} className="rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-white p-6 space-y-3">
                   <Skeleton className="h-5 w-32 rounded" />

@@ -59,6 +59,63 @@ export function getApiBaseUrl() {
   return process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE_URL;
 }
 
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+function subscribeTokenRefresh(cb: (token: string) => void) {
+  refreshSubscribers.push(cb);
+}
+
+function onRefreshed(token: string) {
+  refreshSubscribers.forEach((cb) => cb(token));
+  refreshSubscribers = [];
+}
+
+async function attemptTokenRefresh(scope: AuthScope): Promise<boolean> {
+  if (isRefreshing) {
+    return new Promise((resolve) => {
+      subscribeTokenRefresh((token) => {
+        resolve(!!token);
+      });
+    });
+  }
+
+  isRefreshing = true;
+
+  try {
+    const refreshPath = scope === "patient" ? "/patient-auth/refresh" : "/auth/refresh";
+    const refreshUrl = `${getApiBaseUrl()}${refreshPath}`;
+    const response = await fetch(refreshUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({}),
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const payload = await readJson<any>(response);
+      if (payload.data?.accessToken) {
+        persistSession(scope, {
+          accessToken: payload.data.accessToken,
+          expiresInSeconds: payload.data.expiresInSeconds,
+        });
+        onRefreshed(payload.data.accessToken);
+        isRefreshing = false;
+        return true;
+      }
+    }
+  } catch (err) {
+    console.error("Token refresh failed:", err);
+  }
+
+  onRefreshed("");
+  isRefreshing = false;
+  return false;
+}
+
 export async function apiRequest<T>(
   path: string,
   init: RequestInit = {},
@@ -98,6 +155,22 @@ export async function apiRequest<T>(
 
   const durationMs = elapsedMs(startedAt);
   const responseRequestId = response.headers?.get(REQUEST_ID_HEADER) || requestId;
+
+  // Intercept 401 and attempt token refresh
+  if (response.status === 401 && !path.includes("/refresh") && !path.includes("/login")) {
+    const scope = options.authScope || "staff";
+    const refreshSuccess = await attemptTokenRefresh(scope);
+    if (refreshSuccess) {
+      // Retry request with fresh headers containing new token
+      return apiRequest<T>(path, init, options);
+    } else {
+      clearSessions();
+      if (typeof window !== "undefined") {
+        window.location.href = scope === "patient" ? "/portal/login" : "/staff/login";
+      }
+    }
+  }
+
   const payload = await readJson<ApiEnvelope<T>>(response);
   recordApiRequestMetric({
     path: sanitizeMetricPath(path),

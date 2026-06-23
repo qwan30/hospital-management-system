@@ -11,6 +11,17 @@ export default function AdminAuditLogsPage() {
   const [logs, setLogs] = useState<AuditLogResponse[]>([]);
   const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [actorFilter, setActorFilter] = useState("All");
+  const [actionFilter, setActionFilter] = useState("All");
+  const [severityFilter, setSeverityFilter] = useState("All");
+  const [departmentFilter, setDepartmentFilter] = useState("All");
+  const [page, setPage] = useState(1);
+
+  const getSeverity = (action: string) => {
+    if (action.includes("DENIED") || action.includes("FAILED") || action.includes("ERROR")) return "HIGH";
+    if (action.includes("VIEWED") || action.includes("READ")) return "LOW";
+    return "INFO";
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -35,25 +46,42 @@ export default function AdminAuditLogsPage() {
   }, []);
 
   const filteredLogs = useMemo(() => {
+    let result = logs;
     const normalized = query.trim().toLowerCase();
-    if (!normalized) {
-      return logs;
+    if (normalized) {
+      result = result.filter((log) =>
+        [log.actorName, log.actorRole, log.action, log.entityType, log.entityId]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+          .includes(normalized),
+      );
     }
 
-    return logs.filter((log) =>
-      [log.actorName, log.actorRole, log.action, log.entityType, log.entityId]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase()
-        .includes(normalized),
-    );
-  }, [logs, query]);
+    if (actorFilter !== "All") {
+      result = result.filter((log) => log.actorName === actorFilter);
+    }
+    if (actionFilter !== "All") {
+      result = result.filter((log) => log.action === actionFilter);
+    }
+    if (severityFilter !== "All") {
+      result = result.filter((log) => getSeverity(log.action) === severityFilter);
+    }
+    if (departmentFilter !== "All") {
+      result = result.filter((log) =>
+        log.entityType.toLowerCase().includes(departmentFilter.toLowerCase()) ||
+        JSON.stringify(log.metadata).toLowerCase().includes(departmentFilter.toLowerCase())
+      );
+    }
 
-  const getSeverity = (action: string) => {
-    if (action.includes("DENIED") || action.includes("FAILED") || action.includes("ERROR")) return "HIGH";
-    if (action.includes("VIEWED") || action.includes("READ")) return "LOW";
-    return "INFO";
-  };
+    return result;
+  }, [logs, query, actorFilter, actionFilter, severityFilter, departmentFilter]);
+
+  const PAGE_SIZE = 10;
+  const totalPages = Math.max(1, Math.ceil(filteredLogs.length / PAGE_SIZE));
+  const pagedLogs = useMemo(() => {
+    return filteredLogs.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  }, [filteredLogs, page]);
 
   const getSeverityBadgeVariant = (severity: string): "destructive" | "success" | "info" => {
     switch (severity) {
@@ -61,6 +89,27 @@ export default function AdminAuditLogsPage() {
       case "LOW": return "success";
       default: return "info";
     }
+  };
+
+  const uniqueActors = useMemo(() => {
+    return ["All", ...Array.from(new Set(logs.map((l) => l.actorName).filter(Boolean)))];
+  }, [logs]);
+
+  const uniqueActions = useMemo(() => {
+    return ["All", ...Array.from(new Set(logs.map((l) => l.action).filter(Boolean)))];
+  }, [logs]);
+
+  const handleExportCSV = () => {
+    const headers = "Timestamp,Actor,Role,Action,Target,Severity,Details\n";
+    const rows = filteredLogs.map(log =>
+      `"${formatDateTime(log.createdAt)}","${log.actorName ?? 'System'}","${log.actorRole ?? 'System'}","${log.action}","${log.entityType}${log.entityId ? `:${log.entityId}` : ''}","${getSeverity(log.action)}","${JSON.stringify(log.metadata).replace(/"/g, '""')}"`
+    ).join("\n");
+    const blob = new Blob([headers + rows], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.setAttribute("href", url);
+    a.setAttribute("download", `audit_logs_${new Date().toISOString().slice(0, 10)}.csv`);
+    a.click();
   };
 
   return (
@@ -78,7 +127,7 @@ export default function AdminAuditLogsPage() {
         }
         description="Monitor authorization, system actions, inventory movement, and administrative changes."
         action={
-          <button className="hc-button-outline flex items-center gap-2 h-10 px-5 bg-[var(--hc-surface)] hover:bg-[var(--hc-background)]">
+          <button onClick={handleExportCSV} className="hc-button-outline flex items-center gap-2 h-10 px-5 bg-[var(--hc-surface)] hover:bg-[var(--hc-background)]">
               <Download className="w-4 h-4" />
               <span className="font-bold text-[11px] uppercase tracking-widest">Export CSV</span>
           </button>
@@ -164,18 +213,30 @@ export default function AdminAuditLogsPage() {
 
           <div className="flex flex-col gap-1.5">
             <label className="text-[11px] font-bold text-[var(--hc-text)]">Actor</label>
-            <button className="flex items-center justify-between gap-3 h-9 px-3 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
-                <span className="text-sm font-medium text-[var(--hc-text-secondary)]">All Actors</span>
-                <ChevronDown className="w-4 h-4 text-[var(--hc-text-secondary)]" />
-            </button>
+            <select
+              aria-label="Filter by actor"
+              value={actorFilter}
+              onChange={(e) => { setActorFilter(e.target.value); setPage(1); }}
+              className="hc-input h-9 text-sm"
+            >
+              {uniqueActors.map((actor) => (
+                <option key={actor} value={actor === "All" ? "All" : actor}>{actor === "All" ? "All Actors" : actor}</option>
+              ))}
+            </select>
           </div>
 
           <div className="flex flex-col gap-1.5">
             <label className="text-[11px] font-bold text-[var(--hc-text)]">Action Type</label>
-            <button className="flex items-center justify-between gap-3 h-9 px-3 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
-                <span className="text-sm font-medium text-[var(--hc-text-secondary)]">All Actions</span>
-                <ChevronDown className="w-4 h-4 text-[var(--hc-text-secondary)]" />
-            </button>
+            <select
+              aria-label="Filter by action type"
+              value={actionFilter}
+              onChange={(e) => { setActionFilter(e.target.value); setPage(1); }}
+              className="hc-input h-9 text-sm text-ellipsis overflow-hidden"
+            >
+              {uniqueActions.map((act) => (
+                <option key={act} value={act === "All" ? "All" : act}>{act === "All" ? "All Actions" : act}</option>
+              ))}
+            </select>
           </div>
 
           <div className="flex flex-col gap-1.5">
@@ -190,21 +251,47 @@ export default function AdminAuditLogsPage() {
         <div className="flex items-end gap-4">
           <div className="flex flex-col gap-1.5 w-full max-w-[calc(25%-12px)]">
             <label className="text-[11px] font-bold text-[var(--hc-text)]">Department</label>
-            <button className="flex items-center justify-between gap-3 h-9 px-3 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
-                <span className="text-sm font-medium text-[var(--hc-text-secondary)]">All Departments</span>
-                <ChevronDown className="w-4 h-4 text-[var(--hc-text-secondary)]" />
-            </button>
+            <select
+              aria-label="Filter by department"
+              value={departmentFilter}
+              onChange={(e) => { setDepartmentFilter(e.target.value); setPage(1); }}
+              className="hc-input h-9 text-sm"
+            >
+              <option value="All">All Departments</option>
+              <option value="Clinical">Clinical</option>
+              <option value="Administration">Administration</option>
+              <option value="Pharmacy">Pharmacy</option>
+              <option value="Laboratory">Laboratory</option>
+            </select>
           </div>
 
           <div className="flex flex-col gap-1.5 w-full max-w-[calc(25%-12px)]">
             <label className="text-[11px] font-bold text-[var(--hc-text)]">Severity</label>
-            <button className="flex items-center justify-between gap-3 h-9 px-3 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-md hover:bg-[var(--hc-background)] transition-colors w-full text-left">
-                <span className="text-sm font-medium text-[var(--hc-text-secondary)]">All Severity</span>
-                <ChevronDown className="w-4 h-4 text-[var(--hc-text-secondary)]" />
-            </button>
+            <select
+              aria-label="Filter by severity"
+              value={severityFilter}
+              onChange={(e) => { setSeverityFilter(e.target.value); setPage(1); }}
+              className="hc-input h-9 text-sm"
+            >
+              <option value="All">All Severities</option>
+              <option value="HIGH">HIGH</option>
+              <option value="INFO">INFO</option>
+              <option value="LOW">LOW</option>
+            </select>
           </div>
 
-          <button className="flex items-center gap-2 h-9 px-3 text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] transition-colors text-sm font-medium">
+          <button
+            type="button"
+            onClick={() => {
+              setActorFilter("All");
+              setActionFilter("All");
+              setSeverityFilter("All");
+              setDepartmentFilter("All");
+              setQuery("");
+              setPage(1);
+            }}
+            className="flex items-center gap-2 h-9 px-3 text-[var(--hc-text-secondary)] hover:text-[var(--hc-text)] transition-colors text-sm font-medium"
+          >
             <RotateCcw className="w-4 h-4" />
             Clear filters
           </button>
@@ -239,7 +326,7 @@ export default function AdminAuditLogsPage() {
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--hc-border-soft)]">
-                    {filteredLogs.map((log) => {
+                    {pagedLogs.map((log) => {
                       const severity = getSeverity(log.action);
                       const severityVariant = getSeverityBadgeVariant(severity);
 
@@ -273,7 +360,7 @@ export default function AdminAuditLogsPage() {
                             </td>
                         </tr>
                     )})}
-                    {filteredLogs.length === 0 ? (
+                    {pagedLogs.length === 0 ? (
                         <tr>
                             <td className="px-8 py-10 text-center text-sm font-semibold text-[var(--hc-text-secondary)]" colSpan={8}>
                             No audit events match the current filter.
@@ -285,7 +372,7 @@ export default function AdminAuditLogsPage() {
         </div>
 
         <div className="p-4 border-t border-[var(--hc-border-soft)] flex items-center justify-between bg-[var(--hc-surface)]">
-            <p className="text-sm text-[var(--hc-text-secondary)]">Showing 1 to {Math.min(10, filteredLogs.length)} of {filteredLogs.length > 0 ? "24,851" : "0"} events</p>
+            <p className="text-sm text-[var(--hc-text-secondary)]">Showing {filteredLogs.length > 0 ? (page - 1) * PAGE_SIZE + 1 : 0} to {Math.min(page * PAGE_SIZE, filteredLogs.length)} of {filteredLogs.length} events</p>
             <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2 text-sm text-[var(--hc-text-secondary)] mr-4">
                     <span>Rows per page</span>
@@ -297,40 +384,46 @@ export default function AdminAuditLogsPage() {
 
                 <nav aria-label="audit log pagination" className="flex items-center justify-end gap-1">
                     <button
-                        className="h-8 rounded-md px-3 text-xs font-medium opacity-60"
-                        disabled
-                        title="Audit-log pagination is not exposed by the current backend API."
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        className="h-8 rounded-md px-3 text-xs font-medium border border-[var(--hc-border-soft)] hover:bg-[var(--hc-background)] disabled:opacity-30 transition-colors"
+                        disabled={page <= 1}
                         type="button"
                     >
                         Previous
                     </button>
-                    {[1, 2, 3, 4, 5].map((pageNumber) => (
+                    {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map((pageNumber) => (
                         <button
-                            aria-current={pageNumber === 1 ? "page" : undefined}
-                            className={`h-8 w-8 rounded-md text-xs font-medium opacity-60 ${pageNumber === 1 ? "bg-[var(--hc-blue-600)] text-white" : ""}`}
-                            disabled
+                            onClick={() => setPage(pageNumber)}
+                            aria-current={pageNumber === page ? "page" : undefined}
+                            className={`h-8 w-8 rounded-md text-xs font-medium border border-[var(--hc-border-soft)] transition-colors ${
+                              pageNumber === page ? "bg-[var(--hc-blue-600)] border-[var(--hc-blue-600)] text-white" : "hover:bg-[var(--hc-background)]"
+                            }`}
                             key={pageNumber}
-                            title="Audit-log pagination is not exposed by the current backend API."
                             type="button"
                         >
                             {pageNumber}
                         </button>
                     ))}
-                    <span className="inline-flex h-8 w-8 items-center justify-center text-xs text-[var(--hc-text-secondary)]">
-                        ...
-                    </span>
+                    {totalPages > 5 && (
+                      <>
+                        <span className="inline-flex h-8 w-8 items-center justify-center text-xs text-[var(--hc-text-secondary)]">
+                            ...
+                        </span>
+                        <button
+                            onClick={() => setPage(totalPages)}
+                            className={`h-8 min-w-8 rounded-md px-2 text-xs font-medium border border-[var(--hc-border-soft)] transition-colors ${
+                              totalPages === page ? "bg-[var(--hc-blue-600)] border-[var(--hc-blue-600)] text-white" : "hover:bg-[var(--hc-background)]"
+                            }`}
+                            type="button"
+                        >
+                            {totalPages}
+                        </button>
+                      </>
+                    )}
                     <button
-                        className="h-8 min-w-8 rounded-md px-2 text-xs font-medium opacity-60"
-                        disabled
-                        title="Audit-log pagination is not exposed by the current backend API."
-                        type="button"
-                    >
-                        2,486
-                    </button>
-                    <button
-                        className="h-8 rounded-md px-3 text-xs font-medium opacity-60"
-                        disabled
-                        title="Audit-log pagination is not exposed by the current backend API."
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                        className="h-8 rounded-md px-3 text-xs font-medium border border-[var(--hc-border-soft)] hover:bg-[var(--hc-background)] disabled:opacity-30 transition-colors"
+                        disabled={page >= totalPages}
                         type="button"
                     >
                         Next

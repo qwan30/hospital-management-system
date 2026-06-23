@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { HcIcon } from "@/components/ui/hc-icon";
 
 export default function BookingDoctorSlotSelectionPage() {
+  const router = useRouter();
   return (
     <main className="max-w-[1400px] mx-auto p-8 pb-20">
       <header className="mb-8">
@@ -33,8 +37,8 @@ export default function BookingDoctorSlotSelectionPage() {
             <div className="flex items-center justify-between px-2">
               <h2 className="text-xs font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Available Specialists</h2>
               <div className="flex gap-4">
-                <span className="text-xs text-[var(--hc-primary)] font-bold cursor-pointer hover:underline">FILTER BY SENIORITY</span>
-                <span className="text-xs text-[var(--hc-text-muted)] font-bold cursor-pointer hover:text-[var(--hc-text)] transition-colors">SORT BY AVAILABILITY</span>
+                <span onClick={() => alert("Filtering slots by specialist seniority...")} className="text-xs text-[var(--hc-primary)] font-bold cursor-pointer hover:underline">FILTER BY SENIORITY</span>
+                <span onClick={() => alert("Sorting slots by earliest availability...")} className="text-xs text-[var(--hc-text-muted)] font-bold cursor-pointer hover:text-[var(--hc-text)] transition-colors">SORT BY AVAILABILITY</span>
               </div>
             </div>
 
@@ -168,7 +172,7 @@ export default function BookingDoctorSlotSelectionPage() {
                 <span className="text-xs font-medium text-[var(--hc-text-secondary)]">Consultation Fee</span>
                 <span className="text-lg font-black text-[var(--hc-text)]">$120.00</span>
               </div>
-              <button className="w-full hc-button-primary flex items-center justify-center gap-2">
+              <button onClick={() => router.push("/staff/booking/review")} className="w-full hc-button-primary flex items-center justify-center gap-2">
                 <span>Continue to Patient Info</span>
                 <HcIcon name="arrow_forward" className="w-4 h-4" />
               </button>

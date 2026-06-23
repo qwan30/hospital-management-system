@@ -1,6 +1,10 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { HcIcon } from "@/components/ui/hc-icon";
 
 export default function BookingWizardSymptomsPage() {
+  const router = useRouter();
   return (
     <main className="max-w-[1400px] mx-auto p-8 pb-20">
       <header className="mb-8">
@@ -80,7 +84,10 @@ export default function BookingWizardSymptomsPage() {
           </div>
 
           <div className="flex gap-4">
-            <button className="hc-button-primary flex items-center group">
+            <button
+              className="hc-button-primary flex items-center group"
+              onClick={() => router.push("/staff/booking/slots")}
+            >
               Next: Analyze Results
               <HcIcon name="arrow_forward" className="ml-2 transition-transform group-hover:translate-x-1 w-4 h-4" />
             </button>

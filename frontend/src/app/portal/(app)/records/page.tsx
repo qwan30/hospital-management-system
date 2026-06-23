@@ -55,11 +55,11 @@ export default function PatientRecordBrowserPage() {
 <span className="text-[10px] font-bold px-2 py-0.5 bg-surface-container-highest text-outline uppercase">Stable</span>
 </div>
 <div className="grid grid-cols-2 gap-4">
-<div className="bg-white/50 p-2">
+<div className="bg-muted/50 p-2">
 <span className="block text-[9px] text-outline font-bold uppercase">Age / Sex</span>
 <span className="text-xs font-semibold">58 / Male</span>
 </div>
-<div className="bg-white/50 p-2">
+<div className="bg-muted/50 p-2">
 <span className="block text-[9px] text-outline font-bold uppercase">Last Visit</span>
 <span className="text-xs font-semibold">Oct 08, 2023</span>
 </div>
@@ -75,11 +75,11 @@ export default function PatientRecordBrowserPage() {
 <span className="text-[10px] font-bold px-2 py-0.5 bg-surface-container-highest text-outline uppercase">Stable</span>
 </div>
 <div className="grid grid-cols-2 gap-4">
-<div className="bg-white/50 p-2">
+<div className="bg-muted/50 p-2">
 <span className="block text-[9px] text-outline font-bold uppercase">Age / Sex</span>
 <span className="text-xs font-semibold">27 / Female</span>
 </div>
-<div className="bg-white/50 p-2">
+<div className="bg-muted/50 p-2">
 <span className="block text-[9px] text-outline font-bold uppercase">Last Visit</span>
 <span className="text-xs font-semibold">Sep 29, 2023</span>
 </div>

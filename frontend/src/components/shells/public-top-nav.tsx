@@ -19,11 +19,12 @@ export function PublicTopNav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-50 flex h-[64px] items-center border-b border-white/10 bg-[var(--hc-navy-950)]/95 px-4 font-sans antialiased shadow-[0_12px_40px_rgba(6,23,53,0.26)] backdrop-blur md:px-6">
+    <header className="fixed left-0 right-0 top-0 z-50 flex h-[64px] items-center border-b border-border bg-white px-4 font-sans antialiased text-foreground md:px-6">
       <div className="flex min-w-0 w-full items-center gap-4 md:gap-8">
+        {/* Mobile hamburger */}
         <button
           type="button"
-          className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] border border-white/10 text-white/85 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)] md:hidden"
+          className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] border border-border text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
           aria-controls="hc-public-mobile-menu"
           aria-expanded={isMobileMenuOpen}
           aria-label={isMobileMenuOpen ? "Close public navigation" : "Open public navigation"}
@@ -35,15 +36,19 @@ export function PublicTopNav() {
             <Menu className="size-5" aria-hidden="true" />
           )}
         </button>
+
+        {/* Logo */}
         <Link
           href="/"
-          className="flex min-w-0 items-center gap-3 rounded-[var(--radius-md)] text-[16px] font-bold uppercase leading-6 tracking-normal text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)] sm:text-[18px]"
+          className="flex min-w-0 items-center gap-3 rounded-[var(--radius-md)] text-[16px] font-bold uppercase leading-6 tracking-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-[18px]"
         >
-          <span className="grid size-9 shrink-0 place-items-center rounded-[10px] border border-white/15 bg-white/10 text-[var(--hc-blue-500)]">
+          <span className="grid size-9 shrink-0 place-items-center rounded-[10px] border border-border bg-muted/50 text-[var(--hc-blue-500)]">
             <Activity className="size-5" aria-hidden="true" />
           </span>
           <span className="shrink-0 whitespace-nowrap">HOSPITAL CORE</span>
         </Link>
+
+        {/* Desktop nav links */}
         <nav className="hidden md:flex h-full items-center">
           {publicLinks.map((link) => {
             const isActive =
@@ -55,10 +60,10 @@ export function PublicTopNav() {
                 href={link.href}
                 data-active={isActive ? "true" : undefined}
                 className={cn(
-                  "flex h-full items-center px-4 text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)]",
+                  "flex h-full items-center px-4 text-sm font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
                   isActive
-                    ? "border-b-[3px] border-[var(--hc-blue-500)] text-white"
-                    : "text-slate-300 hover:text-white"
+                    ? "border-b-[3px] border-[var(--hc-blue-500)] text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 {link.label}
@@ -66,16 +71,18 @@ export function PublicTopNav() {
             );
           })}
         </nav>
+
+        {/* Right-side CTA */}
         <div className="ml-auto flex min-w-0 items-center gap-2 sm:gap-4">
           <Link
             href="/portal/login"
-            className="hidden rounded-[var(--radius-md)] text-sm font-medium text-slate-300 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)] sm:inline-flex"
+            className="hidden rounded-[var(--radius-md)] text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:inline-flex"
           >
             Patient Portal
           </Link>
           <Link
             href="/staff/login"
-            className="inline-flex h-10 shrink-0 items-center gap-2 rounded-[var(--radius-md)] bg-[var(--hc-blue-600)] px-4 text-xs font-bold text-white shadow-[var(--shadow-blue)] transition hover:bg-[var(--hc-blue-700)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)] sm:text-sm"
+            className="inline-flex h-10 shrink-0 items-center gap-2 rounded-[var(--radius-md)] bg-[var(--hc-blue-600)] px-4 text-xs font-bold text-white shadow-[var(--shadow-blue)] transition hover:bg-[var(--hc-blue-700)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-sm"
           >
             <UserRound className="size-3.5" aria-hidden="true" />
             Staff Login
@@ -87,10 +94,12 @@ export function PublicTopNav() {
           </Link>
         </div>
       </div>
+
+      {/* Mobile menu */}
       {isMobileMenuOpen ? (
         <div
           id="hc-public-mobile-menu"
-          className="fixed inset-x-0 top-[64px] z-50 border-t border-white/10 bg-[var(--hc-navy-950)] px-4 py-4 shadow-2xl md:hidden"
+          className="fixed inset-x-0 top-[64px] z-50 border-t border-border bg-white px-4 py-4 shadow-2xl md:hidden"
           role="dialog"
           aria-modal="true"
           aria-label="Public mobile navigation"
@@ -106,8 +115,9 @@ export function PublicTopNav() {
                   href={link.href}
                   data-active={isActive ? "true" : undefined}
                   className={cn(
-                    "flex min-h-12 items-center rounded-[var(--radius-md)] px-4 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)]",
-                    isActive && "bg-white/10 text-white ring-1 ring-white/15",
+                    "flex min-h-12 items-center rounded-[var(--radius-md)] px-4 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                    "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    isActive && "bg-muted text-foreground ring-1 ring-border",
                   )}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
@@ -115,17 +125,17 @@ export function PublicTopNav() {
                 </Link>
               );
             })}
-            <div className="mt-3 grid grid-cols-1 gap-2 border-t border-white/10 pt-3 min-[420px]:grid-cols-2">
+            <div className="mt-3 grid grid-cols-1 gap-2 border-t border-border pt-3 min-[420px]:grid-cols-2">
               <Link
                 href="/portal/login"
-                className="flex min-h-12 items-center justify-center rounded-[var(--radius-md)] border border-white/15 px-4 text-sm font-bold text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)]"
+                className="flex min-h-12 items-center justify-center rounded-[var(--radius-md)] border border-border px-4 text-sm font-bold text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Patient Portal
               </Link>
               <Link
                 href="/staff/login"
-                className="flex min-h-12 items-center justify-center rounded-[var(--radius-md)] bg-[var(--hc-blue-600)] px-4 text-sm font-bold text-white shadow-[var(--shadow-blue)] transition hover:bg-[var(--hc-blue-700)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--hc-navy-950)]"
+                className="flex min-h-12 items-center justify-center rounded-[var(--radius-md)] bg-[var(--hc-blue-600)] px-4 text-sm font-bold text-white shadow-[var(--shadow-blue)] transition hover:bg-[var(--hc-blue-700)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Staff Login

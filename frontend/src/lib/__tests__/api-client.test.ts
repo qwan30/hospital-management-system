@@ -299,5 +299,92 @@ describe('api-client', () => {
       const response = await apiRequest('/large-response');
       expect(response.data).toBe(largeData.data);
     });
+
+    it('attempts to refresh token and retries request on 401 response', async () => {
+      // 1st request fails with 401
+      fetchMock().mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        headers: new Headers({}),
+        text: () => Promise.resolve(JSON.stringify({ error: { message: 'Access token has expired' } })),
+      } as Response);
+
+      // 2nd request (token refresh) succeeds
+      fetchMock().mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        headers: new Headers({}),
+        text: () => Promise.resolve(JSON.stringify({ data: { accessToken: 'new-token-999', expiresInSeconds: 900 } })),
+      } as Response);
+
+      // 3rd request (retried original) succeeds
+      fetchMock().mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        headers: new Headers({}),
+        text: () => Promise.resolve(JSON.stringify({ data: 'retry-success' })),
+      } as Response);
+
+      const result = await apiRequest('/needs-auth', {}, { authScope: 'staff' });
+
+      // Verify final result
+      expect(result.data).toBe('retry-success');
+
+      // Verify refresh token storage
+      expect(sessionStorage.getItem('hms_staff_access_token')).toBe('new-token-999');
+
+      // Verify fetch calls
+      expect(global.fetch).toHaveBeenCalledTimes(3);
+      
+      // Call 1: Original request
+      expect(fetchMock().mock.calls[0][0]).toContain('/needs-auth');
+      
+      // Call 2: Token refresh request
+      expect(fetchMock().mock.calls[1][0]).toContain('/auth/refresh');
+      
+      // Call 3: Retried original request
+      expect(fetchMock().mock.calls[2][0]).toContain('/needs-auth');
+      const retryInit = fetchMock().mock.calls[2][1] as RequestInit;
+      const headers = retryInit.headers as Headers;
+      expect(headers.get('Authorization')).toBe('Bearer new-token-999');
+    });
+
+    it('clears session storage and redirects to login when token refresh fails on 401 response', async () => {
+      // 1st request fails with 401
+      fetchMock().mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        headers: new Headers({}),
+        text: () => Promise.resolve(JSON.stringify({ error: { message: 'Access token has expired' } })),
+      } as Response);
+
+      // 2nd request (token refresh) fails with 401
+      fetchMock().mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        headers: new Headers({}),
+        text: () => Promise.resolve(JSON.stringify({ error: { message: 'Refresh token has expired' } })),
+      } as Response);
+
+      const locationSpy = vi.spyOn(window, 'location', 'get').mockReturnValue({
+        ...window.location,
+        href: '/staff/queue',
+      } as Location);
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: { ...window.location, href: '' },
+      });
+
+      sessionStorage.setItem('hms_staff_access_token', 'token123');
+      sessionStorage.setItem('hms_staff_role', 'DOCTOR');
+
+      await expect(apiRequest('/needs-auth', {}, { authScope: 'staff' })).rejects.toThrow();
+
+      expect(sessionStorage.getItem('hms_staff_access_token')).toBeNull();
+      expect(sessionStorage.getItem('hms_staff_role')).toBeNull();
+      expect(window.location.href).toContain('/staff/login');
+
+      locationSpy.mockRestore();
+    });
   });
 });

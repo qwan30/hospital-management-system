@@ -61,7 +61,7 @@ describe("StaffSideNav", () => {
     const activeLink = screen.getByRole("link", { name: /queue board/i });
     expect(activeLink).toHaveAttribute("data-active", "true");
     expect(activeLink.className).toContain("border-l-4");
-    expect(activeLink.className).toContain("text-[var(--hc-blue-600)]");
+    expect(activeLink.className).toContain("text-[var(--hc-sidebar-text-active)]");
   });
 
   it("does not render the CTA when the current role cannot access the CTA target", () => {

@@ -151,8 +151,8 @@ export default function RevenueDashboardPage() {
 
           {/* Sidebar */}
           <div className="space-y-4">
-            <div className="bg-slate-900 rounded-[var(--radius-xl)] p-6">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/70 mb-2">Report Scope</h3>
+            <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">
+              <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)] mb-2">Report Scope</h3>
               <p className="text-xs text-[var(--hc-text-muted)] leading-relaxed">This screen renders only paid invoice revenue returned by the finance report API.</p>
             </div>
             <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">

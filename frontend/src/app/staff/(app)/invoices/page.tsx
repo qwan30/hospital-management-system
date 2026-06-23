@@ -570,8 +570,8 @@ export default function InvoicesPage() {
           <p className="text-sm text-[var(--hc-text-muted)]">Invoice audit events are not exposed by the current invoice API. Use the admin audit log flow for global audit history.</p>
         </div>
         <div className="space-y-4">
-          <div className="bg-slate-900 rounded-[var(--radius-xl)] p-6">
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-white/70 mb-2">Collection Target</h3>
+          <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)] mb-2">Collection Target</h3>
             <p className="text-xs text-[var(--hc-text-muted)] leading-relaxed">Collection target reporting belongs to the revenue reports slice.</p>
           </div>
           <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-6">

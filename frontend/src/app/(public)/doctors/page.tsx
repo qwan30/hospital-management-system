@@ -173,6 +173,7 @@ export default function PublicDoctorsPage() {
         <div className="max-w-[1440px] mx-auto">
           {isLoading ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true">
+              <span className="sr-only">Loading doctors from the hospital system...</span>
               {Array.from({ length: 6 }, (_, i) => (
                 <div key={i} className="rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-white p-6 space-y-4">
                   <div className="flex items-center gap-4">

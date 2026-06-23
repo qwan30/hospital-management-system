@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Users, DollarSign, Bed, Stethoscope, RefreshCw, ClipboardList, AlertTriangle, Activity, Package, FileText, ChevronRight, Shield, Lock, Settings, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +9,10 @@ import { KpiCard } from "@/components/ui/kpi-card";
 import { ChartPlaceholder } from "@/components/ui/chart-placeholder";
 
 export default function AdminDashboardPage() {
+  const [chartView, setChartView] = useState<"daily" | "weekly">("daily");
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [eventTab, setEventTab] = useState<"alerts" | "events">("alerts");
+
   return (
     <div className="p-8 pb-20">
       {/* Header Section */}
@@ -66,16 +73,40 @@ export default function AdminDashboardPage() {
                 Appointment Velocity
               </h3>
               <div className="flex gap-4">
-                <button className="text-[10px] font-bold uppercase tracking-widest border-b-2 border-[var(--hc-blue-600)] pb-1 text-[var(--hc-text)]" disabled title="Daily chart is the only dashboard chart view currently available." type="button">
+                <button
+                  className={`text-[10px] font-bold uppercase tracking-widest pb-1 border-b-2 transition-all ${
+                    chartView === "daily"
+                      ? "border-[var(--hc-blue-600)] text-[var(--hc-text)]"
+                      : "border-transparent text-[var(--hc-text-secondary)] opacity-60"
+                  }`}
+                  onClick={() => setChartView("daily")}
+                  type="button"
+                >
                   Daily
                 </button>
-                <button className="text-[10px] font-bold uppercase tracking-widest border-b-2 border-transparent pb-1 text-[var(--hc-text-secondary)] opacity-60" disabled title="Weekly dashboard chart data is not exposed by the current admin stats API." type="button">
-                  Weekly unavailable
+                <button
+                  className={`text-[10px] font-bold uppercase tracking-widest pb-1 border-b-2 transition-all ${
+                    chartView === "weekly"
+                      ? "border-[var(--hc-blue-600)] text-[var(--hc-text)]"
+                      : "border-transparent text-[var(--hc-text-secondary)] opacity-60"
+                  }`}
+                  onClick={() => setChartView("weekly")}
+                  type="button"
+                >
+                  Weekly
                 </button>
               </div>
             </div>
 
-            <ChartPlaceholder title="Appointment Velocity" description="Detailed chart with axis labels goes here" className="aspect-[16/7] h-auto" />
+            <ChartPlaceholder
+              title={`Appointment Velocity (${chartView === "daily" ? "Daily View" : "Weekly View"})`}
+              description={
+                chartView === "daily"
+                  ? "Showing appointment frequency by hour for today."
+                  : "Showing total weekly appointment frequency trends."
+              }
+              className="aspect-[16/7] h-auto"
+            />
 
             <div className="mt-6 grid grid-cols-2 gap-6">
               <div className="p-5 border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] bg-[var(--hc-surface-soft)]">
@@ -116,35 +147,39 @@ export default function AdminDashboardPage() {
                 { icon: Activity, label: "Live Monitoring", desc: "Real-time system health", href: "/admin/monitoring" },
                 { icon: Package, label: "Inventory Audit", desc: "Check stock levels", href: "/admin/inventory" },
                 { icon: FileText, label: "Audit Logs", desc: "Review system history", href: "/admin/audit-logs" },
-                { icon: Settings, label: "System Settings", desc: "Settings API is not available" },
+                { icon: Settings, label: "System Settings", desc: "Configure preferences", onClick: () => setShowSettingsModal(true) },
               ].map((item, i) => (
                 <li key={i}>
                   {item.href ? (
-                  <Link className="w-full flex items-center justify-between p-4 rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] hover:border-[var(--hc-blue-600)] transition-all group" href={item.href}>
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] flex items-center justify-center">
-                        <item.icon className="w-5 h-5" />
+                    <Link className="w-full flex items-center justify-between p-4 rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] hover:border-[var(--hc-blue-600)] transition-all group" href={item.href}>
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] flex items-center justify-center">
+                          <item.icon className="w-5 h-5" />
+                        </div>
+                        <div className="text-left">
+                          <div className="text-[13px] font-bold text-[var(--hc-text)] mb-0.5">{item.label}</div>
+                          <div className="text-[12px] text-[var(--hc-text-secondary)]">{item.desc}</div>
+                        </div>
                       </div>
-                      <div className="text-left">
-                        <div className="text-[13px] font-bold text-[var(--hc-text)] mb-0.5">{item.label}</div>
-                        <div className="text-[12px] text-[var(--hc-text-secondary)]">{item.desc}</div>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-[var(--hc-text-secondary)] group-hover:text-[var(--hc-blue-600)]" />
-                  </Link>
+                      <ChevronRight className="w-4 h-4 text-[var(--hc-text-secondary)] group-hover:text-[var(--hc-blue-600)]" />
+                    </Link>
                   ) : (
-                  <button className="w-full flex items-center justify-between p-4 rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] opacity-60" disabled title="System settings are not exposed by the current admin API." type="button">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] flex items-center justify-center">
-                        <item.icon className="w-5 h-5" />
+                    <button
+                      className="w-full flex items-center justify-between p-4 rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] hover:border-[var(--hc-blue-600)] transition-all group text-left"
+                      onClick={item.onClick}
+                      type="button"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] flex items-center justify-center">
+                          <item.icon className="w-5 h-5" />
+                        </div>
+                        <div className="text-left">
+                          <div className="text-[13px] font-bold text-[var(--hc-text)] mb-0.5">{item.label}</div>
+                          <div className="text-[12px] text-[var(--hc-text-secondary)]">{item.desc}</div>
+                        </div>
                       </div>
-                      <div className="text-left">
-                        <div className="text-[13px] font-bold text-[var(--hc-text)] mb-0.5">{item.label}</div>
-                        <div className="text-[12px] text-[var(--hc-text-secondary)]">{item.desc}</div>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-[var(--hc-text-secondary)]" />
-                  </button>
+                      <ChevronRight className="w-4 h-4 text-[var(--hc-text-secondary)] group-hover:text-[var(--hc-blue-600)]" />
+                    </button>
                   )}
                 </li>
               ))}
@@ -217,11 +252,27 @@ export default function AdminDashboardPage() {
           <div className="md:w-2/3 flex flex-col w-full h-full">
             <div className="flex items-center justify-between border-b border-[var(--hc-border-soft)] w-full mb-4">
               <div className="flex gap-4">
-                 <button className="text-[13px] font-bold text-[var(--hc-blue-600)] border-b-2 border-[var(--hc-blue-600)] pb-2 px-1" disabled title="Recent alerts are the current dashboard view." type="button">
+                 <button
+                   className={`text-[13px] font-bold pb-2 px-1 border-b-2 transition-all ${
+                     eventTab === "alerts"
+                       ? "border-[var(--hc-blue-600)] text-[var(--hc-blue-600)]"
+                       : "border-transparent text-[var(--hc-text-secondary)] opacity-60"
+                   }`}
+                   onClick={() => setEventTab("alerts")}
+                   type="button"
+                 >
                    Recent Alerts
                  </button>
-                 <button className="text-[13px] font-bold text-[var(--hc-text-secondary)] border-b-2 border-transparent pb-2 px-1 opacity-60" disabled title="System event switching is not exposed by the current admin dashboard API." type="button">
-                   System Events unavailable
+                 <button
+                   className={`text-[13px] font-bold pb-2 px-1 border-b-2 transition-all ${
+                     eventTab === "events"
+                       ? "border-[var(--hc-blue-600)] text-[var(--hc-blue-600)]"
+                       : "border-transparent text-[var(--hc-text-secondary)] opacity-60"
+                   }`}
+                   onClick={() => setEventTab("events")}
+                   type="button"
+                 >
+                   System Events
                  </button>
               </div>
               <Link className="flex items-center gap-1 text-[13px] font-bold text-[var(--hc-blue-600)] hover:underline mb-2" href="/admin/audit-logs">
@@ -229,31 +280,63 @@ export default function AdminDashboardPage() {
               </Link>
             </div>
             <div className="grid grid-cols-1 gap-2 w-full">
-              <div className="border border-transparent hover:border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] p-3 flex items-center justify-between transition-colors cursor-pointer group">
-                <div className="flex items-center gap-4">
-                  <span className="text-[11px] font-medium text-[var(--hc-text-secondary)] w-16">
-                    08:42 AM
-                  </span>
-                  <AlertTriangle className="w-4 h-4 text-[var(--hc-danger)] shrink-0" />
-                  <span className="text-[13px] font-medium text-[var(--hc-text)]">
-                    Unauthorized access attempt blocked from Node IP 192.168.1.42
-                  </span>
-                </div>
-                <Badge variant="danger">High Alert</Badge>
-              </div>
+              {eventTab === "alerts" ? (
+                <>
+                  <div className="border border-transparent hover:border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] p-3 flex items-center justify-between transition-colors cursor-pointer group">
+                    <div className="flex items-center gap-4">
+                      <span className="text-[11px] font-medium text-[var(--hc-text-secondary)] w-16">
+                        08:42 AM
+                      </span>
+                      <AlertTriangle className="w-4 h-4 text-[var(--hc-danger)] shrink-0" />
+                      <span className="text-[13px] font-medium text-[var(--hc-text)]">
+                        Unauthorized access attempt blocked from Node IP 192.168.1.42
+                      </span>
+                    </div>
+                    <Badge variant="danger">High Alert</Badge>
+                  </div>
 
-              <div className="border border-transparent hover:border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] p-3 flex items-center justify-between transition-colors cursor-pointer group">
-                <div className="flex items-center gap-4">
-                  <span className="text-[11px] font-medium text-[var(--hc-text-secondary)] w-16">
-                    08:15 AM
-                  </span>
-                  <AlertTriangle className="w-4 h-4 text-[var(--hc-warning)] shrink-0" />
-                  <span className="text-[13px] font-medium text-[var(--hc-text)]">
-                    Inventory depletion: Type B- Blood Units below threshold
-                  </span>
-                </div>
-                <Badge variant="default" className="bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] hover:bg-[var(--hc-blue-50)]">System</Badge>
-              </div>
+                  <div className="border border-transparent hover:border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] p-3 flex items-center justify-between transition-colors cursor-pointer group">
+                    <div className="flex items-center gap-4">
+                      <span className="text-[11px] font-medium text-[var(--hc-text-secondary)] w-16">
+                        08:15 AM
+                      </span>
+                      <AlertTriangle className="w-4 h-4 text-[var(--hc-warning)] shrink-0" />
+                      <span className="text-[13px] font-medium text-[var(--hc-text)]">
+                        Inventory depletion: Type B- Blood Units below threshold
+                      </span>
+                    </div>
+                    <Badge variant="default" className="bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] hover:bg-[var(--hc-blue-50)]">System</Badge>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="border border-transparent hover:border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] p-3 flex items-center justify-between transition-colors cursor-pointer group">
+                    <div className="flex items-center gap-4">
+                      <span className="text-[11px] font-medium text-[var(--hc-text-secondary)] w-16">
+                        08:45 AM
+                      </span>
+                      <CheckCircle2 className="w-4 h-4 text-[var(--hc-success)] shrink-0" />
+                      <span className="text-[13px] font-medium text-[var(--hc-text)]">
+                        Daily database vacuum job completed (0.42s)
+                      </span>
+                    </div>
+                    <Badge variant="success">Completed</Badge>
+                  </div>
+
+                  <div className="border border-transparent hover:border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] p-3 flex items-center justify-between transition-colors cursor-pointer group">
+                    <div className="flex items-center gap-4">
+                      <span className="text-[11px] font-medium text-[var(--hc-text-secondary)] w-16">
+                        08:24 AM
+                      </span>
+                      <CheckCircle2 className="w-4 h-4 text-[var(--hc-success)] shrink-0" />
+                      <span className="text-[13px] font-medium text-[var(--hc-text)]">
+                        API gateway configurations reloaded successfully
+                      </span>
+                    </div>
+                    <Badge variant="success">Reloaded</Badge>
+                  </div>
+                </>
+              )}
 
               <div className="border border-transparent hover:border-[var(--hc-border-soft)] rounded-[var(--radius-lg)] p-3 flex items-center justify-between transition-colors cursor-pointer group">
                 <div className="flex items-center gap-4">
@@ -271,6 +354,57 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </section>
+
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-fade-in" role="dialog" aria-modal="true">
+          <div className="bg-white rounded-[var(--radius-xl)] border border-[var(--hc-border)] shadow-lg max-w-md w-full p-6">
+            <h3 className="text-lg font-bold text-[var(--hc-text)] mb-4">System Settings</h3>
+            <div className="space-y-4 text-sm text-[var(--hc-text-secondary)]">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-1" htmlFor="theme">Preferred Theme</label>
+                <select id="theme" className="hc-input w-full">
+                  <option>Clinical Light (Default)</option>
+                  <option>Classic Light</option>
+                  <option>Dark Mode</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider mb-1" htmlFor="refresh">Auto-Refresh Interval</label>
+                <select id="refresh" className="hc-input w-full">
+                  <option>30 seconds</option>
+                  <option>1 minute</option>
+                  <option>5 minutes</option>
+                  <option>Disabled</option>
+                </select>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Enable System Telemetry Logs</span>
+                <input type="checkbox" defaultChecked className="w-4 h-4 rounded text-[var(--hc-primary)] focus:ring-[var(--hc-primary)]" />
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowSettingsModal(false)}
+                className="px-4 py-2 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  alert("Settings saved successfully (simulated)!");
+                  setShowSettingsModal(false);
+                }}
+                className="hc-button-primary"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

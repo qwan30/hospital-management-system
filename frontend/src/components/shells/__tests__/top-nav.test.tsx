@@ -12,8 +12,13 @@ const roleState = vi.hoisted(() => ({
   patientRole: "PATIENT" as string | null,
 }));
 
+const mockRouter = vi.hoisted(() => ({
+  push: vi.fn(),
+}));
+
 vi.mock("next/navigation", () => ({
   usePathname: () => navigationState.pathname,
+  useRouter: () => mockRouter,
 }));
 
 vi.mock("@/lib/use-stored-role", () => ({
@@ -51,8 +56,8 @@ describe("StaffTopNav", () => {
 
     const activeLink = screen.getByRole("link", { name: /queue/i });
     expect(activeLink).toHaveAttribute("data-active", "true");
-    expect(activeLink.className).toContain("bg-white/10");
-    expect(activeLink.className).toContain("text-white");
+    expect(activeLink.className).toContain("bg-muted");
+    expect(activeLink.className).toContain("text-foreground");
   });
 
   it("does not duplicate module links in the desktop topbar by default", () => {
@@ -61,23 +66,14 @@ describe("StaffTopNav", () => {
     expect(screen.queryByRole("navigation", { name: /module navigation/i })).not.toBeInTheDocument();
   });
 
-  it("keeps staff utility links available", () => {
+  it("keeps staff utility controls available", () => {
     roleState.staffRole = "ACCOUNTANT";
 
     render(<StaffTopNav />);
 
-    expect(screen.getByLabelText(/open staff alerts/i)).toHaveAttribute(
-      "href",
-      "/staff/queue",
-    );
-    expect(screen.getByLabelText(/open schedule settings/i)).toHaveAttribute(
-      "href",
-      "/staff/schedule",
-    );
-    expect(screen.getByLabelText(/open staff profile/i)).toHaveAttribute(
-      "href",
-      "/staff/doctor/dashboard",
-    );
+    expect(screen.getByLabelText(/open notifications/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/open settings/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/open staff profile/i)).toBeInTheDocument();
   });
 
   it("falls back to staff profile copy and hides the badge when alert count is zero", () => {
@@ -172,27 +168,18 @@ describe("PortalTopNav", () => {
     );
   });
 
-  it("marks active portal links and exposes portal utility targets", async () => {
+  it("marks active portal links and exposes portal utility controls", async () => {
     render(<PortalTopNav />);
 
     await userEvent.click(screen.getByRole("button", { name: /open navigation menu/i }));
 
     const activeLink = screen.getByRole("link", { name: /messages/i });
     expect(activeLink).toHaveAttribute("data-active", "true");
-    expect(activeLink.className).toContain("bg-white/10");
-    expect(activeLink.className).toContain("text-white");
-    expect(screen.getByLabelText(/open notifications/i)).toHaveAttribute(
-      "href",
-      "/portal/messages",
-    );
-    expect(screen.getByLabelText(/open profile settings/i)).toHaveAttribute(
-      "href",
-      "/portal/profile#security-settings",
-    );
-    expect(screen.getByLabelText(/open patient profile/i)).toHaveAttribute(
-      "href",
-      "/portal/profile",
-    );
+    expect(activeLink.className).toContain("bg-muted");
+    expect(activeLink.className).toContain("text-foreground");
+    expect(screen.getByLabelText(/open notifications/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/open settings/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/open patient profile/i)).toBeInTheDocument();
   });
 
   it("falls back to patient profile copy when no portal role is stored", () => {
