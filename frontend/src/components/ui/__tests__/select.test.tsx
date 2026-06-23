@@ -7,28 +7,8 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-  SelectGroup,
-  SelectLabel,
 } from "../select";
 
-// Helper to render a minimal working select
-function renderSelect() {
-  return render(
-    <Select defaultValue="option1">
-      <SelectTrigger aria-label="Choose option">
-        <SelectValue placeholder="Select an option" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Options</SelectLabel>
-          <SelectItem value="option1">Option 1</SelectItem>
-          <SelectItem value="option2">Option 2</SelectItem>
-          <SelectItem value="option3">Option 3</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>,
-  );
-}
 
 describe("Select", () => {
   it("renders trigger with placeholder text", () => {

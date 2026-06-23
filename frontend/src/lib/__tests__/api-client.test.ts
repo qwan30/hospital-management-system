@@ -5,6 +5,7 @@ import {
   persistSession,
   clearSessions,
   getStoredRole,
+  getStoredAccessToken,
   type ApiRequestMetric,
 } from '../api-client';
 
@@ -15,6 +16,7 @@ describe('api-client', () => {
   beforeEach(() => {
     global.fetch = vi.fn<typeof fetch>();
     sessionStorage.clear();
+    clearSessions();
   });
 
   afterEach(() => {
@@ -39,7 +41,7 @@ describe('api-client', () => {
     it('9. stores token, expiry, and role in sessionStorage', () => {
       persistSession('staff', { accessToken: 'token123', expiresInSeconds: 3600 }, 'DOCTOR');
 
-      expect(sessionStorage.getItem('hms_staff_access_token')).toBe('token123');
+      expect(getStoredAccessToken('staff')).toBe('token123');
       expect(sessionStorage.getItem('hms_staff_access_token_expires_in')).toBe('3600');
       expect(sessionStorage.getItem('hms_staff_role')).toBe('DOCTOR');
     });
@@ -47,26 +49,22 @@ describe('api-client', () => {
     it('10. is no-op when accessToken is missing', () => {
       persistSession('staff', { accessToken: '', expiresInSeconds: 3600 }, 'DOCTOR');
 
-      expect(sessionStorage.getItem('hms_staff_access_token')).toBeNull();
+      expect(getStoredAccessToken('staff')).toBeUndefined();
       expect(sessionStorage.getItem('hms_staff_role')).toBeNull();
     });
   });
 
   describe('clearSessions', () => {
     it('11. removes all 6 session keys', () => {
-      sessionStorage.setItem('hms_staff_access_token', 'token');
-      sessionStorage.setItem('hms_staff_access_token_expires_in', '3600');
-      sessionStorage.setItem('hms_staff_role', 'DOCTOR');
-      sessionStorage.setItem('hms_patient_access_token', 'token');
-      sessionStorage.setItem('hms_patient_access_token_expires_in', '3600');
-      sessionStorage.setItem('hms_patient_role', 'PATIENT');
+      persistSession('staff', { accessToken: 'token', expiresInSeconds: 3600 }, 'DOCTOR');
+      persistSession('patient', { accessToken: 'token', expiresInSeconds: 3600 }, 'PATIENT');
 
       clearSessions();
 
-      expect(sessionStorage.getItem('hms_staff_access_token')).toBeNull();
+      expect(getStoredAccessToken('staff')).toBeUndefined();
       expect(sessionStorage.getItem('hms_staff_access_token_expires_in')).toBeNull();
       expect(sessionStorage.getItem('hms_staff_role')).toBeNull();
-      expect(sessionStorage.getItem('hms_patient_access_token')).toBeNull();
+      expect(getStoredAccessToken('patient')).toBeUndefined();
       expect(sessionStorage.getItem('hms_patient_access_token_expires_in')).toBeNull();
       expect(sessionStorage.getItem('hms_patient_role')).toBeNull();
     });
@@ -139,7 +137,7 @@ describe('api-client', () => {
     });
 
     it('3. attaches patient bearer token for authScope: "patient"', async () => {
-      sessionStorage.setItem('hms_patient_access_token', 'pat-token-123');
+      persistSession('patient', { accessToken: 'pat-token-123', expiresInSeconds: 3600 });
       mockSuccessResponse();
 
       await apiRequest('/secure', {}, { authScope: 'patient' });
@@ -331,7 +329,7 @@ describe('api-client', () => {
       expect(result.data).toBe('retry-success');
 
       // Verify refresh token storage
-      expect(sessionStorage.getItem('hms_staff_access_token')).toBe('new-token-999');
+      expect(getStoredAccessToken('staff')).toBe('new-token-999');
 
       // Verify fetch calls
       expect(global.fetch).toHaveBeenCalledTimes(3);
@@ -375,12 +373,11 @@ describe('api-client', () => {
         value: { ...window.location, href: '' },
       });
 
-      sessionStorage.setItem('hms_staff_access_token', 'token123');
-      sessionStorage.setItem('hms_staff_role', 'DOCTOR');
+      persistSession('staff', { accessToken: 'token123', expiresInSeconds: 3600 }, 'DOCTOR');
 
       await expect(apiRequest('/needs-auth', {}, { authScope: 'staff' })).rejects.toThrow();
 
-      expect(sessionStorage.getItem('hms_staff_access_token')).toBeNull();
+      expect(getStoredAccessToken('staff')).toBeUndefined();
       expect(sessionStorage.getItem('hms_staff_role')).toBeNull();
       expect(window.location.href).toContain('/staff/login');
 

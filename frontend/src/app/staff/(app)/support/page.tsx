@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
+import { useStoredRole } from "@/lib/use-stored-role";
+import { getRouteDecision } from "@/lib/rbac";
 
 const SUPPORT_QUEUES = [
   { title: "Clinical Application", icon: Laptop, count: "4 open", detail: "Median response 8m", tone: "blue" as const },
@@ -25,6 +27,9 @@ export default function StaffSupportPage() {
   const [category, setCategory] = useState("Clinical application");
   const [stationId, setStationId] = useState("");
   const [description, setDescription] = useState("");
+
+  const role = useStoredRole("staff");
+  const showQueueBoard = role ? getRouteDecision("/staff/queue", role).allowed : false;
 
   return (
     <main className="p-8 pb-20 max-w-[1400px] mx-auto">
@@ -127,13 +132,15 @@ export default function StaffSupportPage() {
                 <span>24/7 emergency support available</span>
               </div>
             </div>
-            <Link
-              href="/staff/queue"
-              className="mt-6 inline-flex items-center justify-center gap-2 h-12 border border-[var(--hc-danger)] rounded-[var(--radius-md)] px-6 text-sm font-bold text-[var(--hc-danger)] hover:bg-[var(--hc-danger)] hover:text-white transition-all"
-            >
-              <AlertTriangle className="w-4 h-4" />
-              Open Queue Board
-            </Link>
+            {showQueueBoard && (
+              <Link
+                href="/staff/queue"
+                className="mt-6 inline-flex items-center justify-center gap-2 h-12 border border-[var(--hc-danger)] rounded-[var(--radius-md)] px-6 text-sm font-bold text-[var(--hc-danger)] hover:bg-[var(--hc-danger)] hover:text-white transition-all"
+              >
+                <AlertTriangle className="w-4 h-4" />
+                Open Queue Board
+              </Link>
+            )}
           </div>
         </div>
       </div>

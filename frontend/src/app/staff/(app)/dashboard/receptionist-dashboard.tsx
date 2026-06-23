@@ -44,19 +44,6 @@ export function ReceptionistDashboardView() {
     });
   }, [searchQuery, deptFilter]);
 
-  function getStatusBadge(status: SlotRow["status"]) {
-    const classes = {
-      Available: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
-      Booked: "bg-[var(--hc-primary-bg)] text-[var(--hc-primary)]",
-      Blocked: "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]",
-    };
-    return (
-      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${classes[status]}`}>
-        {status}
-      </span>
-    );
-  }
-
   return (
     <div className="p-8 pb-20 max-w-[1400px] mx-auto">
       <PageHeader

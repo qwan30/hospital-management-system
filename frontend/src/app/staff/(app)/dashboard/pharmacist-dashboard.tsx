@@ -47,19 +47,6 @@ export function PharmacistDashboardView() {
     });
   }, [searchQuery, statusFilter]);
 
-  function getStatusBadge(status: DrugItem["status"]) {
-    const classes = {
-      Normal: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
-      "Low Stock": "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
-      Critical: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
-    };
-    return (
-      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${classes[status]}`}>
-        {status}
-      </span>
-    );
-  }
-
   return (
     <div className="p-8 pb-20 max-w-[1400px] mx-auto">
       <PageHeader

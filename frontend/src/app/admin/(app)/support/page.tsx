@@ -59,6 +59,38 @@ const MOCK_TICKETS: SupportTicket[] = [
   { ticketId: "TKT-2024-0731", requesterName: "James Lee", requesterRole: "Doctor", requesterInitials: "JL", department: "Clinical Application", departmentSub: "Scheduling", priority: "Medium", status: "Open", ownerName: "Alex Morgan", ownerTitle: "Tier 2 Engineer", ownerInitials: "AM", waitTime: "15m", sla: "SLA 2h" },
 ];
 
+/* ─── Priority badge ─── */
+function PriorityBadge({ priority }: { priority: string }) {
+  const c: Record<string, string> = {
+    Critical: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
+    High: "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
+    Medium: "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]",
+    Low: "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]",
+  };
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold rounded-full ${c[priority] ?? "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]"}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${priority === "Critical" ? "bg-[var(--hc-danger)]" : priority === "High" ? "bg-[var(--hc-warning)]" : priority === "Medium" ? "bg-[var(--hc-primary)]" : "bg-slate-400"}`} />
+      {priority}
+    </span>
+  );
+}
+
+/* ─── Status badge ─── */
+function StatusBadge({ status }: { status: string }) {
+  const c: Record<string, string> = {
+    Open: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
+    "In Progress": "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]",
+    "Pending Info": "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
+    Resolved: "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]",
+  };
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold rounded-full ${c[status] ?? "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]"}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${status === "Open" ? "bg-[var(--hc-success)]" : status === "In Progress" ? "bg-[var(--hc-primary)]" : status === "Pending Info" ? "bg-[var(--hc-warning)]" : "bg-slate-400"}`} />
+      {status}
+    </span>
+  );
+}
+
 /* ─────────────────── Component ─────────────────── */
 
 export default function AdminSupportPage() {
@@ -101,37 +133,7 @@ export default function AdminSupportPage() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  /* ─── Priority badge ─── */
-  function PriorityBadge({ priority }: { priority: string }) {
-    const c: Record<string, string> = {
-      Critical: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
-      High: "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
-      Medium: "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]",
-      Low: "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]",
-    };
-    return (
-      <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold rounded-full ${c[priority] ?? "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]"}`}>
-        <span className={`w-1.5 h-1.5 rounded-full ${priority === "Critical" ? "bg-[var(--hc-danger)]" : priority === "High" ? "bg-[var(--hc-warning)]" : priority === "Medium" ? "bg-[var(--hc-primary)]" : "bg-slate-400"}`} />
-        {priority}
-      </span>
-    );
-  }
-
-  /* ─── Status badge ─── */
-  function StatusBadge({ status }: { status: string }) {
-    const c: Record<string, string> = {
-      Open: "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
-      "In Progress": "bg-[var(--hc-blue-50)] text-[var(--hc-primary)]",
-      "Pending Info": "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
-      Resolved: "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]",
-    };
-    return (
-      <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-bold rounded-full ${c[status] ?? "bg-[var(--hc-surface-soft)] text-[var(--hc-text-muted)]"}`}>
-        <span className={`w-1.5 h-1.5 rounded-full ${status === "Open" ? "bg-[var(--hc-success)]" : status === "In Progress" ? "bg-[var(--hc-primary)]" : status === "Pending Info" ? "bg-[var(--hc-warning)]" : "bg-slate-400"}`} />
-        {status}
-      </span>
-    );
-  }
+  // badges relocated to top-level scope
 
   return (
     <main className="mx-auto w-full max-w-[1400px] overflow-x-hidden px-4 py-6 pb-20 sm:p-8 sm:pb-20">

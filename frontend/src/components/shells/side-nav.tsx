@@ -180,7 +180,7 @@ export function HcSidebar({
 
       <div className="flex min-h-0 flex-1 flex-col px-[18px] pb-[22px]">
         <div className="mb-[18px] flex items-center gap-3">
-          <div className="grid size-[54px] shrink-0 place-items-center rounded-[var(--radius-lg)] border border-[var(--hc-border)] bg-white text-[var(--hc-primary)] shadow-[var(--shadow-xs)]">
+          <div className="grid size-[54px] shrink-0 place-items-center rounded-[var(--radius-lg)] border border-[var(--hc-border)] bg-[var(--hc-surface)] text-[var(--hc-primary)] shadow-[var(--shadow-xs)]">
             <ShieldPlus className="size-6" aria-hidden="true" />
           </div>
           <div className="min-w-0">
@@ -255,7 +255,7 @@ export function HcSidebar({
             </Link>
           ) : null}
         </div>
-        <div className="flex min-h-[86px] items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--hc-border)] bg-white p-4 shadow-[var(--shadow-xs)]">
+        <div className="flex min-h-[86px] items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--hc-border)] bg-[var(--hc-surface)] p-4 shadow-[var(--shadow-xs)]">
           <span className="size-2.5 rounded-full bg-[var(--hc-success)]" />
           <span className="min-w-0">
             <span className="block text-xs font-bold uppercase tracking-[0.08em] text-[var(--hc-text)]">

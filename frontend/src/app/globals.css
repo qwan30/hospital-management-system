@@ -54,6 +54,11 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
+  /* Overrides for standard slate colors to increase border contrast globally */
+  --color-slate-100: #CBD5E1;
+  --color-slate-200: #94A3B8;
+  --color-slate-300: #64748B;
+
   /* HC surface aliases for Tailwind utility classes */
   --color-hc-navy-950: #061735;
   --color-hc-navy-900: #1E3A8A;
@@ -86,9 +91,9 @@
   --color-hc-surface: #FFFFFF;
   --color-hc-surface-muted: #F8FAFC;
   --color-hc-surface-soft: #F1F5F9;
-  --color-hc-border: #E2E8F0;
-  --color-hc-border-strong: #CBD5E1;
-  --color-hc-border-soft: #EEF2F7;
+  --color-hc-border: #CBD5E1;
+  --color-hc-border-strong: #94A3B8;
+  --color-hc-border-soft: #E2E8F0;
   --color-hc-text: #0F172A;
   --color-hc-text-secondary: #475569;
   --color-hc-text-muted: #64748B;
@@ -192,10 +197,10 @@
   --hc-surface-muted: #F8FAFC;
   --hc-surface-soft: #F1F5F9;
 
-  /* Borders */
-  --hc-border: #E2E8F0;
-  --hc-border-strong: #CBD5E1;
-  --hc-border-soft: #EEF2F7;
+  /* Borders (darkened for better component definition) */
+  --hc-border: #CBD5E1;
+  --hc-border-strong: #94A3B8;
+  --hc-border-soft: #E2E8F0;
 
   /* Text */
   --hc-text: #0F172A;
@@ -280,8 +285,8 @@
   --accent: #E2E8F0;
   --accent-foreground: #0F172A;
   --destructive: #DC2626;
-  --border: #E2E8F0;
-  --input: #E2E8F0;
+  --border: #CBD5E1;
+  --input: #CBD5E1;
   --ring: #2563EB;
   --chart-1: #2563EB;
   --chart-2: #059669;
@@ -300,22 +305,22 @@
 }
 
 .dark {
-  --background: #0F172A;
+  --background: #111111;
   --foreground: #F8FAFC;
-  --card: #1E293B;
+  --card: #1A1A1A;
   --card-foreground: #F8FAFC;
-  --popover: #1E293B;
+  --popover: #1A1A1A;
   --popover-foreground: #F8FAFC;
   --primary: #93B4FF;
   --primary-foreground: #061735;
-  --secondary: #334155;
+  --secondary: #222222;
   --secondary-foreground: #F8FAFC;
-  --muted: #334155;
+  --muted: #222222;
   --muted-foreground: #94A3B8;
-  --accent: #334155;
+  --accent: #222222;
   --accent-foreground: #F8FAFC;
   --destructive: #FEE2E2;
-  --border: rgba(255, 255, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.15);
   --input: rgba(255, 255, 255, 0.15);
   --ring: #93B4FF;
   --chart-1: #93B4FF;
@@ -323,11 +328,11 @@
   --chart-3: #FDBA74;
   --chart-4: #C4B5FD;
   --chart-5: #94A3B8;
-  --sidebar: #1E293B;
+  --sidebar: #111111;
   --sidebar-foreground: #F8FAFC;
   --sidebar-primary: #93B4FF;
   --sidebar-primary-foreground: #061735;
-  --sidebar-accent: #334155;
+  --sidebar-accent: #222222;
   --sidebar-accent-foreground: #F8FAFC;
   --sidebar-border: rgba(255, 255, 255, 0.1);
   --sidebar-ring: #93B4FF;
@@ -341,13 +346,13 @@
   --hc-text-placeholder: #475569;
 
   /* Surfaces — dark gray palette */
-  --hc-surface: #1E293B;
-  --hc-surface-muted: #0F172A;
-  --hc-surface-soft: #1E293B;
-  --hc-bg: #0F172A;
-  --hc-background: #0F172A;
-  --hc-content-bg: #1E293B;
-  --hc-sidebar-bg: #0F172A;
+  --hc-surface: #1A1A1A;
+  --hc-surface-muted: #111111;
+  --hc-surface-soft: #222222;
+  --hc-bg: #111111;
+  --hc-background: #111111;
+  --hc-content-bg: #111111;
+  --hc-sidebar-bg: #111111;
 
   /* Sidebar overrides */
   --hc-sidebar-text: #94A3B8;
@@ -356,10 +361,10 @@
   --hc-sidebar-icon-active: #93B4FF;
   --hc-sidebar-active-bg: #334155;
 
-  /* Borders — subtle in dark mode */
-  --hc-border: rgba(255, 255, 255, 0.08);
-  --hc-border-strong: rgba(255, 255, 255, 0.14);
-  --hc-border-soft: rgba(255, 255, 255, 0.06);
+  /* Borders — darkened for better visibility in dark mode */
+  --hc-border: rgba(255, 255, 255, 0.16);
+  --hc-border-strong: rgba(255, 255, 255, 0.28);
+  --hc-border-soft: rgba(255, 255, 255, 0.12);
 
   /* Brand navy — deepened for dark mode */
   --hc-navy-950: #020617;
@@ -629,7 +634,7 @@
     border: 0;
     border-radius: var(--radius-md);
     background: transparent;
-    color: #334155;
+    color: var(--hc-text-secondary);
     cursor: pointer;
   }
 
@@ -650,7 +655,7 @@
     padding: 0 14px;
     border-bottom: 1px solid var(--hc-border);
     background: var(--hc-surface-muted);
-    color: #334155;
+    color: var(--hc-text-secondary);
     font-size: 11px;
     font-weight: 800;
     line-height: 14px;
@@ -663,7 +668,7 @@
     height: 48px;
     padding: 0 14px;
     border-bottom: 1px solid var(--hc-border-soft);
-    color: #1E293B;
+    color: var(--hc-text);
     font-size: 13px;
     font-weight: 500;
     vertical-align: middle;
@@ -671,7 +676,7 @@
   }
 
   .hc-table tbody tr:hover td {
-    background: #FAFCFF;
+    background: var(--hc-surface-soft);
   }
 
   .hc-table tbody tr:last-child td {
@@ -703,5 +708,27 @@
     .hc-filter-row {
       flex-wrap: wrap;
     }
+  }
+
+  /* component buttons */
+  .hc-button-primary {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[var(--hc-blue-600)] px-4 text-xs font-bold text-white shadow-[var(--shadow-blue)] transition hover:-translate-y-px hover:bg-[var(--hc-blue-700)] active:translate-y-0 disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .hc-button-secondary {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-[var(--hc-surface)] px-4 text-xs font-bold text-[var(--hc-text)] shadow-sm transition hover:border-[var(--hc-border-strong)] hover:bg-[var(--hc-surface-soft)] active:translate-y-px disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .hc-button-outline {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--hc-border)] bg-[var(--hc-surface)] px-4 text-xs font-bold text-[var(--hc-text)] shadow-sm transition hover:border-[var(--hc-border-strong)] hover:bg-[var(--hc-surface-soft)] active:translate-y-px disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .hc-button-ghost {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-md)] px-4 text-xs font-bold text-[var(--hc-text-secondary)] transition hover:bg-[var(--hc-blue-50)] hover:text-[var(--hc-blue-600)] active:translate-y-px disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  /* Dark mode background overrides for utility classes */
+  .dark .bg-white {
+    background-color: var(--hc-surface) !important;
   }
 }

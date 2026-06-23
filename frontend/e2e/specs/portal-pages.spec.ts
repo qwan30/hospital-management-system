@@ -60,28 +60,24 @@ test.describe('Portal Pages (@ui)', () => {
     test.describe.configure({ mode: 'serial' });
     test.setTimeout(90_000);
 
-    test('renders medical records search and list', async ({ page }) => {
+    test('renders patient medical record view', async ({ page }) => {
       await page.goto('/portal/records', { waitUntil: 'domcontentloaded', timeout: 60_000 });
-      await expect(page.getByRole('heading', { name: /Search Records/i })).toBeVisible();
-
-      await expect(page.getByText('Sarah J. Miller').first()).toBeVisible();
-      await expect(page.getByText('Marcus V. Thorne')).toBeVisible();
-      await expect(page.getByText('Elena Rodriguez')).toBeVisible();
+      await expect(page.getByText('Patient Medical Record')).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Alexander Vance' })).toBeVisible();
     });
 
     test('renders active patient record detail view', async ({ page }) => {
       await page.goto('/portal/records', { waitUntil: 'domcontentloaded', timeout: 60_000 });
-      await expect(page.getByText('Active Patient Record')).toBeVisible();
-      await expect(page.getByText('Dr. Julian Vance')).toBeVisible();
-      await expect(page.getByText('BlueShield PPO')).toBeVisible();
+      await expect(page.getByText('1988-04-12')).toBeVisible();
+      await expect(page.getByText('INS-992-04-X')).toBeVisible();
     });
 
     test('renders conditions, allergies and snapshot data', async ({ page }) => {
       await page.goto('/portal/records', { waitUntil: 'domcontentloaded', timeout: 60_000 });
-      await expect(page.getByText('Type 1 Diabetes')).toBeVisible();
+      await expect(page.getByText('Seasonal allergies')).toBeVisible();
       await expect(page.getByText('Penicillin')).toBeVisible();
-      await expect(page.getByText('Vitals & Labs Snapshot')).toBeVisible();
-      await expect(page.getByText('118/76')).toBeVisible();
+      await expect(page.getByText('Vitals Snapshot (Most Recent)')).toBeVisible();
+      await expect(page.getByText('120/80 mmHg')).toBeVisible();
     });
   });
 

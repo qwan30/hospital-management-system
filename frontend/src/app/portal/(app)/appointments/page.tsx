@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import {
   listPatientPortalAppointments,
@@ -87,6 +88,14 @@ export default function PatientAppointmentsPage() {
           title="Patient Appointments"
           description="View your upcoming and past medical appointments."
           className="mb-8"
+          action={
+            <Link
+              href="/booking"
+              className="inline-flex h-12 items-center rounded-[var(--radius-md)] bg-[var(--hc-primary)] px-6 font-semibold text-white transition-opacity hover:opacity-90"
+            >
+              Book New Appointment
+            </Link>
+          }
         />
 
         <div className="flex w-fit items-center gap-0 bg-[var(--hc-surface-soft)] p-1 rounded-[var(--radius-md)] mb-8 border border-[var(--hc-border-soft)]">

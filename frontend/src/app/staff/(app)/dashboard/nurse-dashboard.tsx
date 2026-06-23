@@ -46,20 +46,6 @@ export function NurseDashboardView() {
     });
   }, [searchQuery, statusFilter]);
 
-  function getStatusBadge(status: TriagePatient["status"]) {
-    const classes = {
-      "Waiting Triage": "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
-      "Vitals Completed": "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
-      "Priority Triage": "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
-    };
-    return (
-      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${classes[status]}`}>
-        <span className={`w-1.5 h-1.5 rounded-full ${status === "Priority Triage" ? "bg-[var(--hc-danger)]" : status === "Vitals Completed" ? "bg-[var(--hc-success)]" : "bg-[var(--hc-warning)]"}`} />
-        {status}
-      </span>
-    );
-  }
-
   return (
     <div className="p-8 pb-20 max-w-[1400px] mx-auto">
       <PageHeader

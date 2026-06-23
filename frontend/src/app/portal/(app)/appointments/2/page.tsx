@@ -68,7 +68,7 @@ export default function PatientAppointmentsPage() {
 <HcIcon name="person" className="text-on-surface-variant" />
 </div>
 <div>
-<p className="font-semibold text-sm">Dr. Cardio Clinical</p>
+<p className="font-semibold text-sm">Dr. Sarah Kensington</p>
 <p className="text-[10px] text-on-surface-variant uppercase tracking-tighter">Lead Cardiologist</p>
 </div>
 </div>

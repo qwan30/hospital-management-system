@@ -92,7 +92,7 @@ export default function AdminAuditLogsPage() {
   };
 
   const uniqueActors = useMemo(() => {
-    return ["All", ...Array.from(new Set(logs.map((l) => l.actorName).filter(Boolean)))];
+    return ["All", ...Array.from(new Set(logs.map((l) => l.actorName).filter((name): name is string => !!name)))];
   }, [logs]);
 
   const uniqueActions = useMemo(() => {

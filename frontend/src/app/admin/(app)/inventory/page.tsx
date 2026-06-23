@@ -61,6 +61,37 @@ const PAGE_SIZE = 10;
 const categories = ["All Categories", "PPE", "Med Supplies", "Pharmaceuticals", "Equipment", "Lab Supplies"];
 const statusOptions = ["All Status", "In Stock", "Low Stock", "Critical", "Reorder"];
 
+/* ─── Status badge ─── */
+function StatusBadge({ status }: { status: string }) {
+  const colors: Record<string, string> = {
+    "In Stock": "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
+    "Low Stock": "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
+    Critical: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
+    Reorder: "bg-[var(--hc-purple-bg)] text-[var(--hc-purple)]",
+  };
+  return (
+    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-bold rounded-full ${colors[status] ?? "bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]"}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${status === "In Stock" ? "bg-[var(--hc-success)]" : status === "Low Stock" ? "bg-[var(--hc-warning)]" : status === "Critical" ? "bg-[var(--hc-danger)]" : "bg-purple-600"}`} />
+      {status}
+    </span>
+  );
+}
+
+/* ─── Stock level bar ─── */
+function StockBar({ quantity, reorder }: { quantity: number; reorder: number }) {
+  const max = Math.max(reorder * 3, quantity, 1);
+  const pct = Math.min(100, (quantity / max) * 100);
+  const color = quantity <= reorder * 0.5 ? "bg-[var(--hc-danger)]" : quantity <= reorder ? "bg-[var(--hc-warning)]" : "bg-[var(--hc-success)]";
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-sm font-bold text-[var(--hc-text)] tabular-nums">{quantity.toLocaleString()}</span>
+      <div className="w-16 h-1.5 bg-[var(--hc-surface-soft)] rounded-full overflow-hidden">
+        <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
+
 /* ─────────────────── Component ─────────────────── */
 
 export default function AdminInventoryPage() {
@@ -126,7 +157,7 @@ export default function AdminInventoryPage() {
   }
 
   const departments = useMemo(() => {
-    return ["All Departments", ...Array.from(new Set(items.map((i) => i.departmentName).filter(Boolean)))];
+    return ["All Departments", ...Array.from(new Set(items.map((i) => i.departmentName).filter((name): name is string => !!name)))];
   }, [items]);
 
   const filtered = useMemo(() => {
@@ -262,36 +293,7 @@ export default function AdminInventoryPage() {
     }
   }, [success]);
 
-  /* ─── Status badge ─── */
-  function StatusBadge({ status }: { status: string }) {
-    const colors: Record<string, string> = {
-      "In Stock": "bg-[var(--hc-success-bg)] text-[var(--hc-success)]",
-      "Low Stock": "bg-[var(--hc-warning-bg)] text-[var(--hc-warning)]",
-      Critical: "bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]",
-      Reorder: "bg-[var(--hc-purple-bg)] text-[var(--hc-purple)]",
-    };
-    return (
-      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 text-xs font-bold rounded-full ${colors[status] ?? "bg-[var(--hc-surface-soft)] text-[var(--hc-text-secondary)]"}`}>
-        <span className={`w-1.5 h-1.5 rounded-full ${status === "In Stock" ? "bg-[var(--hc-success)]" : status === "Low Stock" ? "bg-[var(--hc-warning)]" : status === "Critical" ? "bg-[var(--hc-danger)]" : "bg-purple-600"}`} />
-        {status}
-      </span>
-    );
-  }
-
-  /* ─── Stock level bar ─── */
-  function StockBar({ quantity, reorder }: { quantity: number; reorder: number }) {
-    const max = Math.max(reorder * 3, quantity, 1);
-    const pct = Math.min(100, (quantity / max) * 100);
-    const color = quantity <= reorder * 0.5 ? "bg-[var(--hc-danger)]" : quantity <= reorder ? "bg-[var(--hc-warning)]" : "bg-[var(--hc-success)]";
-    return (
-      <div className="flex items-center gap-2">
-        <span className="text-sm font-bold text-[var(--hc-text)] tabular-nums">{quantity.toLocaleString()}</span>
-        <div className="w-16 h-1.5 bg-[var(--hc-surface-soft)] rounded-full overflow-hidden">
-          <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
-        </div>
-      </div>
-    );
-  }
+  // badges relocated to top-level scope
 
   return (
     <main className="p-8 pb-20 max-w-[1400px] mx-auto">

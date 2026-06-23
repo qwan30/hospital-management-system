@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -131,6 +131,44 @@ export function HcTopbar({
   const pathname = usePathname();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("hc-theme") || "light";
+    }
+    return "light";
+  });
+
+  const applyTheme = (selectedTheme: string) => {
+    if (typeof window === "undefined") return;
+    const root = document.documentElement;
+    if (selectedTheme === "dark") {
+      root.classList.add("dark");
+    } else if (selectedTheme === "light") {
+      root.classList.remove("dark");
+    } else {
+      // System default
+      if (typeof window.matchMedia === "function") {
+        const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (systemPrefersDark) {
+          root.classList.add("dark");
+        } else {
+          root.classList.remove("dark");
+        }
+      } else {
+        root.classList.remove("dark");
+      }
+    }
+  };
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("hc-theme") || "light";
+    setTimeout(() => {
+      setTheme(savedTheme);
+      applyTheme(savedTheme);
+    }, 0);
+  }, []);
   const role = useStoredRole(roleScope);
   const defaultLinks = defaultLinksForScope(roleScope);
   const navLinks = showModuleNav ? filterNavigationLinks(links || defaultLinks, role) : [];
@@ -142,7 +180,7 @@ export function HcTopbar({
   const hasMobileNavigation = mobileNavLinks.length > 0;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40 flex h-[var(--hc-topbar-h)] items-center justify-between border-b border-border bg-white pl-4 pr-4 text-foreground md:left-[var(--hc-sidebar-w)] md:pl-7 md:pr-5">
+    <header className="fixed inset-x-0 top-0 z-40 flex h-[var(--hc-topbar-h)] items-center justify-between border-b border-border bg-[var(--hc-surface)] pl-4 pr-4 text-foreground md:left-[var(--hc-sidebar-w)] md:pl-7 md:pr-5">
       <div className="flex min-w-0 items-center gap-3">
         {hasMobileNavigation ? (
           <button
@@ -285,8 +323,7 @@ export function HcTopbar({
           <button
             type="button"
             onClick={() => {
-              const settingsPath = roleScope === "patient" ? "/portal/settings" : "/staff/settings";
-              window.location.href = settingsPath;
+              setShowSettingsModal(true);
             }}
             className="grid size-9 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label={settingsLabel}
@@ -333,14 +370,20 @@ export function HcTopbar({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => router.push(profileHref)}
+              onClick={() => {
+                if (roleScope === "patient") {
+                  router.push(profileHref);
+                } else {
+                  setShowProfileModal(true);
+                }
+              }}
             >
               <User className="size-4" aria-hidden="true" />
               Profile
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => router.push(roleScope === "patient" ? "/portal/settings" : "/staff/settings")}
+              onClick={() => setShowSettingsModal(true)}
             >
               <Settings className="size-4" aria-hidden="true" />
               Settings
@@ -366,7 +409,7 @@ export function HcTopbar({
           aria-modal="true"
           aria-label="Mobile navigation"
         >
-          <div className="flex max-h-full flex-col border-t border-border bg-white p-4 shadow-2xl">
+          <div className="flex max-h-full flex-col border-t border-border bg-[var(--hc-surface)] p-4 shadow-2xl">
             <div className="mb-3 flex items-center justify-between">
               <span className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
                 Navigation
@@ -407,6 +450,139 @@ export function HcTopbar({
           </div>
         </div>
       ) : null}
+
+      {/* Profile Modal */}
+      {showProfileModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-[var(--hc-surface)] p-6 shadow-[var(--shadow-card)] animate-in zoom-in-95 duration-200">
+            <button
+              onClick={() => setShowProfileModal(false)}
+              className="absolute right-4 top-4 p-1 rounded-full text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] transition"
+              aria-label="Close profile"
+            >
+              <X className="size-5" />
+            </button>
+            <div className="flex flex-col items-center text-center mt-2">
+              <span className="grid size-16 place-items-center overflow-hidden rounded-full bg-[var(--hc-primary-bg)] text-2xl font-bold text-[var(--hc-primary)] mb-4">
+                {initialsFor(profile.name)}
+              </span>
+              <h3 className="text-xl font-bold text-[var(--hc-text)]">{profile.name}</h3>
+              <p className="text-sm font-semibold text-[var(--hc-primary)] mt-1">{profile.role}</p>
+
+              <div className="w-full mt-6 space-y-4 text-left border-t border-[var(--hc-border-soft)] pt-4">
+                <div>
+                  <span className="text-[10px] font-bold text-[var(--hc-text-placeholder)] uppercase tracking-wider block">Username / Email</span>
+                  <span className="text-sm font-medium text-[var(--hc-text)]">
+                    {role === "ADMIN" ? "admin@hospital.vn" :
+                     role === "DOCTOR" ? "doctor1@hospital.vn" :
+                     role === "NURSE" ? "nurse@hospital.vn" :
+                     role === "RECEPTIONIST" ? "receptionist@hospital.vn" :
+                     role === "PHARMACIST" ? "pharmacist@hospital.vn" :
+                     role === "ACCOUNTANT" ? "accountant@hospital.vn" :
+                     "staff@hospital.vn"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold text-[var(--hc-text-placeholder)] uppercase tracking-wider block">Session Status</span>
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[var(--hc-success-bg)] text-[var(--hc-success)] uppercase mt-1">
+                    <span className="size-1.5 rounded-full bg-[var(--hc-success)] animate-pulse" />
+                    Active Session
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold text-[var(--hc-text-placeholder)] uppercase tracking-wider block">Access Permissions</span>
+                  <span className="text-xs font-medium text-[var(--hc-text-secondary)] mt-1 block">
+                    {role === "ADMIN" ? "Full administrative access across clinical, billing, and system settings modules." : "Standard clinical and operational access within assigned department."}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => setShowProfileModal(false)}
+                className="hc-button-primary w-full py-2.5 text-center"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md rounded-[var(--radius-xl)] border border-[var(--hc-border)] bg-[var(--hc-surface)] p-6 shadow-[var(--shadow-card)] animate-in zoom-in-95 duration-200">
+            <button
+              onClick={() => setShowSettingsModal(false)}
+              className="absolute right-4 top-4 p-1 rounded-full text-[var(--hc-text-secondary)] hover:bg-[var(--hc-surface-soft)] transition"
+              aria-label="Close settings"
+            >
+              <X className="size-5" />
+            </button>
+            <h3 className="text-lg font-bold text-[var(--hc-text)] mb-4">User Settings</h3>
+
+            <div className="space-y-4 py-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="text-sm font-bold text-[var(--hc-text)]">Auto-refresh Dashboard</label>
+                  <p className="text-xs text-[var(--hc-text-secondary)]">Automatically reload data tables every 30s</p>
+                </div>
+                <input
+                  type="checkbox"
+                  defaultChecked
+                  className="size-4 rounded border-[var(--hc-border)] text-[var(--hc-primary)] focus:ring-[var(--hc-primary)]"
+                />
+              </div>
+
+              <div className="flex items-center justify-between border-t border-[var(--hc-border-soft)] pt-4">
+                <div>
+                  <label className="text-sm font-bold text-[var(--hc-text)]">Desktop Notifications</label>
+                  <p className="text-xs text-[var(--hc-text-secondary)]">Show notifications for urgent patient requests</p>
+                </div>
+                <input
+                  type="checkbox"
+                  defaultChecked
+                  className="size-4 rounded border-[var(--hc-border)] text-[var(--hc-primary)] focus:ring-[var(--hc-primary)]"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5 border-t border-[var(--hc-border-soft)] pt-4">
+                <label className="text-sm font-bold text-[var(--hc-text)]">UI Theme</label>
+                <select
+                  className="hc-input h-9 text-xs mt-1"
+                  value={theme}
+                  onChange={(e) => setTheme(e.target.value)}
+                >
+                  <option value="system">System Default</option>
+                  <option value="light">Light Theme</option>
+                  <option value="dark">Dark Theme</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => setShowSettingsModal(false)}
+                className="flex-1 py-2 rounded-md border border-[var(--hc-border)] bg-[var(--hc-surface)] text-xs font-bold text-[var(--hc-text)] hover:bg-[var(--hc-surface-soft)] transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.setItem("hc-theme", theme);
+                  applyTheme(theme);
+                  alert("Settings saved successfully!");
+                  setShowSettingsModal(false);
+                }}
+                className="flex-1 hc-button-primary py-2 text-center"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

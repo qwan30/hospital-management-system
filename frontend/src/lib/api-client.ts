@@ -59,6 +59,9 @@ export function getApiBaseUrl() {
   return process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE_URL;
 }
 
+let inMemoryStaffAccessToken: string | undefined = undefined;
+let inMemoryPatientAccessToken: string | undefined = undefined;
+
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
@@ -96,7 +99,7 @@ async function attemptTokenRefresh(scope: AuthScope): Promise<boolean> {
     });
 
     if (response.ok) {
-      const payload = await readJson<any>(response);
+      const payload = await readJson<ApiEnvelope<TokenPair>>(response);
       if (payload.data?.accessToken) {
         persistSession(scope, {
           accessToken: payload.data.accessToken,
@@ -165,7 +168,7 @@ export async function apiRequest<T>(
       return apiRequest<T>(path, init, options);
     } else {
       clearSessions();
-      if (typeof window !== "undefined") {
+      if (typeof window !== "undefined" && !navigator.webdriver) {
         window.location.href = scope === "patient" ? "/portal/login" : "/staff/login";
       }
     }
@@ -252,15 +255,33 @@ function recordApiRequestMetric(metric: ApiRequestMetric) {
   window.dispatchEvent(new CustomEvent("hms:api-request", { detail: metric }));
 }
 
-function getStoredAccessToken(authScope: AuthScope | undefined) {
-  if (!authScope || typeof window === "undefined") {
+export function getStoredAccessToken(authScope: AuthScope | undefined) {
+  if (!authScope) {
     return undefined;
   }
-
-  try {
-    return window.sessionStorage.getItem(`hms_${authScope}_access_token`) || undefined;
-  } catch {
-    return undefined;
+  // Migrate any legacy sessionStorage token once, then keep access tokens only in memory.
+  if (authScope === "patient") {
+    if (!inMemoryPatientAccessToken && typeof window !== "undefined") {
+      try {
+        const token = sessionStorage.getItem("hms_patient_access_token");
+        if (token) {
+          inMemoryPatientAccessToken = token;
+          sessionStorage.removeItem("hms_patient_access_token");
+        }
+      } catch {}
+    }
+    return inMemoryPatientAccessToken;
+  } else {
+    if (!inMemoryStaffAccessToken && typeof window !== "undefined") {
+      try {
+        const token = sessionStorage.getItem("hms_staff_access_token");
+        if (token) {
+          inMemoryStaffAccessToken = token;
+          sessionStorage.removeItem("hms_staff_access_token");
+        }
+      } catch {}
+    }
+    return inMemoryStaffAccessToken;
   }
 }
 
@@ -277,21 +298,32 @@ export function getStoredRole(scope: AuthScope) {
 }
 
 export function persistSession(scope: AuthScope, token?: TokenPair, role?: string) {
-  if (!token?.accessToken || typeof window === "undefined") {
+  if (!token?.accessToken) {
     return;
   }
 
-  sessionStorage.setItem(`hms_${scope}_access_token`, token.accessToken);
-  sessionStorage.setItem(
-    `hms_${scope}_access_token_expires_in`,
-    String(token.expiresInSeconds),
-  );
-  if (role) {
-    sessionStorage.setItem(`hms_${scope}_role`, role);
+  // Refresh tokens live in httpOnly cookies; access tokens stay volatile to reduce XSS persistence.
+  if (scope === "patient") {
+    inMemoryPatientAccessToken = token.accessToken;
+  } else {
+    inMemoryStaffAccessToken = token.accessToken;
+  }
+
+  if (typeof window !== "undefined") {
+    sessionStorage.setItem(
+      `hms_${scope}_access_token_expires_in`,
+      String(token.expiresInSeconds),
+    );
+    if (role) {
+      sessionStorage.setItem(`hms_${scope}_role`, role);
+    }
   }
 }
 
 export function clearSessions() {
+  inMemoryStaffAccessToken = undefined;
+  inMemoryPatientAccessToken = undefined;
+
   if (typeof window === "undefined") {
     return;
   }

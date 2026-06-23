@@ -80,10 +80,19 @@ export default function PatientMessagesPage() {
         <section className="flex w-1/3 min-w-[320px] flex-col border-r border-transparent bg-[var(--hc-surface-muted)]">
           <div className="border-b border-[var(--hc-border)] bg-[var(--hc-surface-muted)] p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h1 className="font-headline text-lg font-bold tracking-tight">Inbox</h1>
-              <span className="bg-[var(--hc-primary-bg)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-primary)]">
-                {unreadCount} Unread
-              </span>
+              <div className="flex items-center gap-2">
+                <h1 className="font-headline text-lg font-bold tracking-tight">Inbox</h1>
+                <span className="bg-[var(--hc-primary-bg)] px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[var(--hc-primary)]">
+                  {unreadCount} Unread
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => alert("Message composition is not supported by the current patient portal API.")}
+                className="inline-flex items-center gap-1 bg-[var(--hc-primary)] hover:bg-[var(--hc-primary)]/90 text-white px-3 py-1 rounded-[var(--radius-sm)] text-[10px] font-bold uppercase tracking-widest transition-colors"
+              >
+                Compose
+              </button>
             </div>
             <label className="relative block">
               <HcIcon name="filter_list" className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[var(--hc-text-placeholder)]" />

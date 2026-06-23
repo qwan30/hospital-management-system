@@ -74,11 +74,25 @@ export default function PatientPortalProfilePage() {
     setSuccess(null);
   }
 
-  function resetForm() {
-    setForm(toForm(profile));
+  const resetForm = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
+    if (profile) {
+      setForm({
+        fullName: profile.fullName ?? "",
+        email: profile.email ?? "",
+        phone: profile.phone ?? "",
+        occupation: profile.occupation ?? "",
+        bloodType: profile.bloodType ?? "",
+        medicalHistory: profile.medicalHistory ?? "",
+        drugAllergies: profile.drugAllergies ?? "",
+        insuranceNumber: profile.insuranceNumber ?? "",
+      });
+    } else {
+      setForm(emptyForm);
+    }
     setSuccess(null);
     setError(null);
-  }
+  };
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

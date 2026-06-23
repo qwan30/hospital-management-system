@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import {
   createAdminSpecialClosure,
   listAdminRooms,
@@ -51,6 +51,32 @@ const emptyForm: ClosureFormState = {
   active: true,
 };
 
+function exportClosuresToCsv(closures: SpecialClosureResponse[]) {
+  const headers = ["Closure ID", "Title", "Reason", "Closure Date", "Doctor Name", "Room Name", "Status"];
+  const csvRows = [
+    headers.join(","),
+    ...closures.map((c) =>
+      [
+        `"${c.closureId}"`,
+        `"${c.title}"`,
+        `"${(c.reason || "").replace(/"/g, '""')}"`,
+        `"${c.closureDate}"`,
+        `"${c.doctorName || "All doctors"}"`,
+        `"${c.roomName || "All rooms"}"`,
+        `"${c.active ? "Active" : "Inactive"}"`,
+      ].join(",")
+    ),
+  ];
+  const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", `special_closures_export_${Date.now()}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 export default function AdminSpecialClosuresPage() {
   const [closures, setClosures] = useState<SpecialClosureResponse[]>([]);
   const [doctors, setDoctors] = useState<AdminUserResponse[]>([]);
@@ -67,32 +93,12 @@ export default function AdminSpecialClosuresPage() {
   const [form, setForm] = useState<ClosureFormState>(emptyForm);
 
   const handleExportCSV = () => {
-    const headers = ["Closure ID", "Title", "Reason", "Closure Date", "Doctor Name", "Room Name", "Status"];
-    const csvRows = [
-      headers.join(","),
-      ...filteredClosures.map((c) =>
-        [
-          `"${c.closureId}"`,
-          `"${c.title}"`,
-          `"${(c.reason || "").replace(/"/g, '""')}"`,
-          `"${c.closureDate}"`,
-          `"${c.doctorName || "All doctors"}"`,
-          `"${c.roomName || "All rooms"}"`,
-          `"${c.active ? "Active" : "Inactive"}"`,
-        ].join(",")
-      ),
-    ];
-    const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `special_closures_export_${Date.now()}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    exportClosuresToCsv(filteredClosures);
   };
 
   const handleToggleActive = async (closure: SpecialClosureResponse) => {
+    setSuccess(null);
+    setError(null);
     try {
       await updateAdminSpecialClosure(closure.closureId, {
         title: closure.title,
@@ -102,15 +108,23 @@ export default function AdminSpecialClosuresPage() {
         reason: closure.reason,
         active: !closure.active,
       });
-      alert(`Closure "${closure.title}" ${closure.active ? "deactivated" : "activated"} successfully.`);
+      setSuccess(`Closure "${closure.title}" ${closure.active ? "deactivated" : "activated"} successfully.`);
       await loadData();
     } catch (err) {
-      alert("Failed to update closure status: " + (err instanceof Error ? err.message : String(err)));
+      setError("Failed to update closure status: " + (err instanceof Error ? err.message : String(err)));
     }
   };
 
-  const loadData = useCallback(async (isMounted: () => boolean = () => true) => {
-    if (isMounted()) {
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const loadData = useCallback(async () => {
+    if (isMountedRef.current) {
       setIsLoading(true);
     }
     try {
@@ -119,7 +133,7 @@ export default function AdminSpecialClosuresPage() {
         listAdminUsers(),
         listAdminRooms(),
       ]);
-      if (!isMounted()) {
+      if (!isMountedRef.current) {
         return;
       }
       setClosures(nextClosures);
@@ -127,7 +141,7 @@ export default function AdminSpecialClosuresPage() {
       setRooms(nextRooms.filter((room) => room.active));
       setError(null);
     } catch (caught) {
-      if (!isMounted()) {
+      if (!isMountedRef.current) {
         return;
       }
       setClosures([]);
@@ -135,36 +149,29 @@ export default function AdminSpecialClosuresPage() {
       setRooms([]);
       setError(errorMessage(caught, "Unable to load special closures."));
     } finally {
-      if (isMounted()) {
+      if (isMountedRef.current) {
         setIsLoading(false);
       }
     }
   }, []);
 
   useEffect(() => {
-    let mounted = true;
-    void Promise.resolve().then(() => loadData(() => mounted));
-
-    return () => {
-      mounted = false;
-    };
+    void loadData();
   }, [loadData]);
 
-  const filteredClosures = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    return closures.filter((closure) => {
-      const matchesStatus =
-        statusFilter === "ALL" ||
-        (statusFilter === "ACTIVE" ? closure.active : !closure.active);
-      const matchesQuery =
-        !normalizedQuery ||
-        [closure.title, closure.reason, closure.doctorName, closure.roomName, closure.closureDate]
-          .join(" ")
-          .toLowerCase()
-          .includes(normalizedQuery);
-      return matchesStatus && matchesQuery;
-    });
-  }, [closures, query, statusFilter]);
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredClosures = closures.filter((closure) => {
+    const matchesStatus =
+      statusFilter === "ALL" ||
+      (statusFilter === "ACTIVE" ? closure.active : !closure.active);
+    const matchesQuery =
+      !normalizedQuery ||
+      [closure.title, closure.reason, closure.doctorName, closure.roomName, closure.closureDate]
+        .join(" ")
+        .toLowerCase()
+        .includes(normalizedQuery);
+    return matchesStatus && matchesQuery;
+  });
 
   function openCreateForm() {
     setEditingClosure(null);

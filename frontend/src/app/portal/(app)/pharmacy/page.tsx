@@ -50,52 +50,56 @@ export default function PatientPharmacyPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-4">
           <DataPanel>
-            {[
-              {
-                eyebrow: "Daily medication",
-                title: "Lisinopril 10mg",
-                detail: "One tablet each morning. Renewal confirmed through Nov 24.",
-                status: "Active",
-              },
-              {
-                eyebrow: "Supplement",
-                title: "Vitamin D 2,000 IU",
-                detail: "Added after latest lab review. Available over the counter.",
-                status: "New",
-              },
-              {
-                eyebrow: "Respiratory",
-                title: "Albuterol inhaler",
-                detail: "Bring current inhaler list to the next follow-up appointment.",
-                status: "Review",
-              },
-            ].map((step, idx) => (
-              <div key={idx} className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-[var(--hc-border-soft)] last:border-0 last:pb-0">
-                <div>
-                  <span className="text-[11px] font-bold text-[var(--hc-text-placeholder)] uppercase tracking-widest">{step.eyebrow}</span>
-                  <h3 className="text-base font-bold text-[var(--hc-text)] mt-1">{step.title}</h3>
-                  <p className="text-sm text-[var(--hc-text-secondary)] mt-1">{step.detail}</p>
+            <div className="p-8 space-y-6">
+              {[
+                {
+                  eyebrow: "Daily medication",
+                  title: "Lisinopril 10mg",
+                  detail: "One tablet each morning. Renewal confirmed through Nov 24.",
+                  status: "Active",
+                },
+                {
+                  eyebrow: "Supplement",
+                  title: "Vitamin D 2,000 IU",
+                  detail: "Added after latest lab review. Available over the counter.",
+                  status: "New",
+                },
+                {
+                  eyebrow: "Respiratory",
+                  title: "Albuterol inhaler",
+                  detail: "Bring current inhaler list to the next follow-up appointment.",
+                  status: "Review",
+                },
+              ].map((step, idx) => (
+                <div key={idx} className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-[var(--hc-border-soft)] last:border-0 last:pb-0">
+                  <div>
+                    <span className="text-[11px] font-bold text-[var(--hc-text-placeholder)] uppercase tracking-widest">{step.eyebrow}</span>
+                    <h3 className="text-base font-bold text-[var(--hc-text)] mt-1">{step.title}</h3>
+                    <p className="text-sm text-[var(--hc-text-secondary)] mt-1">{step.detail}</p>
+                  </div>
+                  <Badge variant="secondary">
+                    {step.status}
+                  </Badge>
                 </div>
-                <Badge variant="secondary">
-                  {step.status}
-                </Badge>
-              </div>
-            ))}
+              ))}
+            </div>
           </DataPanel>
         </div>
 
         <div className="lg:col-span-1">
           <DataPanel className="bg-white">
-            <span className="text-[11px] font-bold text-[var(--hc-primary)] uppercase tracking-widest mb-4 block">Patient safety protocol</span>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-full bg-[var(--hc-primary-bg)] text-[var(--hc-primary)] flex items-center justify-center">
-                <HcIcon name="info" className="text-lg" />
+            <div className="p-8">
+              <span className="text-[11px] font-bold text-[var(--hc-primary)] uppercase tracking-widest mb-4 block">Patient safety protocol</span>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-full bg-[var(--hc-primary-bg)] text-[var(--hc-primary)] flex items-center justify-center">
+                  <HcIcon name="info" className="text-lg" />
+                </div>
+                <h3 className="text-base font-bold text-[var(--hc-text)]">Medication questions stay in messages</h3>
               </div>
-              <h3 className="text-base font-bold text-[var(--hc-text)]">Medication questions stay in messages</h3>
+              <p className="text-sm text-[var(--hc-text-secondary)] leading-relaxed">
+                Prescription changes require clinical review. Use secure messages for renewals, side effect questions, or pharmacy transfer requests.
+              </p>
             </div>
-            <p className="text-sm text-[var(--hc-text-secondary)] leading-relaxed">
-              Prescription changes require clinical review. Use secure messages for renewals, side effect questions, or pharmacy transfer requests.
-            </p>
           </DataPanel>
         </div>
       </div>

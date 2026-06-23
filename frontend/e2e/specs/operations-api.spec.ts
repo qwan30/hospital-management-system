@@ -246,7 +246,7 @@ test.describe("@ui live operations API screens", () => {
 
     await page.goto("/admin/audit-logs");
     await expect(page.getByTestId("audit-log-table")).toContainText("QUEUE_CALL_PATIENT");
-    await expect(page.getByText("System Admin")).toBeVisible();
+    await expect(page.getByTestId("audit-log-table").getByText("System Admin").first()).toBeVisible();
   });
 
   test("renders patient overview data from patient portal APIs", async ({ page }) => {
