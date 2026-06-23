@@ -1,0 +1,148 @@
+@startuml HMS_Architecture
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #3b82f6
+skinparam ActorBorderColor #1e40af
+skinparam ComponentBorderColor #3b82f6
+skinparam DatabaseBorderColor #059669
+skinparam PackageBorderColor #6b7280
+
+header Enterprise Hospital Management System (HMS)
+title System Architecture Overview (Modular Monolith)
+
+package "Client Layer (Frontend)" {
+    component "Next.js 16 (React 19)" as ReactApp {
+        component "Public Pages\n(Home, Booking, Doctors)" as PublicUI
+        component "Staff Dashboard\n(Clinical, Queue, EHR)" as StaffUI
+        component "Admin Panel\n(User, Room, Pricing)" as AdminUI
+        component "Patient Portal\n(Overview, Lab Records)" as PortalUI
+    }
+    database "Browser Storage" as BrowserStorage {
+        [sessionStorage] <<tokens, roles>>
+        [Cookies] <<httpOnly Access/Refresh>>
+    }
+    ReactApp .right.> BrowserStorage : Read/Write Auth
+}
+
+node "Network Layer" {
+    component "Nginx Reverse Proxy" as Nginx
+}
+
+ReactApp --( HTTPS : "/api/v1/*"
+HTTPS -right-> Nginx
+
+package "Backend Monolith JVM Process (Spring Boot 3.3.5)" {
+    
+    package "start module (Composition Root)" as StartModule {
+        [HmsApiApplication] as AppBoot
+        [Flyway Migrations] as DBConfig
+    }
+
+    package "controller module (REST Layer)" as ControllerModule {
+        interface "Filter Chain" as Filters
+        [RequestCorrelationFilter] --> [AuthorizationDenialAuditFilter]
+        [AuthorizationDenialAuditFilter] --> [RateLimitFilter]
+        [RateLimitFilter] --> [JwtAuthenticationFilter]
+        
+        [JwtAuthenticationFilter] ..> Filters
+        
+        component "40 REST Controllers" as RestControllers {
+            [AuthController]
+            [PatientAuthController]
+            [AppointmentController]
+            [QueueController]
+            [MedicalRecordController]
+            [InvoiceController]
+            [InventoryController]
+            [AdminStatsController]
+        }
+        Filters --> RestControllers
+    }
+    
+    Nginx --( REST_API
+    REST_API -right-> Filters
+
+    package "application module (Orchestration)" as ApplicationModule {
+        component "Workflow & Business Services" as AppServices {
+            [AppointmentWorkflowService]
+            [RbacAuthorizationService]
+            [PrescriptionPdfService]
+            [EmailService]
+            [SeedDataService]
+        }
+        RestControllers --> AppServices
+    }
+
+    package "infrastructure module (Adapters)" as InfraModule {
+        component "Data Access & Adapters" as Adapters {
+            [Spring Data JPA Repositories] as JpaRepos
+            [Gmail OAuth2 SMTP Client] as EmailClient
+            [Apache PDFBox Printer] as PdfPrinter
+            [PatientIdentifierProtector] as Encryptor <<AES-GCM / SHA-256>>
+        }
+        AppServices --> JpaRepos
+        AppServices --> EmailClient
+        AppServices --> PdfPrinter
+        AppServices --> Encryptor
+    }
+
+    package "domain module (Business Core)" as DomainModule {
+        component "17 Bounded Contexts (DDD)" as BoundedContexts {
+            package "Patient Context" {
+                [Patient Entity]
+            }
+            package "Appointment Context" {
+                [Appointment Entity]
+                [AppointmentWorkflow]
+            }
+            package "Queue Context" {
+                [QueueItem Entity]
+            }
+            package "MedicalRecord Context" {
+                [MedicalRecord Entity]
+            }
+            package "Inventory Context" {
+                [InventoryItem]
+                [InventoryLot]
+            }
+            package "Invoice Context" {
+                [Invoice Entity]
+            }
+        }
+        JpaRepos -[dashed]-> BoundedContexts : Maps Entities
+        AppServices -[dashed]-> BoundedContexts : Orchestrates Domains
+    }
+}
+
+database "Data Store" {
+    database "PostgreSQL 15" as Postgres {
+        [hospital_db] <<Schema with 35 tables>>
+        [pgvector] <<Embedding Index>>
+    }
+    DBConfig -down-> Postgres : Migrates Schema
+    JpaRepos -down-> Postgres : Hibernate SQL
+}
+
+cloud "External Services" {
+    [Gmail API / OAuth2 SMTP] as GmailAPI
+    EmailClient -up-> GmailAPI : SMTP / HTTPS
+}
+
+package "Observability & Monitoring" {
+    component "OpenTelemetry Collector" as OTel
+    database "Loki" as Loki <<Logs>>
+    database "Prometheus" as Prometheus <<Metrics>>
+    database "Tempo" as Tempo <<Traces>>
+    component "Grafana Dashboard" as Grafana
+    
+    Filters -[dashed]-> OTel : Trace/Metric Export
+    AppServices -[dashed]-> OTel : Structured Logs
+    OTel -down-> Loki
+    OTel -down-> Prometheus
+    OTel -down-> Tempo
+    Grafana -up-> Loki
+    Grafana -up-> Prometheus
+    Grafana -up-> Tempo
+}
+
+@enduml

@@ -168,33 +168,61 @@ graph LR
 
 <div align="center">
 
-### 🏠 Public Homepage
-<img src="docs/screenshots/01-homepage.png" alt="HMS Homepage" width="800">
+### 🌐 Public Homepage
+<img src="docs/screenshots/home-page.png" alt="Public Homepage" width="800">
 
-*Modern landing page with department search, doctor highlights, and appointment booking entry point*
+*Modern patient landing page with department search, doctor list, and appointment booking entrance*
 
-### 🏥 Departments & Doctors
-| Departments | Doctors Directory |
-|:-----------:|:-----------------:|
-| <img src="docs/screenshots/02-departments.png" alt="Departments" width="400"> | <img src="docs/screenshots/03-doctors.png" alt="Doctors" width="400"> |
-| *Browse active clinical departments* | *Find doctors by specialty* |
+### 🏥 Staff Login Portal
+<img src="docs/screenshots/staff-login.png" alt="Staff Login Portal" width="800">
 
-### 📰 News & Content
-<img src="docs/screenshots/04-news.png" alt="HMS News" width="800">
+*Secure gateway for clinical and administrative staff*
 
-*Hospital news, health articles, and public announcements*
+### 🩺 Nurse & Clinical Workflows
+| 📋 Nurse Overview | 📅 Nurse Appointment Booking |
+|:-----------------:|:---------------------------:|
+| <img src="docs/screenshots/nurse-overview.png" alt="Nurse Overview" width="400"> | <img src="docs/screenshots/nurse-appointment.png" alt="Nurse Appointment" width="400"> |
+| *Real-time patient schedule, clinical status & queue triage* | *Vitals check-in, clinical task updates & slots scheduler* |
 
-### 🔐 Staff Login (Clinical Suite)
-<img src="docs/screenshots/06-staff-login.png" alt="Staff Login" width="800">
+### 💊 Pharmacy & Inventory
+<img src="docs/screenshots/pharmacy-inventory.png" alt="Pharmacy Inventory" width="800">
 
-*Professional clinical-suite login with system status, version info, and secure access controls*
+*Lot-controlled, FIFO-managed drug inventory with low-stock alerts*
 
-### 📊 Admin Dashboard
-<img src="docs/screenshots/05-admin-dashboard.png" alt="Admin Dashboard" width="800">
+### 🧑 Patient Portal
+<img src="docs/screenshots/portal-overview.png" alt="Patient Portal" width="800">
 
-*Real-time KPI cards — total patients, gross revenue, bed occupancy, active staff — with quick-action tiles*
+*Self-service patient overview showing upcoming appointments, medical records, and care team messages*
+
+### ⚙️ Enterprise Administration
+| 📊 Admin Dashboard | 🔄 Queue Triage Panel |
+|:-----------------:|:---------------------:|
+| <img src="docs/screenshots/10-admin-dashboard.png" alt="Admin Dashboard" width="400"> | <img src="docs/screenshots/admin-queue.png" alt="Admin Queue" width="400"> |
+| *Enterprise KPI tracking (revenue, appointments, bed occupancy)* | *Live queue monitoring and wait time analytics* |
 
 </div>
+
+<details>
+<summary><b>🔍 View Full Visual Walkthrough Tour</b></summary>
+
+### 🌐 Public-Facing Experience
+1. **Homepage**: [home-page.png](docs/screenshots/home-page.png) — Public booking landing page
+2. **Patient Portal**: [portal-overview.png](docs/screenshots/portal-overview.png) — Self-service appointments, messages, and lab summaries
+
+### 🏥 Clinical & Triage Workflows
+3. **Staff Login**: [staff-login.png](docs/screenshots/staff-login.png) — Secure entrance for clinical and administrative staff
+4. **Staff Login Background**: [staff-login-background.png](docs/screenshots/staff-login-background.png) — Background doctor image asset
+5. **Nurse Overview**: [nurse-overview.png](docs/screenshots/nurse-overview.png) — Clinical schedule and triage indicators
+6. **Nurse Appointment Booking**: [nurse-appointment.png](docs/screenshots/nurse-appointment.png) — Check-in, vitals tracking & slots booking
+
+### 💊 Pharmacy & Inventory
+7. **Pharmacy Inventory**: [pharmacy-inventory.png](docs/screenshots/pharmacy-inventory.png) — Expiry-safe, lot-controlled drug stocks
+
+### ⚙️ System Administration
+8. **Admin Dashboard**: [10-admin-dashboard.png](docs/screenshots/10-admin-dashboard.png) — Enterprise statistics and operational trends
+9. **Admin Queue**: [admin-queue.png](docs/screenshots/admin-queue.png) — Live queue monitoring and wait time analytics
+
+</details>
 
 ---
 
@@ -235,34 +263,66 @@ xychart-beta
 
 ## 🏗️ DDD Architecture — Modular Monolith
 
-```
- ┌─────────────────────────────────────────────────────────┐
- │                    start (Composition Root)              │
- │         Flyway Migrations · App Config · Bootstrap       │
- ├─────────────────────────────────────────────────────────┤
- │                   controller (40 Controllers)            │
- │   ┌──────────┬──────────┬──────────┬────────────────┐   │
- │   │   Auth   │  Admin   │ Clinical │  PatientPortal │   │
- │   └──────────┴──────────┴──────────┴────────────────┘   │
- ├─────────────────────────────────────────────────────────┤
- │                 application (Use Cases)                  │
- │   ┌──────────┬──────────┬──────────┬────────────────┐   │
- │   │ Workflow │  Read    │  Write   │   Auth/Security│   │
- │   │ Services │ Services │ Services │   Services     │   │
- │   └──────────┴──────────┴──────────┴────────────────┘   │
- ├─────────────────────────────────────────────────────────┤
- │               infrastructure (Adapters)                  │
- │     Spring Data JPA Repositories · Gmail Client · PDF    │
- ├─────────────────────────────────────────────────────────┤
- │                  domain (17 Bounded Contexts)            │
- │   ┌──────┬──────┬──────┬──────┬──────┬──────┬──────┐    │
- │   │Patient│Appt  │Queue │MedRec│Inven │Invoice│Admin│    │
- │   └──────┴──────┴──────┴──────┴──────┴──────┴──────┘    │
- │   ┌──────┬──────┬──────┬──────┬──────┬──────┬──────┐    │
- │   │ Lab  │ Rx   │User  │Audit │Dept  │Timeslot│Cont│    │
- │   └──────┴──────┴──────┴──────┴──────┴──────┴──────┘    │
- └─────────────────────────────────────────────────────────┘
-     Dependency Flow: domain ← infrastructure ← application ← controller ← start
+```plantuml
+@startuml HMS_Layers
+!theme plain
+skinparam BackgroundColor #FFFFFF
+skinparam ArrowColor #3b82f6
+skinparam NodeBorderColor #3b82f6
+
+package "start (Composition Root)" as start {
+  [Flyway Migrations]
+  [App Config]
+  [Bootstrap]
+}
+
+package "controller (REST Layer)" as controller {
+  [Auth]
+  [Admin]
+  [Clinical]
+  [PatientPortal]
+}
+
+package "application (Orchestration)" as application {
+  [Workflow Services]
+  [Read Services]
+  [Write Services]
+  [Auth/Security Services]
+}
+
+package "infrastructure (Adapters)" as infrastructure {
+  [Spring Data JPA Repositories]
+  [Gmail Client]
+  [PDF]
+}
+
+package "domain (Business Core)" as domain {
+  folder "Patient" as d1
+  folder "Appt" as d2
+  folder "Queue" as d3
+  folder "MedRec" as d4
+  folder "Inven" as d5
+  folder "Invoice" as d6
+  folder "Admin" as d7
+  folder "Lab" as d8
+  folder "Rx" as d9
+  folder "User" as d10
+  folder "Audit" as d11
+  folder "Dept" as d12
+  folder "Timeslot" as d13
+  folder "Cont" as d14
+}
+
+start -down-> controller : uses
+controller -down-> application : uses
+application -down-> infrastructure : uses
+infrastructure -down-> domain : uses
+
+note right of domain
+  Dependency Flow:
+  domain <- infrastructure <- application <- controller <- start
+end note
+@enduml
 ```
 
 **17 Bounded Contexts:** `admin` · `appointment` · `audit` · `common` · `content` · `department` · `email` · `inventory` · `invoice` · `lab` · `medicalrecord` · `patient` · `patientauth` · `patientportal` · `prescription` · `timeslot` · `user`
