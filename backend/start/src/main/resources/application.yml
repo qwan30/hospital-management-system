@@ -67,6 +67,7 @@ security:
     secure-cookies: ${HMS_SECURE_COOKIES:false}
     refresh-cookie-same-site: ${HMS_REFRESH_COOKIE_SAME_SITE:Lax}
     public-rate-limit-per-minute: ${HMS_PUBLIC_RATE_LIMIT_PER_MINUTE:30}
+    expose-spec-endpoints: ${HMS_EXPOSE_SPEC_ENDPOINTS:false}
   patient-identifier:
     secret: ${PATIENT_IDENTIFIER_SECRET}
 
@@ -94,6 +95,17 @@ hms:
   observability:
     structured-logging-enabled: ${HMS_STRUCTURED_LOGGING_ENABLED:true}
   seed:
+    initial-demo:
+      enabled: ${HMS_INITIAL_DEMO_SEED_ENABLED:true}
+      passwords:
+        doctor1: ${HMS_SEED_PASSWORD_DOCTOR1:Doctor@1234}
+        doctor2: ${HMS_SEED_PASSWORD_DOCTOR2:Doctor@1234}
+        nurse: ${HMS_SEED_PASSWORD_NURSE:Nurse@1234}
+        receptionist: ${HMS_SEED_PASSWORD_RECEPTIONIST:Reception@1234}
+        pharmacist: ${HMS_SEED_PASSWORD_PHARMACIST:Pharma@1234}
+        accountant: ${HMS_SEED_PASSWORD_ACCOUNTANT:Acc@1234}
+        admin: ${HMS_SEED_PASSWORD_ADMIN:Admin@1234}
+        patient: ${HMS_SEED_PASSWORD_PATIENT:Patient@1234}
     non-billing-demo:
       enabled: ${HMS_NON_BILLING_DEMO_SEED_ENABLED:false}
       target-departments: ${HMS_NON_BILLING_DEMO_TARGET_DEPARTMENTS:20}

@@ -39,7 +39,8 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest(properties = {
     "management.endpoints.web.exposure.include=*",
     "management.endpoint.prometheus.enabled=true",
-    "management.prometheus.metrics.export.enabled=true"
+    "management.prometheus.metrics.export.enabled=true",
+    "security.http.expose-spec-endpoints=true"
 })
 @AutoConfigureMockMvc
 @Transactional

@@ -22,6 +22,7 @@ server:
 security:
   http:
     allow-credentials: ${HMS_ALLOW_CREDENTIALS:true}
+    expose-spec-endpoints: true
   jwt:
     secret: ${JWT_SECRET}
   patient-identifier:

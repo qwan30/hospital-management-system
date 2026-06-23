@@ -134,6 +134,36 @@ class ReminderServiceTest {
     assertThat(sentCount).isEqualTo(0);
   }
 
+  @Test
+  void skipsNullOrBlankEmailAddressesWithoutSending() {
+    var recordWithNullEmail = record(LocalDate.of(2026, 3, 15));
+    recordWithNullEmail.getAppointment().getPatient().setEmail(null);
+    reminderService.planReminder(recordWithNullEmail);
+    var sentNull = reminderService.sendReminderIfDue(recordWithNullEmail);
+    assertThat(sentNull).isFalse();
+    assertThat(recordWithNullEmail.isReminderSent()).isTrue();
+
+    var recordWithBlankEmail = record(LocalDate.of(2026, 3, 15));
+    recordWithBlankEmail.getAppointment().getPatient().setEmail("   ");
+    reminderService.planReminder(recordWithBlankEmail);
+    var sentBlank = reminderService.sendReminderIfDue(recordWithBlankEmail);
+    assertThat(sentBlank).isFalse();
+    assertThat(recordWithBlankEmail.isReminderSent()).isTrue();
+  }
+
+  @Test
+  void keepsReminderPendingWhenEmailServiceThrowsException() {
+    var record = record(LocalDate.of(2026, 3, 15));
+    reminderService.planReminder(record);
+    when(emailService.sendFollowUpReminder("patient@example.com", "Nguyen Van Test", LocalDate.of(2026, 3, 15), "Dr. Test"))
+        .thenThrow(new RuntimeException("SMTP Server Down"));
+
+    var sent = reminderService.sendReminderIfDue(record);
+
+    assertThat(sent).isFalse();
+    assertThat(record.isReminderSent()).isFalse();
+  }
+
   private MedicalRecordEntity record(LocalDate followUpDate) {
     var patient = new PatientEntity();
     patient.setId(UUID.randomUUID());

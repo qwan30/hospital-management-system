@@ -25,7 +25,7 @@ class SecurityConfigurationDefaultsTest {
 
   @Test
   void dockerComposeDoesNotProvideProductionSecretFallbacks() throws IOException {
-    var dockerCompose = Files.readString(findRepositoryRoot().resolve("docker-compose.yml"), StandardCharsets.UTF_8);
+    var dockerCompose = Files.readString(findRepositoryRoot().resolve("infra").resolve("docker-compose.yml"), StandardCharsets.UTF_8);
 
     assertThat(dockerCompose).doesNotContain("JWT_SECRET:-");
     assertThat(dockerCompose).contains("JWT_SECRET: ${JWT_SECRET}");
@@ -37,7 +37,7 @@ class SecurityConfigurationDefaultsTest {
   private Path findRepositoryRoot() {
     var current = Path.of(System.getProperty("user.dir")).toAbsolutePath();
     while (current != null) {
-      if (Files.exists(current.resolve("docker-compose.yml"))) {
+      if (Files.exists(current.resolve("infra").resolve("docker-compose.yml"))) {
         return current;
       }
       current = current.getParent();

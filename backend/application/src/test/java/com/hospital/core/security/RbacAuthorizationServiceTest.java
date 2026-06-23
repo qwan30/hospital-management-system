@@ -74,6 +74,21 @@ class RbacAuthorizationServiceTest {
     assertThat(service.hasPermission(auth(UserRole.ADMIN), (String) null)).isFalse();
   }
 
+  @Test
+  void deniesUnauthenticatedToken() {
+    var unauth = new UsernamePasswordAuthenticationToken("actor", "token");
+    assertThat(service.hasPermission(unauth, "ADMIN_USERS_MANAGE")).isFalse();
+  }
+
+  @Test
+  void deniesInvalidRoleName() {
+    var authWithInvalidRole = new UsernamePasswordAuthenticationToken(
+        "actor-id",
+        "token",
+        List.of(new SimpleGrantedAuthority("ROLE_INVALID_ROLE_NAME")));
+    assertThat(service.hasPermission(authWithInvalidRole, "ADMIN_USERS_MANAGE")).isFalse();
+  }
+
   private void assertAllowed(String permission, UserRole... roles) {
     for (var role : roles) {
       assertThat(service.hasPermission(auth(role), permission))

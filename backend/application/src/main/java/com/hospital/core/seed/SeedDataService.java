@@ -45,9 +45,14 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class SeedDataService {
+  private static final Logger LOGGER = LoggerFactory.getLogger(SeedDataService.class);
   private static final List<String> DEMO_DEPARTMENT_NAMES = List.of(
       "Emergency Medicine",
       "Radiology",
@@ -85,6 +90,8 @@ public class SeedDataService {
   private final TimeSlotRepository timeSlotRepository;
   private final PasswordEncoder passwordEncoder;
   private final NonBillingDemoSeedProperties nonBillingDemoSeedProperties;
+  private final InitialDemoSeedProperties initialDemoSeedProperties;
+  private final Environment environment;
 
   public SeedDataService(
       AppointmentRepository appointmentRepository,
@@ -104,7 +111,9 @@ public class SeedDataService {
       UserRepository userRepository,
       TimeSlotRepository timeSlotRepository,
       PasswordEncoder passwordEncoder,
-      NonBillingDemoSeedProperties nonBillingDemoSeedProperties) {
+      NonBillingDemoSeedProperties nonBillingDemoSeedProperties,
+      InitialDemoSeedProperties initialDemoSeedProperties,
+      Environment environment) {
     this.appointmentRepository = appointmentRepository;
     this.auditLogRepository = auditLogRepository;
     this.departmentRepository = departmentRepository;
@@ -123,10 +132,30 @@ public class SeedDataService {
     this.timeSlotRepository = timeSlotRepository;
     this.passwordEncoder = passwordEncoder;
     this.nonBillingDemoSeedProperties = nonBillingDemoSeedProperties;
+    this.initialDemoSeedProperties = initialDemoSeedProperties;
+    this.environment = environment;
+  }
+
+  private boolean isProductionEnvironment() {
+    for (String profile : environment.getActiveProfiles()) {
+      if (profile.toLowerCase().contains("prod") || profile.toLowerCase().contains("production")) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Transactional
   public void seedIfEmpty() {
+    // Demo credentials and sample PHI must never be created by a production profile.
+    if (isProductionEnvironment()) {
+      LOGGER.warn("Skipping initial data seeding: seeding is disabled in production environments.");
+      return;
+    }
+    if (!initialDemoSeedProperties.isEnabled()) {
+      LOGGER.info("Skipping initial data seeding: initial-demo seeding is disabled by configuration.");
+      return;
+    }
     if (departmentRepository.count() > 0 || userRepository.count() > 0) {
       return;
     }
@@ -140,13 +169,14 @@ public class SeedDataService {
         createPricing(pediatrics, "CONSULTATION", BigDecimal.valueOf(180000)),
         createPricing(cardiology, "CONSULTATION", BigDecimal.valueOf(300000))));
 
-    var doctorOne = createUser("doctor1@hospital.vn", "Doctor@1234", "Dr. Nguyen Van An", UserRole.DOCTOR, internalMedicine, "Internal Medicine");
-    var doctorTwo = createUser("doctor2@hospital.vn", "Doctor@1234", "Dr. Tran Thi Binh", UserRole.DOCTOR, cardiology, "Cardiology");
-    var nurse = createUser("nurse@hospital.vn", "Nurse@1234", "Le Thi Cuc", UserRole.NURSE, internalMedicine, null);
-    var receptionist = createUser("receptionist@hospital.vn", "Reception@1234", "Vo Thi Reception", UserRole.RECEPTIONIST, null, null);
-    var pharmacist = createUser("pharmacist@hospital.vn", "Pharma@1234", "Hoang Van Pharmacist", UserRole.PHARMACIST, null, null);
-    var accountant = createUser("accountant@hospital.vn", "Acc@1234", "Pham Van Dung", UserRole.ACCOUNTANT, null, null);
-    var admin = createUser("admin@hospital.vn", "Admin@1234", "System Admin", UserRole.ADMIN, null, null);
+    var passwords = initialDemoSeedProperties.getPasswords();
+    var doctorOne = createUser("doctor1@hospital.vn", passwords.getDoctor1(), "Dr. Nguyen Van An", UserRole.DOCTOR, internalMedicine, "Internal Medicine");
+    var doctorTwo = createUser("doctor2@hospital.vn", passwords.getDoctor2(), "Dr. Tran Thi Binh", UserRole.DOCTOR, cardiology, "Cardiology");
+    var nurse = createUser("nurse@hospital.vn", passwords.getNurse(), "Le Thi Cuc", UserRole.NURSE, internalMedicine, null);
+    var receptionist = createUser("receptionist@hospital.vn", passwords.getReceptionist(), "Vo Thi Reception", UserRole.RECEPTIONIST, null, null);
+    var pharmacist = createUser("pharmacist@hospital.vn", passwords.getPharmacist(), "Hoang Van Pharmacist", UserRole.PHARMACIST, null, null);
+    var accountant = createUser("accountant@hospital.vn", passwords.getAccountant(), "Pham Van Dung", UserRole.ACCOUNTANT, null, null);
+    var admin = createUser("admin@hospital.vn", passwords.getAdmin(), "System Admin", UserRole.ADMIN, null, null);
     userRepository.saveAll(List.of(doctorOne, doctorTwo, nurse, receptionist, pharmacist, accountant, admin));
 
     if (timeSlotRepository.count() == 0) {
@@ -331,7 +361,7 @@ public class SeedDataService {
     var account = new PatientAccountEntity();
     account.setPatient(patient);
     account.setEmail("patient@example.com");
-    account.setPasswordHash(passwordEncoder.encode("Patient@1234"));
+    account.setPasswordHash(passwordEncoder.encode(initialDemoSeedProperties.getPasswords().getPatient()));
     account.setActive(true);
     patientAccountRepository.save(account);
 

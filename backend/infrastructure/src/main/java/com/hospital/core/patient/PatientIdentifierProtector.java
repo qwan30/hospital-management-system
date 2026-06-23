@@ -32,11 +32,12 @@ public class PatientIdentifierProtector {
       return plainValue;
     }
 
+    var secretKey = key();
     try {
       var iv = new byte[IV_LENGTH];
       secureRandom.nextBytes(iv);
       var cipher = Cipher.getInstance("AES/GCM/NoPadding");
-      cipher.init(Cipher.ENCRYPT_MODE, key(), new GCMParameterSpec(GCM_TAG_LENGTH, iv));
+      cipher.init(Cipher.ENCRYPT_MODE, secretKey, new GCMParameterSpec(GCM_TAG_LENGTH, iv));
       var encrypted = cipher.doFinal(plainValue.getBytes(StandardCharsets.UTF_8));
       var payload = ByteBuffer.allocate(iv.length + encrypted.length).put(iv).put(encrypted).array();
       return PREFIX + Base64.getUrlEncoder().withoutPadding().encodeToString(payload);
@@ -53,6 +54,7 @@ public class PatientIdentifierProtector {
       return encryptedValue;
     }
 
+    var secretKey = key();
     try {
       var payload = decodePayload(encryptedValue.substring(PREFIX.length()));
       var buffer = ByteBuffer.wrap(payload);
@@ -61,7 +63,7 @@ public class PatientIdentifierProtector {
       var encrypted = new byte[buffer.remaining()];
       buffer.get(encrypted);
       var cipher = Cipher.getInstance("AES/GCM/NoPadding");
-      cipher.init(Cipher.DECRYPT_MODE, key(), new GCMParameterSpec(GCM_TAG_LENGTH, iv));
+      cipher.init(Cipher.DECRYPT_MODE, secretKey, new GCMParameterSpec(GCM_TAG_LENGTH, iv));
       return new String(cipher.doFinal(encrypted), StandardCharsets.UTF_8);
     } catch (Exception exception) {
       throw new IllegalStateException("Failed to decrypt patient identifier", exception);

@@ -216,4 +216,21 @@ class SecurityHardeningIntegrationTest extends AbstractIntegrationTest {
 
     return Keys.hmacShaKeyFor(io.jsonwebtoken.io.Decoders.BASE64.decode(secret));
   }
+
+  @Test
+  void originValidationFilter_rejectsForbiddenOriginOnRefresh() throws Exception {
+    mockMvc.perform(post("/api/v1/auth/refresh")
+            .header(HttpHeaders.ORIGIN, "http://malicious.com"))
+        .andExpect(status().isForbidden())
+        .andExpect(jsonPath("$.success").value(false))
+        .andExpect(jsonPath("$.error.code").value("forbidden"))
+        .andExpect(jsonPath("$.error.message").value("Origin or Referer not allowed"));
+  }
+
+  @Test
+  void originValidationFilter_allowsValidOriginOnRefresh() throws Exception {
+    mockMvc.perform(post("/api/v1/auth/refresh")
+            .header(HttpHeaders.ORIGIN, "http://localhost:4173"))
+        .andExpect(status().isBadRequest());
+  }
 }
