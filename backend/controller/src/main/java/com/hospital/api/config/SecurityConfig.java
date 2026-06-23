@@ -29,18 +29,21 @@ public class SecurityConfig {
   private final AuthorizationDenialAuditFilter authorizationDenialAuditFilter;
   private final SecurityErrorResponseWriter securityErrorResponseWriter;
   private final SecurityHttpProperties securityHttpProperties;
+  private final OriginValidationFilter originValidationFilter;
 
   public SecurityConfig(
       JwtAuthenticationFilter jwtAuthenticationFilter,
       RateLimitFilter rateLimitFilter,
       AuthorizationDenialAuditFilter authorizationDenialAuditFilter,
       SecurityErrorResponseWriter securityErrorResponseWriter,
-      SecurityHttpProperties securityHttpProperties) {
+      SecurityHttpProperties securityHttpProperties,
+      OriginValidationFilter originValidationFilter) {
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     this.rateLimitFilter = rateLimitFilter;
     this.authorizationDenialAuditFilter = authorizationDenialAuditFilter;
     this.securityErrorResponseWriter = securityErrorResponseWriter;
     this.securityHttpProperties = securityHttpProperties;
+    this.originValidationFilter = originValidationFilter;
   }
 
   @Bean
@@ -60,19 +63,32 @@ public class SecurityConfig {
                 response, 401, "unauthorized", "Authentication is required"))
             .accessDeniedHandler((request, response, accessDeniedException) -> securityErrorResponseWriter
                 .write(request, response, 403, "forbidden", "Access is denied")))
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers(new AntPathRequestMatcher("/actuator/health"),
-                new AntPathRequestMatcher("/actuator/health/**"), new AntPathRequestMatcher("/actuator/prometheus"),
-                new AntPathRequestMatcher("/swagger-ui/**"), new AntPathRequestMatcher("/v3/api-docs/**"))
-            .permitAll()
-            .requestMatchers("/api/v1/auth/**").permitAll()
-            .requestMatchers("/api/v1/patient-auth/**").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/v1/departments/**", "/api/v1/doctors/**", "/api/v1/content/**",
-                "/api/v1/news")
-            .permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/v1/appointments", "/api/v1/chatbot/messages").permitAll()
-            .anyRequest().authenticated())
+        .authorizeHttpRequests(auth -> {
+          AntPathRequestMatcher[] specMatchers = new AntPathRequestMatcher[]{
+              new AntPathRequestMatcher("/actuator/prometheus"),
+              new AntPathRequestMatcher("/swagger-ui/**"),
+              new AntPathRequestMatcher("/swagger-ui.html"),
+              new AntPathRequestMatcher("/v3/api-docs/**")
+          };
+          if (securityHttpProperties.exposeSpecEndpoints()) {
+            auth.requestMatchers(specMatchers).permitAll();
+          } else {
+            auth.requestMatchers(specMatchers).authenticated();
+          }
+          auth
+              .requestMatchers(new AntPathRequestMatcher("/actuator/health"),
+                  new AntPathRequestMatcher("/actuator/health/**"))
+              .permitAll()
+              .requestMatchers("/api/v1/auth/**").permitAll()
+              .requestMatchers("/api/v1/patient-auth/**").permitAll()
+              .requestMatchers(HttpMethod.GET, "/api/v1/departments/**", "/api/v1/doctors/**", "/api/v1/content/**",
+                  "/api/v1/news")
+              .permitAll()
+              .requestMatchers(HttpMethod.POST, "/api/v1/appointments", "/api/v1/chatbot/messages").permitAll()
+              .anyRequest().authenticated();
+        })
         .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(originValidationFilter, RateLimitFilter.class)
         .addFilterBefore(authorizationDenialAuditFilter, RateLimitFilter.class)
         .addFilterAfter(jwtAuthenticationFilter, RateLimitFilter.class);
 
