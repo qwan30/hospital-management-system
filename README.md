@@ -263,60 +263,94 @@ xychart-beta
 
 ## 🏗️ DDD Architecture — Modular Monolith
 
-graph TD
-    subgraph start ["start (Composition Root)"]
-        sm[Flyway Migrations]
-        ac[App Config]
-        bs[Bootstrap]
+```mermaid
+graph TB
+    subgraph START["🚀 start — Composition Root"]
+        direction LR
+        S1["📜 Flyway Migrations"]
+        S2["⚙️ App Config"]
+        S3["🔌 Bootstrap"]
     end
 
-    subgraph controller ["controller (REST Layer)"]
-        auth[Auth]
-        adm[Admin]
-        clin[Clinical]
-        pp[PatientPortal]
+    subgraph CTRL["🌐 controller — REST Layer (40 controllers)"]
+        direction LR
+        C1["🔐 Auth"]
+        C2["⚙️ Admin"]
+        C3["🏥 Clinical"]
+        C4["🏠 PatientPortal"]
     end
 
-    subgraph application ["application (Orchestration)"]
-        ws[Workflow Services]
-        rs[Read Services]
-        wr[Write Services]
-        as[Auth/Security Services]
+    subgraph APP["⚡ application — Orchestration Layer"]
+        direction LR
+        A1["🔄 Workflow Services"]
+        A2["📖 Read Services"]
+        A3["✏️ Write Services"]
+        A4["🔒 Auth/Security"]
     end
 
-    subgraph infrastructure ["infrastructure (Adapters)"]
-        jpa[Spring Data JPA Repositories]
-        gc[Gmail Client]
-        pdf[PDF]
+    subgraph INFRA["🗄️ infrastructure — Adapters Layer"]
+        direction LR
+        I1["🐘 Spring Data JPA"]
+        I2["📧 Gmail Client"]
+        I3["📄 PDF Generator"]
     end
 
-    subgraph domain ["domain (Business Core)"]
-        d1[Patient]
-        d2[Appt]
-        d3[Queue]
-        d4[MedRec]
-        d5[Inven]
-        d6[Invoice]
-        d7[Admin]
-        d8[Lab]
-        d9[Rx]
-        d10[User]
-        d11[Audit]
-        d12[Dept]
-        d13[Timeslot]
-        d14[Cont]
+    subgraph DOMAIN["🏛️ domain — Business Core (17 Bounded Contexts)"]
+        direction TB
+        D01["🩺 Patient"]  D02["📅 Appt"]     D03["🔄 Queue"]      D04["📋 MedRec"]
+        D05["📦 Inven"]    D06["💰 Invoice"]   D07["⚙️ Admin"]      D08["🔬 Lab"]
+        D09["💊 Rx"]       D10["👤 User"]      D11["📝 Audit"]      D12["🏥 Dept"]
+        D13["⏰ Timeslot"] D14["📰 Cont"]      D15["📧 Email"]      D16["🔑 PatientAuth"]
+        D17["🌐 PtPortal"]
     end
 
-    start -->|uses| controller
-    controller -->|uses| application
-    application -->|uses| infrastructure
-    infrastructure -->|uses| domain
+    START -->|"depends on"| CTRL
+    CTRL -->|"depends on"| APP
+    APP -->|"depends on"| INFRA
+    INFRA -->|"depends on"| DOMAIN
 
-    style domain fill:#f9f9f9,stroke:#3b82f6,stroke-width:2px
-    style infrastructure fill:#f9f9f9,stroke:#3b82f6,stroke-width:2px
-    style application fill:#f9f9f9,stroke:#3b82f6,stroke-width:2px
-    style controller fill:#f9f9f9,stroke:#3b82f6,stroke-width:2px
-    style start fill:#f9f9f9,stroke:#3b82f6,stroke-width:2px
+    DFLOW["⬆️ Dependency Rule:<br/>domain ← infrastructure ← application ← controller ← start<br/><i>Outer layers depend inward. Domain has zero outward dependencies.</i>"]
+
+    INFRA -.->|"implements domain contracts"| DFLOW
+
+    style START fill:#1e40af,stroke:#3b82f6,color:#fff
+    style CTRL fill:#b91c1c,stroke:#ef4444,color:#fff
+    style APP fill:#1d4ed8,stroke:#60a5fa,color:#fff
+    style INFRA fill:#4b5563,stroke:#9ca3af,color:#fff
+    style DOMAIN fill:#1e3a5f,stroke:#3b82f6,color:#fff
+    style DFLOW fill:#065f46,stroke:#34d399,color:#fff
+    style S1 fill:#2563eb,stroke:#60a5fa,color:#fff
+    style S2 fill:#2563eb,stroke:#60a5fa,color:#fff
+    style S3 fill:#2563eb,stroke:#60a5fa,color:#fff
+    style C1 fill:#dc2626,stroke:#f87171,color:#fff
+    style C2 fill:#dc2626,stroke:#f87171,color:#fff
+    style C3 fill:#dc2626,stroke:#f87171,color:#fff
+    style C4 fill:#dc2626,stroke:#f87171,color:#fff
+    style A1 fill:#3b82f6,stroke:#93c5fd,color:#fff
+    style A2 fill:#3b82f6,stroke:#93c5fd,color:#fff
+    style A3 fill:#3b82f6,stroke:#93c5fd,color:#fff
+    style A4 fill:#3b82f6,stroke:#93c5fd,color:#fff
+    style I1 fill:#6b7280,stroke:#d1d5db,color:#fff
+    style I2 fill:#6b7280,stroke:#d1d5db,color:#fff
+    style I3 fill:#6b7280,stroke:#d1d5db,color:#fff
+    style D01 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D02 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D03 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D04 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D05 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D06 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D07 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D08 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D09 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D10 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D11 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D12 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D13 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D14 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D15 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D16 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+    style D17 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+```
 
 **17 Bounded Contexts:** `admin` · `appointment` · `audit` · `common` · `content` · `department` · `email` · `inventory` · `invoice` · `lab` · `medicalrecord` · `patient` · `patientauth` · `patientportal` · `prescription` · `timeslot` · `user`
 
