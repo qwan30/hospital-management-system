@@ -297,10 +297,22 @@ graph TB
 
     subgraph DOMAIN["🏛️ domain — Business Core (17 Bounded Contexts)"]
         direction TB
-        D01["🩺 Patient"]  D02["📅 Appt"]     D03["🔄 Queue"]      D04["📋 MedRec"]
-        D05["📦 Inven"]    D06["💰 Invoice"]   D07["⚙️ Admin"]      D08["🔬 Lab"]
-        D09["💊 Rx"]       D10["👤 User"]      D11["📝 Audit"]      D12["🏥 Dept"]
-        D13["⏰ Timeslot"] D14["📰 Cont"]      D15["📧 Email"]      D16["🔑 PatientAuth"]
+        D01["🩺 Patient"]
+        D02["📅 Appt"]
+        D03["🔄 Queue"]
+        D04["📋 MedRec"]
+        D05["📦 Inven"]
+        D06["💰 Invoice"]
+        D07["⚙️ Admin"]
+        D08["🔬 Lab"]
+        D09["💊 Rx"]
+        D10["👤 User"]
+        D11["📝 Audit"]
+        D12["🏥 Dept"]
+        D13["⏰ Timeslot"]
+        D14["📰 Cont"]
+        D15["📧 Email"]
+        D16["🔑 PatientAuth"]
         D17["🌐 PtPortal"]
     end
 
