@@ -263,67 +263,60 @@ xychart-beta
 
 ## 🏗️ DDD Architecture — Modular Monolith
 
-```plantuml
-@startuml HMS_Layers
-!theme plain
-skinparam BackgroundColor #FFFFFF
-skinparam ArrowColor #3b82f6
-skinparam NodeBorderColor #3b82f6
+graph TD
+    subgraph start ["start (Composition Root)"]
+        sm[Flyway Migrations]
+        ac[App Config]
+        bs[Bootstrap]
+    end
 
-package "start (Composition Root)" as start {
-  [Flyway Migrations]
-  [App Config]
-  [Bootstrap]
-}
+    subgraph controller ["controller (REST Layer)"]
+        auth[Auth]
+        adm[Admin]
+        clin[Clinical]
+        pp[PatientPortal]
+    end
 
-package "controller (REST Layer)" as controller {
-  [Auth]
-  [Admin]
-  [Clinical]
-  [PatientPortal]
-}
+    subgraph application ["application (Orchestration)"]
+        ws[Workflow Services]
+        rs[Read Services]
+        wr[Write Services]
+        as[Auth/Security Services]
+    end
 
-package "application (Orchestration)" as application {
-  [Workflow Services]
-  [Read Services]
-  [Write Services]
-  [Auth/Security Services]
-}
+    subgraph infrastructure ["infrastructure (Adapters)"]
+        jpa[Spring Data JPA Repositories]
+        gc[Gmail Client]
+        pdf[PDF]
+    end
 
-package "infrastructure (Adapters)" as infrastructure {
-  [Spring Data JPA Repositories]
-  [Gmail Client]
-  [PDF]
-}
+    subgraph domain ["domain (Business Core)"]
+        d1[Patient]
+        d2[Appt]
+        d3[Queue]
+        d4[MedRec]
+        d5[Inven]
+        d6[Invoice]
+        d7[Admin]
+        d8[Lab]
+        d9[Rx]
+        d10[User]
+        d11[Audit]
+        d12[Dept]
+        d13[Timeslot]
+        d14[Cont]
+    end
 
-package "domain (Business Core)" as domain {
-  folder "Patient" as d1
-  folder "Appt" as d2
-  folder "Queue" as d3
-  folder "MedRec" as d4
-  folder "Inven" as d5
-  folder "Invoice" as d6
-  folder "Admin" as d7
-  folder "Lab" as d8
-  folder "Rx" as d9
-  folder "User" as d10
-  folder "Audit" as d11
-  folder "Dept" as d12
-  folder "Timeslot" as d13
-  folder "Cont" as d14
-}
+    start -->|uses| controller
+    controller -->|uses| application
+    application -->|uses| infrastructure
+    infrastructure -->|uses| domain
 
-start -down-> controller : uses
-controller -down-> application : uses
-application -down-> infrastructure : uses
-infrastructure -down-> domain : uses
-
-note right of domain
-  Dependency Flow:
-  domain <- infrastructure <- application <- controller <- start
-end note
-@enduml
-```
+    style domain fill:#f9f9f9,stroke:#3b82f6,stroke-width:2px
+    style infrastructure fill:#f9f9f9,stroke:#3b82f6,stroke-width:2px
+    style application fill:#f9f9f9,stroke:#3b82f6,stroke-width:2px
+    style controller fill:#f9f9f9,stroke:#3b82f6,stroke-width:2px
+    style start fill:#f9f9f9,stroke:#3b82f6,stroke-width:2px
 
 **17 Bounded Contexts:** `admin` · `appointment` · `audit` · `common` · `content` · `department` · `email` · `inventory` · `invoice` · `lab` · `medicalrecord` · `patient` · `patientauth` · `patientportal` · `prescription` · `timeslot` · `user`
 
