@@ -52,6 +52,9 @@ public class LabResultEntity {
   @Column(name = "collected_at", nullable = false)
   private Instant collectedAt;
 
+  @Column(nullable = false)
+  private boolean deleted;
+
   @Column(name = "created_at", nullable = false)
   private Instant createdAt;
 
