@@ -415,6 +415,7 @@ public class SeedDataService {
     labResult.setTestName("Complete Blood Count");
     labResult.setStatus("Reviewed");
     labResult.setResultSummary("Mild eosinophilia consistent with allergic response.");
+    labResult.setResultValue("WBC: 8.5K, RBC: 5.2M, HGB: 14.5, PLT: 250K");
     labResult.setDoctorComment("Continue allergy control plan and repeat only if symptoms worsen.");
     labResult.setAttachmentUrl("/lab-results/demo-cbc.pdf");
     labResult.setCollectedAt(Instant.now().minusSeconds(1_209_600));

@@ -518,6 +518,7 @@ public class ReleaseDemoSeedService {
     labResult.setTestName(testName);
     labResult.setStatus("Reviewed");
     labResult.setResultSummary("Synthetic result summary for release portal validation.");
+    labResult.setResultValue("WBC: 7.2K, RBC: 4.8M, HGB: 13.9, PLT: 300K");
     labResult.setDoctorComment("Continue the release UAT care plan.");
     labResult.setAttachmentUrl("/lab-results/release-uat-cbc.pdf");
     labResult.setCollectedAt(Instant.now().minusSeconds(604_800));

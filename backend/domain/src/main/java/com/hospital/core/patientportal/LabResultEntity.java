@@ -49,6 +49,15 @@ public class LabResultEntity {
   @Column(name = "attachment_url", length = 500)
   private String attachmentUrl;
 
+  @Column(name = "result_value", nullable = false, columnDefinition = "text")
+  private String resultValue;
+
+  @Column(name = "reference_range", length = 200)
+  private String referenceRange;
+
+  @Column(columnDefinition = "text")
+  private String notes;
+
   @Column(name = "collected_at", nullable = false)
   private Instant collectedAt;
 
