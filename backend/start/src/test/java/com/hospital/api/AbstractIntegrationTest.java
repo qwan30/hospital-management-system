@@ -86,6 +86,12 @@ abstract class AbstractIntegrationTest {
     registry.add("POSTGRES_DB", postgres::getDatabaseName);
     registry.add("POSTGRES_USER", postgres::getUsername);
     registry.add("POSTGRES_PASSWORD", postgres::getPassword);
+    // Override system properties so Testcontainers gets its own isolated DB
+    registry.add("spring.datasource.url", () ->
+        "jdbc:postgresql://" + postgres.getHost() + ":" + postgres.getMappedPort(5432) + "/" + postgres.getDatabaseName());
+    registry.add("spring.datasource.username", postgres::getUsername);
+    registry.add("spring.datasource.password", postgres::getPassword);
+    registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
     registry.add("security.jwt.secret", () -> "test-jwt-secret-with-at-least-32-characters");
     registry.add("security.patient-identifier.secret", () -> "test-patient-identifier-secret");
     // Disable rate limiting for integration tests
