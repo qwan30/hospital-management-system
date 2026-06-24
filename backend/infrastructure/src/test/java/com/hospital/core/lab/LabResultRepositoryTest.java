@@ -84,6 +84,7 @@ class LabResultRepositoryTest {
     deletedResult.setAppointment(appointment);
     deletedResult.setTestName("Deleted Test");
     deletedResult.setResultValue("Should be excluded");
+    deletedResult.setStatus("completed");
     deletedResult.setDeleted(true);
     entityManager.persist(deletedResult);
     entityManager.flush();
