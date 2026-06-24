@@ -263,105 +263,44 @@ xychart-beta
 
 ## 🏗️ DDD Architecture — Modular Monolith
 
-```mermaid
-graph TB
-    subgraph START["🚀 start — Composition Root"]
-        direction LR
-        S1["📜 Flyway Migrations"]
-        S2["⚙️ App Config"]
-        S3["🔌 Bootstrap"]
-    end
+```text
+┌─────────────────────────────────────────────────────────────┐
+│ 🚀 start — Composition Root                                 │
+│   [ Flyway Migrations ]    [ App Config ]    [ Bootstrap ]  │
+└─────────────────────────────────────────────────────────────┘
+                               │
+                               ▼ (depends on)
+┌─────────────────────────────────────────────────────────────┐
+│ 🌐 controller — REST Layer (40 controllers)                 │
+│   [ Auth ]    [ Admin ]    [ Clinical ]    [ PatientPortal ]│
+└─────────────────────────────────────────────────────────────┘
+                               │
+                               ▼ (depends on)
+┌─────────────────────────────────────────────────────────────┐
+│ ⚡ application — Orchestration Layer                         │
+│   [ Workflow Services ]            [ Read Services ]        │
+│   [ Write Services ]               [ Auth/Security ]        │
+└─────────────────────────────────────────────────────────────┘
+                               │
+                               ▼ (depends on)
+┌─────────────────────────────────────────────────────────────┐
+│ 🗄️ infrastructure — Adapters Layer                          │
+│   [ Spring Data JPA ]   [ Gmail Client ]   [ PDF Generator ]│
+└─────────────────────────────────────────────────────────────┘
+                               │
+                               ▼ (depends on / implements contracts)
+┌─────────────────────────────────────────────────────────────┐
+│ 🏛️ domain — Business Core (17 Bounded Contexts)              │
+│   [ Patient ]      [ Appt ]         [ Queue ]      [ MedRec ]│
+│   [ Inven ]        [ Invoice ]      [ Admin ]      [ Lab ]   │
+│   [ Rx ]           [ User ]         [ Audit ]      [ Dept ]  │
+│   [ Timeslot ]     [ Content ]      [ Email ]      [ PtAuth ]│
+│   [ PtPortal ]                                              │
+└─────────────────────────────────────────────────────────────┘
 
-    subgraph CTRL["🌐 controller — REST Layer (40 controllers)"]
-        direction LR
-        C1["🔐 Auth"]
-        C2["⚙️ Admin"]
-        C3["🏥 Clinical"]
-        C4["🏠 PatientPortal"]
-    end
-
-    subgraph APP["⚡ application — Orchestration Layer"]
-        direction LR
-        A1["🔄 Workflow Services"]
-        A2["📖 Read Services"]
-        A3["✏️ Write Services"]
-        A4["🔒 Auth/Security"]
-    end
-
-    subgraph INFRA["🗄️ infrastructure — Adapters Layer"]
-        direction LR
-        I1["🐘 Spring Data JPA"]
-        I2["📧 Gmail Client"]
-        I3["📄 PDF Generator"]
-    end
-
-    subgraph DOMAIN["🏛️ domain — Business Core (17 Bounded Contexts)"]
-        direction TB
-        D01["🩺 Patient"]
-        D02["📅 Appt"]
-        D03["🔄 Queue"]
-        D04["📋 MedRec"]
-        D05["📦 Inven"]
-        D06["💰 Invoice"]
-        D07["⚙️ Admin"]
-        D08["🔬 Lab"]
-        D09["💊 Rx"]
-        D10["👤 User"]
-        D11["📝 Audit"]
-        D12["🏥 Dept"]
-        D13["⏰ Timeslot"]
-        D14["📰 Cont"]
-        D15["📧 Email"]
-        D16["🔑 PatientAuth"]
-        D17["🌐 PtPortal"]
-    end
-
-    START -->|"depends on"| CTRL
-    CTRL -->|"depends on"| APP
-    APP -->|"depends on"| INFRA
-    INFRA -->|"depends on"| DOMAIN
-
-    DFLOW["⬆️ Dependency Rule:<br/>domain ← infrastructure ← application ← controller ← start<br/><i>Outer layers depend inward. Domain has zero outward dependencies.</i>"]
-
-    INFRA -.->|"implements domain contracts"| DFLOW
-
-    style START fill:#1e40af,stroke:#3b82f6,color:#fff
-    style CTRL fill:#b91c1c,stroke:#ef4444,color:#fff
-    style APP fill:#1d4ed8,stroke:#60a5fa,color:#fff
-    style INFRA fill:#4b5563,stroke:#9ca3af,color:#fff
-    style DOMAIN fill:#1e3a5f,stroke:#3b82f6,color:#fff
-    style DFLOW fill:#065f46,stroke:#34d399,color:#fff
-    style S1 fill:#2563eb,stroke:#60a5fa,color:#fff
-    style S2 fill:#2563eb,stroke:#60a5fa,color:#fff
-    style S3 fill:#2563eb,stroke:#60a5fa,color:#fff
-    style C1 fill:#dc2626,stroke:#f87171,color:#fff
-    style C2 fill:#dc2626,stroke:#f87171,color:#fff
-    style C3 fill:#dc2626,stroke:#f87171,color:#fff
-    style C4 fill:#dc2626,stroke:#f87171,color:#fff
-    style A1 fill:#3b82f6,stroke:#93c5fd,color:#fff
-    style A2 fill:#3b82f6,stroke:#93c5fd,color:#fff
-    style A3 fill:#3b82f6,stroke:#93c5fd,color:#fff
-    style A4 fill:#3b82f6,stroke:#93c5fd,color:#fff
-    style I1 fill:#6b7280,stroke:#d1d5db,color:#fff
-    style I2 fill:#6b7280,stroke:#d1d5db,color:#fff
-    style I3 fill:#6b7280,stroke:#d1d5db,color:#fff
-    style D01 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D02 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D03 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D04 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D05 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D06 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D07 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D08 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D09 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D10 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D11 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D12 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D13 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D14 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D15 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D16 fill:#1e3a5f,stroke:#60a5fa,color:#fff
-    style D17 fill:#1e3a5f,stroke:#60a5fa,color:#fff
+                  ⬆️  Dependency Rule:
+  domain ← infrastructure ← application ← controller ← start
+  (Outer layers depend inward. Domain has zero outward dependencies.)
 ```
 
 **17 Bounded Contexts:** `admin` · `appointment` · `audit` · `common` · `content` · `department` · `email` · `inventory` · `invoice` · `lab` · `medicalrecord` · `patient` · `patientauth` · `patientportal` · `prescription` · `timeslot` · `user`
