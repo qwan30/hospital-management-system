@@ -243,21 +243,19 @@ def _assign_status(days_diff, slot, today, rng, cancel_rate):
 
 def _gen_vitals(synthea_data, pid_map, appointments, rng):
     vitals: list[VitalSigns] = []
+    reverse_pid_map = {hid: sid for sid, hid in pid_map.items()}
     for appt in appointments:
         if appt.status not in (AppointmentStatus.DONE, AppointmentStatus.IN_PROGRESS):
             continue
         if rng.random() < 0.3:
             continue
-        spid = None
-        for sid, hid in pid_map.items():
-            if hid == appt.patient_id:
-                spid = sid; break
+        spid = reverse_pid_map.get(appt.patient_id)
         obs = [o for o in synthea_data.get("observations", []) if o.get("PATIENT") == spid]
         bp_s = bp_d = ""; temp = weight = height = None; hr = rr = None; o2 = None
         for o in obs:
             code = o.get("CODE", ""); vs = o.get("VALUE", "")
             try: v = Decimal(vs)
-            except: v = None
+            except (Exception, ArithmeticError, ValueError, TypeError): v = None
             if code == "8480-6" and v: bp_s = str(int(v))
             elif code == "8462-4" and v: bp_d = str(int(v))
             elif code == "8310-5" and v: temp = v
@@ -285,12 +283,11 @@ def _gen_vitals(synthea_data, pid_map, appointments, rng):
 
 def _gen_records(synthea_data, pid_map, appointments, rng):
     records: list[MedicalRecord] = []
+    reverse_pid_map = {hid: sid for sid, hid in pid_map.items()}
     for appt in appointments:
         if appt.status != AppointmentStatus.DONE or rng.random() < 0.15:
             continue
-        spid = None
-        for sid, hid in pid_map.items():
-            if hid == appt.patient_id: spid = sid; break
+        spid = reverse_pid_map.get(appt.patient_id)
         conditions = [c for c in synthea_data.get("conditions", []) if c.get("PATIENT") == spid]
         diag_parts = [translate_condition(c.get("DESCRIPTION", ""))
                       for c in conditions[:3] if c.get("DESCRIPTION")]
@@ -337,12 +334,11 @@ LOINC_LABS = {
 
 def _gen_lab_results(synthea_data, pid_map, appointments, patients, rng):
     results: list[LabResult] = []
+    reverse_pid_map = {hid: sid for sid, hid in pid_map.items()}
     for appt in appointments:
         if appt.status != AppointmentStatus.DONE or rng.random() < 0.6:
             continue
-        spid = None
-        for sid, hid in pid_map.items():
-            if hid == appt.patient_id: spid = sid; break
+        spid = reverse_pid_map.get(appt.patient_id)
         obs = [o for o in synthea_data.get("observations", [])
                if o.get("PATIENT") == spid and o.get("CODE", "") in LOINC_LABS]
         if not obs:
