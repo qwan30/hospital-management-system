@@ -17,7 +17,7 @@ backend/
 ├── domain/          # JPA entities, enums, bounded-context exceptions, contracts
 ├── infrastructure/  # Spring Data repositories, PostgreSQL adapters, Gmail client
 ├── application/     # Use cases, auth services, scheduled jobs, seed data
-├── controller/      # REST controllers, API envelopes, security filters (40 controllers)
+├── controller/      # REST controllers, API envelopes, security filters (32 controllers)
 └── start/           # Composition root, Flyway migrations, app config
 
 frontend/
@@ -101,7 +101,7 @@ node .agents/tests/run-all.js  # ECC framework unit tests (hooks, lib, scripts)
 
 ## Key Project Metrics
 
-- **118 REST API mappings** across 40 controllers
+- **118 REST API mappings** across 32 controllers
 - **72 Next.js page files** covering staff, admin, patient portal, and public routes
 - **20 Flyway migrations** building 35 database tables with 26 indexes
 - **~408 backend tests** (122 service + 73 controller + 30 repository + ~183 integration)

@@ -271,7 +271,7 @@ xychart-beta
                                │
                                ▼ (depends on)
 ┌─────────────────────────────────────────────────────────────┐
-│ 🌐 controller — REST Layer (40 controllers)                 │
+│ 🌐 controller — REST Layer (32 controllers)                 │
 │   [ Auth ]    [ Admin ]    [ Clinical ]    [ PatientPortal ]│
 └─────────────────────────────────────────────────────────────┘
                                │
@@ -321,7 +321,13 @@ docker compose -f infra/docker-compose.yml up -d postgres
 ```bash
 cp .env.example .env
 ```
-Required secrets: `POSTGRES_PASSWORD`, `JWT_SECRET` (≥32 chars), `PATIENT_IDENTIFIER_SECRET` (≥32 chars)
+Required configuration & secrets:
+```env
+HMS_RELEASE_DEMO_SEED_ENABLED=true   # Bật tự động seed dữ liệu mẫu khi khởi động lần đầu
+POSTGRES_PASSWORD=hospital_pass
+JWT_SECRET=your-jwt-secret-at-least-32-chars
+PATIENT_IDENTIFIER_SECRET=your-patient-secret-32-chars
+```
 
 ### 3. Start Backend (Spring Boot)
 ```powershell
@@ -330,7 +336,7 @@ Required secrets: `POSTGRES_PASSWORD`, `JWT_SECRET` (≥32 chars), `PATIENT_IDEN
 ```bash
 cd backend && mvn install -DskipTests && mvn spring-boot:run -f start/pom.xml
 ```
-Health check: `http://localhost:8081/actuator/health`
+Health check: `http://localhost:8081/actuator/health` | Swagger UI: `http://localhost:8081/swagger-ui.html`
 
 ### 4. Start Frontend (Next.js)
 ```bash
@@ -344,7 +350,7 @@ docker compose -f infra/docker-compose.yml up -d --build    # Backend + Frontend
 docker compose -f infra/docker-compose.yml -f infra/docker-compose.observability.yml up -d   # + Monitoring
 ```
 
-### Demo Accounts
+### Demo Accounts (Requires `HMS_RELEASE_DEMO_SEED_ENABLED=true`)
 
 | Role | Email | Password |
 |------|-------|----------|
