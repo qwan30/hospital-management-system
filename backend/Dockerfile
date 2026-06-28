@@ -19,12 +19,16 @@ RUN mvn -q -pl start -am package -DskipTests
 FROM eclipse-temurin:17-jre
 WORKDIR /app
 
+RUN groupadd -r hms && useradd -r -g hms hms
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends fontconfig fonts-dejavu-core \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /workspace/start/target/start-0.1.0-SNAPSHOT.jar app.jar
+COPY --from=build --chown=hms:hms /workspace/start/target/start-0.1.0-SNAPSHOT.jar app.jar
 
+USER hms
 EXPOSE 8081 8082
 
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
