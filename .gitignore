@@ -35,3 +35,19 @@ __pycache__/
 uploads/
 .codex-run/
 .gitnexus
+
+# Crash Dumps & Stack Traces
+*.stackdump
+
+# Extended Python Caches & Environments
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+*.pyo
+*.pyd
+
+# AI Agent / Code Intelligence Caches
+.codegraph/
+
