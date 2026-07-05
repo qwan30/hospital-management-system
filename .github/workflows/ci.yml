@@ -386,13 +386,49 @@ jobs:
           category: trivy-frontend
 
   # ═══════════════════════════════════════════════════════════════════
+  # Job 6.5: SonarCloud Analysis
+  # ═══════════════════════════════════════════════════════════════════
+  sonarcloud:
+    name: SonarCloud analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [backend-test, frontend-test]
+    if: always() && !cancelled()
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download backend coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend/
+        continue-on-error: true
+
+      - name: Download frontend coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/
+        continue-on-error: true
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
+
+  # ═══════════════════════════════════════════════════════════════════
   # Job 7: Summary — final gate
   # ═══════════════════════════════════════════════════════════════════
   ci-summary:
     name: CI summary
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    needs: [backend-test, frontend-test, validate-observability, codeql]
+    needs: [backend-test, frontend-test, validate-observability, codeql, sonarcloud]
     if: always()
     steps:
       - name: Check results
@@ -406,6 +442,7 @@ jobs:
             ["backend-test"]="${{ needs.backend-test.result }}"
             ["frontend-test"]="${{ needs.frontend-test.result }}"
             ["validate-observability"]="${{ needs.validate-observability.result }}"
+            ["sonarcloud"]="${{ needs.sonarcloud.result }}"
           )
 
           FAILED=0
