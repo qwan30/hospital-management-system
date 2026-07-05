@@ -338,7 +338,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Scan Backend image (Trivy)
-        uses: aquasecurity/trivy-action@v0.28.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: ghcr.io/${{ github.repository }}/backend:${{ github.sha }}
           format: sarif
@@ -370,7 +370,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Scan Frontend image (Trivy)
-        uses: aquasecurity/trivy-action@v0.28.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           image-ref: ghcr.io/${{ github.repository }}/frontend:${{ github.sha }}
           format: sarif
