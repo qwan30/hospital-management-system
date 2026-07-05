@@ -153,6 +153,20 @@ Use the following skills when working on related files:
 
 When spawning subagents, always pass conventions from the respective skill into the agent's prompt.
 
+### AI Code Review (Gemini)
+Every PR to `main`/`master` is automatically reviewed by a multi-pass Gemini AI bot:
+- 5 specialized passes: CLAUDE.md compliance, bug scan, git-blame, PR history, code-comment
+- Verification pass with stronger model filters issues to confidence ≥ 80
+- Reviews posted in Vietnamese with file links and fix suggestions
+- Workflow: `.github/workflows/gemini-review.yml`
+- Script: `.github/scripts/review_bot.py`
+
+### SonarCloud
+Continuous code quality analysis integrated into CI:
+- Dashboard: https://sonarcloud.io/project/overview?id=qwan30_hospital-management-system
+- Scans Java (JaCoCo coverage) + TypeScript (lcov coverage)
+- Config: `sonar-project.properties`
+
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
