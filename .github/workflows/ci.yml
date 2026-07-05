@@ -401,6 +401,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up JDK ${{ env.BACKEND_JDK }}
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ env.BACKEND_JDK }}
+          cache: maven
+
+      - name: Compile backend classes
+        run: mvn compile -DskipTests
+        working-directory: backend
+
       - name: Download backend coverage
         uses: actions/download-artifact@v4
         with:
