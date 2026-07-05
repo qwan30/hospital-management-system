@@ -67,7 +67,7 @@ describe("PortalSideNav", () => {
     );
     expect(screen.getByRole("link", { name: /logout/i })).toHaveAttribute(
       "href",
-      "/portal/login",
+      "/auth/logout",
     );
   });
 });
