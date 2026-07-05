@@ -1,0 +1,146 @@
+name: Gemini AI Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches: [main, master]
+
+concurrency:
+  group: gemini-review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  GEMINI_MODEL_LIGHT: ${{ vars.GEMINI_MODEL_LIGHT || 'gemini-2.5-flash-lite' }}
+  GEMINI_MODEL_STRONG: ${{ vars.GEMINI_MODEL_STRONG || 'gemini-2.5-flash' }}
+  PR_NUMBER: ${{ github.event.pull_request.number }}
+  REPO: ${{ github.repository }}
+  PR_TITLE: ${{ github.event.pull_request.title }}
+  PR_BODY: ${{ github.event.pull_request.body }}
+  PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+  HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
+jobs:
+  prepare:
+    name: Prepare diff
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    outputs:
+      has_changes: ${{ steps.run.outputs.has_changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run self-checks
+        run: python3 .github/scripts/test_review_bot.py
+      - id: run
+        env:
+          GH_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+        run: python3 .github/scripts/review_bot.py prepare
+      - uses: actions/upload-artifact@v4
+        if: steps.run.outputs.has_changes == 'true'
+        with:
+          name: pr-diff
+          path: pr_diff.txt
+          retention-days: 1
+
+  pass-claude-md:
+    name: "Pass: CLAUDE.md compliance"
+    needs: prepare
+    if: needs.prepare.outputs.has_changes == 'true'
+    uses: ./.github/workflows/gemini-review-pass.yml
+    with:
+      pass_name: claude-md
+      model: ${{ vars.GEMINI_MODEL_LIGHT || 'gemini-2.5-flash-lite' }}
+      repo: ${{ github.repository }}
+      pr_number: ${{ github.event.pull_request.number }}
+      pr_title: ${{ github.event.pull_request.title }}
+      pr_body: ${{ github.event.pull_request.body }}
+      pr_author: ${{ github.event.pull_request.user.login }}
+    secrets: inherit
+
+  pass-bug-scan:
+    name: "Pass: Bug scan"
+    needs: prepare
+    if: needs.prepare.outputs.has_changes == 'true'
+    uses: ./.github/workflows/gemini-review-pass.yml
+    with:
+      pass_name: bug-scan
+      model: ${{ vars.GEMINI_MODEL_LIGHT || 'gemini-2.5-flash-lite' }}
+      repo: ${{ github.repository }}
+      pr_number: ${{ github.event.pull_request.number }}
+      pr_title: ${{ github.event.pull_request.title }}
+      pr_body: ${{ github.event.pull_request.body }}
+      pr_author: ${{ github.event.pull_request.user.login }}
+    secrets: inherit
+
+  pass-git-blame:
+    name: "Pass: Git history"
+    needs: prepare
+    if: needs.prepare.outputs.has_changes == 'true'
+    uses: ./.github/workflows/gemini-review-pass.yml
+    with:
+      pass_name: git-blame
+      model: ${{ vars.GEMINI_MODEL_LIGHT || 'gemini-2.5-flash-lite' }}
+      repo: ${{ github.repository }}
+      pr_number: ${{ github.event.pull_request.number }}
+      pr_title: ${{ github.event.pull_request.title }}
+      pr_body: ${{ github.event.pull_request.body }}
+      pr_author: ${{ github.event.pull_request.user.login }}
+    secrets: inherit
+
+  pass-pr-history:
+    name: "Pass: Related past PRs"
+    needs: prepare
+    if: needs.prepare.outputs.has_changes == 'true'
+    uses: ./.github/workflows/gemini-review-pass.yml
+    with:
+      pass_name: pr-history
+      model: ${{ vars.GEMINI_MODEL_LIGHT || 'gemini-2.5-flash-lite' }}
+      repo: ${{ github.repository }}
+      pr_number: ${{ github.event.pull_request.number }}
+      pr_title: ${{ github.event.pull_request.title }}
+      pr_body: ${{ github.event.pull_request.body }}
+      pr_author: ${{ github.event.pull_request.user.login }}
+    secrets: inherit
+
+  pass-code-comment:
+    name: "Pass: Code comment compliance"
+    needs: prepare
+    if: needs.prepare.outputs.has_changes == 'true'
+    uses: ./.github/workflows/gemini-review-pass.yml
+    with:
+      pass_name: code-comment
+      model: ${{ vars.GEMINI_MODEL_LIGHT || 'gemini-2.5-flash-lite' }}
+      repo: ${{ github.repository }}
+      pr_number: ${{ github.event.pull_request.number }}
+      pr_title: ${{ github.event.pull_request.title }}
+      pr_body: ${{ github.event.pull_request.body }}
+      pr_author: ${{ github.event.pull_request.user.login }}
+    secrets: inherit
+
+  verify-and-post:
+    name: Verify confidence and post review
+    needs:
+      - prepare
+      - pass-claude-md
+      - pass-bug-scan
+      - pass-git-blame
+      - pass-pr-history
+      - pass-code-comment
+    uses: ./.github/workflows/gemini-review-verify.yml
+    with:
+      model: ${{ vars.GEMINI_MODEL_STRONG || 'gemini-2.5-flash' }}
+      repo: ${{ github.repository }}
+      pr_number: ${{ github.event.pull_request.number }}
+      pr_title: ${{ github.event.pull_request.title }}
+      pr_body: ${{ github.event.pull_request.body }}
+      pr_author: ${{ github.event.pull_request.user.login }}
+      head_sha: ${{ github.event.pull_request.head.sha }}
+    secrets: inherit
