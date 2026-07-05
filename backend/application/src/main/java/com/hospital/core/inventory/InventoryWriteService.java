@@ -210,6 +210,12 @@ public class InventoryWriteService {
           .orElseThrow(() -> new NotFoundException("Medical record not found"));
       var prescriptionItem = findPrescriptionItem(record, request.prescriptionItemName());
 
+      var normItem = normalize(item.getItemName());
+      var normPresc = normalize(prescriptionItem.getMedicineName());
+      if (!normItem.equals(normPresc) && !normPresc.startsWith(normItem) && !normItem.startsWith(normPresc)) {
+        throw new ConflictException("Dispensed inventory item does not match the prescribed medication");
+      }
+
       if (lot.getQuantityRemaining() < request.quantity()) {
         throw new ConflictException("Inventory lot does not have enough quantity remaining");
       }

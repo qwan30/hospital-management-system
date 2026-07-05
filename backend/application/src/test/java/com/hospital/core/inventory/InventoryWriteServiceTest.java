@@ -358,7 +358,7 @@ class InventoryWriteServiceTest {
     var itemId = UUID.randomUUID();
     var lotId = UUID.randomUUID();
     var recordId = UUID.randomUUID();
-    var item = buildItemEntity(itemId, "MED-001", "Paracetamol");
+    var item = buildItemEntity(itemId, "MED-001", "Paracetamol 500mg");
     item.setQuantityOnHand(20);
     item.setReorderLevel(5);
     var lot = buildLot(lotId, item, 12);
@@ -390,6 +390,30 @@ class InventoryWriteServiceTest {
     assertThat(item.getQuantityOnHand()).isEqualTo(16);
     assertThat(lot.getQuantityRemaining()).isEqualTo(8);
     verify(auditLogService).record(eq("PHARMACY_MEDICATION_DISPENSED"), eq("INVENTORY_ITEM"), eq(itemId), anyMap());
+  }
+
+  @Test
+  void dispenseMedication_mismatchPrescriptionItemName_throwsConflict() {
+    var itemId = UUID.randomUUID();
+    var lotId = UUID.randomUUID();
+    var recordId = UUID.randomUUID();
+    var item = buildItemEntity(itemId, "MED-001", "Amlodipine 5mg");
+    item.setQuantityOnHand(20);
+    var lot = buildLot(lotId, item, 12);
+    var record = buildMedicalRecord(recordId, "Paracetamol 500mg");
+    when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+    when(lotRepository.findById(lotId)).thenReturn(Optional.of(lot));
+    when(medicalRecordRepository.findDetailedById(recordId)).thenReturn(Optional.of(record));
+
+    assertThatThrownBy(() -> service.dispenseMedication(new InventoryDispenseRequest(
+        itemId,
+        lotId,
+        recordId,
+        "Paracetamol 500mg",
+        4,
+        "Prescription pickup")))
+        .isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("Dispensed inventory item does not match the prescribed medication");
   }
 
   @Test
