@@ -19,8 +19,9 @@ if (Test-Path $envFile) {
         if ($_ -match '^\s*([^#][^=]+)=(.*)$') {
             $key = $matches[1].Trim()
             $val = $matches[2].Trim()
-            # Only set if not already set in current session
-            if (-not [Environment]::GetEnvironmentVariable($key, "Process")) {
+            # Overwrite if empty, whitespace, or not set in current process
+            $currentVal = [Environment]::GetEnvironmentVariable($key, "Process")
+            if ([string]::IsNullOrWhiteSpace($currentVal)) {
                 [Environment]::SetEnvironmentVariable($key, $val, "Process")
             }
         }
