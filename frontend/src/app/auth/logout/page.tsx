@@ -11,15 +11,20 @@ export default function LogoutPage() {
     let isMounted = true;
 
     async function logout() {
+      const isPatient = typeof window !== "undefined" && 
+        (!!sessionStorage.getItem("hms_patient_role") || 
+         !!sessionStorage.getItem("hms_patient_access_token_expires_in"));
+
       try {
-        await apiRequest("/auth/logout", { method: "POST" });
+        const endpoint = isPatient ? "/patient-auth/logout" : "/auth/logout";
+        await apiRequest(endpoint, { method: "POST" });
       } catch {
         // Local UI logout must clear client state even when the API is unavailable.
       } finally {
         clearSessions();
 
         if (isMounted) {
-          router.replace("/staff/login");
+          router.replace(isPatient ? "/portal/login" : "/staff/login");
         }
       }
     }

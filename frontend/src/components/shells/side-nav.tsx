@@ -308,7 +308,7 @@ export function PortalSideNav({
       ctaLabel={ctaLabel}
       ctaHref={ctaHref}
       supportHref="/portal/support"
-      logoutHref="/portal/login"
+      logoutHref="/auth/logout"
       statusTitle="Portal status"
       statusDescription="Secure patient access"
     />
