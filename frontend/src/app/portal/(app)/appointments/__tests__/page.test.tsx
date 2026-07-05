@@ -18,10 +18,22 @@ vi.mock("@/lib/operations-api", async () => {
   };
 });
 
+const getUpcomingDateStr = () => {
+  const date = new Date();
+  date.setDate(date.getDate() + 5);
+  return date.toISOString().split("T")[0];
+};
+
+const getPastDateStr = () => {
+  const date = new Date();
+  date.setDate(date.getDate() - 5);
+  return date.toISOString().split("T")[0];
+};
+
 const upcomingAppointment: PatientPortalAppointmentResponse = {
   appointmentId: "appointment-1",
   confirmationCode: "HMS-1001",
-  appointmentDate: "2026-07-01",
+  appointmentDate: getUpcomingDateStr(),
   startTime: "09:00:00",
   endTime: "09:30:00",
   doctorName: "Dr. Lan Tran",
@@ -31,7 +43,7 @@ const upcomingAppointment: PatientPortalAppointmentResponse = {
 const pastAppointment: PatientPortalAppointmentResponse = {
   appointmentId: "appointment-2",
   confirmationCode: "HMS-0900",
-  appointmentDate: "2026-01-01",
+  appointmentDate: getPastDateStr(),
   startTime: "10:00:00",
   endTime: "10:30:00",
   doctorName: "Dr. Minh Nguyen",

@@ -2,10 +2,12 @@ import argparse
 import base64
 import json
 import os
+import random
 import re
 import subprocess
 import sys
 import tempfile
+import time
 
 FALLBACK_MODEL_DEFAULT = "gemini-2.5-flash-lite"
 GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
@@ -408,11 +410,20 @@ def call_gemini(prompt, api_key, primary_model, fallback_model=FALLBACK_MODEL_DE
     models_to_try = [primary_model] if primary_model == fallback_model else [primary_model, fallback_model]
     last_err = None
     for model in models_to_try:
-        try:
-            return _call_gemini_once(prompt, api_key, model)
-        except Exception as e:
-            print(f"::warning::Gemini call with model {model} failed: {e}")
-            last_err = e
+        max_retries = 5
+        base_delay = 5.0
+        for attempt in range(max_retries):
+            try:
+                return _call_gemini_once(prompt, api_key, model)
+            except Exception as e:
+                last_err = e
+                print(f"::warning::Attempt {attempt + 1}/{max_retries} failed for model {model}: {e}")
+                if attempt < max_retries - 1:
+                    delay = base_delay * (2 ** attempt) + random.uniform(1.0, 3.0)
+                    print(f"Retrying in {delay:.2f} seconds...")
+                    time.sleep(delay)
+                else:
+                    print(f"::warning::All {max_retries} attempts failed for model {model}")
     raise RuntimeError(f"Gemini call failed on all attempted models {models_to_try}: {last_err}")
 
 
