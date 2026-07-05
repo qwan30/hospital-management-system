@@ -75,11 +75,11 @@ class ClinicalWorkflowIntegrationTest {
         .andExpect(status().isUnauthorized())
         .andExpect(jsonPath("$.error.code").value("unauthorized"));
 
-    var doctorToken = loginAndGetAccessToken("doctor1@hospital.vn", "Doctor@1234");
+    var pharmacistToken = loginAndGetAccessToken("pharmacist@hospital.vn", "Pharma@1234");
 
     mockMvc.perform(get("/api/v1/appointments/today")
             .param("date", "2030-01-10")
-            .header("Authorization", "Bearer " + doctorToken))
+            .header("Authorization", "Bearer " + pharmacistToken))
         .andExpect(status().isForbidden())
         .andExpect(jsonPath("$.error.code").value("forbidden"));
   }
