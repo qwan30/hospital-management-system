@@ -94,6 +94,13 @@ def test_parse_linked_issue_variants():
     assert parse_linked_issue(None) is None
 
 
+def test_parse_json_response_with_invalid_escape():
+    # \p is an invalid escape in JSON, but common in path names
+    text = '{"summary": "test \\path", "issues": []}'
+    res = parse_json_response(text)
+    assert res["summary"] == "test \\path"
+
+
 def test_b64_roundtrip():
     data = {"hello": "world", "number": 123}
     encoded = b64_encode(data)
@@ -109,6 +116,7 @@ def run_all():
         test_parse_json_response_plain,
         test_parse_json_response_with_markdown_fence,
         test_parse_json_response_with_trailing_extra_data,
+        test_parse_json_response_with_invalid_escape,
         test_filter_high_confidence_threshold,
         test_changed_files_extracts_paths,
         test_parse_linked_issue_variants,

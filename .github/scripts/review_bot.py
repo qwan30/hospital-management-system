@@ -208,11 +208,17 @@ def strip_json_fences(text):
     return re.sub(r'^```json\s*|^```\s*|```$', '', text.strip(), flags=re.MULTILINE)
 
 
+def fix_invalid_escapes(json_str):
+    pattern = r'\\(?!(["\\/bfnrt]|u[0-9a-fA-F]{4}))'
+    return re.sub(pattern, r'\\\\', json_str)
+
+
 def parse_json_response(text):
+    cleaned = strip_json_fences(text)
+    cleaned = fix_invalid_escapes(cleaned)
     try:
-        return json.loads(text)
+        return json.loads(cleaned)
     except json.JSONDecodeError:
-        cleaned = strip_json_fences(text)
         obj, _ = json.JSONDecoder().raw_decode(cleaned)
         return obj
 
