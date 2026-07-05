@@ -124,6 +124,18 @@ export async function apiRequest<T>(
   init: RequestInit = {},
   options: ApiRequestOptions = {},
 ): Promise<ApiEnvelope<T>> {
+  const scope = options.authScope || "staff";
+  let token = getStoredAccessToken(scope);
+  if (!token && typeof window !== "undefined" && !path.includes("/refresh") && !path.includes("/login")) {
+    const expiresSec = sessionStorage.getItem(`hms_${scope}_access_token_expires_in`);
+    if (expiresSec) {
+      const refreshSuccess = await attemptTokenRefresh(scope);
+      if (refreshSuccess) {
+        token = getStoredAccessToken(scope);
+      }
+    }
+  }
+
   const headers = buildHeaders(init.headers, options.authScope, options.requestId);
   const requestId = headers.get(REQUEST_ID_HEADER) ?? createRequestId();
   headers.set(REQUEST_ID_HEADER, requestId);
