@@ -302,7 +302,6 @@ export default function AdminPricingPage() {
                                 </button>
                                 <button
                                   type="button"
-                                  aria-label="Delete pricing"
                                   onClick={() => {
                                     const confirmed = window.confirm(`Are you sure you want to delete service pricing for ${p.serviceName}?`);
                                     if (confirmed) {
@@ -310,8 +309,10 @@ export default function AdminPricingPage() {
                                       setSuccess("Service pricing deleted successfully.");
                                     }
                                   }}
-                                  className="p-1.5 rounded-[var(--radius-md)] transition-colors hover:bg-[var(--hc-danger-bg)] text-[var(--hc-danger)]"
+                                  className="p-1.5 rounded-[var(--radius-md)] transition-colors hover:bg-[var(--hc-danger-bg)] text-[var(--hc-danger)] disabled:opacity-50 disabled:cursor-not-allowed"
                                   title="Delete pricing"
+                                  aria-label="Delete Pricing Unavailable"
+                                  disabled
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </button>

@@ -312,6 +312,12 @@ export interface AdminSlotGenerateResult {
 
 export type InvoiceStatus = "UNPAID" | "PAID" | "CANCELLED";
 
+export interface InvoiceLineItemResponse {
+  id: string;
+  description: string;
+  amount: number;
+}
+
 export interface InvoiceResponse {
   invoiceId: string;
   appointmentId: string;
@@ -324,6 +330,7 @@ export interface InvoiceResponse {
   status: InvoiceStatus;
   paymentMethod: string | null;
   paidAt: string | null;
+  lineItems: InvoiceLineItemResponse[];
 }
 
 export interface InvoiceCreateRequest {

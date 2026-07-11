@@ -69,8 +69,16 @@ public class InvoiceService {
 
     var invoice = new InvoiceEntity();
     invoice.setAppointment(appointment);
-    invoice.setTotalAmount(resolveAmount(appointment));
     invoice.setStatus(InvoiceStatus.UNPAID);
+    
+    var consultationAmount = resolveAmount(appointment);
+    var lineItem = new InvoiceLineItemEntity();
+    lineItem.setInvoice(invoice);
+    lineItem.setDescription(appointment.getDoctor().getDepartment() != null ? appointment.getDoctor().getDepartment().getName() + " Consultation" : "General Consultation");
+    lineItem.setAmount(consultationAmount);
+    invoice.getLineItems().add(lineItem);
+    invoice.setTotalAmount(consultationAmount);
+    
     var saved = invoiceRepository.save(invoice);
     auditLogService.record(
         "INVOICE_CREATED",
@@ -220,6 +228,9 @@ public class InvoiceService {
   private InvoiceResponse toInvoiceResponse(InvoiceEntity invoice) {
     var appointment = invoice.getAppointment();
     var department = appointment.getDoctor().getDepartment();
+    var lineItemResponses = invoice.getLineItems().stream()
+        .map(li -> new com.hospital.shared.finance.InvoiceLineItemResponse(li.getId(), li.getDescription(), li.getAmount()))
+        .toList();
     return new InvoiceResponse(
         invoice.getId(),
         appointment.getId(),
@@ -231,7 +242,8 @@ public class InvoiceService {
         invoice.getTotalAmount(),
         invoice.getStatus(),
         invoice.getPaymentMethod(),
-        invoice.getPaidAt());
+        invoice.getPaidAt(),
+        lineItemResponses);
   }
 
   private ServicePricingResponse toServicePricingResponse(ServicePricingEntity pricing) {

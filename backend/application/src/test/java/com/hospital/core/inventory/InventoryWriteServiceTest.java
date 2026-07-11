@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import com.hospital.core.audit.AuditLogService;
 import com.hospital.core.appointment.AppointmentEntity;
+import com.hospital.core.common.ConflictException;
 import com.hospital.core.common.NotFoundException;
 import com.hospital.core.department.DepartmentEntity;
 import com.hospital.core.department.DepartmentRepository;
@@ -412,7 +413,7 @@ class InventoryWriteServiceTest {
         "Paracetamol 500mg",
         4,
         "Prescription pickup")))
-        .isInstanceOf(RuntimeException.class)
+        .isInstanceOf(ConflictException.class)
         .hasMessageContaining("Dispensed inventory item does not match the prescribed medication");
   }
 

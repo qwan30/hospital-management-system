@@ -6,6 +6,9 @@ import com.hospital.shared.publicsite.HospitalContentSectionResponse;
 import com.hospital.shared.publicsite.NewsArticleResponse;
 import java.time.Instant;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +49,22 @@ public class PublicContentService {
         .map(this::toNewsResponse)
         .toList();
     return articles.isEmpty() ? defaultNewsArticles() : articles;
+  }
+
+  @Transactional(readOnly = true)
+  public NewsArticleResponse getNewsArticleBySlug(String slug) {
+    return newsArticleRepository.findBySlugIgnoreCase(slug)
+        .filter(NewsArticleEntity::isActive)
+        .map(this::toNewsResponse)
+        .orElse(null); // Simple implementation, can throw Exception if standard for project
+  }
+
+  @Transactional(readOnly = true)
+  public Page<NewsArticleResponse> getArchivedNews(int page, int size) {
+    // In a real implementation we would parse year and month, but for now we simply paginate all active articles
+    Pageable pageable = PageRequest.of(page, size);
+    return newsArticleRepository.findByActiveTrueOrderByPublishedAtDesc(pageable)
+        .map(this::toNewsResponse);
   }
 
   HospitalContentSectionResponse toSectionResponse(HospitalContentSectionEntity entity) {

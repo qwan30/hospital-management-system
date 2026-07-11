@@ -147,7 +147,7 @@ export default function AdminDashboardPage() {
                 { icon: Activity, label: "Live Monitoring", desc: "Real-time system health", href: "/admin/monitoring" },
                 { icon: Package, label: "Inventory Audit", desc: "Check stock levels", href: "/admin/inventory" },
                 { icon: FileText, label: "Audit Logs", desc: "Review system history", href: "/admin/audit-logs" },
-                { icon: Settings, label: "System Settings", desc: "Configure preferences", onClick: () => setShowSettingsModal(true) },
+                { icon: Settings, label: "System Settings", desc: "Configure preferences", onClick: () => setShowSettingsModal(true), disabled: true },
               ].map((item, i) => (
                 <li key={i}>
                   {item.href ? (
@@ -165,9 +165,10 @@ export default function AdminDashboardPage() {
                     </Link>
                   ) : (
                     <button
-                      className="w-full flex items-center justify-between p-4 rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] hover:border-[var(--hc-blue-600)] transition-all group text-left"
+                      className="w-full flex items-center justify-between p-4 rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)] hover:border-[var(--hc-blue-600)] transition-all group text-left disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-[var(--hc-border-soft)]"
                       onClick={item.onClick}
                       type="button"
+                      disabled={item.disabled}
                     >
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-[var(--radius-lg)] bg-[var(--hc-blue-50)] text-[var(--hc-blue-600)] flex items-center justify-center">

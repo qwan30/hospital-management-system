@@ -220,8 +220,10 @@ export default function AdminSupportPage() {
                 a.setAttribute("download", `support_tickets_export_${new Date().toISOString().slice(0, 10)}.csv`);
                 a.click();
               }}
-              className="flex items-center gap-2 px-3 py-2 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors text-[var(--hc-text)]"
+              className="flex items-center gap-2 px-3 py-2 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors text-[var(--hc-text)] disabled:opacity-50 disabled:cursor-not-allowed"
               title="Export support tickets to CSV"
+              disabled
+              aria-label="Export Unavailable"
             >
               <Download className="w-4 h-4 text-[var(--hc-text-muted)]" /> Export CSV
             </button>
@@ -385,7 +387,7 @@ export default function AdminSupportPage() {
           <div className="bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] shadow-sm p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-bold text-[var(--hc-text)]">SLA HEALTH</h3>
-              <button type="button" className="text-xs font-semibold text-[var(--hc-primary)] opacity-60" disabled title="SLA detail drilldown is not exposed by the current support API.">View all unavailable</button>
+              <button type="button" className="text-xs font-semibold text-[var(--hc-primary)] opacity-60" disabled title="SLA detail drilldown is not exposed by the current support API.">View unavailable</button>
             </div>
             {/* Donut */}
             <div className="flex items-center justify-center mb-4">

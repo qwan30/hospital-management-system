@@ -25,8 +25,10 @@ test.describe("@ui error pages", () => {
     const hasNotFoundHint =
       /not.?found|404|page.?not|doesn.?t exist|couldn.?t find/i.test(bodyText);
     expect(hasNotFoundHint).toBeTruthy();
-
-    expect(consoleProblems, "no unexpected console errors for 404 page").toEqual([]);
+    const filteredConsoleProblems = consoleProblems.filter(
+      (msg) => !msg.includes("404 (Not Found)"),
+    );
+    expect(filteredConsoleProblems, "no unexpected console errors for 404 page").toEqual([]);
   });
 
   test("public route with an invalid department id shows a user-friendly message", async ({

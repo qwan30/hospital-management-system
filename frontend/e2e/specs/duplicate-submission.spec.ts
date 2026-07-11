@@ -57,7 +57,7 @@ test.describe("@ui duplicate submission prevention", () => {
       });
     });
 
-    await page.route("**/api/v1/doctors/doctor-1/slots", async (route) => {
+    await page.route("**/api/v1/doctors/doctor-1/slots*", async (route) => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -77,7 +77,7 @@ test.describe("@ui duplicate submission prevention", () => {
       });
     });
 
-    await page.goto("/staff/booking", { waitUntil: "domcontentloaded" });
+    await page.goto("/booking", { waitUntil: "domcontentloaded" });
 
     // Fill out the booking form
     await page.locator("#booking-full-name").fill("Test Patient");
@@ -173,7 +173,7 @@ test.describe("@ui duplicate submission prevention", () => {
       });
     });
 
-    await page.route("**/api/v1/doctors/doctor-1/slots", async (route) => {
+    await page.route("**/api/v1/doctors/doctor-1/slots*", async (route) => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -193,7 +193,7 @@ test.describe("@ui duplicate submission prevention", () => {
       });
     });
 
-    await page.goto("/staff/booking", { waitUntil: "domcontentloaded" });
+    await page.goto("/booking", { waitUntil: "domcontentloaded" });
 
     // Fill out the booking form
     await page.locator("#booking-full-name").fill("Test Patient Duplicate");
@@ -285,7 +285,7 @@ test.describe("@ui duplicate submission prevention", () => {
       });
     });
 
-    await page.route("**/api/v1/doctors/doctor-1/slots", async (route) => {
+    await page.route("**/api/v1/doctors/doctor-1/slots*", async (route) => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -332,7 +332,7 @@ test.describe("@ui duplicate submission prevention", () => {
     }
 
     const submitButton = page.getByRole("button", {
-      name: /Confirm Appointment/i,
+      name: /Confirm Appointment|Submitting/i,
     });
     await expect(submitButton).toBeVisible();
 

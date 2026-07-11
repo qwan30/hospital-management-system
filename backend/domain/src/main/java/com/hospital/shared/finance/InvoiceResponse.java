@@ -17,5 +17,6 @@ public record InvoiceResponse(
     BigDecimal totalAmount,
     InvoiceStatus status,
     String paymentMethod,
-    Instant paidAt
+    Instant paidAt,
+    java.util.List<InvoiceLineItemResponse> lineItems
 ) {}

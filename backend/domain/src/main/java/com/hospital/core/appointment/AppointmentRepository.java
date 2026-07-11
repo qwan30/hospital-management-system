@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface AppointmentRepository extends JpaRepository<AppointmentEntity, UUID> {
+  @EntityGraph(attributePaths = {"patient", "doctor", "firstSlot"})
   Optional<AppointmentEntity> findByConfirmationCode(String confirmationCode);
 
   @EntityGraph(attributePaths = {"patient", "doctor", "firstSlot"})

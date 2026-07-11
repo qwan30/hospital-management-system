@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -32,6 +33,9 @@ public class InvoiceEntity {
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "appointment_id", nullable = false, unique = true)
   private AppointmentEntity appointment;
+
+  @OneToMany(mappedBy = "invoice", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+  private java.util.List<InvoiceLineItemEntity> lineItems = new java.util.ArrayList<>();
 
   @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
   private BigDecimal totalAmount = BigDecimal.ZERO;

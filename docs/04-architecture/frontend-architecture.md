@@ -1,4 +1,4 @@
-﻿# Frontend Architecture
+# Frontend Architecture
 
 **Status:** current architecture reference for the canonical Next.js app in `frontend/`.
 **Generated:** 2026-05-18.
@@ -125,3 +125,4 @@ For a new backend-backed page:
 | Staff schedule page is static | `/staff/schedule` has static layout; admin schedule/slot pages are API-backed | Add doctor schedule service wrapper for `/api/v1/me/schedule` if staff schedule becomes a release flow |
 | Patient appointment actions are unsupported | portal appointments page disables reschedule/cancel action | Keep the unsupported state until backend APIs exist |
 | No automatic token refresh replay | `apiRequest` attaches tokens but does not retry 401 | Document as current behavior or add a tested refresh strategy |
+| Staff invoice page is API-backed | `frontend/src/app/staff/(app)/invoices/page.tsx` maps `InvoiceLineItemResponse` from API | Fixed in Refactoring Phase 4 |

@@ -457,28 +457,17 @@ export default function InvoicesPage() {
                       </thead>
                       <tbody className="divide-y divide-[var(--hc-border-soft)]">
                         {(() => {
-                          const total = Number(selectedInvoice.totalAmount) || 0;
-                          let items = [];
-                          if (total <= 50) {
-                            items = [{ desc: "General Practitioner Consultation", amount: total }];
-                          } else if (total <= 150) {
-                            const consult = 50;
-                            items = [
-                              { desc: "Clinical Consultation Fee", amount: consult },
-                              { desc: "Diagnostic Triage & Assessment", amount: total - consult }
-                            ];
-                          } else {
-                            const consult = 50;
-                            const diagnostic = 100;
-                            items = [
-                              { desc: "Specialist Physician Consultation", amount: consult },
-                              { desc: "Advanced Diagnostics / Lab Panels", amount: diagnostic },
-                              { desc: "Clinical Care Facilities & Supplies", amount: total - consult - diagnostic }
-                            ];
+                          const items = selectedInvoice.lineItems || [];
+                          if (items.length === 0) {
+                             return (
+                               <tr>
+                                 <td className="p-3 font-medium text-[var(--hc-text)] text-center italic" colSpan={2}>No detailed items available for this invoice.</td>
+                               </tr>
+                             );
                           }
                           return items.map((item, idx) => (
                             <tr key={idx}>
-                              <td className="p-3 font-medium text-[var(--hc-text)]">{item.desc}</td>
+                              <td className="p-3 font-medium text-[var(--hc-text)]">{item.description}</td>
                               <td className="p-3 text-right font-semibold text-[var(--hc-text)]">{formatCurrency(item.amount)}</td>
                             </tr>
                           ));

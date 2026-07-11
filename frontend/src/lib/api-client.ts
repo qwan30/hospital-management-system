@@ -62,61 +62,49 @@ export function getApiBaseUrl() {
 let inMemoryStaffAccessToken: string | undefined = undefined;
 let inMemoryPatientAccessToken: string | undefined = undefined;
 
-let isRefreshing = false;
-let refreshSubscribers: ((token: string) => void)[] = [];
-
-function subscribeTokenRefresh(cb: (token: string) => void) {
-  refreshSubscribers.push(cb);
-}
-
-function onRefreshed(token: string) {
-  refreshSubscribers.forEach((cb) => cb(token));
-  refreshSubscribers = [];
-}
+let refreshPromise: Promise<boolean> | null = null;
 
 async function attemptTokenRefresh(scope: AuthScope): Promise<boolean> {
-  if (isRefreshing) {
-    return new Promise((resolve) => {
-      subscribeTokenRefresh((token) => {
-        resolve(!!token);
-      });
-    });
+  if (refreshPromise) {
+    return refreshPromise;
   }
 
-  isRefreshing = true;
+  refreshPromise = (async () => {
+    try {
+      const refreshPath = scope === "patient" ? "/patient-auth/refresh" : "/auth/refresh";
+      const refreshUrl = `${getApiBaseUrl()}${refreshPath}`;
+      const response = await fetch(refreshUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({}),
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const payload = await readJson<ApiEnvelope<TokenPair>>(response);
+        if (payload.data?.accessToken) {
+          persistSession(scope, {
+            accessToken: payload.data.accessToken,
+            expiresInSeconds: payload.data.expiresInSeconds,
+          });
+          return true;
+        }
+      }
+    } catch (err) {
+      console.error("Token refresh failed:", err);
+    }
+
+    return false;
+  })();
 
   try {
-    const refreshPath = scope === "patient" ? "/patient-auth/refresh" : "/auth/refresh";
-    const refreshUrl = `${getApiBaseUrl()}${refreshPath}`;
-    const response = await fetch(refreshUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({}),
-      credentials: "include",
-    });
-
-    if (response.ok) {
-      const payload = await readJson<ApiEnvelope<TokenPair>>(response);
-      if (payload.data?.accessToken) {
-        persistSession(scope, {
-          accessToken: payload.data.accessToken,
-          expiresInSeconds: payload.data.expiresInSeconds,
-        });
-        onRefreshed(payload.data.accessToken);
-        isRefreshing = false;
-        return true;
-      }
-    }
-  } catch (err) {
-    console.error("Token refresh failed:", err);
+    return await refreshPromise;
+  } finally {
+    refreshPromise = null;
   }
-
-  onRefreshed("");
-  isRefreshing = false;
-  return false;
 }
 
 export async function apiRequest<T>(
@@ -126,7 +114,7 @@ export async function apiRequest<T>(
 ): Promise<ApiEnvelope<T>> {
   const scope = options.authScope || "staff";
   let token = getStoredAccessToken(scope);
-  if (!token && typeof window !== "undefined" && !path.includes("/refresh") && !path.includes("/login")) {
+  if (!token && typeof window !== "undefined" && !path.startsWith("/auth/refresh") && !path.startsWith("/auth/login") && !path.startsWith("/patient-auth/refresh") && !path.startsWith("/patient-auth/login")) {
     const expiresSec = sessionStorage.getItem(`hms_${scope}_access_token_expires_in`);
     if (expiresSec) {
       const refreshSuccess = await attemptTokenRefresh(scope);
@@ -172,7 +160,7 @@ export async function apiRequest<T>(
   const responseRequestId = response.headers?.get(REQUEST_ID_HEADER) || requestId;
 
   // Intercept 401 and attempt token refresh
-  if (response.status === 401 && !path.includes("/refresh") && !path.includes("/login")) {
+  if (response.status === 401 && !path.startsWith("/auth/refresh") && !path.startsWith("/auth/login") && !path.startsWith("/patient-auth/refresh") && !path.startsWith("/patient-auth/login")) {
     const scope = options.authScope || "staff";
     const refreshSuccess = await attemptTokenRefresh(scope);
     if (refreshSuccess) {

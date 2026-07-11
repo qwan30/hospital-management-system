@@ -102,6 +102,12 @@ Every claim in this document is traceable to source files. This UPDATE replaces 
 **Repositories:** `InventoryItemRepository`, `InventoryLotRepository`, `InventoryMovementRepository`
 **Key Features:** FIFO lot tracking, low-stock alerts, dispense with medical record ID cross-reference
 
+### 2.18 AI Chatbot
+**Package:** `com.hospital.core.chatbot` & `com.hospital.shared.chatbot`
+**Controller:** `ChatbotController`
+**Service:** `ChatbotService`
+**Role:** Provides AI-driven patient assistance and symptom triage. It's a stateless integration context without its own DB entities, acting as a gateway to external LLMs.
+
 ### 2.8 Invoice
 **Package:** `com.hospital.core.invoice`
 **Controllers:** `InvoiceController` (4), `PricingController` (3), `RevenueReportController` (2)

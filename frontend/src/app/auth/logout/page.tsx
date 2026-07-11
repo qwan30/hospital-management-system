@@ -11,9 +11,9 @@ export default function LogoutPage() {
     let isMounted = true;
 
     async function logout() {
-      const isPatient = typeof window !== "undefined" && 
-        (!!sessionStorage.getItem("hms_patient_role") || 
-         !!sessionStorage.getItem("hms_patient_access_token_expires_in"));
+      const isPatient = 
+        !!sessionStorage.getItem("hms_patient_role") || 
+        !!sessionStorage.getItem("hms_patient_access_token_expires_in");
 
       try {
         const endpoint = isPatient ? "/patient-auth/logout" : "/auth/logout";

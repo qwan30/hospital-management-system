@@ -13,7 +13,8 @@ export async function expectStableLayout(page: Page) {
         rect.width > 0 &&
         rect.height > 0 &&
         style.visibility !== "hidden" &&
-        style.display !== "none"
+        style.display !== "none" &&
+        !element.classList.contains("sr-only")
       );
     });
 

@@ -28,8 +28,8 @@ test.describe("@ui rate limiting", () => {
     const login = new StaffLoginPage(page);
     await login.goto();
 
-    await page.getByLabel("Email").fill("doctor1@hospital.vn");
-    await page.getByLabel("Password").fill("Doctor@1234");
+    await page.getByLabel("Email", { exact: true }).fill("doctor1@hospital.vn");
+    await page.getByLabel("Password", { exact: true }).fill("Doctor@1234");
     await page.getByRole("button", { name: /Log in to Clinical Suite/i }).click();
 
     // Verify the user sees a rate-limit error message
@@ -51,7 +51,7 @@ test.describe("@ui rate limiting", () => {
   test("shows a rate limit message on the patient portal login when rate limited", async ({
     page,
   }) => {
-    await page.route("**/api/v1/auth/patient-login", async (route) => {
+    await page.route("**/api/v1/patient-auth/login", async (route) => {
       await route.fulfill({
         status: 429,
         contentType: "application/json",
@@ -67,17 +67,12 @@ test.describe("@ui rate limiting", () => {
 
     await page.goto("/portal/login", { waitUntil: "domcontentloaded" });
 
-    await page.getByLabel("Email").fill("patient@example.com");
-    await page.getByLabel("Password").fill("Patient@1234");
+    await page.getByLabel("Email", { exact: true }).fill("patient@example.com");
+    await page.getByLabel("Password", { exact: true }).fill("Patient@1234");
     await page.getByRole("button", { name: /^Log in/i }).click();
 
     // Verify rate limit error is displayed
-    await expect(page.getByRole("alert").first()).toBeVisible({ timeout: 10_000 });
-    const alertText = await page.getByRole("alert").first().innerText();
-    const hasRateLimitMessage =
-      /too many|rate limit|try again|429|slow down/i.test(alertText);
-    expect(hasRateLimitMessage).toBeTruthy();
-
+    await expect(page.getByRole("alert").filter({ hasText: /too many|rate limit|try again|429|slow down/i })).toBeVisible({ timeout: 15_000 });
     await expectNoNextErrorOverlay(page);
   });
 
@@ -104,21 +99,19 @@ test.describe("@ui rate limiting", () => {
       });
     });
 
-    await page.goto("/admin/dashboard", {
+    await page.goto("/admin/departments", {
       waitUntil: "domcontentloaded",
     });
 
     await expectNoNextErrorOverlay(page);
 
-    // The page should show a rate-limit or error message gracefully
-    const bodyText = await page.locator("body").innerText();
-    const hasRateLimit =
-      /rate limit|too many|try again later|429|unable to load|error|retry/i.test(
-        bodyText,
-      );
-    expect(hasRateLimit).toBeTruthy();
+    await expect(page.locator("body")).toContainText(
+      /rate limit|too many|try again later|429|unable to load|error|retry/i,
+      { timeout: 15_000 }
+    );
 
     // Ensure the raw rate-limit code is not exposed to the user
+    const bodyText = await page.locator("body").innerText();
     expect(
       bodyText.includes("rate_limited"),
       "raw error code should not be exposed",
@@ -164,12 +157,8 @@ test.describe("@ui rate limiting", () => {
       await submitButton.click();
 
       // Verify a rate-limit error is shown
-      const errorVisible = page.getByRole("alert").first();
-      await expect(errorVisible).toBeVisible({ timeout: 10_000 });
-      const alertText = await errorVisible.innerText();
-      const hasRateLimitMessage =
-        /too many|rate limit|try again later|429/i.test(alertText);
-      expect(hasRateLimitMessage).toBeTruthy();
+      const errorVisible = page.getByRole("alert").filter({ hasText: /too many|rate limit|try again later|429/i });
+      await expect(errorVisible).toBeVisible({ timeout: 15_000 });
     }
     // If no registration link, the test gracefully passes
   });

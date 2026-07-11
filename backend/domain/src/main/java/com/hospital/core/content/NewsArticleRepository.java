@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NewsArticleRepository extends JpaRepository<NewsArticleEntity, UUID> {
   List<NewsArticleEntity> findByActiveTrueOrderByPublishedAtDesc();
+  org.springframework.data.domain.Page<NewsArticleEntity> findByActiveTrueOrderByPublishedAtDesc(org.springframework.data.domain.Pageable pageable);
 
   List<NewsArticleEntity> findAllByOrderByPublishedAtDesc();
 

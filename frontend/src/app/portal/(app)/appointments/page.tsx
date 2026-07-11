@@ -218,11 +218,16 @@ function AppointmentCard({ appointment }: { appointment: PatientPortalAppointmen
           disabled
           title="Patient appointment changes are not supported by the current backend API"
         >
-          Unsupported
+          Reschedule
         </button>
-        <div className="w-8 h-8 flex items-center justify-center rounded-[var(--radius-full)] bg-[var(--hc-surface-soft)] group-hover:bg-[var(--hc-primary-bg)] transition-colors border border-transparent group-hover:border-[var(--hc-primary)]">
-          <HcIcon name="arrow_forward_ios" className="text-sm text-[var(--hc-text-placeholder)] group-hover:text-[var(--hc-primary)]" />
-        </div>
+        <button
+          className="text-xs font-bold uppercase tracking-widest text-[var(--hc-danger)] opacity-50"
+          type="button"
+          disabled
+          title="Cancellation is not supported by the current backend API"
+        >
+          Cancel
+        </button>
       </div>
     </article>
   );
