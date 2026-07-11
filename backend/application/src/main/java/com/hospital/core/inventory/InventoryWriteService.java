@@ -204,9 +204,9 @@ public class InventoryWriteService {
         throw new ConflictException("Dispense quantity must be greater than zero");
       }
 
-      var item = itemRepository.findById(request.itemId())
+      var item = itemRepository.findByIdForUpdate(request.itemId())
           .orElseThrow(() -> new NotFoundException("Inventory item not found"));
-      var lot = lotRepository.findById(request.lotId())
+      var lot = lotRepository.findByIdForUpdate(request.lotId())
           .orElseThrow(() -> new NotFoundException("Inventory lot not found"));
       if (!lot.getItem().getId().equals(item.getId())) {
         throw new ConflictException("Inventory lot does not belong to the selected item");

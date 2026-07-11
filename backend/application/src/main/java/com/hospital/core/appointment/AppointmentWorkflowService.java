@@ -166,7 +166,11 @@ public class AppointmentWorkflowService {
         .setMaxResults(slotsNeeded)
         .getResultList();
 
-    slots.forEach(slot -> slot.setStatus(SlotStatus.AVAILABLE));
+    slots.forEach(slot -> {
+      if (slot.getStatus() == SlotStatus.BOOKED) {
+        slot.setStatus(SlotStatus.AVAILABLE);
+      }
+    });
   }
 
   @Transactional

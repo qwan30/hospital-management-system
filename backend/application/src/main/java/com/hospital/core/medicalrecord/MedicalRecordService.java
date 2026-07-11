@@ -25,12 +25,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MedicalRecordService {
+  private static final Logger log = LoggerFactory.getLogger(MedicalRecordService.class);
   private final AppointmentRepository appointmentRepository;
   private final MedicalRecordRepository medicalRecordRepository;
   private final PatientIdentifierProtector patientIdentifierProtector;
@@ -80,6 +83,10 @@ public class MedicalRecordService {
       throw new ConflictException("Appointment must be checked in, in progress, or done before creating a medical record");
     }
 
+    if (request.diagnosis() == null || request.diagnosis().isBlank()) {
+      throw new IllegalArgumentException("Diagnosis is required");
+    }
+
     var record = new MedicalRecordEntity();
     record.setAppointment(appointment);
     record.setDiagnosis(request.diagnosis());
@@ -106,14 +113,18 @@ public class MedicalRecordService {
     var saved = medicalRecordRepository.save(record);
     reminderService.sendReminderIfDue(saved);
     var prescriptionDocument = prescriptionPdfService.generate(saved);
-    emailService.sendVisitResult(
-        saved.getAppointment().getPatient().getEmail(),
-        saved.getAppointment().getPatient().getFullName(),
-        saved.getDiagnosis(),
-        saved.getFollowUpDate(),
-        saved.getAppointment().getDoctor().getFullName(),
-        prescriptionDocument.content(),
-        prescriptionDocument.fileName());
+    try {
+      emailService.sendVisitResult(
+          saved.getAppointment().getPatient().getEmail(),
+          saved.getAppointment().getPatient().getFullName(),
+          saved.getDiagnosis(),
+          saved.getFollowUpDate(),
+          saved.getAppointment().getDoctor().getFullName(),
+          prescriptionDocument.content(),
+          prescriptionDocument.fileName());
+    } catch (Exception e) {
+      log.warn("Failed to send visit result email for appointment {}: {}", appointment.getId(), e.getMessage());
+    }
     return toMedicalRecordResponse(saved);
   }
 

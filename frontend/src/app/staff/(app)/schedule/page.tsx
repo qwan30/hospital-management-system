@@ -46,7 +46,7 @@ export default function DoctorSchedulePage() {
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 10;
 
-  const loadSchedule = useCallback(async () => {
+  const loadSchedule = useCallback(async (signal?: AbortSignal) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -55,22 +55,30 @@ export default function DoctorSchedulePage() {
           ? { date: selectedDate }
           : { week: selectedWeek };
       const data = await getMySchedule(params);
+      if (signal?.aborted) return;
       setAppointments(data);
     } catch (loadError) {
+      if (signal?.aborted) return;
       setError(
         loadError instanceof Error ? loadError.message : "Unable to load schedule.",
       );
       setAppointments([]);
     } finally {
-      setIsLoading(false);
+      if (!signal?.aborted) {
+        setIsLoading(false);
+      }
     }
   }, [viewMode, selectedDate, selectedWeek]);
 
   useEffect(() => {
+    const controller = new AbortController();
     const timer = window.setTimeout(() => {
-      void loadSchedule();
+      void loadSchedule(controller.signal);
     }, 0);
-    return () => window.clearTimeout(timer);
+    return () => {
+      controller.abort();
+      window.clearTimeout(timer);
+    };
   }, [loadSchedule]);
 
   /* ─── Computed KPIs ─── */
@@ -91,7 +99,7 @@ export default function DoctorSchedulePage() {
         action={
           <button
             type="button"
-            onClick={loadSchedule}
+            onClick={() => loadSchedule()}
             disabled={isLoading}
             className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-[var(--hc-border)] rounded-[var(--radius-md)] bg-[var(--hc-surface)] hover:bg-[var(--hc-surface-soft)] transition-colors disabled:opacity-50"
           >
@@ -179,7 +187,7 @@ export default function DoctorSchedulePage() {
             <h3 className="text-lg font-bold text-[var(--hc-text)]">{error}</h3>
             <p className="mt-1 text-sm text-[var(--hc-text-muted)]">We&apos;re having trouble retrieving the appointment schedule right now.</p>
           </div>
-          <button type="button" onClick={loadSchedule} className="hc-button-primary flex items-center gap-2">
+          <button type="button" onClick={() => loadSchedule()} className="hc-button-primary flex items-center gap-2">
             <RefreshCw className="w-4 h-4" /> Retry
           </button>
         </section>

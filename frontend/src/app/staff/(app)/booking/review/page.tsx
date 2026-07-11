@@ -4,10 +4,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { HcIcon } from "@/components/ui/hc-icon";
+import { useToast } from "@/components/ui/use-toast";
 import { listDoctors, listDoctorSlots, createPublicAppointment, type DoctorResponse, type DoctorSlotResponse } from "@/lib/public-api";
 
 export default function BookingDetailsReviewPage() {
   const router = useRouter();
+  const { toast } = useToast();
   
   const [doctor, setDoctor] = useState<DoctorResponse | null>(null);
   const [slot, setSlot] = useState<DoctorSlotResponse | null>(null);
@@ -49,6 +51,15 @@ export default function BookingDetailsReviewPage() {
       alert("Doctor or slot data not loaded yet.");
       return;
     }
+
+    if (!firstName || !lastName || !dob || !insuranceId || !symptoms) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill out all required fields: First Name, Last Name, Date of Birth, Insurance ID, and Symptoms.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     setIsSubmitting(true);
     try {
@@ -56,18 +67,18 @@ export default function BookingDetailsReviewPage() {
         doctorId: doctor.id,
         firstSlotId: slot.id,
         aiDurationMinutes: 30,
-        patientFullName: `${firstName} ${lastName}`.trim() || "Unknown Patient",
-        patientCccd: insuranceId || "000000000000",
+        patientFullName: `${firstName} ${lastName}`.trim(),
+        patientCccd: insuranceId,
         patientEmail: "patient@example.com",
         patientPhone: "0123456789",
-        patientDateOfBirth: dob || "1990-01-01",
+        patientDateOfBirth: dob,
         patientGender: "OTHER",
         patientAddress: {
           provinceOrCity: "Default City",
           district: "Default District",
           streetAddress: "Default Address"
         },
-        symptoms: symptoms || "Consultation"
+        symptoms: symptoms
       });
       
       router.push(`/staff/booking/success?id=${resp.id}`);

@@ -343,5 +343,14 @@ async function readJson<T>(response: Response): Promise<T> {
     return {} as T;
   }
 
-  return JSON.parse(text) as T;
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    throw new ApiClientError(
+      "Invalid JSON response from server",
+      response.status,
+      "PARSE_ERROR",
+      response.headers?.get(REQUEST_ID_HEADER) || undefined
+    );
+  }
 }

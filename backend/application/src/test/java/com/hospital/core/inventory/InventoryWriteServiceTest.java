@@ -364,8 +364,8 @@ class InventoryWriteServiceTest {
     item.setReorderLevel(5);
     var lot = buildLot(lotId, item, 12);
     var record = buildMedicalRecord(recordId, "Paracetamol 500mg");
-    when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
-    when(lotRepository.findById(lotId)).thenReturn(Optional.of(lot));
+    when(itemRepository.findByIdForUpdate(itemId)).thenReturn(Optional.of(item));
+    when(lotRepository.findByIdForUpdate(lotId)).thenReturn(Optional.of(lot));
     when(medicalRecordRepository.findDetailedById(recordId)).thenReturn(Optional.of(record));
     when(movementRepository.save(any(InventoryMovementEntity.class))).thenAnswer(inv -> {
       var e = inv.getArgument(0, InventoryMovementEntity.class);
@@ -402,8 +402,8 @@ class InventoryWriteServiceTest {
     item.setQuantityOnHand(20);
     var lot = buildLot(lotId, item, 12);
     var record = buildMedicalRecord(recordId, "Paracetamol 500mg");
-    when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
-    when(lotRepository.findById(lotId)).thenReturn(Optional.of(lot));
+    when(itemRepository.findByIdForUpdate(itemId)).thenReturn(Optional.of(item));
+    when(lotRepository.findByIdForUpdate(lotId)).thenReturn(Optional.of(lot));
     when(medicalRecordRepository.findDetailedById(recordId)).thenReturn(Optional.of(record));
 
     assertThatThrownBy(() -> service.dispenseMedication(new InventoryDispenseRequest(
@@ -422,8 +422,8 @@ class InventoryWriteServiceTest {
     var itemId = UUID.randomUUID();
     var otherItem = buildItemEntity(UUID.randomUUID(), "MED-OTHER", "Other");
     var lot = buildLot(UUID.randomUUID(), otherItem, 10);
-    when(itemRepository.findById(itemId)).thenReturn(Optional.of(buildItemEntity(itemId, "MED-001", "Paracetamol")));
-    when(lotRepository.findById(lot.getId())).thenReturn(Optional.of(lot));
+    when(itemRepository.findByIdForUpdate(itemId)).thenReturn(Optional.of(buildItemEntity(itemId, "MED-001", "Paracetamol")));
+    when(lotRepository.findByIdForUpdate(lot.getId())).thenReturn(Optional.of(lot));
 
     assertThatThrownBy(() -> service.dispenseMedication(new InventoryDispenseRequest(
         itemId,
@@ -442,8 +442,8 @@ class InventoryWriteServiceTest {
     var lotId = UUID.randomUUID();
     var recordId = UUID.randomUUID();
     var item = buildItemEntity(itemId, "MED-001", "Paracetamol");
-    when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
-    when(lotRepository.findById(lotId)).thenReturn(Optional.of(buildLot(lotId, item, 10)));
+    when(itemRepository.findByIdForUpdate(itemId)).thenReturn(Optional.of(item));
+    when(lotRepository.findByIdForUpdate(lotId)).thenReturn(Optional.of(buildLot(lotId, item, 10)));
     when(medicalRecordRepository.findDetailedById(recordId))
         .thenReturn(Optional.of(buildMedicalRecord(recordId, "Amoxicillin")));
 
@@ -465,8 +465,8 @@ class InventoryWriteServiceTest {
     var recordId = UUID.randomUUID();
     var item = buildItemEntity(itemId, "MED-001", "Paracetamol");
     item.setQuantityOnHand(20);
-    when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
-    when(lotRepository.findById(lotId)).thenReturn(Optional.of(buildLot(lotId, item, 2)));
+    when(itemRepository.findByIdForUpdate(itemId)).thenReturn(Optional.of(item));
+    when(lotRepository.findByIdForUpdate(lotId)).thenReturn(Optional.of(buildLot(lotId, item, 2)));
     when(medicalRecordRepository.findDetailedById(recordId))
         .thenReturn(Optional.of(buildMedicalRecord(recordId, "Paracetamol 500mg")));
 
