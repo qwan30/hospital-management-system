@@ -46,8 +46,6 @@ export interface SideNavLink {
 }
 
 interface HcSidebarProps {
-  title?: string;
-  subtitle?: string;
   roleScope: "staff" | "patient";
   links?: SideNavLink[];
   ctaLabel?: string;
@@ -146,8 +144,6 @@ function iconFor(icon?: string) {
 }
 
 export function HcSidebar({
-  title = "Clinical Suite",
-  subtitle = "Standard Access",
   roleScope,
   links,
   ctaLabel,
@@ -179,19 +175,6 @@ export function HcSidebar({
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col px-[18px] pb-[22px]">
-        <div className="mb-[18px] flex items-center gap-3">
-          <div className="grid size-[54px] shrink-0 place-items-center rounded-[var(--radius-lg)] border border-[var(--hc-border)] bg-[var(--hc-surface)] text-[var(--hc-primary)] shadow-[var(--shadow-xs)]">
-            <ShieldPlus className="size-6" aria-hidden="true" />
-          </div>
-          <div className="min-w-0">
-            <div className="truncate text-sm font-bold leading-[18px] text-[var(--hc-text)]">
-              {title}
-            </div>
-            <div className="truncate text-xs font-bold uppercase leading-4 tracking-[0.02em] text-[var(--hc-blue-600)]">
-              {subtitle}
-            </div>
-          </div>
-        </div>
 
         {canUseCta && ctaLabel && ctaHref ? (
           <Link

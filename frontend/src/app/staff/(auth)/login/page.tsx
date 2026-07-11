@@ -28,15 +28,13 @@ export default function StaffLoginPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
     setIsSubmitting(true);
-
-    const formData = new FormData(event.currentTarget);
-    const email = String(formData.get("email") || "");
-    const password = String(formData.get("password") || "");
 
     try {
       const response = await apiRequest<StaffLoginResponse>("/auth/login", {
@@ -62,7 +60,7 @@ export default function StaffLoginPage() {
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-no-repeat"
-        style={{ backgroundImage: "url('/staff-login-background.png')", backgroundPosition: "15% center" }}
+        style={{ backgroundImage: "url('/staff-login-background.png')", backgroundPosition: "-150% center" }}
         aria-hidden="true"
       />
       <div className="relative z-10 flex flex-1">
@@ -165,6 +163,8 @@ export default function StaffLoginPage() {
                       type="email"
                       autoComplete="username"
                       required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </span>
                 </label>
@@ -193,6 +193,8 @@ export default function StaffLoginPage() {
                       type={showPassword ? "text" : "password"}
                       autoComplete="current-password"
                       required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                     <button
                       type="button"

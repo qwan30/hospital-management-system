@@ -21,8 +21,10 @@ const symptomOptions = [
   "Other",
 ];
 
-function todayDate() {
-  return new Date().toISOString().slice(0, 10);
+function tomorrowDate() {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  return date.toISOString().slice(0, 10);
 }
 
 function formatSlotTime(slot: DoctorSlotResponse) {
@@ -45,7 +47,7 @@ function getInitialDoctorId(doctors: DoctorResponse[]) {
 export default function PublicBookingPage() {
   const [doctors, setDoctors] = useState<DoctorResponse[]>([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
-  const [slotDate, setSlotDate] = useState(todayDate);
+  const [slotDate, setSlotDate] = useState(tomorrowDate);
   const [slots, setSlots] = useState<DoctorSlotResponse[]>([]);
   const [selectedSlotId, setSelectedSlotId] = useState("");
   const [isLoadingDoctors, setIsLoadingDoctors] = useState(true);
@@ -86,7 +88,7 @@ export default function PublicBookingPage() {
 
   useEffect(() => {
     let isActive = true;
-    const initialDate = todayDate();
+    const initialDate = tomorrowDate();
 
     listDoctors()
       .then((nextDoctors) => {
@@ -278,7 +280,7 @@ export default function PublicBookingPage() {
                 <input
                   className="hc-input w-full bg-white"
                   id="booking-date"
-                  min={todayDate()}
+                  min={tomorrowDate()}
                   onChange={(event) => handleDateChange(event.target.value)}
                   type="date"
                   value={slotDate}

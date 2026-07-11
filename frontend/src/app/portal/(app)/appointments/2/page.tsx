@@ -1,7 +1,18 @@
 import Image from "next/image";
 
 import { HcIcon } from "@/components/ui/hc-icon";
-export default function PatientAppointmentsPage() {
+export default async function PatientAppointmentsPage(props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+  const searchParams = await props.searchParams;
+  const dateParam = searchParams?.date;
+  
+  let displayDate = "";
+  const d = typeof dateParam === "string" ? new Date(dateParam) : new Date();
+  if (!isNaN(d.getTime())) {
+    displayDate = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(d);
+  } else {
+    displayDate = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date());
+  }
+
   return (
     <>
       <main>
@@ -60,7 +71,7 @@ export default function PatientAppointmentsPage() {
 {/* Appointment Card 1 */}
 <div className="grid grid-cols-12 items-center bg-surface px-6 py-6 border-b-2 border-transparent hover:border-primary-container hover:bg-surface-container-lowest transition-all group">
 <div className="col-span-2">
-<p className="text-lg font-semibold tabular-nums leading-none">Oct 24, 2023</p>
+<p className="text-lg font-semibold tabular-nums leading-none">{displayDate}</p>
 <p className="text-xs text-on-surface-variant mt-1 tabular-nums">09:30 AM to 10:15 AM</p>
 </div>
 <div className="col-span-3 flex items-center gap-3">

@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { HcIcon } from "@/components/ui/hc-icon";
 
 export default function BookingSuccessPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id") || "#MC-8294401";
   return (
     <main className="max-w-[1400px] mx-auto p-8 pb-20 flex flex-col items-center justify-center min-h-[calc(100vh-100px)]">
       <div className="w-full max-w-[720px] flex flex-col space-y-10">
@@ -19,7 +21,7 @@ export default function BookingSuccessPage() {
               Booking confirmed.
             </h1>
             <p className="text-sm font-bold uppercase tracking-widest text-[var(--hc-text-secondary)]">
-              Appointment ID: #MC-8294401
+              Appointment ID: {id}
             </p>
           </div>
         </header>

@@ -29,15 +29,11 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers(disabledWithoutDocker = true)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ClinicalWorkflowIntegrationTest {
-  @Container
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("pgvector/pgvector:pg15");
 
   @Autowired
@@ -65,6 +61,11 @@ class ClinicalWorkflowIntegrationTest {
     registry.add("POSTGRES_DB", postgres::getDatabaseName);
     registry.add("POSTGRES_USER", postgres::getUsername);
     registry.add("POSTGRES_PASSWORD", postgres::getPassword);
+    registry.add("spring.datasource.url", () ->
+        "jdbc:postgresql://" + postgres.getHost() + ":" + postgres.getMappedPort(5432) + "/" + postgres.getDatabaseName());
+    registry.add("spring.datasource.username", postgres::getUsername);
+    registry.add("spring.datasource.password", postgres::getPassword);
+    registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
     registry.add("security.jwt.secret", () -> "test-jwt-secret-with-at-least-32-characters");
     registry.add("security.patient-identifier.secret", () -> "test-patient-identifier-secret");
   }

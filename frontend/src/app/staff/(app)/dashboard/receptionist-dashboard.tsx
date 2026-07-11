@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import {
   Calendar,
   Search,
@@ -14,35 +14,64 @@ import Link from "next/link";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { getTodayAppointments, checkInAppointment, ClinicalAppointmentResponse } from "@/lib/clinical-api";
 
 interface SlotRow {
   id: string;
   doctor: string;
   department: string;
   timeSlot: string;
-  status: "Available" | "Booked" | "Blocked";
+  status: string;
   patientName?: string;
+  originalStatus: string;
 }
-
-const MOCK_SLOTS: SlotRow[] = [
-  { id: "S-501", doctor: "Dr. Arthur Vance", department: "Cardiology", timeSlot: "08:00 - 08:30", status: "Booked", patientName: "Elena Rodriguez" },
-  { id: "S-502", doctor: "Dr. Arthur Vance", department: "Cardiology", timeSlot: "08:30 - 09:00", status: "Available" },
-  { id: "S-503", doctor: "Dr. Lisa Ross", department: "Pediatrics", timeSlot: "09:00 - 09:30", status: "Booked", patientName: "Sarah Connor" },
-  { id: "S-504", doctor: "Dr. Lisa Ross", department: "Pediatrics", timeSlot: "09:30 - 10:00", status: "Blocked" },
-  { id: "S-505", doctor: "Dr. Michael Patel", department: "Orthopedics", timeSlot: "10:30 - 11:00", status: "Available" },
-];
 
 export function ReceptionistDashboardView() {
   const [searchQuery, setSearchQuery] = useState("");
   const [deptFilter, setDeptFilter] = useState("All");
+  const [appointments, setAppointments] = useState<ClinicalAppointmentResponse[]>([]);
+
+  const fetchAppointments = useCallback(async () => {
+    try {
+      const data = await getTodayAppointments();
+      setAppointments(data);
+    } catch (err) {
+      console.error("Failed to load appointments:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchAppointments();
+  }, [fetchAppointments]);
+
+  const handleCheckIn = async (appointmentId: string) => {
+    try {
+      await checkInAppointment(appointmentId, { checkedInAt: new Date().toISOString() });
+      await fetchAppointments();
+    } catch (err) {
+      console.error("Failed to check in:", err);
+      alert("Failed to check in");
+    }
+  };
 
   const filteredSlots = useMemo(() => {
-    return MOCK_SLOTS.filter((s) => {
+    const slots: SlotRow[] = appointments.map(apt => ({
+      id: apt.appointmentId,
+      doctor: apt.doctorName || "Unknown Doctor",
+      department: "General", // The API might not return department yet
+      timeSlot: `${apt.startTime} - ${apt.endTime}`,
+      status: apt.status === "CONFIRMED" ? "Booked" : apt.status,
+      patientName: apt.patientFullName,
+      originalStatus: apt.status
+    }));
+
+    return slots.filter((s) => {
       const matchesSearch = s.doctor.toLowerCase().includes(searchQuery.toLowerCase()) || (s.patientName && s.patientName.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesDept = deptFilter === "All" || s.department === deptFilter;
       return matchesSearch && matchesDept;
     });
-  }, [searchQuery, deptFilter]);
+  }, [appointments, searchQuery, deptFilter]);
 
   return (
     <div className="p-8 pb-20 max-w-[1400px] mx-auto">
@@ -144,23 +173,16 @@ export function ReceptionistDashboardView() {
                     <td className="hc-td font-semibold text-[var(--hc-text)]">{slot.doctor}</td>
                     <td className="hc-td text-sm text-[var(--hc-text-muted)]">{slot.department}</td>
                     <td className="hc-td text-sm font-mono text-[var(--hc-text)]">{slot.timeSlot}</td>
-                    <td className="hc-td"><StatusBadge label={slot.status} tone={slot.status === "Available" ? "green" : slot.status === "Booked" ? "blue" : slot.status === "Blocked" ? "neutral" : "neutral"} /></td>
+                    <td className="hc-td"><StatusBadge label={slot.status} tone={slot.status === "Available" ? "green" : slot.status === "Booked" ? "blue" : slot.status === "CHECKED_IN" ? "green" : "neutral"} /></td>
                     <td className="hc-td text-sm text-[var(--hc-text)]">{slot.patientName || "N/A"}</td>
                     <td className="hc-td text-right">
-                      {slot.status === "Available" ? (
-                        <Link
-                          href={`/staff/booking?doctor=${encodeURIComponent(slot.doctor)}`}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-[var(--hc-primary)] text-white rounded-[var(--radius-md)] hover:bg-[var(--hc-blue-700)] transition-colors"
-                        >
-                          Book Slot
-                        </Link>
-                      ) : slot.status === "Booked" ? (
-                        <Link
-                          href="/staff/queue"
+                      {slot.originalStatus === "PENDING" || slot.originalStatus === "CONFIRMED" ? (
+                        <button
+                          onClick={() => handleCheckIn(slot.id)}
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors"
                         >
                           Check In
-                        </Link>
+                        </button>
                       ) : (
                         <span className="text-xs text-[var(--hc-text-muted)] font-medium">No actions</span>
                       )}

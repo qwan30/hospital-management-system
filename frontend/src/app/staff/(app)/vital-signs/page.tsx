@@ -2,6 +2,7 @@
 
 import type { ComponentType, HTMLAttributes } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Activity,
   AlertTriangle,
@@ -27,6 +28,9 @@ import { KpiCard } from "@/components/ui/kpi-card";
 const ELIGIBLE_STATUSES = ["CHECKED_IN", "IN_PROGRESS"];
 
 export default function VitalSignsEditorPage() {
+  const searchParams = useSearchParams();
+  const requestedAppointmentId = searchParams.get("appointmentId") ?? "";
+
   const [appointments, setAppointments] = useState<ClinicalAppointmentResponse[]>([]);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState("");
   const [bloodPressure, setBloodPressure] = useState("");
@@ -54,11 +58,15 @@ export default function VitalSignsEditorPage() {
         .filter((appointment) => ELIGIBLE_STATUSES.includes(appointment.status));
 
       setAppointments(nextAppointments);
-      setSelectedAppointmentId((current) =>
-        current && nextAppointments.some((appointment) => appointment.appointmentId === current)
-          ? current
-          : nextAppointments[0]?.appointmentId ?? "",
-      );
+      setSelectedAppointmentId((current) => {
+        if (current && nextAppointments.some((appointment) => appointment.appointmentId === current)) {
+          return current;
+        }
+        if (requestedAppointmentId && nextAppointments.some((appointment) => appointment.appointmentId === requestedAppointmentId)) {
+          return requestedAppointmentId;
+        }
+        return nextAppointments[0]?.appointmentId ?? "";
+      });
     } catch (loadError) {
       setAppointments([]);
       setSelectedAppointmentId("");
@@ -66,7 +74,7 @@ export default function VitalSignsEditorPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [requestedAppointmentId]);
 
   useEffect(() => {
     void Promise.resolve().then(loadAppointments);

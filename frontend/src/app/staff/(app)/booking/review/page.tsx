@@ -2,10 +2,82 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { HcIcon } from "@/components/ui/hc-icon";
+import { listDoctors, listDoctorSlots, createPublicAppointment, type DoctorResponse, type DoctorSlotResponse } from "@/lib/public-api";
 
 export default function BookingDetailsReviewPage() {
   const router = useRouter();
+  
+  const [doctor, setDoctor] = useState<DoctorResponse | null>(null);
+  const [slot, setSlot] = useState<DoctorSlotResponse | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [dob, setDob] = useState("");
+  const [insuranceId, setInsuranceId] = useState("");
+  const [symptoms, setSymptoms] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    async function fetchData() {
+      try {
+        const doctors = await listDoctors();
+        if (!active || doctors.length === 0) return;
+        const selectedDoctor = doctors[0];
+        setDoctor(selectedDoctor);
+
+        const date = new Date();
+        date.setDate(date.getDate() + 1);
+        const tomorrow = date.toISOString().slice(0, 10);
+        
+        const slots = await listDoctorSlots(selectedDoctor.id, tomorrow);
+        if (active && slots.length > 0) {
+          setSlot(slots[0]);
+        }
+      } catch (err) {
+        console.error("Failed to load mock doctor data", err);
+      }
+    }
+    fetchData();
+    return () => { active = false; };
+  }, []);
+
+  const handleConfirm = async () => {
+    if (!doctor || !slot) {
+      alert("Doctor or slot data not loaded yet.");
+      return;
+    }
+    
+    setIsSubmitting(true);
+    try {
+      const resp = await createPublicAppointment({
+        doctorId: doctor.id,
+        firstSlotId: slot.id,
+        aiDurationMinutes: 30,
+        patientFullName: `${firstName} ${lastName}`.trim() || "Unknown Patient",
+        patientCccd: insuranceId || "000000000000",
+        patientEmail: "patient@example.com",
+        patientPhone: "0123456789",
+        patientDateOfBirth: dob || "1990-01-01",
+        patientGender: "OTHER",
+        patientAddress: {
+          provinceOrCity: "Default City",
+          district: "Default District",
+          streetAddress: "Default Address"
+        },
+        symptoms: symptoms || "Consultation"
+      });
+      
+      router.push(`/staff/booking/success?id=${resp.id}`);
+    } catch (err) {
+      alert("Failed to confirm booking: " + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <main className="max-w-[1400px] mx-auto p-8 pb-20">
       <header className="mb-8">
@@ -40,19 +112,19 @@ export default function BookingDetailsReviewPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Legal First Name</label>
-                <input className="hc-input w-full" placeholder="e.g. Jonathan" type="text" />
+                <input className="hc-input w-full" placeholder="e.g. Jonathan" type="text" value={firstName} onChange={e => setFirstName(e.target.value)} />
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Legal Last Name</label>
-                <input className="hc-input w-full" placeholder="e.g. Miller" type="text" />
+                <input className="hc-input w-full" placeholder="e.g. Miller" type="text" value={lastName} onChange={e => setLastName(e.target.value)} />
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Date of Birth</label>
-                <input className="hc-input w-full" type="date" />
+                <input className="hc-input w-full" type="date" value={dob} onChange={e => setDob(e.target.value)} />
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Insurance ID</label>
-                <input className="hc-input w-full" placeholder="XX-00000000" type="text" />
+                <input className="hc-input w-full" placeholder="XX-00000000" type="text" value={insuranceId} onChange={e => setInsuranceId(e.target.value)} />
               </div>
             </div>
           </div>
@@ -63,7 +135,7 @@ export default function BookingDetailsReviewPage() {
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Known Allergies or Contraindications</label>
-                <textarea className="hc-input w-full resize-none" placeholder="List any drug allergies or respiratory conditions..." rows={3}></textarea>
+                <textarea className="hc-input w-full resize-none" placeholder="List any drug allergies or respiratory conditions..." rows={3} value={symptoms} onChange={e => setSymptoms(e.target.value)}></textarea>
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Current Medications</label>
@@ -83,7 +155,7 @@ export default function BookingDetailsReviewPage() {
             <div className="flex justify-between items-start">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-primary)] mb-1">Review Summary</div>
-                <h3 className="text-xl font-bold tracking-tight text-[var(--hc-text)]">Surgery Booking</h3>
+                <h3 className="text-xl font-bold tracking-tight text-[var(--hc-text)]">General Consultation</h3>
               </div>
               <HcIcon name="info" className="text-[var(--hc-text-muted)]" />
             </div>
@@ -91,45 +163,47 @@ export default function BookingDetailsReviewPage() {
             <div className="flex flex-col gap-5">
               <div className="flex flex-col gap-1 border-b border-[var(--hc-border-soft)] pb-4">
                 <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Procedure</div>
-                <div className="text-sm font-bold text-[var(--hc-text)]">Minimally Invasive Cardiac Bypass</div>
+                <div className="text-sm font-bold text-[var(--hc-text)]">Consultation</div>
               </div>
 
               <div className="grid grid-cols-2 gap-4 border-b border-[var(--hc-border-soft)] pb-4">
                 <div className="flex flex-col gap-1">
                   <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Date</div>
-                  <div className="text-sm font-bold text-[var(--hc-text)]">Oct 14, 2024</div>
+                  <div className="text-sm font-bold text-[var(--hc-text)]">{slot?.date || "Loading..."}</div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Check-in</div>
-                  <div className="text-sm font-bold text-[var(--hc-text)]">05:45 AM</div>
+                  <div className="text-sm font-bold text-[var(--hc-text)]">{slot?.startTime?.slice(0, 5) || "00:00"}</div>
                 </div>
               </div>
 
               <div className="flex items-center gap-3 py-2">
                 <div className="h-10 w-10 flex-shrink-0">
-                  <Image alt="Dr. Aris Thorne" className="h-full w-full object-cover rounded-[var(--radius-md)]" data-alt="close-up portrait of a surgeon in professional attire with soft clinical background lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD081xid81nHg8Ye8g9JIjC6fmI6Y5csBXIj7rECP4BDU2A2jQ7f_OBvf81x4pnnIpeELPoxJ64FKi5r8WEaYCspghW4fX1J8bpUB_bYstab-jxyoJ-767izPPuKcMNLHl1v9ZnsVOyJ6xLpYZgJ7wLQqwgVK8EXvhY_o2iRTvwcjO-r_89i3zlyduiUsD49tt9xFDY1cKaIGJC4Ha0X2uAZnjQ42ccoe58yAsRJi30qDlbxmjWm0rXcNrWjgnpqnxG_TciLRJHYw" width={1200} height={800} />
+                  {doctor?.avatarUrl && (
+                    <Image alt={doctor.fullName} className="h-full w-full object-cover rounded-[var(--radius-md)]" src={doctor.avatarUrl} width={120} height={120} />
+                  )}
                 </div>
                 <div>
-                  <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Primary Surgeon</div>
-                  <div className="text-sm font-bold text-[var(--hc-text)]">Dr. Aris Thorne, MD</div>
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Primary Doctor</div>
+                  <div className="text-sm font-bold text-[var(--hc-text)]">{doctor?.fullName || "Loading..."}</div>
                 </div>
               </div>
 
               <div className="pt-4 border-t border-[var(--hc-border-soft)]">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-xs font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Estimated Duration</span>
-                  <span className="text-sm font-bold text-[var(--hc-text)]">4.5 Hours</span>
+                  <span className="text-sm font-bold text-[var(--hc-text)]">30 Minutes</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Facility Fee</span>
-                  <span className="text-sm font-bold text-[var(--hc-text)]">$1,250.00</span>
+                  <span className="text-sm font-bold text-[var(--hc-text)]">$150.00</span>
                 </div>
               </div>
             </div>
 
             <div className="flex flex-col gap-3 mt-4">
-              <button onClick={() => { alert("Booking confirmed successfully."); router.push("/staff/booking/success"); }} className="w-full hc-button-primary py-3.5">
-                Confirm Booking
+              <button onClick={handleConfirm} disabled={isSubmitting} className="w-full hc-button-primary py-3.5 disabled:opacity-50">
+                {isSubmitting ? "Confirming..." : "Confirm Booking"}
               </button>
               <button onClick={() => { alert("Draft booking saved successfully."); router.push("/staff/dashboard"); }} className="w-full hc-button-secondary py-3.5">
                 Save as Draft

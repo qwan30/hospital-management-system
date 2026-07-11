@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   AlertTriangle,
   Clock,
@@ -26,6 +26,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { getTodayQueue, getAppointmentVitalSigns } from "@/lib/clinical-api";
+import { getErrorMessage } from "@/lib/staff-queue";
 import type { ReactNode } from "react";
 
 /* ─────────────────── Types ─────────────────── */
@@ -58,13 +60,6 @@ interface DoctorDashboardProps {
 }
 
 const PAGE_SIZE = 10;
-
-const MOCK_PATIENTS: PatientRow[] = [
-  { id: "PX-2024-8812", name: "Elena Rodriguez", initials: "ER", status: "Critical", ward: "ER", bp: "145/92", hr: 98, o2: 91, lastCheck: "13:45:00", nurse: "Nurse S. Miller" },
-  { id: "PX-2024-8740", name: "James T. Kendrick", initials: "JK", status: "Stable", ward: "Ward 4-A", bp: "120/80", hr: 72, o2: 98, lastCheck: "12:10:22", nurse: "Nurse R. Chen" },
-  { id: "PX-2024-9003", name: "Linda Wu", initials: "LW", status: "Observation", ward: "Observation", bp: "132/85", hr: 84, o2: 96, lastCheck: "14:00:15", nurse: "Nurse S. Miller" },
-  { id: "PX-2024-8119", name: "Marcus V. Aurelius", initials: "MA", status: "Critical", ward: "ICU East", bp: "90/60", hr: 110, o2: 94, lastCheck: "13:58:10", nurse: "Nurse R. Chen" },
-];
 
 const MOCK_STAFF: StaffMember[] = [
   { label: "Cardiology Team", badge: "ON-CALL", tone: "green" },
@@ -121,7 +116,57 @@ export function DoctorDashboardView({
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [nurseFilter, setNurseFilter] = useState("All Nurses");
 
-  const patients = externalPatients ?? MOCK_PATIENTS;
+  const [localPatients, setLocalPatients] = useState<PatientRow[]>([]);
+  const [localIsLoading, setLocalIsLoading] = useState(!externalPatients);
+  const [localError, setLocalError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (externalPatients) {
+      return;
+    }
+    let mounted = true;
+    async function load() {
+      try {
+        setLocalIsLoading(true);
+        setLocalError(null);
+        const queue = await getTodayQueue();
+        const active = queue.filter(a => ["CHECKED_IN", "IN_PROGRESS"].includes(a.status));
+        const patientsData: PatientRow[] = [];
+        
+        for (const appt of active) {
+          try {
+            const vitals = await getAppointmentVitalSigns(appt.appointmentId);
+            patientsData.push({
+              id: appt.appointmentId,
+              name: appt.patientFullName,
+              initials: appt.patientFullName.slice(0, 2).toUpperCase(),
+              status: appt.status === "IN_PROGRESS" ? "Critical" : "Stable",
+              ward: "Consultation",
+              bp: vitals.bloodPressure || "N/A",
+              hr: vitals.heartRate || 0,
+              o2: vitals.oxygenSaturation || 0,
+              lastCheck: new Date(vitals.recordedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+              nurse: appt.doctorName, // Just to show something
+            });
+          } catch {
+            // No vitals recorded, ignore for doctor dashboard
+          }
+        }
+        
+        if (mounted) setLocalPatients(patientsData);
+      } catch (err) {
+        if (mounted) setLocalError(getErrorMessage(err));
+      } finally {
+        if (mounted) setLocalIsLoading(false);
+      }
+    }
+    load();
+    return () => { mounted = false; };
+  }, [externalPatients]);
+
+  const patients = externalPatients ?? localPatients;
+  const isDataLoading = isLoading || localIsLoading;
+  const displayError = error || localError;
 
   const filteredPatients = useMemo(() => {
     return patients.filter((p) => {
@@ -149,7 +194,7 @@ export function DoctorDashboardView({
   const totalPages = Math.max(1, Math.ceil(filteredPatients.length / PAGE_SIZE));
   const paged = filteredPatients.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  if (isLoading) return <DashboardSkeleton kpiCount={4} rowCount={5} columns={6} />;
+  if (isDataLoading) return <DashboardSkeleton kpiCount={4} rowCount={5} columns={6} />;
 
   return (
     <div className="p-8 pb-20 max-w-[1400px] mx-auto">
@@ -168,10 +213,10 @@ export function DoctorDashboardView({
         }
       />
 
-      {error && (
+      {displayError && (
         <div className="mt-4">
           <AlertBanner tone="danger" onRetry={onRetry}>
-            {error}
+            {displayError}
           </AlertBanner>
         </div>
       )}

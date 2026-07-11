@@ -48,7 +48,7 @@ export default function ForbiddenPage() {
             Back to Home
           </Link>
           <Link
-            href="/support"
+            href="/staff/support"
             className="font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Contact Administrator

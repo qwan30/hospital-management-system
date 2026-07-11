@@ -1,11 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { HcIcon } from "@/components/ui/hc-icon";
 
-export default function BookingDoctorSlotSelectionPage() {
+function SlotSelectionContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const dateParam = searchParams.get("date");
+  
+  const [displayDate, setDisplayDate] = useState("");
+
+  useEffect(() => {
+    const d = dateParam ? new Date(dateParam) : new Date();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDisplayDate(new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(!isNaN(d.getTime()) ? d : new Date()));
+  }, [dateParam]);
+
   return (
     <main className="max-w-[1400px] mx-auto p-8 pb-20">
       <header className="mb-8">
@@ -159,7 +171,7 @@ export default function BookingDoctorSlotSelectionPage() {
                 <span className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-primary)]">Selected Slot</span>
                 <div className="flex items-center gap-2 mt-2 bg-[var(--hc-surface-soft)] border border-[var(--hc-border-soft)] px-3 py-2 rounded-[var(--radius-md)] inline-flex">
                   <HcIcon name="calendar_today" className="w-4 h-4 text-[var(--hc-text-muted)]" />
-                  <span className="text-xs font-bold text-[var(--hc-text)]">Oct 24, 2023</span>
+                  <span className="text-xs font-bold text-[var(--hc-text)]">{displayDate}</span>
                   <span className="text-slate-300">|</span>
                   <HcIcon name="schedule" className="w-4 h-4 text-[var(--hc-text-muted)]" />
                   <span className="text-xs font-bold text-[var(--hc-text)]">09:15 AM</span>
@@ -190,5 +202,13 @@ export default function BookingDoctorSlotSelectionPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function BookingDoctorSlotSelectionPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-[var(--hc-text-muted)]">Loading slots...</div>}>
+      <SlotSelectionContent />
+    </Suspense>
   );
 }

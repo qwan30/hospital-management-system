@@ -23,8 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.MOCK,
     properties = {
@@ -38,7 +36,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
         "security.patient-identifier.secret=test-patient-identifier-secret",
         "security.http.public-rate-limit-per-minute=0"
     })
-@Testcontainers(disabledWithoutDocker = true)
 class ReleaseDemoSeedIntegrationTest {
   private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("pgvector/pgvector:pg15");
 
@@ -97,6 +94,11 @@ class ReleaseDemoSeedIntegrationTest {
     registry.add("POSTGRES_DB", POSTGRES::getDatabaseName);
     registry.add("POSTGRES_USER", POSTGRES::getUsername);
     registry.add("POSTGRES_PASSWORD", POSTGRES::getPassword);
+    registry.add("spring.datasource.url", () ->
+        "jdbc:postgresql://" + POSTGRES.getHost() + ":" + POSTGRES.getMappedPort(5432) + "/" + POSTGRES.getDatabaseName());
+    registry.add("spring.datasource.username", POSTGRES::getUsername);
+    registry.add("spring.datasource.password", POSTGRES::getPassword);
+    registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
   }
 
   @Test

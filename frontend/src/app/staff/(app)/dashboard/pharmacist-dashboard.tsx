@@ -17,6 +17,10 @@ import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 
+import { useEffect } from "react";
+import { listInventoryAlerts } from "@/lib/operations-api";
+import { getErrorMessage } from "@/lib/staff-queue";
+
 interface DrugItem {
   id: string;
   name: string;
@@ -24,28 +28,45 @@ interface DrugItem {
   stockLevel: number;
   minLevel: number;
   expiringLots: number;
-  status: "Normal" | "Low Stock" | "Critical";
+  status: "Normal" | "Low Stock" | "Critical" | string;
 }
-
-const MOCK_INVENTORY_ALERTS: DrugItem[] = [
-  { id: "MED-001", name: "Amoxicillin 500mg", category: "Antibiotics", stockLevel: 15, minLevel: 50, expiringLots: 2, status: "Critical" },
-  { id: "MED-002", name: "Paracetamol 500mg", category: "Analgesics", stockLevel: 1500, minLevel: 200, expiringLots: 0, status: "Normal" },
-  { id: "MED-003", name: "Ibuprofen 400mg", category: "Analgesics", stockLevel: 42, minLevel: 100, expiringLots: 1, status: "Low Stock" },
-  { id: "MED-004", name: "Insulin Glargine 100 U/mL", category: "Antidiabetics", stockLevel: 8, minLevel: 10, expiringLots: 3, status: "Low Stock" },
-  { id: "MED-005", name: "Metformin 850mg", category: "Antidiabetics", stockLevel: 800, minLevel: 300, expiringLots: 0, status: "Normal" },
-];
 
 export function PharmacistDashboardView() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
 
+  const [inventoryAlerts, setInventoryAlerts] = useState<DrugItem[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      try {
+        const alerts = await listInventoryAlerts();
+        const mapped: DrugItem[] = alerts.map((alert) => ({
+          id: alert.itemId,
+          name: alert.itemName,
+          category: "Pharmacy", // fallback since alert doesn't contain category directly
+          stockLevel: alert.quantityOnHand,
+          minLevel: alert.reorderLevel,
+          expiringLots: alert.alertType === "EXPIRING_SOON" ? 1 : 0, // Mocked 1 if expiring soon
+          status: alert.severity === "CRITICAL" ? "Critical" : alert.severity === "WARNING" ? "Low Stock" : "Normal",
+        }));
+        if (mounted) setInventoryAlerts(mapped);
+      } catch (err) {
+        console.error(getErrorMessage(err));
+      }
+    }
+    load();
+    return () => { mounted = false; };
+  }, []);
+
   const filteredItems = useMemo(() => {
-    return MOCK_INVENTORY_ALERTS.filter((item) => {
+    return inventoryAlerts.filter((item) => {
       const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || item.category.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = statusFilter === "All" || item.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
-  }, [searchQuery, statusFilter]);
+  }, [inventoryAlerts, searchQuery, statusFilter]);
 
   return (
     <div className="p-8 pb-20 max-w-[1400px] mx-auto">

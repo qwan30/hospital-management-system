@@ -132,6 +132,12 @@ public class InventoryWriteService {
     entity.setExpiresOn(request.expiresOn());
 
     var saved = lotRepository.save(entity);
+
+    item.setQuantityOnHand(item.getQuantityOnHand() + request.quantityReceived());
+    item.setLastRestockedAt(Instant.now());
+    item.setStatus(toStockStatus(item.getQuantityOnHand(), item.getReorderLevel()));
+    itemRepository.save(item);
+
     auditLogService.record("INVENTORY_LOT_CREATED", "INVENTORY_LOT", saved.getId(), Map.of(
         "itemId", item.getId().toString(),
         "lotCode", saved.getLotCode(),

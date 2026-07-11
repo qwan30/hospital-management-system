@@ -163,7 +163,7 @@ public class InvoiceService {
   @Transactional(readOnly = true)
   public DailyRevenueReportResponse getDailyRevenue(LocalDate date) {
     var invoices = invoiceRepository.findByStatusOrderByCreatedAtDesc(InvoiceStatus.PAID).stream()
-        .filter(invoice -> invoice.getAppointment().getAppointmentDate().equals(date))
+        .filter(invoice -> invoice.getPaidAt() != null && LocalDate.ofInstant(invoice.getPaidAt(), java.time.ZoneId.systemDefault()).equals(date))
         .toList();
     return new DailyRevenueReportResponse(
         date,
@@ -175,7 +175,7 @@ public class InvoiceService {
   @Transactional(readOnly = true)
   public MonthlyRevenueReportResponse getMonthlyRevenue(YearMonth month) {
     var invoices = invoiceRepository.findByStatusOrderByCreatedAtDesc(InvoiceStatus.PAID).stream()
-        .filter(invoice -> YearMonth.from(invoice.getAppointment().getAppointmentDate()).equals(month))
+        .filter(invoice -> invoice.getPaidAt() != null && YearMonth.from(LocalDate.ofInstant(invoice.getPaidAt(), java.time.ZoneId.systemDefault())).equals(month))
         .toList();
     return new MonthlyRevenueReportResponse(
         month.toString(),

@@ -17,6 +17,10 @@ import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 
+import { useEffect } from "react";
+import { getTodayQueue } from "@/lib/clinical-api";
+import { getErrorMessage } from "@/lib/staff-queue";
+
 interface TriagePatient {
   id: string;
   name: string;
@@ -27,24 +31,45 @@ interface TriagePatient {
   symptoms: string;
 }
 
-const MOCK_TRIAGE_QUEUE: TriagePatient[] = [
-  { id: "Q-101", name: "David Miller", cccd: "030095817263", checkInTime: "14:15", status: "Waiting Triage", assignedDoc: "Dr. A. Vance", symptoms: "Mild chest tightness, dyspnea" },
-  { id: "Q-102", name: "Sarah Connor", cccd: "010093847291", checkInTime: "14:22", status: "Priority Triage", assignedDoc: "Dr. L. Ross", symptoms: "High fever (39.2C), persistent cough" },
-  { id: "Q-103", name: "Robert Downey", cccd: "079088716253", checkInTime: "14:35", status: "Vitals Completed", assignedDoc: "Dr. M. Patel", symptoms: "Right wrist injury, swelling" },
-  { id: "Q-104", name: "Emma Watson", cccd: "020084736291", checkInTime: "14:40", status: "Waiting Triage", assignedDoc: "Dr. A. Vance", symptoms: "Acute abdominal pain, nausea" },
-];
-
 export function NurseDashboardView() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  
+  const [queue, setQueue] = useState<TriagePatient[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadQueue() {
+      try {
+        const todayQueue = await getTodayQueue();
+        const checkedIn = todayQueue.filter((a) => a.status === "CHECKED_IN");
+        
+        const mapped: TriagePatient[] = checkedIn.map((appt) => ({
+          id: appt.appointmentId,
+          name: appt.patientFullName,
+          cccd: appt.patientCccd || "N/A",
+          checkInTime: appt.checkedInAt ? new Date(appt.checkedInAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "N/A",
+          status: "Waiting Triage",
+          assignedDoc: appt.doctorName,
+          symptoms: "Not specified",
+        }));
+        
+        if (mounted) setQueue(mapped);
+      } catch (err) {
+        console.error(getErrorMessage(err));
+      }
+    }
+    loadQueue();
+    return () => { mounted = false; };
+  }, []);
 
   const filteredQueue = useMemo(() => {
-    return MOCK_TRIAGE_QUEUE.filter((p) => {
+    return queue.filter((p) => {
       const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.cccd.includes(searchQuery);
       const matchesStatus = statusFilter === "All" || p.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
-  }, [searchQuery, statusFilter]);
+  }, [queue, searchQuery, statusFilter]);
 
   return (
     <div className="p-8 pb-20 max-w-[1400px] mx-auto">
@@ -166,7 +191,7 @@ export function NurseDashboardView() {
                     <td className="hc-td text-sm text-[var(--hc-text-secondary)]">{patient.assignedDoc}</td>
                     <td className="hc-td text-right">
                       <Link
-                        href={`/staff/vital-signs?cccd=${patient.cccd}`}
+                        href={`/staff/vital-signs?appointmentId=${patient.id}`}
                         className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors"
                       >
                         Record Vitals

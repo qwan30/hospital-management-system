@@ -10,7 +10,6 @@ import {
 
 import { PageHeader } from "@/components/ui/page-header";
 import { DataPanel } from "@/components/ui/data-panel";
-import { HcIcon } from "@/components/ui/hc-icon";
 
 type AppointmentTab = "upcoming" | "past";
 

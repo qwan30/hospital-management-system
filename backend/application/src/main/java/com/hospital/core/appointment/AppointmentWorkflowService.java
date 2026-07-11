@@ -14,7 +14,9 @@ import com.hospital.shared.appointment.AppointmentVitalSignsResponse;
 import com.hospital.shared.appointment.ClinicalAppointmentResponse;
 import com.hospital.shared.appointment.FollowUpRequest;
 import com.hospital.shared.appointment.FollowUpResponse;
+import com.hospital.core.timeslot.TimeSlotEntity;
 import com.hospital.shared.enums.AppointmentStatus;
+import com.hospital.shared.enums.SlotStatus;
 import com.hospital.shared.enums.UserRole;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -153,6 +155,18 @@ public class AppointmentWorkflowService {
     }
 
     appointment.setStatus(AppointmentStatus.CANCELLED);
+
+    int slotsNeeded = Math.max(1, (appointment.getAiDurationMinutes() + 29) / 30);
+    var slots = entityManager.createQuery(
+            "select t from TimeSlotEntity t where t.doctor.id = :doctorId and t.slotDate = :slotDate and t.startTime >= :startTime order by t.startTime asc",
+            TimeSlotEntity.class)
+        .setParameter("doctorId", appointment.getDoctor().getId())
+        .setParameter("slotDate", appointment.getAppointmentDate())
+        .setParameter("startTime", appointment.getFirstSlot().getStartTime())
+        .setMaxResults(slotsNeeded)
+        .getResultList();
+
+    slots.forEach(slot -> slot.setStatus(SlotStatus.AVAILABLE));
   }
 
   @Transactional
@@ -173,6 +187,12 @@ public class AppointmentWorkflowService {
   public AppointmentVitalSignsResponse recordVitalSigns(UUID appointmentId, AppointmentVitalSignsRequest request) {
     var appointment = appointmentRepository.findDetailedById(appointmentId)
         .orElseThrow(() -> new NotFoundException("Appointment not found"));
+
+    if (appointment.getStatus() != AppointmentStatus.CHECKED_IN &&
+        appointment.getStatus() != AppointmentStatus.IN_PROGRESS &&
+        appointment.getStatus() != AppointmentStatus.DONE) {
+      throw new ConflictException("Vital signs can only be recorded for active appointments");
+    }
 
     if (vitalSignsRepository.existsByAppointmentId(appointmentId)) {
       throw new ConflictException("Vital signs already recorded for this appointment");

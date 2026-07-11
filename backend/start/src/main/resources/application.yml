@@ -56,14 +56,14 @@ springdoc:
 security:
   jwt:
     secret: ${JWT_SECRET}
-    access-token-expiration-seconds: 900
+    access-token-expiration-seconds: 3600
     refresh-token-expiration-seconds: 604800
     refresh-cookie-name: hms_refresh_token
   http:
     allowed-origins:
       - ${HMS_ALLOWED_ORIGIN_PRIMARY:http://localhost:3000}
       - ${HMS_ALLOWED_ORIGIN_SECONDARY:http://localhost:4173}
-    allow-credentials: ${HMS_ALLOW_CREDENTIALS:false}
+    allow-credentials: true
     secure-cookies: ${HMS_SECURE_COOKIES:false}
     refresh-cookie-same-site: ${HMS_REFRESH_COOKIE_SAME_SITE:Lax}
     public-rate-limit-per-minute: ${HMS_PUBLIC_RATE_LIMIT_PER_MINUTE:30}

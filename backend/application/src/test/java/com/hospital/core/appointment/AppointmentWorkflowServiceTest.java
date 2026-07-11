@@ -134,9 +134,16 @@ class AppointmentWorkflowServiceTest {
       when(appointmentRepository.findDetailedById(appointmentId))
           .thenReturn(Optional.of(sampleAppointment));
 
+      TypedQuery<TimeSlotEntity> slotQuery = mock(TypedQuery.class);
+      when(entityManager.createQuery(anyString(), eq(TimeSlotEntity.class))).thenReturn(slotQuery);
+      when(slotQuery.setParameter(anyString(), any())).thenReturn(slotQuery);
+      when(slotQuery.setMaxResults(anyInt())).thenReturn(slotQuery);
+      when(slotQuery.getResultList()).thenReturn(List.of(sampleAppointment.getFirstSlot()));
+
       service.cancelAppointment(appointmentId);
 
       assertThat(sampleAppointment.getStatus()).isEqualTo(AppointmentStatus.CANCELLED);
+      assertThat(sampleAppointment.getFirstSlot().getStatus()).isEqualTo(com.hospital.shared.enums.SlotStatus.AVAILABLE);
     }
 
     @Test
@@ -223,6 +230,7 @@ class AppointmentWorkflowServiceTest {
   class RecordVitalSigns {
     @Test
     void shouldRecordVitalSigns() {
+      sampleAppointment.setStatus(AppointmentStatus.CHECKED_IN);
       when(appointmentRepository.findDetailedById(appointmentId))
           .thenReturn(Optional.of(sampleAppointment));
       when(vitalSignsRepository.existsByAppointmentId(appointmentId)).thenReturn(false);
@@ -246,6 +254,7 @@ class AppointmentWorkflowServiceTest {
 
     @Test
     void shouldThrowWhenAlreadyRecorded() {
+      sampleAppointment.setStatus(AppointmentStatus.CHECKED_IN);
       when(appointmentRepository.findDetailedById(appointmentId))
           .thenReturn(Optional.of(sampleAppointment));
       when(vitalSignsRepository.existsByAppointmentId(appointmentId)).thenReturn(true);
@@ -258,6 +267,7 @@ class AppointmentWorkflowServiceTest {
 
     @Test
     void shouldRejectExtremeTemperature() {
+      sampleAppointment.setStatus(AppointmentStatus.CHECKED_IN);
       when(appointmentRepository.findDetailedById(appointmentId))
           .thenReturn(Optional.of(sampleAppointment));
       when(vitalSignsRepository.existsByAppointmentId(appointmentId)).thenReturn(false);
@@ -269,6 +279,7 @@ class AppointmentWorkflowServiceTest {
 
     @Test
     void shouldRejectZeroHeartRate() {
+      sampleAppointment.setStatus(AppointmentStatus.CHECKED_IN);
       when(appointmentRepository.findDetailedById(appointmentId))
           .thenReturn(Optional.of(sampleAppointment));
       when(vitalSignsRepository.existsByAppointmentId(appointmentId)).thenReturn(false);

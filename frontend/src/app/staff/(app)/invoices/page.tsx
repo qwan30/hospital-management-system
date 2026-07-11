@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Banknote,
   ChevronLeft,
@@ -22,6 +22,8 @@ import {
 } from "@/lib/operations-api";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
+import { Dialog } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 type InvoiceStatusFilter = "ALL" | InvoiceStatus;
 
@@ -571,63 +573,36 @@ export default function InvoicesPage() {
       </div>
 
       {/* Create Invoice Dialog */}
-      {isCreateOpen && (
-        <Dialog title="Create Invoice" onClose={() => setIsCreateOpen(false)}>
-          <form className="space-y-6" onSubmit={handleCreateInvoice}>
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] mb-1.5">Completed Appointment ID</label>
-              <input aria-label="Completed Appointment ID" className="hc-input w-full" onChange={(e) => setAppointmentId(e.target.value)} value={appointmentId} />
-            </div>
-            <ModalActions cancelLabel="Cancel" confirmLabel={isMutating ? "Creating…" : "Create Invoice"} disabled={isMutating} onCancel={() => setIsCreateOpen(false)} />
-          </form>
-        </Dialog>
-      )}
+      <Dialog title="Create Invoice" isOpen={isCreateOpen} onClose={() => { setIsCreateOpen(false); setAppointmentId(""); setMutationError(null); }}>
+        <form className="space-y-6" onSubmit={handleCreateInvoice}>
+          <div>
+            <label className="block text-[10px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] mb-1.5">Completed Appointment ID</label>
+            <input aria-label="Completed Appointment ID" className="hc-input w-full" onChange={(e) => setAppointmentId(e.target.value)} value={appointmentId} />
+          </div>
+          <div className="flex justify-end gap-3">
+            <Button type="button" variant="outline" disabled={isMutating} onClick={() => { setIsCreateOpen(false); setAppointmentId(""); setMutationError(null); }}>Cancel</Button>
+            <Button type="submit" disabled={isMutating}>{isMutating ? "Creating…" : "Create Invoice"}</Button>
+          </div>
+        </form>
+      </Dialog>
 
       {/* Payment Dialog */}
-      {paymentInvoice && (
-        <Dialog title={`Record Payment: ${paymentInvoice.invoiceId}`} onClose={() => setPaymentInvoice(null)}>
-          <form className="space-y-6" onSubmit={handleRecordPayment}>
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] mb-1.5">Payment Method</label>
-              <input aria-label="Payment Method" className="hc-input w-full" onChange={(e) => setPaymentMethod(e.target.value)} value={paymentMethod} />
-            </div>
-            <ModalActions cancelLabel="Cancel" confirmLabel={isMutating ? "Saving…" : "Record Payment"} disabled={isMutating} onCancel={() => setPaymentInvoice(null)} />
-          </form>
-        </Dialog>
-      )}
+      <Dialog title={`Record Payment: ${paymentInvoice?.invoiceId || ''}`} isOpen={!!paymentInvoice} onClose={() => { setPaymentInvoice(null); setPaymentMethod(""); setMutationError(null); }}>
+        <form className="space-y-6" onSubmit={handleRecordPayment}>
+          <div>
+            <label className="block text-[10px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] mb-1.5">Payment Method</label>
+            <input aria-label="Payment Method" className="hc-input w-full" onChange={(e) => setPaymentMethod(e.target.value)} value={paymentMethod} />
+          </div>
+          <div className="flex justify-end gap-3">
+            <Button type="button" variant="outline" disabled={isMutating} onClick={() => { setPaymentInvoice(null); setPaymentMethod(""); setMutationError(null); }}>Cancel</Button>
+            <Button type="submit" disabled={isMutating}>{isMutating ? "Saving…" : "Record Payment"}</Button>
+          </div>
+        </form>
+      </Dialog>
     </main>
   );
 }
 
-/* ─── Dialog ─── */
-function Dialog({ children, title, onClose }: { children: ReactNode; title: string; onClose: () => void }) {
-  return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/30 p-6">
-      <div className="w-full max-w-lg bg-[var(--hc-surface)] rounded-[var(--radius-xl)] p-8 shadow-xl">
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-lg font-bold text-[var(--hc-text)]">{title}</h3>
-          <button aria-label="Close dialog" className="p-2 rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)]" onClick={onClose} type="button">
-            <XCircle className="w-5 h-5 text-[var(--hc-text-muted)]" />
-          </button>
-        </div>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function ModalActions({ cancelLabel, confirmLabel, disabled, onCancel }: { cancelLabel: string; confirmLabel: string; disabled: boolean; onCancel: () => void }) {
-  return (
-    <div className="flex justify-end gap-3">
-      <button type="button" disabled={disabled} onClick={onCancel} className="px-5 py-2.5 text-sm border border-[var(--hc-border)] rounded-[var(--radius-md)] hover:bg-[var(--hc-surface-soft)] transition-colors">
-        {cancelLabel}
-      </button>
-      <button type="submit" disabled={disabled} className="hc-button-primary px-5 py-2.5 text-sm disabled:opacity-60">
-        {confirmLabel}
-      </button>
-    </div>
-  );
-}
 
 /* ─── Helpers ─── */
 function invoiceTotals(invoices: InvoiceResponse[]) {

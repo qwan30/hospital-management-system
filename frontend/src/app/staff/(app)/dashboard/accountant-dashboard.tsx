@@ -16,35 +16,58 @@ import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 
+import { useEffect } from "react";
+import { listInvoices } from "@/lib/operations-api";
+import { getErrorMessage } from "@/lib/staff-queue";
+
 interface FinancialTransaction {
   id: string;
   patientName: string;
   invoiceId: string;
   amount: number;
-  paymentMethod: "Cash" | "Card" | "Bank Transfer";
-  status: "Completed" | "Pending" | "Refunded";
+  paymentMethod: "Cash" | "Card" | "Bank Transfer" | string;
+  status: "Completed" | "Pending" | "Refunded" | string;
   timestamp: string;
 }
-
-const MOCK_FIN_TRANSACTIONS: FinancialTransaction[] = [
-  { id: "TXN-9021", patientName: "Elena Rodriguez", invoiceId: "INV-2026-003", amount: 150.00, paymentMethod: "Card", status: "Completed", timestamp: "14:10" },
-  { id: "TXN-9022", patientName: "Sarah Connor", invoiceId: "INV-2026-004", amount: 320.50, paymentMethod: "Bank Transfer", status: "Completed", timestamp: "13:45" },
-  { id: "TXN-9023", patientName: "Robert Downey", invoiceId: "INV-2026-005", amount: 45.00, paymentMethod: "Cash", status: "Completed", timestamp: "13:10" },
-  { id: "TXN-9024", patientName: "David Miller", invoiceId: "INV-2026-006", amount: 85.00, paymentMethod: "Card", status: "Pending", timestamp: "12:55" },
-  { id: "TXN-9025", patientName: "James Kendrick", invoiceId: "INV-2026-001", amount: 110.00, paymentMethod: "Card", status: "Refunded", timestamp: "10:30" },
-];
 
 export function AccountantDashboardView() {
   const [searchQuery, setSearchQuery] = useState("");
   const [paymentFilter, setPaymentFilter] = useState("All");
 
+  const [transactions, setTransactions] = useState<FinancialTransaction[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    async function load() {
+      try {
+        const invoices = await listInvoices();
+        const mapped: FinancialTransaction[] = invoices.map((inv) => ({
+          id: inv.invoiceId,
+          patientName: inv.patientFullName,
+          invoiceId: inv.invoiceId,
+          amount: inv.totalAmount,
+          paymentMethod: inv.paymentMethod || "Cash",
+          status: inv.status === "PAID" ? "Completed" : inv.status === "CANCELLED" ? "Refunded" : "Pending",
+          timestamp: inv.paidAt 
+            ? new Date(inv.paidAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+            : new Date(inv.appointmentDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        }));
+        if (mounted) setTransactions(mapped);
+      } catch (err) {
+        console.error(getErrorMessage(err));
+      }
+    }
+    load();
+    return () => { mounted = false; };
+  }, []);
+
   const filteredTxns = useMemo(() => {
-    return MOCK_FIN_TRANSACTIONS.filter((t) => {
+    return transactions.filter((t) => {
       const matchesSearch = t.patientName.toLowerCase().includes(searchQuery.toLowerCase()) || t.invoiceId.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesPayment = paymentFilter === "All" || t.paymentMethod === paymentFilter;
       return matchesSearch && matchesPayment;
     });
-  }, [searchQuery, paymentFilter]);
+  }, [transactions, searchQuery, paymentFilter]);
 
   return (
     <div className="p-8 pb-20 max-w-[1400px] mx-auto">
