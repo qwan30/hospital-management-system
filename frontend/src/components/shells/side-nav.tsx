@@ -46,6 +46,8 @@ export interface SideNavLink {
 }
 
 interface HcSidebarProps {
+  title?: string;
+  subtitle?: string;
   roleScope: "staff" | "patient";
   links?: SideNavLink[];
   ctaLabel?: string;

@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS invoice_line_items (
+    id UUID PRIMARY KEY,
+    invoice_id UUID NOT NULL REFERENCES invoices(id) ON DELETE CASCADE,
+    description VARCHAR(255) NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+);

@@ -56,7 +56,6 @@ export default function BookingDetailsReviewPage() {
       toast({
         title: "Missing Information",
         description: "Please fill out all required fields: First Name, Last Name, Date of Birth, Insurance ID, and Symptoms.",
-        variant: "destructive",
       });
       return;
     }
@@ -180,7 +179,7 @@ export default function BookingDetailsReviewPage() {
               <div className="grid grid-cols-2 gap-4 border-b border-[var(--hc-border-soft)] pb-4">
                 <div className="flex flex-col gap-1">
                   <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Date</div>
-                  <div className="text-sm font-bold text-[var(--hc-text)]">{slot?.date || "Loading..."}</div>
+                  <div className="text-sm font-bold text-[var(--hc-text)]">{slot?.slotDate || "Loading..."}</div>
                 </div>
                 <div className="flex flex-col gap-1">
                   <div className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Check-in</div>

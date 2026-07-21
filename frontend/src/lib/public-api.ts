@@ -8,6 +8,7 @@ export interface DoctorResponse {
   specialty: string | null;
   qualification: string | null;
   experienceYears: number | null;
+  avatarUrl?: string | null;
 }
 
 export interface DoctorSlotResponse {
