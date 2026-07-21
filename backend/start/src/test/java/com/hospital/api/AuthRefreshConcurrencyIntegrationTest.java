@@ -14,11 +14,16 @@ import com.hospital.core.user.UserEntity;
 import com.hospital.core.user.UserRepository;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,11 +78,13 @@ class AuthRefreshConcurrencyIntegrationTest {
     var allowRefreshToComplete = new CountDownLatch(1);
     var deactivationReadyToFlush = new CountDownLatch(1);
     var deactivationPid = new AtomicInteger();
+    var refreshBackendPid = new AtomicInteger();
     var executor = Executors.newFixedThreadPool(2);
     Future<?> refreshFuture = null;
     Future<?> deactivationFuture = null;
 
     doAnswer(invocation -> {
+      refreshBackendPid.set(jdbcTemplate.queryForObject("select pg_backend_pid()", Integer.class));
       accessTokenGenerationEntered.countDown();
       assertThat(allowRefreshToComplete.await(10, SECONDS))
           .as("test must release paused refresh token generation")
@@ -105,11 +112,15 @@ class AuthRefreshConcurrencyIntegrationTest {
 
       var blockingPids = pollBlockingPids(deactivationPid.get(), Duration.ofSeconds(5));
       System.out.printf(
-          "PG_BLOCKING_PIDS deactivationPid=%d blockingPids=%s%n",
-          deactivationPid.get(), blockingPids);
+          "PG_BLOCKING_PIDS refreshPid=%d deactivationPid=%d blockingPids=%s%n",
+          refreshBackendPid.get(), deactivationPid.get(), blockingPids);
+      assertThat(refreshBackendPid.get())
+          .as("refresh transaction backend PID captured from its transaction-bound connection")
+          .isPositive();
       assertThat(blockingPids)
-          .as("pg_blocking_pids(%s) must identify the refresh transaction", deactivationPid.get())
-          .isNotEmpty();
+          .as("pg_blocking_pids(%s) must contain refresh PID %s",
+              deactivationPid.get(), refreshBackendPid.get())
+          .contains(refreshBackendPid.get());
 
       allowRefreshToComplete.countDown();
       refreshFuture.get(10, SECONDS);
@@ -119,12 +130,12 @@ class AuthRefreshConcurrencyIntegrationTest {
           .isInstanceOf(BadCredentialsException.class)
           .hasMessage("Invalid refresh token");
     } finally {
-      allowRefreshToComplete.countDown();
-      awaitQuietly(refreshFuture);
-      awaitQuietly(deactivationFuture);
-      reset(jwtTokenService);
-      restoreActiveUser(userId);
-      executor.shutdownNow();
+      cleanup(
+          allowRefreshToComplete,
+          refreshFuture,
+          deactivationFuture,
+          executor,
+          userId);
     }
   }
 
@@ -137,7 +148,12 @@ class AuthRefreshConcurrencyIntegrationTest {
       if (!blockingPids.isEmpty()) {
         return blockingPids;
       }
-      Thread.onSpinWait();
+      try {
+        Thread.sleep(25);
+      } catch (InterruptedException exception) {
+        Thread.currentThread().interrupt();
+        throw new AssertionError("Interrupted while polling pg_blocking_pids", exception);
+      }
     } while (Instant.now().isBefore(deadline));
     return blockingPids;
   }
@@ -150,14 +166,88 @@ class AuthRefreshConcurrencyIntegrationTest {
     });
   }
 
-  private void awaitQuietly(Future<?> future) {
+  private void cleanup(
+      CountDownLatch allowRefreshToComplete,
+      Future<?> refreshFuture,
+      Future<?> deactivationFuture,
+      ExecutorService executor,
+      java.util.UUID userId) {
+    var failures = new ArrayList<Throwable>();
+    var interrupted = new AtomicBoolean(false);
+
+    allowRefreshToComplete.countDown();
+    awaitOrCancel(refreshFuture, "refresh", failures, interrupted);
+    awaitOrCancel(deactivationFuture, "deactivation", failures, interrupted);
+
+    executor.shutdownNow();
+    var workersTerminated = awaitExecutorTermination(executor, failures, interrupted);
+    if (workersTerminated) {
+      try {
+        restoreActiveUser(userId);
+      } catch (Throwable failure) {
+        failures.add(new AssertionError("Failed to restore active user fixture", failure));
+      }
+    } else {
+      failures.add(new AssertionError(
+          "Active user fixture was not restored because worker/JDBC activity did not terminate"));
+    }
+
+    try {
+      reset(jwtTokenService);
+    } catch (Throwable failure) {
+      failures.add(new AssertionError("Failed to reset JwtTokenService spy", failure));
+    } finally {
+      if (interrupted.get()) {
+        Thread.currentThread().interrupt();
+      }
+    }
+
+    if (!failures.isEmpty()) {
+      var cleanupFailure = new AssertionError("Concurrency test cleanup failed");
+      failures.forEach(cleanupFailure::addSuppressed);
+      throw cleanupFailure;
+    }
+  }
+
+  private void awaitOrCancel(
+      Future<?> future,
+      String workerName,
+      List<Throwable> failures,
+      AtomicBoolean interrupted) {
     if (future == null) {
       return;
     }
+
     try {
       future.get(10, SECONDS);
-    } catch (Exception ignored) {
+    } catch (InterruptedException exception) {
+      interrupted.set(true);
       future.cancel(true);
+      failures.add(new AssertionError("Interrupted while awaiting " + workerName + " worker", exception));
+    } catch (TimeoutException exception) {
+      future.cancel(true);
+      failures.add(new AssertionError("Timed out awaiting " + workerName + " worker", exception));
+    } catch (ExecutionException exception) {
+      failures.add(new AssertionError(workerName + " worker failed", exception.getCause()));
+    } catch (CancellationException exception) {
+      failures.add(new AssertionError(workerName + " worker was cancelled", exception));
+    }
+  }
+
+  private boolean awaitExecutorTermination(
+      ExecutorService executor,
+      List<Throwable> failures,
+      AtomicBoolean interrupted) {
+    try {
+      var terminated = executor.awaitTermination(10, SECONDS);
+      if (!terminated) {
+        failures.add(new AssertionError("Executor did not terminate within 10 seconds"));
+      }
+      return terminated;
+    } catch (InterruptedException exception) {
+      interrupted.set(true);
+      failures.add(new AssertionError("Interrupted while awaiting executor termination", exception));
+      return false;
     }
   }
 }
