@@ -50,7 +50,8 @@ public class AuthService {
     }
 
     var user = userRepository.findById(UUID.fromString(claims.getSubject()))
-        .orElseThrow(() -> new BadCredentialsException("User not found"));
+        .filter(com.hospital.core.user.UserEntity::isActive)
+        .orElseThrow(() -> new BadCredentialsException("Invalid refresh token"));
 
     var accessToken = jwtTokenService.generateAccessToken(user);
     var nextRefreshToken = jwtTokenService.generateRefreshToken(user.getId(), "staff");
