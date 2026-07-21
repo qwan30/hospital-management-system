@@ -3,7 +3,6 @@ package com.hospital.api.auth;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,36 +34,33 @@ class AuthServiceTest {
   @Test
   void refreshRejectsInactiveUserBeforeGeneratingTokens() {
     var userId = UUID.randomUUID();
-    var inactiveUser = new UserEntity();
-    inactiveUser.setId(userId);
-    inactiveUser.setActive(false);
 
     when(jwtTokenService.parseClaims("valid-refresh-token")).thenReturn(claims);
     when(claims.get("type", String.class)).thenReturn("refresh");
     when(claims.get("scope", String.class)).thenReturn("staff");
     when(claims.getSubject()).thenReturn(userId.toString());
-    when(userRepository.findById(userId)).thenReturn(Optional.of(inactiveUser));
-
-    assertThatThrownBy(() -> authService.refresh("valid-refresh-token"))
-        .isInstanceOf(BadCredentialsException.class)
-        .hasMessage("Invalid refresh token");
-
-    verify(jwtTokenService, never()).generateAccessToken(inactiveUser);
-    verify(jwtTokenService, never()).generateRefreshToken(userId, "staff");
-  }
-
-  @Test
-  void refreshRejectsMissingUserBeforeGeneratingTokens() {
-    var userId = UUID.randomUUID();
-    stubValidStaffRefreshToken(userId);
-    when(userRepository.findById(userId)).thenReturn(Optional.empty());
+    when(userRepository.findActiveByIdForRefresh(userId)).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> authService.refresh("valid-refresh-token"))
         .isInstanceOf(BadCredentialsException.class)
         .hasMessage("Invalid refresh token");
 
     verify(jwtTokenService, never()).generateAccessToken(any(UserEntity.class));
-    verify(jwtTokenService, never()).generateRefreshToken(any(UUID.class), eq("staff"));
+    verify(jwtTokenService, never()).generateRefreshToken(any(UUID.class), any(String.class));
+  }
+
+  @Test
+  void refreshRejectsMissingUserBeforeGeneratingTokens() {
+    var userId = UUID.randomUUID();
+    stubValidStaffRefreshToken(userId);
+    when(userRepository.findActiveByIdForRefresh(userId)).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> authService.refresh("valid-refresh-token"))
+        .isInstanceOf(BadCredentialsException.class)
+        .hasMessage("Invalid refresh token");
+
+    verify(jwtTokenService, never()).generateAccessToken(any(UserEntity.class));
+    verify(jwtTokenService, never()).generateRefreshToken(any(UUID.class), any(String.class));
   }
 
   @Test
@@ -74,7 +70,7 @@ class AuthServiceTest {
     activeUser.setId(userId);
     activeUser.setActive(true);
     stubValidStaffRefreshToken(userId);
-    when(userRepository.findById(userId)).thenReturn(Optional.of(activeUser));
+    when(userRepository.findActiveByIdForRefresh(userId)).thenReturn(Optional.of(activeUser));
     when(jwtTokenService.generateAccessToken(activeUser)).thenReturn("next-access-token");
     when(jwtTokenService.generateRefreshToken(userId, "staff")).thenReturn("next-refresh-token");
     when(jwtTokenService.accessTokenExpirationSeconds()).thenReturn(3600L);
