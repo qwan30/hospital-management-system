@@ -4,9 +4,11 @@ import com.hospital.core.patientrecord.PatientRecordService;
 import com.hospital.shared.api.ApiResponse;
 import com.hospital.shared.patientrecord.PatientRecordDetailResponse;
 import com.hospital.shared.patientrecord.PatientRecordListItemResponse;
+import com.hospital.shared.enums.UserRole;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +26,28 @@ public class PatientRecordController {
   }
 
   @GetMapping
-  public ApiResponse<List<PatientRecordListItemResponse>> search(@RequestParam(required = false) String query) {
-    return ApiResponse.ok(patientRecordService.search(query));
+  public ApiResponse<List<PatientRecordListItemResponse>> search(
+      @RequestParam(required = false) String query,
+      Authentication authentication) {
+    return ApiResponse.ok(patientRecordService.search(actorId(authentication), role(authentication), query));
   }
 
   @GetMapping("/{patientId}")
-  public ApiResponse<PatientRecordDetailResponse> getDetail(@PathVariable UUID patientId) {
-    return ApiResponse.ok(patientRecordService.getDetail(patientId));
+  public ApiResponse<PatientRecordDetailResponse> getDetail(
+      @PathVariable UUID patientId,
+      Authentication authentication) {
+    return ApiResponse.ok(patientRecordService.getDetail(actorId(authentication), role(authentication), patientId));
+  }
+
+  private UUID actorId(Authentication authentication) {
+    return UUID.fromString(authentication.getName());
+  }
+
+  private UserRole role(Authentication authentication) {
+    return authentication.getAuthorities().stream()
+        .map(authority -> authority.getAuthority().replaceFirst("^ROLE_", ""))
+        .map(UserRole::valueOf)
+        .findFirst()
+        .orElseThrow();
   }
 }
