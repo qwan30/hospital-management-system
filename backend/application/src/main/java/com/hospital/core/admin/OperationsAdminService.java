@@ -205,21 +205,14 @@ public class OperationsAdminService {
     var inventoryAlertCount = inventoryService.listAlerts(today).size();
     var activeAlerts = scheduleAlertCount + inventoryAlertCount;
     var databaseStatus = databaseStatus();
-    var queueStatus = "UP";
-    long todayQueueCount;
-    try {
-      todayQueueCount = appointmentRepository.countByAppointmentDate(today);
-    } catch (RuntimeException exception) {
-      queueStatus = "DEGRADED";
-      todayQueueCount = -1L;
-    }
+    var queueSnapshot = queueSnapshot(today);
     var metricsStatus = metricsStatus();
     var tracingStatus = tracingStatus();
     var loggingStatus = loggingStatus();
     var observabilityStatus = observabilityStatus(metricsStatus, tracingStatus, loggingStatus);
     var healthy = activeAlerts == 0
         && "UP".equals(databaseStatus)
-        && "UP".equals(queueStatus)
+        && "UP".equals(queueSnapshot.status())
         && "UP".equals(observabilityStatus);
 
     return new SystemMonitoringSnapshotResponse(
@@ -230,8 +223,8 @@ public class OperationsAdminService {
         scheduleAlertCount,
         inventoryAlertCount,
         databaseStatus,
-        queueStatus,
-        todayQueueCount,
+        queueSnapshot.status(),
+        queueSnapshot.todayQueueCount(),
         metricsStatus,
         tracingStatus,
         loggingStatus,
@@ -243,6 +236,14 @@ public class OperationsAdminService {
       return connection.isValid(2) ? "UP" : "DEGRADED";
     } catch (SQLException exception) {
       return "DOWN";
+    }
+  }
+
+  private QueueSnapshot queueSnapshot(LocalDate today) {
+    try {
+      return new QueueSnapshot("UP", appointmentRepository.countByAppointmentDate(today));
+    } catch (RuntimeException exception) {
+      return new QueueSnapshot("DEGRADED", -1L);
     }
   }
 
@@ -270,6 +271,8 @@ public class OperationsAdminService {
         ? "UP"
         : "DEGRADED";
   }
+
+  private record QueueSnapshot(String status, long todayQueueCount) {}
 
   private void applyRoom(RoomEntity room, AdminRoomUpsertRequest request) {
     room.setName(request.name().trim());
