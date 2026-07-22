@@ -2,22 +2,29 @@
 
 import { useState, useMemo, useEffect } from "react";
 import {
+  Activity,
+  AlertCircle,
   AlertTriangle,
+  Building2,
   Clock,
   Download,
   Eye,
   Filter,
   FlaskConical,
+  Heart,
   MoreVertical,
   RefreshCw,
   Search,
   Stethoscope,
+  UserCheck,
+  Wind,
 } from "lucide-react";
 import { PageHeader } from "@/components/ui/page-header";
 import { KpiCard } from "@/components/ui/kpi-card";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { AlertBanner } from "@/components/ui/alert-banner";
 import { DashboardSkeleton } from "@/components/ui/dashboard-skeleton";
+import { Dialog } from "@/components/ui/dialog";
 import {
   Pagination,
   PaginationContent,
@@ -115,6 +122,8 @@ export function DoctorDashboardView({
   const [page, setPage] = useState(1);
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [nurseFilter, setNurseFilter] = useState("All Nurses");
+  const [selectedPatient, setSelectedPatient] = useState<PatientRow | null>(null);
+  const [actionNotice, setActionNotice] = useState<string | null>(null);
 
   const [localPatients, setLocalPatients] = useState<PatientRow[]>([]);
   const [localIsLoading, setLocalIsLoading] = useState(!externalPatients);
@@ -362,26 +371,21 @@ export function DoctorDashboardView({
                         <div className="flex items-center justify-end gap-1">
                           <button
                             type="button"
-                            onClick={() => alert(`Patient: ${patient.name}\nCase ID: ${patient.id}\nStatus: ${patient.status}\nWard: ${patient.ward}\nBP: ${patient.bp} | HR: ${patient.hr} | O2: ${patient.o2}%\nNurse: ${patient.nurse}`)}
+                            onClick={() => setSelectedPatient(patient)}
                             aria-label={`View ${patient.name}`}
                             className="p-1.5 hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors"
-                            title="View"
+                            title="View Patient Details"
                           >
-                            <Eye className="size-4 text-[var(--hc-text-muted)]" />
+                            <Eye className="size-4 text-[var(--hc-primary)]" />
                           </button>
                           <button
                             type="button"
-                            onClick={() => {
-                              const action = prompt(`Select action for ${patient.name}:\n1. Discharge\n2. Transfer Ward\n3. Record Vitals`, "1");
-                              if (action === "1") alert("Patient discharge initiated.");
-                              if (action === "2") alert("Ward transfer request submitted.");
-                              if (action === "3") alert("Record vitals modal opened.");
-                            }}
+                            onClick={() => setSelectedPatient(patient)}
                             aria-label={`More actions for ${patient.name}`}
                             className="p-1.5 hover:bg-[var(--hc-surface-soft)] rounded-[var(--radius-md)] transition-colors"
-                            title="More"
+                            title="Actions"
                           >
-                            <MoreVertical className="size-4 text-[var(--hc-text-placeholder)]" />
+                            <MoreVertical className="size-4 text-[var(--hc-text-placeholder)] hover:text-[var(--hc-text)]" />
                           </button>
                         </div>
                       </td>
@@ -483,7 +487,7 @@ export function DoctorDashboardView({
           <div className="p-4">
             <button
               type="button"
-              onClick={() => alert("Reassigning staffing resources: ER Resident Pool request dispatched. Optimizing shifts.")}
+              onClick={() => setActionNotice("Reassigning staffing resources: ER Resident Pool request dispatched. Optimizing shifts.")}
               className="w-full flex items-center justify-center gap-2 h-[42px] border border-[var(--hc-primary)] text-[var(--hc-primary)] rounded-[var(--radius-md)] text-sm font-bold hover:bg-[var(--hc-primary-bg)] transition-all"
             >
               <Stethoscope className="size-4" /> Reassign Resources
@@ -491,6 +495,163 @@ export function DoctorDashboardView({
           </div>
         </div>
       </div>
+
+      {/* Patient Clinical Profile Modal */}
+      <Dialog
+        isOpen={Boolean(selectedPatient)}
+        onClose={() => setSelectedPatient(null)}
+        title="Patient Clinical Profile"
+        description="Real-time clinical vitals, priority status, and attending staff assignment."
+        className="max-w-2xl"
+      >
+        {selectedPatient && (
+          <div className="space-y-6">
+            {/* Patient Header Card */}
+            <div className="flex items-center justify-between p-4 bg-[var(--hc-surface-soft)] rounded-[var(--radius-lg)] border border-[var(--hc-border-soft)]">
+              <div className="flex items-center gap-4">
+                <div className="size-12 rounded-full bg-[var(--hc-primary-bg)] text-[var(--hc-primary)] font-bold text-lg flex items-center justify-center border border-[var(--hc-primary)]/20 shadow-sm shrink-0">
+                  {selectedPatient.initials}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="text-lg font-bold text-[var(--hc-text)]">{selectedPatient.name}</h3>
+                    <StatusBadge
+                      label={selectedPatient.status}
+                      tone={statusToneMap[selectedPatient.status] ?? "blue"}
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-xs text-[var(--hc-text-muted)] font-mono bg-[var(--hc-surface)] px-2.5 py-0.5 rounded border border-[var(--hc-border-soft)]">
+                      Case ID: {selectedPatient.id}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Primary Details Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="p-3.5 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)]">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] flex items-center gap-1.5 mb-1">
+                  <Building2 className="size-3.5 text-[var(--hc-primary)]" /> Assigned Ward
+                </span>
+                <p className="text-sm font-semibold text-[var(--hc-text)]">{selectedPatient.ward}</p>
+              </div>
+              <div className="p-3.5 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)]">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] flex items-center gap-1.5 mb-1">
+                  <UserCheck className="size-3.5 text-[var(--hc-primary)]" /> Attending Nurse
+                </span>
+                <p className="text-sm font-semibold text-[var(--hc-text)]">{selectedPatient.nurse}</p>
+              </div>
+              <div className="p-3.5 bg-[var(--hc-surface)] border border-[var(--hc-border-soft)] rounded-[var(--radius-lg)]">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--hc-text-muted)] flex items-center gap-1.5 mb-1">
+                  <Clock className="size-3.5 text-[var(--hc-primary)]" /> Last Vitals Check
+                </span>
+                <p className="text-sm font-semibold text-[var(--hc-text)]">{selectedPatient.lastCheck}</p>
+              </div>
+            </div>
+
+            {/* Vital Signs Grid */}
+            <div>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[var(--hc-text-secondary)] mb-3 flex items-center gap-2">
+                <Activity className="size-4 text-[var(--hc-primary)]" /> Live Vital Signs
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* BP */}
+                <div className={`p-4 rounded-[var(--radius-lg)] border ${selectedPatient.bp.startsWith("90/") ? "bg-red-50/50 border-red-200" : "bg-[var(--hc-surface)] border-[var(--hc-border-soft)]"}`}>
+                  <span className="text-xs font-bold text-[var(--hc-text-muted)] block mb-1">Blood Pressure</span>
+                  <div className="flex items-baseline gap-1">
+                    <span className={`text-2xl font-bold font-mono ${selectedPatient.bp.startsWith("90/") ? "text-[var(--hc-danger)]" : "text-[var(--hc-text)]"}`}>
+                      {selectedPatient.bp}
+                    </span>
+                    <span className="text-xs text-[var(--hc-text-muted)] font-medium">mmHg</span>
+                  </div>
+                  {selectedPatient.bp.startsWith("90/") ? (
+                    <span className="text-[11px] text-[var(--hc-danger)] font-semibold flex items-center gap-1 mt-1">
+                      <AlertCircle className="size-3" /> Hypotension alert
+                    </span>
+                  ) : (
+                    <span className="text-[11px] text-[var(--hc-success)] font-semibold flex items-center gap-1 mt-1">
+                      Optimal pressure
+                    </span>
+                  )}
+                </div>
+
+                {/* HR */}
+                <div className="p-4 rounded-[var(--radius-lg)] border bg-[var(--hc-surface)] border-[var(--hc-border-soft)]">
+                  <span className="text-xs font-bold text-[var(--hc-text-muted)] flex items-center gap-1 mb-1">
+                    <Heart className="size-3.5 text-[var(--hc-danger)] fill-red-100" /> Heart Rate
+                  </span>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-bold font-mono text-[var(--hc-text)]">
+                      {selectedPatient.hr}
+                    </span>
+                    <span className="text-xs text-[var(--hc-text-muted)] font-medium">bpm</span>
+                  </div>
+                  <span className="text-[11px] text-[var(--hc-success)] font-semibold flex items-center gap-1 mt-1">
+                    Normal sinus rhythm
+                  </span>
+                </div>
+
+                {/* O2 */}
+                <div className={`p-4 rounded-[var(--radius-lg)] border ${selectedPatient.o2 < 95 ? "bg-red-50/50 border-red-200" : "bg-[var(--hc-surface)] border-[var(--hc-border-soft)]"}`}>
+                  <span className="text-xs font-bold text-[var(--hc-text-muted)] flex items-center gap-1 mb-1">
+                    <Wind className="size-3.5 text-sky-500" /> Oxygen Saturation
+                  </span>
+                  <div className="flex items-baseline gap-1">
+                    <span className={`text-2xl font-bold font-mono ${selectedPatient.o2 < 95 ? "text-[var(--hc-danger)]" : "text-[var(--hc-success)]"}`}>
+                      {selectedPatient.o2}%
+                    </span>
+                    <span className="text-xs text-[var(--hc-text-muted)] font-medium">SpO2</span>
+                  </div>
+                  {selectedPatient.o2 < 95 ? (
+                    <span className="text-[11px] text-[var(--hc-danger)] font-semibold flex items-center gap-1 mt-1">
+                      <AlertCircle className="size-3" /> Hypoxia warning
+                    </span>
+                  ) : (
+                    <span className="text-[11px] text-[var(--hc-success)] font-semibold flex items-center gap-1 mt-1">
+                      Optimal oxygenation
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Action Footer */}
+            <div className="pt-4 border-t border-[var(--hc-border-soft)] flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActionNotice(`Discharge request initiated for ${selectedPatient.name}.`);
+                    setSelectedPatient(null);
+                  }}
+                  className="px-3.5 py-2 text-xs font-bold text-[var(--hc-danger)] border border-[var(--hc-danger-bg)] rounded-[var(--radius-md)] hover:bg-[var(--hc-danger-bg)] transition-colors"
+                >
+                  Discharge Patient
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActionNotice(`Ward transfer requested for ${selectedPatient.name}.`);
+                    setSelectedPatient(null);
+                  }}
+                  className="px-3.5 py-2 text-xs font-bold text-[var(--hc-primary)] border border-[var(--hc-primary-bg)] rounded-[var(--radius-md)] hover:bg-[var(--hc-primary-bg)] transition-colors"
+                >
+                  Transfer Ward
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedPatient(null)}
+                className="px-5 py-2 text-xs font-bold bg-[var(--hc-primary)] text-white rounded-[var(--radius-md)] hover:bg-[var(--hc-blue-700)] shadow-sm transition-colors ml-auto"
+              >
+                Close Profile
+              </button>
+            </div>
+          </div>
+        )}
+      </Dialog>
     </div>
   );
 }
