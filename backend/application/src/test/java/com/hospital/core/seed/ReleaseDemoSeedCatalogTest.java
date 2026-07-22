@@ -65,6 +65,19 @@ class ReleaseDemoSeedCatalogTest {
     assertThat(emails).contains("patient@example.com", "nguyen.van.clinical@example.com");
   }
 
+  @Test
+  void catalogContainsNoCredentials() {
+    var staffComponents = java.util.Arrays.stream(ReleaseDemoSeedCatalog.StaffAccountSeed.class.getRecordComponents())
+        .map(java.lang.reflect.RecordComponent::getName)
+        .toList();
+    var catalogFields = java.util.Arrays.stream(ReleaseDemoSeedCatalog.class.getDeclaredFields())
+        .map(java.lang.reflect.Field::getName)
+        .toList();
+
+    assertThat(staffComponents).doesNotContain("password");
+    assertThat(catalogFields).doesNotContain("PATIENT_PASSWORD");
+  }
+
   private void assertUnique(Collection<String> values) {
     var normalized = values.stream()
         .map(value -> value.trim().toLowerCase(java.util.Locale.ROOT))

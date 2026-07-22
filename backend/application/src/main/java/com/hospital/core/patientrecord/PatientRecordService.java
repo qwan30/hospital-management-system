@@ -1,6 +1,7 @@
 package com.hospital.core.patientrecord;
 
 import com.hospital.core.appointment.AppointmentRepository;
+import com.hospital.core.audit.AuditLogService;
 import com.hospital.core.common.NotFoundException;
 import com.hospital.core.common.NumberUtils;
 import com.hospital.core.medicalrecord.MedicalRecordEntity;
@@ -14,6 +15,8 @@ import com.hospital.shared.medicalrecord.PrescriptionItemPayload;
 import com.hospital.shared.medicalrecord.VitalSignsPayload;
 import com.hospital.shared.patientrecord.PatientRecordDetailResponse;
 import com.hospital.shared.patientrecord.PatientRecordListItemResponse;
+import com.hospital.shared.enums.UserRole;
+import com.hospital.shared.enums.AppointmentStatus;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,42 +27,51 @@ import java.util.Map;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.AccessDeniedException;
 
 @Service
 public class PatientRecordService {
+  private static final List<AppointmentStatus> CARE_RELATIONSHIP_STATUSES = List.of(
+      AppointmentStatus.CHECKED_IN,
+      AppointmentStatus.IN_PROGRESS,
+      AppointmentStatus.DONE);
   private final AppointmentRepository appointmentRepository;
+  private final AuditLogService auditLogService;
   private final MedicalRecordRepository medicalRecordRepository;
   private final PatientIdentifierProtector patientIdentifierProtector;
   private final PatientRepository patientRepository;
 
   public PatientRecordService(
       AppointmentRepository appointmentRepository,
+      AuditLogService auditLogService,
       MedicalRecordRepository medicalRecordRepository,
       PatientIdentifierProtector patientIdentifierProtector,
       PatientRepository patientRepository) {
     this.appointmentRepository = appointmentRepository;
+    this.auditLogService = auditLogService;
     this.medicalRecordRepository = medicalRecordRepository;
     this.patientIdentifierProtector = patientIdentifierProtector;
     this.patientRepository = patientRepository;
   }
 
   @Transactional(readOnly = true)
-  public List<PatientRecordListItemResponse> search(String query) {
+  public List<PatientRecordListItemResponse> search(UUID actorId, UserRole role, String query) {
     var normalizedQuery = query == null ? "" : query.trim();
-    List<PatientEntity> matchedPatients;
+    List<PatientEntity> matchedPatients = switch (role) {
+      case ADMIN -> searchAllPatients(normalizedQuery);
+      case DOCTOR -> patientRepository.searchForDoctor(
+          actorId,
+          normalizedQuery,
+          normalizedQuery.matches("\\d{12}")
+              ? patientIdentifierProtector.hash(normalizedQuery)
+              : null,
+          CARE_RELATIONSHIP_STATUSES,
+          PageRequest.of(0, 20));
+      default -> throw new AccessDeniedException("Patient record access denied");
+    };
 
-    if (normalizedQuery.isBlank()) {
-      matchedPatients = patientRepository.findTop20ByOrderByUpdatedAtDesc();
-    } else {
-      var patientSet = new LinkedHashSet<PatientEntity>(patientRepository.searchByQuery(normalizedQuery));
-      if (normalizedQuery.matches("\\d{12}")) {
-        patientRepository.findByCccdHash(patientIdentifierProtector.hash(normalizedQuery))
-            .ifPresent(patientSet::add);
-      }
-      matchedPatients = new ArrayList<>(patientSet);
-    }
-
-    return matchedPatients.stream()
+    var response = matchedPatients.stream()
         .map(patient -> {
           var appointments = appointmentRepository.findByPatientIdOrderByAppointmentDateDescFirstSlotStartTimeDesc(patient.getId());
           var latestAppointmentDate = appointments.isEmpty() ? null : appointments.get(0).getAppointmentDate();
@@ -73,10 +85,38 @@ public class PatientRecordService {
               appointments.size());
         })
         .toList();
+    if (response.isEmpty()) {
+      auditLogService.record(actorId, "PATIENT_RECORD_SEARCH", "PATIENT_RECORD", null, Map.of(
+          "queryType", queryType(normalizedQuery),
+          "resultCount", 0,
+          "role", role.name()));
+    } else {
+      response.forEach(patient -> auditLogService.record(
+          actorId,
+          "PATIENT_RECORD_SEARCH",
+          "PATIENT_RECORD",
+          patient.patientId(),
+          Map.of("queryType", queryType(normalizedQuery), "role", role.name())));
+    }
+    return response;
+  }
+
+  private List<PatientEntity> searchAllPatients(String normalizedQuery) {
+    if (normalizedQuery.isBlank()) {
+      return patientRepository.findTop20ByOrderByUpdatedAtDesc();
+    }
+
+    var patientSet = new LinkedHashSet<PatientEntity>(patientRepository.searchByQuery(normalizedQuery));
+    if (normalizedQuery.matches("\\d{12}")) {
+      patientRepository.findByCccdHash(patientIdentifierProtector.hash(normalizedQuery))
+          .ifPresent(patientSet::add);
+    }
+    return new ArrayList<>(patientSet);
   }
 
   @Transactional(readOnly = true)
-  public PatientRecordDetailResponse getDetail(UUID patientId) {
+  public PatientRecordDetailResponse getDetail(UUID actorId, UserRole role, UUID patientId) {
+    requireReadAccess(actorId, role, patientId);
     var patient = patientRepository.findById(patientId)
         .orElseThrow(() -> new NotFoundException("Patient not found"));
 
@@ -88,12 +128,12 @@ public class PatientRecordService {
     Map<UUID, MedicalRecordEntity> recordsByAppointmentId = new LinkedHashMap<>();
     records.forEach(record -> recordsByAppointmentId.put(record.getAppointment().getId(), record));
 
-    return new PatientRecordDetailResponse(
+    var response = new PatientRecordDetailResponse(
         patient.getId(),
         patient.getFullName(),
         patient.getPhone(),
         patient.getEmail(),
-        patientIdentifierProtector.decrypt(patient.getCccd()),
+        null,
         patient.getDateOfBirth(),
         patient.getOccupation(),
         patient.getBloodType(),
@@ -114,6 +154,31 @@ public class PatientRecordService {
                 appointment.getDoctor().getFullName(),
                 toMedicalRecordResponse(recordsByAppointmentId.get(appointment.getId()))))
             .toList());
+    auditLogService.record(actorId, "PATIENT_RECORD_READ", "PATIENT_RECORD", patientId, Map.of(
+        "role", role.name()));
+    return response;
+  }
+
+  @Transactional(readOnly = true)
+  public boolean hasReadAccess(UUID actorId, UserRole role, UUID patientId) {
+    return role == UserRole.ADMIN
+        || role == UserRole.DOCTOR
+            && !appointmentRepository
+                .findCareRelationshipForRead(patientId, actorId, CARE_RELATIONSHIP_STATUSES)
+                .isEmpty();
+  }
+
+  public void requireReadAccess(UUID actorId, UserRole role, UUID patientId) {
+    if (!hasReadAccess(actorId, role, patientId)) {
+      throw new AccessDeniedException("Patient record access denied");
+    }
+  }
+
+  private String queryType(String normalizedQuery) {
+    if (normalizedQuery.isBlank()) {
+      return "BLANK";
+    }
+    return normalizedQuery.matches("\\d{12}") ? "IDENTIFIER" : "TEXT";
   }
 
   private MedicalRecordResponse toMedicalRecordResponse(MedicalRecordEntity record) {

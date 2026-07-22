@@ -13,6 +13,7 @@ public class NonBillingDemoSeedProperties {
   private int targetAppointments = 1000;
   private int targetInventoryItems = 200;
   private int targetAuditLogs = 1000;
+  private String doctorPassword;
 
   public boolean isEnabled() {
     return enabled;
@@ -68,6 +69,22 @@ public class NonBillingDemoSeedProperties {
 
   public void setTargetAuditLogs(int targetAuditLogs) {
     this.targetAuditLogs = targetAuditLogs;
+  }
+
+  public String getDoctorPassword() {
+    return doctorPassword;
+  }
+
+  public void setDoctorPassword(String doctorPassword) {
+    this.doctorPassword = doctorPassword;
+  }
+
+  public String requireConfiguredPassword() {
+    if (doctorPassword == null || doctorPassword.isBlank()) {
+      throw new IllegalStateException(
+          "Refusing non-billing-demo seed: an explicit password is required for generated doctor accounts");
+    }
+    return doctorPassword;
   }
 
   public int additionalDepartments(long currentCount) {

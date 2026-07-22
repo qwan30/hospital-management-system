@@ -370,11 +370,11 @@ RateLimitFilter → JwtAuthenticationFilter → Controller → @RestControllerAd
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/api/v1/ai/health` | Staff | Health check |
-| GET | `/api/v1/ai/patients?query=...` | Staff | Search patients |
-| GET | `/api/v1/ai/patients/{patientId}/snapshot` | Staff | Patient snapshot |
-| GET | `/api/v1/ai/patients/{patientId}/timeline` | Staff | Patient timeline |
-| GET | `/api/v1/ai/patients/{patientId}/permissions?userId=...` | Staff | Permission check |
-| GET | `/api/v1/ai/changes?since=ISO_TIMESTAMP` | Staff | Changed entities |
+| GET | `/api/v1/ai/patients?query=...` | Admin, related Doctor | Search patients within the authenticated actor's scope |
+| GET | `/api/v1/ai/patients/{patientId}/snapshot` | Admin, related Doctor | Patient snapshot within the authenticated actor's scope |
+| GET | `/api/v1/ai/patients/{patientId}/timeline` | Admin, related Doctor | Patient timeline within the authenticated actor's scope |
+| GET | `/api/v1/ai/patients/{patientId}/permissions` | Admin, Doctor | Permission check for the authenticated JWT actor; a mismatched legacy `userId` is rejected |
+| GET | `/api/v1/ai/changes?since=ISO_TIMESTAMP` | Admin | Globally changed entity identifiers |
 
 ---
 

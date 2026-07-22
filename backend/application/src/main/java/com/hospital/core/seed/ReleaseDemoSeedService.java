@@ -94,6 +94,7 @@ public class ReleaseDemoSeedService {
   private final PatientPortalLabResultRepository labResultRepository;
   private final PatientRepository patientRepository;
   private final PasswordEncoder passwordEncoder;
+  private final DemoSeedPolicy demoSeedPolicy;
   private final ReleaseDemoSeedProperties properties;
   private final RoomRepository roomRepository;
   private final ServicePricingRepository servicePricingRepository;
@@ -122,6 +123,7 @@ public class ReleaseDemoSeedService {
       PatientPortalLabResultRepository labResultRepository,
       PatientRepository patientRepository,
       PasswordEncoder passwordEncoder,
+      DemoSeedPolicy demoSeedPolicy,
       ReleaseDemoSeedProperties properties,
       RoomRepository roomRepository,
       ServicePricingRepository servicePricingRepository,
@@ -148,6 +150,7 @@ public class ReleaseDemoSeedService {
     this.labResultRepository = labResultRepository;
     this.patientRepository = patientRepository;
     this.passwordEncoder = passwordEncoder;
+    this.demoSeedPolicy = demoSeedPolicy;
     this.properties = properties;
     this.roomRepository = roomRepository;
     this.servicePricingRepository = servicePricingRepository;
@@ -161,16 +164,18 @@ public class ReleaseDemoSeedService {
     if (!properties.isEnabled()) {
       return;
     }
+    demoSeedPolicy.requireAllowed("release-demo");
+    var passwords = properties.requireConfiguredPasswords();
 
     var departments = seedDepartments();
-    var users = seedStaffAccounts(departments);
+    var users = seedStaffAccounts(departments, passwords);
     var rooms = seedRooms(departments);
     seedScheduleTemplates(users, rooms);
     seedSpecialClosures(users, rooms);
     seedPublicContent();
     seedServicePricing(departments);
     var patients = seedPatients();
-    seedPatientAccounts(patients);
+    seedPatientAccounts(patients, passwords);
     seedAvailableSlots(users);
     var appointments = seedAppointments(users, patients);
     seedClinicalArtifacts(appointments, patients);
@@ -196,15 +201,14 @@ public class ReleaseDemoSeedService {
     return departmentsByName;
   }
 
-  private Map<String, UserEntity> seedStaffAccounts(Map<String, DepartmentEntity> departments) {
+  private Map<String, UserEntity> seedStaffAccounts(
+      Map<String, DepartmentEntity> departments, ReleaseDemoSeedProperties.Passwords passwords) {
     var usersByEmail = mapUsersByEmail(userRepository.findAllByOrderByFullNameAsc());
 
     for (var seed : ReleaseDemoSeedCatalog.staffAccounts()) {
       var user = usersByEmail.getOrDefault(key(seed.email()), new UserEntity());
       user.setEmail(seed.email());
-      if (user.getPasswordHash() == null || user.getPasswordHash().isBlank()) {
-        user.setPasswordHash(passwordEncoder.encode(seed.password()));
-      }
+      user.setPasswordHash(passwordEncoder.encode(passwords.forRole(seed.role())));
       user.setFullName(seed.fullName());
       user.setPhone("0900000000");
       user.setRole(seed.role());
@@ -354,7 +358,8 @@ public class ReleaseDemoSeedService {
     return patientsByEmail;
   }
 
-  private void seedPatientAccounts(Map<String, PatientEntity> patients) {
+  private void seedPatientAccounts(
+      Map<String, PatientEntity> patients, ReleaseDemoSeedProperties.Passwords passwords) {
     Map<String, PatientAccountEntity> accountsByEmail = patientAccountRepository.findAll().stream()
         .collect(
             LinkedHashMap::new,
@@ -372,9 +377,7 @@ public class ReleaseDemoSeedService {
       var account = accountsByEmail.getOrDefault(key(seed.email()), new PatientAccountEntity());
       account.setPatient(patient);
       account.setEmail(seed.email());
-      if (account.getPasswordHash() == null || account.getPasswordHash().isBlank()) {
-        account.setPasswordHash(passwordEncoder.encode(ReleaseDemoSeedCatalog.PATIENT_PASSWORD));
-      }
+      account.setPasswordHash(passwordEncoder.encode(passwords.getPatient()));
       account.setActive(true);
       patientAccountRepository.save(account);
     }

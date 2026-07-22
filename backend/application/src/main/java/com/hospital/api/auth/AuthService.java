@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -35,6 +36,7 @@ public class AuthService {
     return toLoginResponse(user);
   }
 
+  @Transactional
   public TokenPair refresh(String refreshToken) {
     if (refreshToken == null || refreshToken.isBlank()) {
       throw new BadCredentialsException("Invalid refresh token");
@@ -49,8 +51,8 @@ public class AuthService {
       throw new BadCredentialsException("Invalid refresh token");
     }
 
-    var user = userRepository.findById(UUID.fromString(claims.getSubject()))
-        .orElseThrow(() -> new BadCredentialsException("User not found"));
+    var user = userRepository.findActiveByIdForRefresh(UUID.fromString(claims.getSubject()))
+        .orElseThrow(() -> new BadCredentialsException("Invalid refresh token"));
 
     var accessToken = jwtTokenService.generateAccessToken(user);
     var nextRefreshToken = jwtTokenService.generateRefreshToken(user.getId(), "staff");

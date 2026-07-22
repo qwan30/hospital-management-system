@@ -1,0 +1,24 @@
+hms:
+  seed:
+    initial-demo:
+      enabled: true
+      passwords:
+        doctor1: Doctor@1234
+        doctor2: Doctor@1234
+        nurse: Nurse@1234
+        receptionist: Reception@1234
+        pharmacist: Pharma@1234
+        accountant: Acc@1234
+        admin: Admin@1234
+        patient: Patient@1234
+    non-billing-demo:
+      doctor-password: Doctor@1234
+    release-demo:
+      passwords:
+        doctor: Doctor@1234
+        nurse: Nurse@1234
+        receptionist: Reception@1234
+        pharmacist: Pharma@1234
+        accountant: Acc@1234
+        admin: Admin@1234
+        patient: Patient@1234

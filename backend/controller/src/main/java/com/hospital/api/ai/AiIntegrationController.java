@@ -2,9 +2,9 @@ package com.hospital.api.ai;
 
 import com.hospital.core.ai.AiIntegrationService;
 import com.hospital.core.appointment.AppointmentEntity;
+import com.hospital.core.audit.AuditLogService;
 import com.hospital.core.patientrecord.PatientRecordService;
 import com.hospital.core.patientportal.LabResultEntity;
-import com.hospital.core.user.UserEntity;
 import com.hospital.shared.api.ApiResponse;
 import com.hospital.shared.enums.UserRole;
 import com.hospital.shared.patientrecord.PatientRecordDetailResponse;
@@ -16,9 +16,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,12 +30,15 @@ public class AiIntegrationController {
 
     private final PatientRecordService patientRecordService;
     private final AiIntegrationService aiIntegrationService;
+    private final AuditLogService auditLogService;
 
     public AiIntegrationController(
             PatientRecordService patientRecordService,
-            AiIntegrationService aiIntegrationService) {
+            AiIntegrationService aiIntegrationService,
+            AuditLogService auditLogService) {
         this.patientRecordService = patientRecordService;
         this.aiIntegrationService = aiIntegrationService;
+        this.auditLogService = auditLogService;
     }
 
     // Inner records for response objects
@@ -82,13 +87,18 @@ public class AiIntegrationController {
 
     @GetMapping("/patients")
     public ApiResponse<List<PatientRecordListItemResponse>> searchPatients(
-            @RequestParam(required = false) String query) {
-        return ApiResponse.ok(patientRecordService.search(query));
+            @RequestParam(required = false) String query,
+            Authentication authentication) {
+        return ApiResponse.ok(patientRecordService.search(actorId(authentication), role(authentication), query));
     }
 
     @GetMapping("/patients/{patientId}/snapshot")
-    public ApiResponse<SnapshotResponse> getSnapshot(@PathVariable UUID patientId) {
-        PatientRecordDetailResponse detail = patientRecordService.getDetail(patientId);
+    @Transactional(readOnly = true)
+    public ApiResponse<SnapshotResponse> getSnapshot(
+            @PathVariable UUID patientId,
+            Authentication authentication) {
+        PatientRecordDetailResponse detail = patientRecordService.getDetail(
+                actorId(authentication), role(authentication), patientId);
 
         List<AllergyInfo> allergies = new ArrayList<>();
         if (detail.drugAllergies() != null && !detail.drugAllergies().isBlank()) {
@@ -124,7 +134,11 @@ public class AiIntegrationController {
     }
 
     @GetMapping("/patients/{patientId}/timeline")
-    public ApiResponse<List<TimelineEvent>> getTimeline(@PathVariable UUID patientId) {
+    @Transactional(readOnly = true)
+    public ApiResponse<List<TimelineEvent>> getTimeline(
+            @PathVariable UUID patientId,
+            Authentication authentication) {
+        patientRecordService.requireReadAccess(actorId(authentication), role(authentication), patientId);
         List<TimelineEvent> events = new ArrayList<>();
 
         // Add appointments
@@ -156,29 +170,35 @@ public class AiIntegrationController {
         });
 
         events.sort(Comparator.comparing(TimelineEvent::timestamp).reversed());
+        auditLogService.record(
+                actorId(authentication),
+                "PATIENT_TIMELINE_READ",
+                "PATIENT_RECORD",
+                patientId,
+                Map.of("role", role(authentication).name()));
         return ApiResponse.ok(events);
     }
 
     @GetMapping("/patients/{patientId}/permissions")
     public ApiResponse<PermissionResponse> getPermissions(
             @PathVariable UUID patientId,
-            @RequestParam UUID userId) {
-        Optional<UserEntity> userOpt = aiIntegrationService.getUser(userId);
-        if (userOpt.isEmpty()) {
-            return ApiResponse.ok(new PermissionResponse(userId, patientId, false, "none", null));
+            @RequestParam(required = false) UUID userId,
+            Authentication authentication) {
+        var actorId = actorId(authentication);
+        if (userId != null && !userId.equals(actorId)) {
+            throw new IllegalArgumentException("Permission subject must match the authenticated actor");
         }
-        UserEntity user = userOpt.get();
-        if (user.getRole() == UserRole.ADMIN) {
-            return ApiResponse.ok(new PermissionResponse(userId, patientId, true, "admin_role", Instant.now().plus(1, ChronoUnit.DAYS)));
-        }
-        boolean hasAccess = aiIntegrationService.hasAppointmentWith(userId, patientId);
-        String scopeType = hasAccess ? "treatment_relationship" : "none";
-        Instant expiresAt = hasAccess ? Instant.now().plus(1, ChronoUnit.DAYS) : null;
-        return ApiResponse.ok(new PermissionResponse(userId, patientId, hasAccess, scopeType, expiresAt));
+        var role = role(authentication);
+        boolean hasAccess = patientRecordService.hasReadAccess(actorId, role, patientId);
+        String scopeType = !hasAccess ? "none" : role == UserRole.ADMIN ? "admin_role" : "treatment_relationship";
+        return ApiResponse.ok(new PermissionResponse(actorId, patientId, hasAccess, scopeType, null));
     }
 
     @GetMapping("/changes")
-    public ApiResponse<ChangesResponse> getChanges(@RequestParam(required = false) String since) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ApiResponse<ChangesResponse> getChanges(
+            @RequestParam(required = false) String since,
+            Authentication authentication) {
         Instant sinceInstant = since == null ? Instant.now().minus(24, ChronoUnit.HOURS) : Instant.parse(since);
         List<ChangeItem> changes = new ArrayList<>();
 
@@ -194,6 +214,24 @@ public class AiIntegrationController {
         aiIntegrationService.getChangedMedicalRecordIds(sinceInstant)
                 .forEach(id -> changes.add(new ChangeItem("medical_record", id, "UPDATE")));
 
+        auditLogService.record(
+                actorId(authentication),
+                "PATIENT_CHANGES_READ",
+                "PATIENT_RECORD",
+                null,
+                Map.of("since", sinceInstant.toString(), "changeCount", changes.size()));
         return ApiResponse.ok(new ChangesResponse(Instant.now(), changes));
+    }
+
+    private UUID actorId(Authentication authentication) {
+        return UUID.fromString(authentication.getName());
+    }
+
+    private UserRole role(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .map(authority -> authority.getAuthority().replaceFirst("^ROLE_", ""))
+                .map(UserRole::valueOf)
+                .findFirst()
+                .orElseThrow();
     }
 }

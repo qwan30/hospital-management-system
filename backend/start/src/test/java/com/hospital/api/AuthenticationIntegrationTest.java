@@ -1,11 +1,13 @@
 package com.hospital.api;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.cookie;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hospital.core.user.UserRepository;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -16,6 +18,8 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -32,6 +36,12 @@ class AuthenticationIntegrationTest {
 
   @Autowired
   private ObjectMapper objectMapper;
+
+  @Autowired
+  private PlatformTransactionManager transactionManager;
+
+  @Autowired
+  private UserRepository userRepository;
 
   @DynamicPropertySource
   static void databaseProperties(DynamicPropertyRegistry registry) {
@@ -103,5 +113,57 @@ class AuthenticationIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.data.accessToken").exists())
         .andExpect(cookie().exists("hms_refresh_token"));
+  }
+
+  @Test
+  void deactivatedStaffCannotRefreshWithRetainedCookie() throws Exception {
+    var doctor = userRepository.findByEmailIgnoreCaseAndActiveTrue("doctor1@hospital.vn").orElseThrow();
+    var doctorId = doctor.getId();
+    try {
+      var doctorLogin = mockMvc.perform(post("/api/v1/auth/login")
+              .contentType("application/json")
+              .content("""
+                  {
+                    "email": "doctor1@hospital.vn",
+                    "password": "Doctor@1234"
+                  }
+                  """))
+          .andExpect(status().isOk())
+          .andExpect(cookie().exists("hms_refresh_token"))
+          .andReturn();
+      var retainedRefreshCookie = doctorLogin.getResponse().getCookie("hms_refresh_token");
+      assertThat(retainedRefreshCookie).isNotNull();
+
+      var adminLogin = mockMvc.perform(post("/api/v1/auth/login")
+              .contentType("application/json")
+              .content("""
+                  {
+                    "email": "admin@hospital.vn",
+                    "password": "Admin@1234"
+                  }
+                  """))
+          .andExpect(status().isOk())
+          .andReturn();
+      var adminAccessToken = objectMapper.readTree(adminLogin.getResponse().getContentAsString())
+          .at("/data/tokens/accessToken")
+          .asText();
+
+      mockMvc.perform(post("/api/v1/admin/users/{userId}/deactivate", doctorId)
+              .header("Authorization", "Bearer " + adminAccessToken))
+          .andExpect(status().isOk())
+          .andExpect(jsonPath("$.data.active").value(false));
+
+      mockMvc.perform(post("/api/v1/auth/refresh").cookie(retainedRefreshCookie))
+          .andExpect(status().isUnauthorized())
+          .andExpect(jsonPath("$.error.code").value("unauthorized"))
+          .andExpect(jsonPath("$.error.message").value("Invalid refresh token"))
+          .andExpect(cookie().doesNotExist("hms_refresh_token"));
+    } finally {
+      new TransactionTemplate(transactionManager).executeWithoutResult(status -> {
+        var user = userRepository.findById(doctorId).orElseThrow();
+        user.setActive(true);
+        userRepository.flush();
+      });
+    }
   }
 }

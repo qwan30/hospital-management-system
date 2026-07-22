@@ -1,6 +1,7 @@
 package com.hospital.core.seed;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,5 +30,12 @@ class NonBillingDemoSeedPropertiesTest {
     assertThat(properties.additionalAppointments(1200)).isZero();
     assertThat(properties.additionalInventoryItems(300)).isZero();
     assertThat(properties.additionalAuditLogs(1200)).isZero();
+  }
+
+  @Test
+  void requiresAnExplicitPasswordBeforeCreatingAdditionalDoctorAccounts() {
+    assertThatThrownBy(() -> new NonBillingDemoSeedProperties().requireConfiguredPassword())
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("explicit password is required");
   }
 }
