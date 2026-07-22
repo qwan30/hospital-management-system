@@ -57,10 +57,9 @@ export default function StaffLoginPage() {
 
   return (
     <main className="relative flex min-h-screen flex-col overflow-hidden bg-white text-[var(--hc-text)]">
-      {/* Background Image */}
       <div
-        className="absolute inset-0 bg-cover bg-no-repeat"
-        style={{ backgroundImage: "url('/staff-login-background.png')", backgroundPosition: "-150% center" }}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/staff-login-clinical-background.png')" }}
         aria-hidden="true"
       />
       <div className="relative z-10 flex flex-1">
