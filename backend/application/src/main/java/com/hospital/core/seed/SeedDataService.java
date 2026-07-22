@@ -45,8 +45,6 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +89,7 @@ public class SeedDataService {
   private final PasswordEncoder passwordEncoder;
   private final NonBillingDemoSeedProperties nonBillingDemoSeedProperties;
   private final InitialDemoSeedProperties initialDemoSeedProperties;
-  private final Environment environment;
+  private final DemoSeedPolicy demoSeedPolicy;
 
   public SeedDataService(
       AppointmentRepository appointmentRepository,
@@ -113,7 +111,7 @@ public class SeedDataService {
       PasswordEncoder passwordEncoder,
       NonBillingDemoSeedProperties nonBillingDemoSeedProperties,
       InitialDemoSeedProperties initialDemoSeedProperties,
-      Environment environment) {
+      DemoSeedPolicy demoSeedPolicy) {
     this.appointmentRepository = appointmentRepository;
     this.auditLogRepository = auditLogRepository;
     this.departmentRepository = departmentRepository;
@@ -133,30 +131,19 @@ public class SeedDataService {
     this.passwordEncoder = passwordEncoder;
     this.nonBillingDemoSeedProperties = nonBillingDemoSeedProperties;
     this.initialDemoSeedProperties = initialDemoSeedProperties;
-    this.environment = environment;
-  }
-
-  private boolean isProductionEnvironment() {
-    for (String profile : environment.getActiveProfiles()) {
-      if (profile.toLowerCase().contains("prod") || profile.toLowerCase().contains("production")) {
-        return true;
-      }
-    }
-    return false;
+    this.demoSeedPolicy = demoSeedPolicy;
   }
 
   @Transactional
   public void seedIfEmpty() {
-    // Demo credentials and sample PHI must never be created by a production profile.
-    if (isProductionEnvironment()) {
-      LOGGER.warn("Skipping initial data seeding: seeding is disabled in production environments.");
-      return;
-    }
     if (!initialDemoSeedProperties.isEnabled()) {
       LOGGER.info("Skipping initial data seeding: initial-demo seeding is disabled by configuration.");
       return;
     }
+    demoSeedPolicy.requireAllowed("initial-demo");
+    var passwords = initialDemoSeedProperties.requireConfiguredPasswords();
     if (departmentRepository.count() > 0 || userRepository.count() > 0) {
+      rotateExistingInitialDemoCredentialHashes(passwords);
       return;
     }
 
@@ -169,7 +156,6 @@ public class SeedDataService {
         createPricing(pediatrics, "CONSULTATION", BigDecimal.valueOf(180000)),
         createPricing(cardiology, "CONSULTATION", BigDecimal.valueOf(300000))));
 
-    var passwords = initialDemoSeedProperties.getPasswords();
     var doctorOne = createUser("doctor1@hospital.vn", passwords.getDoctor1(), "Dr. Nguyen Van An", UserRole.DOCTOR, internalMedicine, "Internal Medicine");
     var doctorTwo = createUser("doctor2@hospital.vn", passwords.getDoctor2(), "Dr. Tran Thi Binh", UserRole.DOCTOR, cardiology, "Cardiology");
     var nurse = createUser("nurse@hospital.vn", passwords.getNurse(), "Le Thi Cuc", UserRole.NURSE, internalMedicine, null);
@@ -193,6 +179,34 @@ public class SeedDataService {
     }
 
     seedNonBillingDemoDataIfEnabled();
+  }
+
+  private void rotateExistingInitialDemoCredentialHashes(InitialDemoSeedProperties.Passwords passwords) {
+    var staffByEmail = java.util.Map.of(
+        "doctor1@hospital.vn", passwords.getDoctor1(),
+        "doctor2@hospital.vn", passwords.getDoctor2(),
+        "nurse@hospital.vn", passwords.getNurse(),
+        "receptionist@hospital.vn", passwords.getReceptionist(),
+        "pharmacist@hospital.vn", passwords.getPharmacist(),
+        "accountant@hospital.vn", passwords.getAccountant(),
+        "admin@hospital.vn", passwords.getAdmin());
+    var staffToRotate = new ArrayList<UserEntity>();
+    for (var user : userRepository.findAllByOrderByFullNameAsc()) {
+      var password = staffByEmail.get(user.getEmail().toLowerCase(java.util.Locale.ROOT));
+      if (password == null) {
+        continue;
+      }
+      user.setPasswordHash(passwordEncoder.encode(password));
+      staffToRotate.add(user);
+    }
+    userRepository.saveAll(staffToRotate);
+
+    patientAccountRepository.findAll().stream()
+        .filter(account -> "patient@example.com".equalsIgnoreCase(account.getEmail()))
+        .forEach(account -> {
+          account.setPasswordHash(passwordEncoder.encode(passwords.getPatient()));
+          patientAccountRepository.save(account);
+        });
   }
 
   private DepartmentEntity createDepartment(String name, String description, String phone) {
@@ -446,6 +460,7 @@ public class SeedDataService {
     if (!nonBillingDemoSeedProperties.isEnabled()) {
       return;
     }
+    var doctorPassword = nonBillingDemoSeedProperties.requireConfiguredPassword();
 
     var departments = new ArrayList<>(departmentRepository.findAllByOrderByNameAsc());
     departments.addAll(seedAdditionalDepartments(
@@ -454,7 +469,8 @@ public class SeedDataService {
     var doctors = new ArrayList<>(userRepository.findByRoleAndActiveTrueOrderByFullNameAsc(UserRole.DOCTOR));
     doctors.addAll(seedAdditionalDoctors(
         departments,
-        nonBillingDemoSeedProperties.additionalDoctors(doctors.size())));
+        nonBillingDemoSeedProperties.additionalDoctors(doctors.size()),
+        doctorPassword));
 
     var patients = new ArrayList<>(patientRepository.findAll());
     patients.addAll(seedAdditionalPatients(
@@ -484,13 +500,14 @@ public class SeedDataService {
     return departmentRepository.saveAll(departments);
   }
 
-  private List<UserEntity> seedAdditionalDoctors(List<DepartmentEntity> departments, int count) {
+  private List<UserEntity> seedAdditionalDoctors(
+      List<DepartmentEntity> departments, int count, String doctorPassword) {
     var doctors = new ArrayList<UserEntity>();
     for (int index = 0; index < count; index++) {
       var department = departments.get(index % departments.size());
       doctors.add(createUser(
           "doctor.demo%03d@hospital.vn".formatted(index + 1),
-          "Doctor@1234",
+          doctorPassword,
           "Dr. Demo Clinician %03d".formatted(index + 1),
           UserRole.DOCTOR,
           department,

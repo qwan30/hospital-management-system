@@ -86,24 +86,25 @@ jobs:
             IMAGE_TAG="${{ steps.tag.outputs.tag }}"
             export BACKEND_IMAGE="ghcr.io/${{ github.repository }}/backend:${IMAGE_TAG}"
             export FRONTEND_IMAGE="ghcr.io/${{ github.repository }}/frontend:${IMAGE_TAG}"
+            export SPRING_PROFILES_ACTIVE=staging
+            export HMS_INITIAL_DEMO_SEED_ENABLED=false
+            export HMS_RELEASE_DEMO_SEED_ENABLED=false
+            export HMS_NON_BILLING_DEMO_SEED_ENABLED=false
 
             echo "→ Deploying backend: ${BACKEND_IMAGE}"
             echo "→ Deploying frontend: ${FRONTEND_IMAGE}"
 
-            docker compose pull
+            docker compose -f infra/docker-compose.yml pull
 
-            # Run database migrations (if configured)
-            if docker compose run --rm backend java -jar /app/app.jar --spring.profiles.active=migrate 2>/dev/null; then
-              echo "✓ Migrations applied"
-            else
-              echo "⚠ Migration step skipped (not configured or no pending changes)"
-            fi
+            # Run database migrations; any failure must stop the deployment.
+            docker compose -f infra/docker-compose.yml run --rm backend java -jar /app/app.jar --spring.profiles.active=migrate
+            echo "✓ Migrations applied"
 
             # Recreate containers
             if [ -f infra/docker-compose.observability.yml ]; then
               docker compose -f infra/docker-compose.yml -f infra/docker-compose.observability.yml up -d --remove-orphans
             else
-              docker compose up -d --remove-orphans
+              docker compose -f infra/docker-compose.yml up -d --remove-orphans
             fi
 
             # Clean up old images
@@ -187,24 +188,25 @@ jobs:
             IMAGE_TAG="${{ steps.tag.outputs.tag }}"
             export BACKEND_IMAGE="ghcr.io/${{ github.repository }}/backend:${IMAGE_TAG}"
             export FRONTEND_IMAGE="ghcr.io/${{ github.repository }}/frontend:${IMAGE_TAG}"
+            export SPRING_PROFILES_ACTIVE=production
+            export HMS_INITIAL_DEMO_SEED_ENABLED=false
+            export HMS_RELEASE_DEMO_SEED_ENABLED=false
+            export HMS_NON_BILLING_DEMO_SEED_ENABLED=false
 
             echo "→ Deploying backend: ${BACKEND_IMAGE}"
             echo "→ Deploying frontend: ${FRONTEND_IMAGE}"
 
-            docker compose pull
+            docker compose -f infra/docker-compose.yml pull
 
-            # Run database migrations
-            if docker compose run --rm backend java -jar /app/app.jar --spring.profiles.active=migrate 2>/dev/null; then
-              echo "✓ Migrations applied"
-            else
-              echo "⚠ Migration step skipped (not configured or no pending changes)"
-            fi
+            # Run database migrations; any failure must stop the deployment.
+            docker compose -f infra/docker-compose.yml run --rm backend java -jar /app/app.jar --spring.profiles.active=migrate
+            echo "✓ Migrations applied"
 
             # Recreate containers
             if [ -f infra/docker-compose.observability.yml ]; then
               docker compose -f infra/docker-compose.yml -f infra/docker-compose.observability.yml up -d --remove-orphans
             else
-              docker compose up -d --remove-orphans
+              docker compose -f infra/docker-compose.yml up -d --remove-orphans
             fi
 
             # Clean up old images

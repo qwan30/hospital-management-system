@@ -14,7 +14,6 @@ import java.util.List;
 
 final class ReleaseDemoSeedCatalog {
   static final String SOURCE = "release-demo-seed";
-  static final String PATIENT_PASSWORD = "Patient@1234";
 
   private ReleaseDemoSeedCatalog() {
   }
@@ -33,15 +32,15 @@ final class ReleaseDemoSeedCatalog {
 
   static List<StaffAccountSeed> staffAccounts() {
     return List.of(
-        new StaffAccountSeed("admin@hospital.vn", "Admin@1234", "System Admin", UserRole.ADMIN, null, null),
-        new StaffAccountSeed("doctor1@hospital.vn", "Doctor@1234", "Dr. Nguyen Van An", UserRole.DOCTOR, "Internal Medicine", "Internal Medicine"),
-        new StaffAccountSeed("doctor2@hospital.vn", "Doctor@1234", "Dr. Tran Thi Binh", UserRole.DOCTOR, "Cardiology", "Cardiology"),
-        new StaffAccountSeed("doctor3@hospital.vn", "Doctor@1234", "Dr. Le Minh Khoa", UserRole.DOCTOR, "Radiology", "Radiology"),
-        new StaffAccountSeed("doctor4@hospital.vn", "Doctor@1234", "Dr. Pham Nhu Quynh", UserRole.DOCTOR, "Pediatrics", "Pediatrics"),
-        new StaffAccountSeed("nurse@hospital.vn", "Nurse@1234", "Le Thi Cuc", UserRole.NURSE, "Internal Medicine", null),
-        new StaffAccountSeed("receptionist@hospital.vn", "Reception@1234", "Vo Thi Reception", UserRole.RECEPTIONIST, null, null),
-        new StaffAccountSeed("pharmacist@hospital.vn", "Pharma@1234", "Hoang Van Pharmacist", UserRole.PHARMACIST, "Pharmacy", null),
-        new StaffAccountSeed("accountant@hospital.vn", "Acc@1234", "Pham Van Dung", UserRole.ACCOUNTANT, null, null));
+        new StaffAccountSeed("admin@hospital.vn", "System Admin", UserRole.ADMIN, null, null),
+        new StaffAccountSeed("doctor1@hospital.vn", "Dr. Nguyen Van An", UserRole.DOCTOR, "Internal Medicine", "Internal Medicine"),
+        new StaffAccountSeed("doctor2@hospital.vn", "Dr. Tran Thi Binh", UserRole.DOCTOR, "Cardiology", "Cardiology"),
+        new StaffAccountSeed("doctor3@hospital.vn", "Dr. Le Minh Khoa", UserRole.DOCTOR, "Radiology", "Radiology"),
+        new StaffAccountSeed("doctor4@hospital.vn", "Dr. Pham Nhu Quynh", UserRole.DOCTOR, "Pediatrics", "Pediatrics"),
+        new StaffAccountSeed("nurse@hospital.vn", "Le Thi Cuc", UserRole.NURSE, "Internal Medicine", null),
+        new StaffAccountSeed("receptionist@hospital.vn", "Vo Thi Reception", UserRole.RECEPTIONIST, null, null),
+        new StaffAccountSeed("pharmacist@hospital.vn", "Hoang Van Pharmacist", UserRole.PHARMACIST, "Pharmacy", null),
+        new StaffAccountSeed("accountant@hospital.vn", "Pham Van Dung", UserRole.ACCOUNTANT, null, null));
   }
 
   static List<RoomSeed> rooms() {
@@ -179,7 +178,7 @@ final class ReleaseDemoSeedCatalog {
   record DepartmentSeed(String name, String description, String phone) {
   }
 
-  record StaffAccountSeed(String email, String password, String fullName, UserRole role, String departmentName, String specialty) {
+  record StaffAccountSeed(String email, String fullName, UserRole role, String departmentName, String specialty) {
   }
 
   record RoomSeed(String name, String departmentName, RoomStatus status, String notes) {

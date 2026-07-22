@@ -20,8 +20,10 @@ import com.hospital.core.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.MOCK,
@@ -36,6 +38,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
         "security.patient-identifier.secret=test-patient-identifier-secret",
         "security.http.public-rate-limit-per-minute=0"
     })
+@ActiveProfiles("test")
 class ReleaseDemoSeedIntegrationTest {
   private static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("pgvector/pgvector:pg15");
 
@@ -83,6 +86,9 @@ class ReleaseDemoSeedIntegrationTest {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private PasswordEncoder passwordEncoder;
 
   @DynamicPropertySource
   static void databaseProperties(DynamicPropertyRegistry registry) {
@@ -135,6 +141,31 @@ class ReleaseDemoSeedIntegrationTest {
     assertSingleInventorySku("UAT-MED-AML-005");
     assertSingleLotCode("UAT-MED-AML-005-LOT");
     assertAuditKeyPresent("release-demo-001");
+  }
+
+  @Test
+  void releaseDemoSeedRotatesExistingStaffAndPatientAccountCredentials() {
+    var admin = userRepository.findAll().stream()
+        .filter(user -> "admin@hospital.vn".equalsIgnoreCase(user.getEmail()))
+        .findFirst()
+        .orElseThrow();
+    admin.setPasswordHash(passwordEncoder.encode("obsolete-release-admin-password"));
+    userRepository.save(admin);
+
+    var patientAccount = patientAccountRepository.findAll().stream()
+        .filter(account -> "patient@example.com".equalsIgnoreCase(account.getEmail()))
+        .findFirst()
+        .orElseThrow();
+    patientAccount.setPasswordHash(passwordEncoder.encode("obsolete-release-patient-password"));
+    patientAccountRepository.save(patientAccount);
+
+    releaseDemoSeedService.seedIfEnabled();
+
+    assertThat(passwordEncoder.matches("Admin@1234", userRepository.findById(admin.getId()).orElseThrow().getPasswordHash()))
+        .isTrue();
+    assertThat(passwordEncoder.matches("Patient@1234", patientAccountRepository
+        .findByEmailIgnoreCaseAndActiveTrue("patient@example.com").orElseThrow().getPasswordHash()))
+        .isTrue();
   }
 
   private SeedCounts counts() {

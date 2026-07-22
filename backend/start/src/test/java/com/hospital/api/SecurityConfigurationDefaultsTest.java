@@ -34,6 +34,33 @@ class SecurityConfigurationDefaultsTest {
     assertThat(dockerCompose).contains("POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}");
   }
 
+  @Test
+  void demoSeedConfigurationDefaultsFailClosedOutsideExplicitTestProfiles() throws IOException {
+    var applicationYaml = Files.readString(
+        Path.of("src", "main", "resources", "application.yml"),
+        StandardCharsets.UTF_8);
+    var dockerCompose = Files.readString(findRepositoryRoot().resolve("infra").resolve("docker-compose.yml"), StandardCharsets.UTF_8);
+
+    assertThat(applicationYaml).contains("enabled: ${HMS_INITIAL_DEMO_SEED_ENABLED:false}");
+    assertThat(dockerCompose).contains("SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-production}");
+    assertThat(dockerCompose).contains("HMS_INITIAL_DEMO_SEED_ENABLED: ${HMS_INITIAL_DEMO_SEED_ENABLED:-false}");
+    assertThat(dockerCompose).contains("HMS_RELEASE_DEMO_SEED_ENABLED: ${HMS_RELEASE_DEMO_SEED_ENABLED:-false}");
+    assertThat(dockerCompose).contains("HMS_NON_BILLING_DEMO_SEED_ENABLED: ${HMS_NON_BILLING_DEMO_SEED_ENABLED:-false}");
+  }
+
+  @Test
+  void cdUsesTheTrackedComposeFileForEveryDeploymentCommand() throws IOException {
+    var cdWorkflow = Files.readString(
+        findRepositoryRoot().resolve(".github").resolve("workflows").resolve("cd.yml"),
+        StandardCharsets.UTF_8);
+
+    assertThat(cdWorkflow).doesNotContain("docker compose pull");
+    assertThat(cdWorkflow).doesNotContain("docker compose run --rm backend");
+    assertThat(cdWorkflow).doesNotContain("docker compose up -d --remove-orphans");
+    assertThat(cdWorkflow).contains("docker compose -f infra/docker-compose.yml pull");
+    assertThat(cdWorkflow).contains("docker compose -f infra/docker-compose.yml run --rm backend");
+  }
+
   private Path findRepositoryRoot() {
     var current = Path.of(System.getProperty("user.dir")).toAbsolutePath();
     while (current != null) {

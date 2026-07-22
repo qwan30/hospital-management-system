@@ -1,6 +1,7 @@
 package com.hospital.core.seed;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +17,13 @@ class ReleaseDemoSeedPropertiesTest {
     assertThat(properties.getTargetAppointments()).isEqualTo(12);
     assertThat(properties.getTargetInventoryItems()).isEqualTo(8);
     assertThat(properties.getTargetAuditLogs()).isEqualTo(16);
+    assertThat(properties.getPasswords().getAdmin()).isNull();
+    assertThat(properties.getPasswords().getDoctor()).isNull();
+    assertThat(properties.getPasswords().getNurse()).isNull();
+    assertThat(properties.getPasswords().getReceptionist()).isNull();
+    assertThat(properties.getPasswords().getPharmacist()).isNull();
+    assertThat(properties.getPasswords().getAccountant()).isNull();
+    assertThat(properties.getPasswords().getPatient()).isNull();
   }
 
   @Test
@@ -35,5 +43,12 @@ class ReleaseDemoSeedPropertiesTest {
     assertThat(properties.getTargetAppointments()).isEqualTo(40);
     assertThat(properties.getTargetInventoryItems()).isEqualTo(15);
     assertThat(properties.getTargetAuditLogs()).isEqualTo(30);
+  }
+
+  @Test
+  void rejectsEnabledSeedWhenAnyPasswordIsNotExplicitlyConfigured() {
+    assertThatThrownBy(() -> new ReleaseDemoSeedProperties().requireConfiguredPasswords())
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("explicit passwords are required");
   }
 }

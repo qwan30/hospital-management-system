@@ -1,12 +1,14 @@
 package com.hospital.core.seed;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "hms.seed.initial-demo")
 public class InitialDemoSeedProperties {
-  private boolean enabled = true;
+  private boolean enabled;
   private Passwords passwords = new Passwords();
 
   public boolean isEnabled() {
@@ -25,15 +27,20 @@ public class InitialDemoSeedProperties {
     this.passwords = passwords;
   }
 
+  public Passwords requireConfiguredPasswords() {
+    passwords.requireComplete("initial-demo");
+    return passwords;
+  }
+
   public static class Passwords {
-    private String doctor1 = "Doctor@1234";
-    private String doctor2 = "Doctor@1234";
-    private String nurse = "Nurse@1234";
-    private String receptionist = "Reception@1234";
-    private String pharmacist = "Pharma@1234";
-    private String accountant = "Acc@1234";
-    private String admin = "Admin@1234";
-    private String patient = "Patient@1234";
+    private String doctor1;
+    private String doctor2;
+    private String nurse;
+    private String receptionist;
+    private String pharmacist;
+    private String accountant;
+    private String admin;
+    private String patient;
 
     public String getDoctor1() { return doctor1; }
     public void setDoctor1(String doctor1) { this.doctor1 = doctor1; }
@@ -58,5 +65,25 @@ public class InitialDemoSeedProperties {
 
     public String getPatient() { return patient; }
     public void setPatient(String patient) { this.patient = patient; }
+
+    private void requireComplete(String seedName) {
+      var values = new LinkedHashMap<String, String>();
+      values.put("doctor1", doctor1);
+      values.put("doctor2", doctor2);
+      values.put("nurse", nurse);
+      values.put("receptionist", receptionist);
+      values.put("pharmacist", pharmacist);
+      values.put("accountant", accountant);
+      values.put("admin", admin);
+      values.put("patient", patient);
+      var missing = values.entrySet().stream()
+          .filter(entry -> entry.getValue() == null || entry.getValue().isBlank())
+          .map(Map.Entry::getKey)
+          .toList();
+      if (!missing.isEmpty()) {
+        throw new IllegalStateException(
+            "Refusing " + seedName + " seed: explicit passwords are required for " + String.join(", ", missing));
+      }
+    }
   }
 }
