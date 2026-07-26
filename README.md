@@ -7,7 +7,7 @@
 [![React 19](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Playwright](https://img.shields.io/badge/Playwright-45ba4b?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
-[![GitHub Actions](https://img.shields.io/badge/CI%2FCD-Active-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/qwan30/hospital-management-system/actions)
+[![CI](https://github.com/qwan30/hospital-management-system/actions/workflows/ci.yml/badge.svg)](https://github.com/qwan30/hospital-management-system/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/badge/Release-RC_1.0-0d7c4b?style=for-the-badge)](https://github.com/qwan30/hospital-management-system)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=qwan30_hospital-management-system&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=qwan30_hospital-management-system)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=qwan30_hospital-management-system&metric=coverage)](https://sonarcloud.io/summary/new_code?id=qwan30_hospital-management-system)
@@ -15,7 +15,7 @@
 **A full-stack healthcare ERP system** supporting end-to-end hospital clinical workflows — from public appointment booking, patient intake & queue triage, electronic health records (EHR), pharmacy dispensing with lot-level traceability, to billing & revenue reporting. Built with **Domain-Driven Design (DDD)** principles and strict **PHI (Protected Health Information)** compliance — AES-GCM encryption, SHA-256 hashed indexing, JWT-based RBAC with 34 granular permissions.
 
 > **🟢 Production Status: Release Candidate 1.0 — June 15, 2026**
-> All 7 clinical workflows implemented and verified. ~408 backend tests (service + controller + repository + integration) + 611+ frontend unit tests + 203+ Playwright E2E scenarios. Coverage thresholds enforced at build time. Comprehensive edge/bad case coverage across all layers.
+> All 7 clinical workflows implemented and verified. ~408 backend tests (service + controller + repository + integration) + 641 frontend unit tests + 2,045 Playwright E2E tests across 31 specs (930 in the CI gate). Coverage thresholds enforced at build time. Comprehensive edge/bad case coverage across all layers.
 >
 > 📚 **[Interactive Documentation Portal →](docs/HMS_DOCUMENTATION.html)** | 📂 **[Documentation Index →](docs/README.md)** | 📋 **[API Contract →](docs/05-api/api-contract.md)** | 📝 **[Changelog →](CHANGELOG.md)**
 
@@ -251,8 +251,9 @@ xychart-beta
 
 | Metric | Value | Status |
 |--------|-------|--------|
-| **Backend Integration Tests** | 148 (Spring Boot + Testcontainers) | ✅ All Passing |
-| **E2E Playwright Scenarios** | 183+ (RBAC, Clinical, Click-path) | ✅ All Passing |
+| **Backend Integration Tests** | 174 across 23 classes (Spring Boot + Testcontainers) | ✅ Green in CI via `mvn verify` |
+| **E2E Playwright (CI gate)** | 930 tests across 12 specs — mock-driven, no backend required | ✅ Green in CI |
+| **E2E requiring a live backend** | 1,115 tests across 19 specs — run manually | ⚠️ Not in the CI gate |
 | **Frontend Branch Coverage** | 80.48% (Vitest) | ✅ Above 80% Target |
 | **REST API Endpoints** | 118 mappings across 32 controllers | ✅ Verified |
 | **Database Schema** | 35 tables, 26 indexes, 20 Flyway migrations | ✅ Migrated |
@@ -393,7 +394,7 @@ cd backend && mvn verify
 cd frontend && npm run test:unit
 
 # Frontend — E2E tests (Playwright)
-cd frontend && npm run test:e2e:ci       # Full CI suite
+cd frontend && npm run test:e2e:ci       # CI gate: 12 of 31 specs, mock-driven
 cd frontend && npm run test:e2e:ui       # UI smoke & accessibility
 cd frontend && npm run test:e2e:integrated  # Backend-integrated auth & booking
 ```
