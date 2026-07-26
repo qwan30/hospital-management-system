@@ -54,4 +54,26 @@ venv/
 
 # AI Agent / Code Intelligence Caches
 .codegraph/
+.gitnexus/
+
+# AI development tooling and per-developer session state. Kept out of version
+# control so the tracked tree is the product: these directories were 54% of all
+# tracked files (1,124 of 2,206) and dwarfed backend/ and frontend/ combined.
+# They still work locally — they are ignored, not deleted.
+.agents/
+.claude/
+.khuym/
+.agent/
+.codex/
+.codex-run/
+.superpowers/
+.instructions.md
+skills-lock.json
+
+# Scratch artifacts that were previously committed by accident.
+recent_changes.diff
+task.md
+history/
+test-results/
+playwright-report/
 

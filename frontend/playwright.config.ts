@@ -6,6 +6,9 @@ const localWorkers = Number(process.env.PLAYWRIGHT_WORKERS ?? 2);
 
 export default defineConfig({
   testDir: "./e2e",
+  // Aborts the run when HMS_REQUIRE_BACKEND=true and no backend answers, so backend-gated specs
+  // cannot self-skip into a false green. No-op when the flag is unset.
+  globalSetup: "./e2e/global-setup.ts",
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,

@@ -259,6 +259,12 @@ jobs:
           NEXT_PUBLIC_API_BASE_URL: http://localhost:8081/api/v1
         run: npm run build
 
+      # This job runs no backend, so `test:e2e:ci` covers only the 12 mock-driven specs.
+      # HMS_REQUIRE_BACKEND is deliberately NOT set here: the flag aborts the run when no backend
+      # answers, and setting it without provisioning postgres + Spring Boot would just turn this job
+      # red without verifying anything more. Server-enforced authorization is covered by the
+      # `backend-test` job (`mvn -B verify`, 174 Testcontainers integration tests), which is where
+      # object-level access control is actually asserted.
       - name: E2E tests (Playwright, Chromium)
         env:
           NEXT_PUBLIC_API_BASE_URL: http://localhost:8081/api/v1

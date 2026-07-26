@@ -24,7 +24,7 @@ frontend/
 ├── src/app/         # Next.js App Router — staff, admin, portal, public routes
 ├── src/components/  # Shared UI components — 19 UI components tested (140 tests)
 ├── src/lib/         # API client, auth helpers, utility modules
-└── e2e/             # Playwright specs + page objects (30 spec files, 203+ scenarios)
+└── e2e/             # Playwright specs + page objects (31 spec files, 2,045 tests; 12 specs in the CI gate)
 ```
 
 Dependency flow: `domain` ← `infrastructure` ← `application` ← `controller` ← `start`
@@ -96,9 +96,11 @@ JaCoCo coverage thresholds enforced: instruction ≥ 40%, branch ≥ 30%.
 cd frontend
 npm run test:unit              # Vitest unit tests — 70 test files, 641 tests
 npm run test:unit:coverage     # Coverage report (thresholds enforced: 40% stmts, 35% branch)
-npm run test:e2e:ui            # Playwright UI route smoke & accessibility (30 specs, 203+ scenarios)
+npm run test:e2e:ui            # @ui-tagged specs (21 specs) — local only, not run by CI
 npm run test:e2e:integrated    # Backend-backed auth, claim, booking, queue checks
-npm run test:e2e:ci            # Full CI suite — RBAC, API client, operations, security
+npm run test:e2e:ci            # CI gate — 12 of 31 specs: frontend route guards, API client
+                               # contracts, security headers. Mock-driven; server-enforced
+                               # authorization is covered by `mvn verify`, not by this suite.
 npm run test:e2e:visual        # Visual baseline snapshots
 npm run lint                   # ESLint
 npm run build                  # Next.js production build
@@ -106,7 +108,7 @@ npm run build                  # Next.js production build
 
 ### ECC Agent Infrastructure
 ```bash
-node .agents/tests/run-all.js  # ECC framework unit tests (hooks, lib, scripts)
+node .agents/tests/run-all.js  # ECC framework unit tests (local only — see note below)
 ```
 
 ## Key Project Metrics
@@ -116,7 +118,7 @@ node .agents/tests/run-all.js  # ECC framework unit tests (hooks, lib, scripts)
 - **20 Flyway migrations** building 35 database tables with 26 indexes
 - **~393 backend tests** (122 service + 58 controller + 30 repository + ~183 integration)
 - **641 frontend unit tests** across 70 test files (19 UI components, 12 lib, 6 hooks, 35+ pages)
-- **203+ Playwright E2E scenarios** across 30 specs — RBAC, clinical workflows, error paths, network failure, rate limiting
+- **2,045 Playwright E2E tests across 31 specs.** 930 run in the CI gate (12 specs, mock-driven). The other 1,115 — clinical workflows, error paths, network failure, rate limiting, RBAC enforcement — need a live backend and are run manually. Set `HMS_REQUIRE_BACKEND=true` so those specs fail loudly instead of self-skipping.
 - **Coverage thresholds enforced**: backend instruction ≥ 40% / branch ≥ 30%; frontend statements ≥ 40% / branches ≥ 35%
 - **Edge/bad case coverage**: null params, empty strings, extreme numerics, XSS, SQL injection, session expiry, double-submit, network failures, concurrent sessions
 
@@ -140,7 +142,15 @@ GitHub Actions workflows in `.github/workflows/`:
 
 ## ECC Agent Infrastructure
 
-The `.agents/` directory contains ECC (Enterprise Claude Code) development tooling — skills, hooks, commands, and rules used for AI-assisted development of this HMS project. These are development utilities, not product features.
+The `.agents/` and `.claude/` directories contain ECC (Enterprise Claude Code) development tooling —
+skills, hooks, commands, and rules used for AI-assisted development of this HMS project. These are
+development utilities, not product features.
+
+> **Not tracked in git.** They are present locally and fully functional, but gitignored: together they
+> were 1,124 of 2,206 tracked files (54%), dwarfing `backend/` (356) and `frontend/` (323) combined and
+> burying the actual product in any clone or diff. Untracking them left 966 tracked files that are all
+> product, docs, or CI. If you need them on a fresh machine, reinstall the ECC tooling rather than
+> expecting a clone to carry it.
 
 | Directory | Purpose |
 |-----------|---------|
