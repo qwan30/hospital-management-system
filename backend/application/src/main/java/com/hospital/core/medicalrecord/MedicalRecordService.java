@@ -5,8 +5,10 @@ import com.hospital.core.common.ConflictException;
 import com.hospital.core.common.NotFoundException;
 import com.hospital.core.common.NumberUtils;
 import com.hospital.core.email.EmailService;
+import com.hospital.core.patient.PatientEntity;
 import com.hospital.core.patient.PatientIdentifierProtector;
 import com.hospital.core.patient.PatientRepository;
+import com.hospital.core.patientrecord.PatientRecordService;
 import com.hospital.core.prescription.PrescriptionPdfDocument;
 import com.hospital.core.prescription.PrescriptionPdfService;
 import com.hospital.core.prescription.PrescriptionItemEntity;
@@ -41,6 +43,7 @@ public class MedicalRecordService {
   private final ReminderService reminderService;
   private final PrescriptionPdfService prescriptionPdfService;
   private final EmailService emailService;
+  private final PatientRecordService patientRecordService;
 
   public MedicalRecordService(
       AppointmentRepository appointmentRepository,
@@ -49,7 +52,8 @@ public class MedicalRecordService {
       PatientRepository patientRepository,
       ReminderService reminderService,
       PrescriptionPdfService prescriptionPdfService,
-      EmailService emailService) {
+      EmailService emailService,
+      PatientRecordService patientRecordService) {
     this.appointmentRepository = appointmentRepository;
     this.medicalRecordRepository = medicalRecordRepository;
     this.patientIdentifierProtector = patientIdentifierProtector;
@@ -57,6 +61,7 @@ public class MedicalRecordService {
     this.reminderService = reminderService;
     this.prescriptionPdfService = prescriptionPdfService;
     this.emailService = emailService;
+    this.patientRecordService = patientRecordService;
   }
 
   @Transactional
@@ -183,11 +188,41 @@ public class MedicalRecordService {
     return prescriptionPdfService.generate(record);
   }
 
+  /**
+   * Authorization-aware entry point. Prefer this over {@link #getPatientHistory(String)}.
+   *
+   * <p>Both the "no such patient" and "not your patient" branches throw {@link NotFoundException}
+   * with an identical message on purpose. RestExceptionHandler maps NotFoundException to 404 and
+   * AccessDeniedException to 403 and echoes the message into the body, so returning 403 here would
+   * confirm to an attacker that a CCCD is real. A Vietnamese national ID is 12 digits, which is
+   * enumerable, and this endpoint returns the decrypted identifier — so the 404/403 distinction is
+   * the entire attack surface.
+   */
+  @Transactional(readOnly = true)
+  public PatientHistoryResponse getPatientHistory(UUID actorId, UserRole role, String cccd) {
+    // Hashed unconditionally: short-circuiting before the lookup on the unauthorized path would be
+    // measurably faster and reintroduce the oracle as a timing side channel.
+    var plainCccd = patientIdentifierProtector.decrypt(cccd);
+    var patient = patientRepository.findByCccdHash(patientIdentifierProtector.hash(plainCccd))
+        .orElse(null);
+
+    if (patient == null || !patientRecordService.hasClinicalAccess(actorId, role, patient.getId())) {
+      throw new NotFoundException("Patient not found");
+    }
+
+    return buildPatientHistory(patient);
+  }
+
   @Transactional(readOnly = true)
   public PatientHistoryResponse getPatientHistory(String cccd) {
     var plainCccd = patientIdentifierProtector.decrypt(cccd);
     var patient = patientRepository.findByCccdHash(patientIdentifierProtector.hash(plainCccd))
         .orElseThrow(() -> new NotFoundException("Patient not found"));
+
+    return buildPatientHistory(patient);
+  }
+
+  private PatientHistoryResponse buildPatientHistory(PatientEntity patient) {
 
     var appointments = appointmentRepository.findByPatientIdOrderByAppointmentDateDescFirstSlotStartTimeDesc(patient.getId());
     var appointmentIds = appointments.stream().map(appointment -> appointment.getId()).toList();

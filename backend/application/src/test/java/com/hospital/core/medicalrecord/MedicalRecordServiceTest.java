@@ -10,7 +10,9 @@ import static org.mockito.Mockito.when;
 
 import com.hospital.core.appointment.AppointmentEntity;
 import com.hospital.core.appointment.AppointmentRepository;
+import com.hospital.core.common.NotFoundException;
 import com.hospital.core.email.EmailService;
+import com.hospital.core.patientrecord.PatientRecordService;
 import com.hospital.core.patient.PatientEntity;
 import com.hospital.core.patient.PatientIdentifierProtector;
 import com.hospital.core.patient.PatientRepository;
@@ -58,6 +60,9 @@ class MedicalRecordServiceTest {
 
   @Mock
   private EmailService emailService;
+
+  @Mock
+  private PatientRecordService patientRecordService;
 
   @InjectMocks
   private MedicalRecordService medicalRecordService;
@@ -219,6 +224,53 @@ class MedicalRecordServiceTest {
             new VitalSignsPayload("120/80", 36.8, 65.0, 170.0),
             LocalDate.of(2026, 3, 20), List.of())))
         .isInstanceOf(com.hospital.core.common.NotFoundException.class);
+  }
+
+  @Test
+  void unrelatedDoctorCannotReadPatientHistoryOrProbeExistence() {
+    var doctorId = UUID.randomUUID();
+    var patient = patient();
+    when(patientIdentifierProtector.decrypt("012345678901")).thenReturn("012345678901");
+    when(patientIdentifierProtector.hash("012345678901")).thenReturn("hashed");
+    when(patientRepository.findByCccdHash("hashed")).thenReturn(Optional.of(patient));
+    when(patientRecordService.hasClinicalAccess(doctorId, UserRole.DOCTOR, patient.getId()))
+        .thenReturn(false);
+
+    // Must be NotFoundException, not AccessDeniedException: RestExceptionHandler maps the latter to
+    // 403 and the former to 404, so throwing AccessDenied here would tell an attacker the CCCD is
+    // real. The national-ID keyspace is only 12 digits, so that distinction is the whole attack.
+    assertThatThrownBy(() -> medicalRecordService.getPatientHistory(doctorId, UserRole.DOCTOR, "012345678901"))
+        .isInstanceOf(NotFoundException.class)
+        .hasMessage("Patient not found");
+  }
+
+  @Test
+  void unknownCccdAndForbiddenCccdAreIndistinguishable() {
+    var doctorId = UUID.randomUUID();
+    when(patientIdentifierProtector.decrypt("999999999999")).thenReturn("999999999999");
+    when(patientIdentifierProtector.hash("999999999999")).thenReturn("missing");
+    when(patientRepository.findByCccdHash("missing")).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> medicalRecordService.getPatientHistory(doctorId, UserRole.DOCTOR, "999999999999"))
+        .isInstanceOf(NotFoundException.class)
+        .hasMessage("Patient not found");
+  }
+
+  @Test
+  void relatedDoctorCanReadPatientHistory() {
+    var doctorId = UUID.randomUUID();
+    var patient = patient();
+    when(patientIdentifierProtector.decrypt("012345678901")).thenReturn("012345678901");
+    when(patientIdentifierProtector.hash("012345678901")).thenReturn("hashed");
+    when(patientRepository.findByCccdHash("hashed")).thenReturn(Optional.of(patient));
+    when(patientRecordService.hasClinicalAccess(doctorId, UserRole.DOCTOR, patient.getId()))
+        .thenReturn(true);
+    when(appointmentRepository.findByPatientIdOrderByAppointmentDateDescFirstSlotStartTimeDesc(patient.getId()))
+        .thenReturn(List.of());
+
+    var history = medicalRecordService.getPatientHistory(doctorId, UserRole.DOCTOR, "012345678901");
+
+    assertThat(history.patientId()).isEqualTo(patient.getId());
   }
 
   @Test
