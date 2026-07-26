@@ -14,9 +14,9 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/hospital_db
     username: hospital_user
-    password: hospital_pass
+    password: ${POSTGRES_PASSWORD}
   flyway:
-    clean-disabled: false
+    clean-disabled: true
 
 server:
   port: 8081
@@ -26,7 +26,7 @@ security:
     allow-credentials: ${HMS_ALLOW_CREDENTIALS:true}
     expose-spec-endpoints: true
   jwt:
-    secret: this-is-a-very-secure-secret-key-123456
+    secret: ${JWT_SECRET}
   patient-identifier:
     secret: ${PATIENT_IDENTIFIER_SECRET}
 
