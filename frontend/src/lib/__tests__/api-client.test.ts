@@ -347,6 +347,127 @@ describe('api-client', () => {
       expect(headers.get('Authorization')).toBe('Bearer new-token-999');
     });
 
+    it('issues only one refresh request when several requests get 401 concurrently', async () => {
+      // Four parallel requests all receive 401, then a single refresh should serve all of them.
+      // With refresh-token rotation on the backend, a second refresh would present an
+      // already-consumed token, fail, and force the user back to the login screen.
+      fetchMock().mockImplementation((input: RequestInfo | URL) => {
+        const url = String(input);
+
+        if (url.includes('/auth/refresh')) {
+          return Promise.resolve({
+            ok: true,
+            status: 200,
+            headers: new Headers({}),
+            text: () => Promise.resolve(JSON.stringify({ data: { accessToken: 'shared-token', expiresInSeconds: 900 } })),
+          } as Response);
+        }
+
+        // Unauthorized until a refresh has stored a token, then succeed.
+        if (getStoredAccessToken('staff') === 'shared-token') {
+          return Promise.resolve({
+            ok: true,
+            status: 200,
+            headers: new Headers({}),
+            text: () => Promise.resolve(JSON.stringify({ data: 'ok' })),
+          } as Response);
+        }
+
+        return Promise.resolve({
+          ok: false,
+          status: 401,
+          headers: new Headers({}),
+          text: () => Promise.resolve(JSON.stringify({ error: { message: 'Access token has expired' } })),
+        } as Response);
+      });
+
+      const results = await Promise.all([
+        apiRequest('/a', {}, { authScope: 'staff' }),
+        apiRequest('/b', {}, { authScope: 'staff' }),
+        apiRequest('/c', {}, { authScope: 'staff' }),
+        apiRequest('/d', {}, { authScope: 'staff' }),
+      ]);
+
+      results.forEach(result => expect(result.data).toBe('ok'));
+
+      const refreshCalls = fetchMock().mock.calls.filter(call => String(call[0]).includes('/auth/refresh'));
+      expect(refreshCalls).toHaveLength(1);
+    });
+
+    it('does not reuse a failed refresh result for later requests', async () => {
+      // A transient refresh failure must not be cached: the next request has to be
+      // able to refresh again, otherwise the session is permanently unrecoverable.
+      fetchMock()
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 401,
+          headers: new Headers({}),
+          text: () => Promise.resolve(JSON.stringify({ error: { message: 'expired' } })),
+        } as Response)
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 500,
+          headers: new Headers({}),
+          text: () => Promise.resolve(JSON.stringify({ error: { message: 'refresh blew up' } })),
+        } as Response);
+
+      await expect(apiRequest('/first', {}, { authScope: 'staff' })).rejects.toThrow();
+
+      // Second attempt: refresh works this time and the request succeeds.
+      fetchMock()
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 401,
+          headers: new Headers({}),
+          text: () => Promise.resolve(JSON.stringify({ error: { message: 'expired' } })),
+        } as Response)
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          headers: new Headers({}),
+          text: () => Promise.resolve(JSON.stringify({ data: { accessToken: 'recovered', expiresInSeconds: 900 } })),
+        } as Response)
+        .mockResolvedValueOnce({
+          ok: true,
+          status: 200,
+          headers: new Headers({}),
+          text: () => Promise.resolve(JSON.stringify({ data: 'second-ok' })),
+        } as Response);
+
+      const result = await apiRequest('/second', {}, { authScope: 'staff' });
+      expect(result.data).toBe('second-ok');
+      expect(getStoredAccessToken('staff')).toBe('recovered');
+    });
+
+    it('retries at most once when the server keeps returning 401 after a successful refresh', async () => {
+      // Guards against unbounded recursion: refresh succeeds but the resource server
+      // still rejects the token (clock skew, rotated signing key, revoked session).
+      fetchMock().mockImplementation((input: RequestInfo | URL) => {
+        const url = String(input);
+
+        if (url.includes('/auth/refresh')) {
+          return Promise.resolve({
+            ok: true,
+            status: 200,
+            headers: new Headers({}),
+            text: () => Promise.resolve(JSON.stringify({ data: { accessToken: 'still-rejected', expiresInSeconds: 900 } })),
+          } as Response);
+        }
+
+        return Promise.resolve({
+          ok: false,
+          status: 401,
+          headers: new Headers({}),
+          text: () => Promise.resolve(JSON.stringify({ error: { message: 'Access token has expired' } })),
+        } as Response);
+      });
+
+      await expect(apiRequest('/always-401', {}, { authScope: 'staff' })).rejects.toThrow();
+
+      // Original + refresh + exactly one retry. Any more means the recursion is unbounded.
+      expect(fetchMock().mock.calls.length).toBeLessThanOrEqual(3);
+    });
+
     it('clears session storage and redirects to login when token refresh fails on 401 response', async () => {
       // 1st request fails with 401
       fetchMock().mockResolvedValueOnce({
