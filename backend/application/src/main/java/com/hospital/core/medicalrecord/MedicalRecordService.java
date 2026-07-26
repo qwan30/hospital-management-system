@@ -198,7 +198,7 @@ public class MedicalRecordService {
    * enumerable, and this endpoint returns the decrypted identifier — so the 404/403 distinction is
    * the entire attack surface.
    */
-  @Transactional(readOnly = true)
+  @Transactional
   public PatientHistoryResponse getPatientHistory(UUID actorId, UserRole role, String cccd) {
     // Hashed unconditionally: short-circuiting before the lookup on the unauthorized path would be
     // measurably faster and reintroduce the oracle as a timing side channel.

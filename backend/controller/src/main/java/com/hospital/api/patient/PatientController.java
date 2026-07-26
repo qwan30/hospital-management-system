@@ -30,11 +30,12 @@ public class PatientController {
    * Returns the patient's full clinical history including the decrypted national identifier, so the
    * actor must be scope-checked against this specific patient — the role permission alone is held by
    * every doctor. {@code @Transactional} is required because the underlying scope check takes a
-   * pessimistic read lock.
+   * pessimistic read lock. Not readOnly: that lock emits SELECT ... FOR SHARE, which PostgreSQL
+   * refuses inside a read-only transaction.
    */
   @GetMapping("/{cccd}/history")
   @PreAuthorize("@rbac.hasPermission(authentication, 'PATIENT_HISTORY_READ')")
-  @Transactional(readOnly = true)
+  @Transactional
   public ApiResponse<PatientHistoryResponse> getPatientHistory(
       @PathVariable String cccd,
       Authentication authentication) {

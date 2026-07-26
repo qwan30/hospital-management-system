@@ -124,10 +124,15 @@ class LabResultIntegrationTest extends AbstractIntegrationTest {
   }
 
   @Test
-  void getNonExistentLabResultReturns404() throws Exception {
+  void unknownLabResultIsRefusedWithoutRevealingWhetherItExists() throws Exception {
+    // Previously asserted 404. The object-level scope check now runs before the record is disclosed,
+    // and an unknown id is reported as denied rather than not-found on purpose: a 404/403 split would
+    // let any doctor enumerate which lab-result ids exist. A caller who is not entitled to the record
+    // gets the same 403 whether or not it exists.
     mockMvc.perform(get("/api/v1/lab-results/{resultId}", UUID.randomUUID())
             .header("Authorization", "Bearer " + doctorOneToken()))
-        .andExpect(status().isNotFound());
+        .andExpect(status().isForbidden())
+        .andExpect(jsonPath("$.error.code").value("forbidden"));
   }
 
   @Test
