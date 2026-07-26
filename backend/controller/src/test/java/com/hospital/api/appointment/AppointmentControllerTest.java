@@ -34,9 +34,12 @@ class AppointmentControllerTest {
   void setUp() {
     createAppointmentUseCase = mock(CreateAppointmentUseCase.class);
     appointmentWorkflowService = mock(AppointmentWorkflowService.class);
+    // Permissive mock: this suite covers routing, validation and error mapping. Object-level
+    // authorization is covered by the guard's own tests and the integration suite.
+    var clinicalAccessGuard = mock(com.hospital.api.config.ClinicalAccessGuard.class);
 
     mockMvc = MockMvcBuilders.standaloneSetup(
-            new AppointmentController(createAppointmentUseCase, appointmentWorkflowService))
+            new AppointmentController(createAppointmentUseCase, appointmentWorkflowService, clinicalAccessGuard))
         .setControllerAdvice(new RestExceptionHandler())
         .build();
   }

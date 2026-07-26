@@ -1,5 +1,6 @@
 package com.hospital.api.appointment;
 
+import com.hospital.api.config.ClinicalAccessGuard;
 import com.hospital.core.appointment.AppointmentWorkflowService;
 import com.hospital.core.appointment.CreateAppointmentUseCase;
 import com.hospital.shared.api.ApiResponse;
@@ -42,12 +43,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AppointmentController {
   private final CreateAppointmentUseCase createAppointmentUseCase;
   private final AppointmentWorkflowService appointmentWorkflowService;
+  private final ClinicalAccessGuard clinicalAccessGuard;
 
   public AppointmentController(
       CreateAppointmentUseCase createAppointmentUseCase,
-      AppointmentWorkflowService appointmentWorkflowService) {
+      AppointmentWorkflowService appointmentWorkflowService,
+      ClinicalAccessGuard clinicalAccessGuard) {
     this.createAppointmentUseCase = createAppointmentUseCase;
     this.appointmentWorkflowService = appointmentWorkflowService;
+    this.clinicalAccessGuard = clinicalAccessGuard;
   }
 
   @PostMapping
@@ -130,18 +134,26 @@ public class AppointmentController {
         request.status()));
   }
 
+  // These four duplicate the /api/v1/vital-signs and follow-up surfaces. They are the routes the
+  // frontend actually calls (clinical-api.ts), so guarding only VitalSignsController would have left
+  // the vulnerability fully exploitable while appearing fixed.
   @PostMapping("/{appointmentId}/vital-signs")
   @PreAuthorize("@rbac.hasPermission(authentication, 'VITAL_SIGNS_WRITE')")
   public ResponseEntity<ApiResponse<AppointmentVitalSignsResponse>> recordVitalSigns(
       @PathVariable UUID appointmentId,
-      @Valid @RequestBody AppointmentVitalSignsRequest request) {
+      @Valid @RequestBody AppointmentVitalSignsRequest request,
+      Authentication authentication) {
+    clinicalAccessGuard.requireAppointmentWrite(authentication, appointmentId);
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.ok(appointmentWorkflowService.recordVitalSigns(appointmentId, request)));
   }
 
   @GetMapping("/{appointmentId}/vital-signs")
   @PreAuthorize("@rbac.hasPermission(authentication, 'VITAL_SIGNS_READ')")
-  public ApiResponse<AppointmentVitalSignsResponse> getVitalSigns(@PathVariable UUID appointmentId) {
+  public ApiResponse<AppointmentVitalSignsResponse> getVitalSigns(
+      @PathVariable UUID appointmentId,
+      Authentication authentication) {
+    clinicalAccessGuard.requireAppointmentRead(authentication, appointmentId);
     return ApiResponse.ok(appointmentWorkflowService.getVitalSigns(appointmentId));
   }
 
@@ -149,14 +161,19 @@ public class AppointmentController {
   @PreAuthorize("@rbac.hasPermission(authentication, 'FOLLOW_UP_WRITE')")
   public ResponseEntity<ApiResponse<FollowUpResponse>> createFollowUp(
       @PathVariable UUID appointmentId,
-      @Valid @RequestBody FollowUpRequest request) {
+      @Valid @RequestBody FollowUpRequest request,
+      Authentication authentication) {
+    clinicalAccessGuard.requireAppointmentWrite(authentication, appointmentId);
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(ApiResponse.ok(appointmentWorkflowService.createFollowUp(appointmentId, request)));
   }
 
   @GetMapping("/{appointmentId}/follow-up")
   @PreAuthorize("@rbac.hasPermission(authentication, 'FOLLOW_UP_READ')")
-  public ApiResponse<FollowUpResponse> getFollowUp(@PathVariable UUID appointmentId) {
+  public ApiResponse<FollowUpResponse> getFollowUp(
+      @PathVariable UUID appointmentId,
+      Authentication authentication) {
+    clinicalAccessGuard.requireAppointmentRead(authentication, appointmentId);
     return ApiResponse.ok(appointmentWorkflowService.getFollowUp(appointmentId));
   }
 

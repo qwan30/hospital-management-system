@@ -29,9 +29,12 @@ class LabResultControllerTest {
   @BeforeEach
   void setUp() {
     labResultService = mock(LabResultService.class);
+    // Permissive mock: this suite covers routing, validation and error mapping. Object-level
+    // authorization is covered by the guard's own tests and the integration suite.
+    var clinicalAccessGuard = mock(com.hospital.api.config.ClinicalAccessGuard.class);
 
     mockMvc = MockMvcBuilders.standaloneSetup(
-            new LabResultController(labResultService))
+            new LabResultController(labResultService, clinicalAccessGuard))
         .setControllerAdvice(new RestExceptionHandler())
         .build();
   }
