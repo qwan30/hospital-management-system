@@ -33,7 +33,9 @@ Dependency flow: `domain` ← `infrastructure` ← `application` ← `controller
 
 ### Prerequisites
 - Java 17+, Node.js 22+, Docker Desktop
-- Copy `.env.example` to `.env` and fill in secrets
+- Copy `.env.demo.example` to `.env` for the seeded demo, or `.env.example` for a clean install, then
+  fill in `POSTGRES_PASSWORD`, `JWT_SECRET`, and `PATIENT_IDENTIFIER_SECRET` (no fallbacks — the app
+  refuses to start without them)
 
 ### Quick Start (Docker Compose)
 ```bash
@@ -61,13 +63,21 @@ npm install
 npm run dev                    # http://localhost:3000
 ```
 
-### Demo Accounts (seeded when HMS_RELEASE_DEMO_SEED_ENABLED=true)
+### Demo Accounts (seeded by `.env.demo.example`)
+
+The flag alone is not enough: the seed fails closed, so all seven
+`HMS_RELEASE_DEMO_SEED_PASSWORD_*` vars must be set or startup aborts. Passwords are per *role*, so
+`doctor1`–`doctor4` all share the DOCTOR value. Full set in `ReleaseDemoSeedCatalog` (9 staff, 6 patients).
+
 | Role | Email | Password |
 |------|-------|----------|
-| Doctor | `doctor1@hospital.vn` | `Doctor@1234` |
+| Doctor | `doctor1@hospital.vn` (also `doctor2`–`doctor4`) | `Doctor@1234` |
+| Nurse | `nurse@hospital.vn` | `Nurse@1234` |
 | Pharmacist | `pharmacist@hospital.vn` | `Pharma@1234` |
 | Receptionist | `receptionist@hospital.vn` | `Reception@1234` |
+| Accountant | `accountant@hospital.vn` | `Acc@1234` |
 | Admin | `admin@hospital.vn` | `Admin@1234` |
+| Patient (portal) | `patient@example.com` | `Patient@1234` |
 
 ## Running Tests
 
@@ -76,7 +86,7 @@ npm run dev                    # http://localhost:3000
 cd backend
 mvn test -pl application        # 122 service-layer tests (unit + edge case)
 mvn test -pl infrastructure     # 30 repository @DataJpaTest tests
-mvn test -pl controller         # 73 controller @WebMvcTest / standalone tests
+mvn test -pl controller         # 58 controller @WebMvcTest / standalone tests
 mvn verify                       # ~183 full-stack integration tests (Testcontainers)
 ```
 JaCoCo coverage thresholds enforced: instruction ≥ 40%, branch ≥ 30%.
@@ -84,7 +94,7 @@ JaCoCo coverage thresholds enforced: instruction ≥ 40%, branch ≥ 30%.
 ### Frontend
 ```bash
 cd frontend
-npm run test:unit              # Vitest unit tests — 72 test files, 611+ tests
+npm run test:unit              # Vitest unit tests — 70 test files, 641 tests
 npm run test:unit:coverage     # Coverage report (thresholds enforced: 40% stmts, 35% branch)
 npm run test:e2e:ui            # Playwright UI route smoke & accessibility (30 specs, 203+ scenarios)
 npm run test:e2e:integrated    # Backend-backed auth, claim, booking, queue checks
@@ -104,8 +114,8 @@ node .agents/tests/run-all.js  # ECC framework unit tests (hooks, lib, scripts)
 - **118 REST API mappings** across 32 controllers
 - **72 Next.js page files** covering staff, admin, patient portal, and public routes
 - **20 Flyway migrations** building 35 database tables with 26 indexes
-- **~408 backend tests** (122 service + 73 controller + 30 repository + ~183 integration)
-- **611+ frontend unit tests** across 72 test files (19 UI components, 12 lib, 6 hooks, 35+ pages)
+- **~393 backend tests** (122 service + 58 controller + 30 repository + ~183 integration)
+- **641 frontend unit tests** across 70 test files (19 UI components, 12 lib, 6 hooks, 35+ pages)
 - **203+ Playwright E2E scenarios** across 30 specs — RBAC, clinical workflows, error paths, network failure, rate limiting
 - **Coverage thresholds enforced**: backend instruction ≥ 40% / branch ≥ 30%; frontend statements ≥ 40% / branches ≥ 35%
 - **Edge/bad case coverage**: null params, empty strings, extreme numerics, XSS, SQL injection, session expiry, double-submit, network failures, concurrent sessions
@@ -121,7 +131,7 @@ GitHub Actions workflows in `.github/workflows/`:
 ## Development Notes
 
 - **Frontend canonical source**: `frontend/` is the active Next.js application.
-- **Backend security**: Spring Security + JWT with 36 granular RBAC permissions via `@PreAuthorize`.
+- **Backend security**: Spring Security + JWT with 34 granular RBAC permissions via `@PreAuthorize`.
 - **PHI protection**: Patient identifiers (CCCD/CMND) encrypted with AES-GCM, indexed by SHA-256 hash.
 - **API envelope**: All responses use `{ success, data, message, error, pagination, timestamp }`.
 - **Rate limiting**: Public endpoints limited via `HMS_PUBLIC_RATE_LIMIT_PER_MINUTE` (default 30/min).

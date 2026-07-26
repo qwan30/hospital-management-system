@@ -12,7 +12,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=qwan30_hospital-management-system&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=qwan30_hospital-management-system)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=qwan30_hospital-management-system&metric=coverage)](https://sonarcloud.io/summary/new_code?id=qwan30_hospital-management-system)
 
-**A full-stack healthcare ERP system** supporting end-to-end hospital clinical workflows — from public appointment booking, patient intake & queue triage, electronic health records (EHR), pharmacy dispensing with lot-level traceability, to billing & revenue reporting. Built with **Domain-Driven Design (DDD)** principles and strict **PHI (Protected Health Information)** compliance — AES-GCM encryption, SHA-256 hashed indexing, JWT-based RBAC with 36 granular permissions.
+**A full-stack healthcare ERP system** supporting end-to-end hospital clinical workflows — from public appointment booking, patient intake & queue triage, electronic health records (EHR), pharmacy dispensing with lot-level traceability, to billing & revenue reporting. Built with **Domain-Driven Design (DDD)** principles and strict **PHI (Protected Health Information)** compliance — AES-GCM encryption, SHA-256 hashed indexing, JWT-based RBAC with 34 granular permissions.
 
 > **🟢 Production Status: Release Candidate 1.0 — June 15, 2026**
 > All 7 clinical workflows implemented and verified. ~408 backend tests (service + controller + repository + integration) + 611+ frontend unit tests + 203+ Playwright E2E scenarios. Coverage thresholds enforced at build time. Comprehensive edge/bad case coverage across all layers.
@@ -40,7 +40,7 @@ Healthcare digitization in emerging markets faces a critical gap: existing ERP s
 |-----------|----------|----------------|
 | **Double-booking prevention** | Transactional slot locking with optimistic concurrency control | `AppointmentWriteService` in `appointment` bounded context |
 | **PHI compliance** | AES-GCM encrypt at rest + SHA-256 hash for indexing + TLS in transit | `PatientIdentifierProtector` in `patient` bounded context |
-| **Fine-grained RBAC** | 36 method-level `@PreAuthorize` permissions across 7 roles | `RbacAuthorizationService` in `security` bounded context |
+| **Fine-grained RBAC** | 34 method-level `@PreAuthorize` permissions across 7 roles | `RbacAuthorizationService` in `security` bounded context |
 | **Queue state integrity** | Strict state machine: CHECKED_IN → IN_CONSULTATION → COMPLETED. Invalid transitions rejected at domain level. | `AppointmentWorkflowService` in `appointment` bounded context |
 
 ---
@@ -235,7 +235,7 @@ graph LR
 | 📋 | **Electronic Health Records (EHR)** | Digital medical records with diagnosis, prescriptions; automated PDF generation; Gmail API reminder integration | Paperless clinical workflow; prescription accuracy; patient follow-up |
 | 💊 | **Pharmacy Dispensing** | Lot-level inventory tracking with FIFO expiration management; dispense operations cross-referenced to medical record IDs | Full drug traceability; prevented stockouts via low-stock alerts; audit compliance |
 | 💰 | **Billing & Revenue** | Automated invoice generation from service pricing rules; daily/monthly revenue reports with filtering | Cash flow automation; financial transparency for accounting department |
-| 🔐 | **RBAC Security** | Spring Security + JWT with 36 granular permissions; `@PreAuthorize` method-level protection; httpOnly refresh cookies with rotation | Enforced separation of duties across 7 roles; HIPAA-aligned access control |
+| 🔐 | **RBAC Security** | Spring Security + JWT with 34 granular permissions; `@PreAuthorize` method-level protection; httpOnly refresh cookies with rotation | Enforced separation of duties across 7 roles; HIPAA-aligned access control |
 
 ---
 
@@ -256,7 +256,7 @@ xychart-beta
 | **Frontend Branch Coverage** | 80.48% (Vitest) | ✅ Above 80% Target |
 | **REST API Endpoints** | 118 mappings across 32 controllers | ✅ Verified |
 | **Database Schema** | 35 tables, 26 indexes, 20 Flyway migrations | ✅ Migrated |
-| **RBAC Permissions** | 36 granular permissions covering 7 roles | ✅ Enforced |
+| **RBAC Permissions** | 34 granular permissions covering 7 roles | ✅ Enforced |
 | **CI/CD Pipelines** | Build → Test → Docker → Deploy → Rollback | ✅ Automated |
 
 ---
@@ -318,16 +318,29 @@ docker compose -f infra/docker-compose.yml up -d postgres
 ```
 
 ### 2. Configure Environment
+
+**To run the seeded demo** (the walkthrough below, with the accounts in the table):
+```bash
+cp .env.demo.example .env
+```
+
+**For a clean install with no synthetic data:**
 ```bash
 cp .env.example .env
 ```
-Required configuration & secrets:
+
+Then set the three required secrets — the application refuses to start without them, by design:
 ```env
-HMS_RELEASE_DEMO_SEED_ENABLED=true   # Bật tự động seed dữ liệu mẫu khi khởi động lần đầu
 POSTGRES_PASSWORD=hospital_pass
 JWT_SECRET=your-jwt-secret-at-least-32-chars
 PATIENT_IDENTIFIER_SECRET=your-patient-secret-32-chars
 ```
+
+> **On the demo seed:** `HMS_RELEASE_DEMO_SEED_ENABLED=true` alone is not enough. The seed fails
+> closed, so all seven `HMS_RELEASE_DEMO_SEED_PASSWORD_*` values must be present or startup aborts
+> with `Refusing release-demo seed: explicit passwords are required for …`. `.env.demo.example` ships
+> them already filled in. The seed additionally requires an active Spring profile of
+> `dev`, `test`, `demo`, or `release-demo`.
 
 ### 3. Start Backend (Spring Boot)
 ```powershell
@@ -350,12 +363,17 @@ docker compose -f infra/docker-compose.yml up -d --build    # Backend + Frontend
 docker compose -f infra/docker-compose.yml -f infra/docker-compose.observability.yml up -d   # + Monitoring
 ```
 
-### Demo Accounts (Requires `HMS_RELEASE_DEMO_SEED_ENABLED=true`)
+### Demo Accounts (seeded by `.env.demo.example`)
+
+All 9 staff accounts and 6 patient accounts come from `ReleaseDemoSeedCatalog`. Passwords are
+configured **per role**, so every doctor shares the `DOCTOR` value.
 
 | Role | Email | Password |
 |------|-------|----------|
 | 👨‍⚕️ Doctor (Internal Medicine) | `doctor1@hospital.vn` | `Doctor@1234` |
 | 👨‍⚕️ Doctor (Cardiology) | `doctor2@hospital.vn` | `Doctor@1234` |
+| 👨‍⚕️ Doctor (Radiology) | `doctor3@hospital.vn` | `Doctor@1234` |
+| 👨‍⚕️ Doctor (Pediatrics) | `doctor4@hospital.vn` | `Doctor@1234` |
 | 👩‍⚕️ Nurse | `nurse@hospital.vn` | `Nurse@1234` |
 | 👩‍💼 Receptionist | `receptionist@hospital.vn` | `Reception@1234` |
 | 💊 Pharmacist | `pharmacist@hospital.vn` | `Pharma@1234` |
@@ -423,7 +441,7 @@ Configurations in [`infra/observability/`](infra/observability/) — Prometheus 
 
 - **PHI Protection:** Patient identifiers (CCCD/CMND) encrypted with AES-GCM, indexed by SHA-256 hash — plaintext never stored
 - **Authentication:** JWT access tokens (15min TTL) + httpOnly refresh cookies (7-day rotation)
-- **Authorization:** 36 RBAC permissions at method-level via `@PreAuthorize`
+- **Authorization:** 34 RBAC permissions at method-level via `@PreAuthorize`
 - **Rate Limiting:** Sliding-window rate limit on public endpoints (configurable, default 30/min)
 - **CORS:** Configurable allowed origins via environment variables
 - **Audit Trail:** Full audit logging for all state-changing operations
