@@ -36,6 +36,11 @@ public class PatientRecordService {
       AppointmentStatus.CHECKED_IN,
       AppointmentStatus.IN_PROGRESS,
       AppointmentStatus.DONE);
+
+  /** Patient is physically in the facility. Excludes DONE, so nurse scope ends at discharge. */
+  private static final List<AppointmentStatus> ACTIVE_CLINICAL_STATUSES = List.of(
+      AppointmentStatus.CHECKED_IN,
+      AppointmentStatus.IN_PROGRESS);
   private final AppointmentRepository appointmentRepository;
   private final AuditLogService auditLogService;
   private final MedicalRecordRepository medicalRecordRepository;
@@ -171,6 +176,56 @@ public class PatientRecordService {
   public void requireReadAccess(UUID actorId, UserRole role, UUID patientId) {
     if (!hasReadAccess(actorId, role, patientId)) {
       throw new AccessDeniedException("Patient record access denied");
+    }
+  }
+
+  /**
+   * Object-level scope for clinical data (vital signs, lab results, follow-ups).
+   *
+   * <p>Distinct from {@link #hasReadAccess} because NURSE holds VITAL_SIGNS_READ/WRITE and
+   * LAB_RESULT_READ but is deliberately absent from the patient-record read guard. Reusing that guard
+   * here would deny every nurse and break intake.
+   *
+   * <p>Nurses are scoped to patients physically present — CHECKED_IN or IN_PROGRESS only. DONE is
+   * excluded, unlike {@code CARE_RELATIONSHIP_STATUSES}, which includes it so doctors retain access
+   * to patients they have already treated.
+   */
+  @Transactional(readOnly = true)
+  public boolean hasClinicalAccess(UUID actorId, UserRole role, UUID patientId) {
+    if (role == UserRole.ADMIN) {
+      return true;
+    }
+    if (role == UserRole.DOCTOR) {
+      return !appointmentRepository
+          .findCareRelationshipForRead(patientId, actorId, CARE_RELATIONSHIP_STATUSES)
+          .isEmpty();
+    }
+    if (role == UserRole.NURSE) {
+      return appointmentRepository.existsByPatientIdAndStatusIn(patientId, ACTIVE_CLINICAL_STATUSES);
+    }
+    return false;
+  }
+
+  /**
+   * Annotated so the pessimistic lock on {@code findCareRelationshipForRead} always has a
+   * transaction. {@link #requireReadAccess} relies on its callers for that, which works only by
+   * coincidence of who calls it today.
+   */
+  @Transactional(readOnly = true)
+  public void requireClinicalAccess(UUID actorId, UserRole role, UUID patientId) {
+    if (!hasClinicalAccess(actorId, role, patientId)) {
+      throw new AccessDeniedException("Clinical data access denied");
+    }
+  }
+
+  /**
+   * Separate entry point for mutations so a future widening of read scope cannot silently grant
+   * writes, mirroring how RbacAuthorizationService separates LAB_RESULT_READ from LAB_RESULT_WRITE.
+   */
+  @Transactional(readOnly = true)
+  public void requireClinicalWriteAccess(UUID actorId, UserRole role, UUID patientId) {
+    if (!hasClinicalAccess(actorId, role, patientId)) {
+      throw new AccessDeniedException("Clinical data access denied");
     }
   }
 

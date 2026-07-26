@@ -76,6 +76,13 @@ public interface AppointmentRepository extends JpaRepository<AppointmentEntity, 
 
   boolean existsByPatientIdAndAppointmentDateAndStatusIn(UUID patientId, LocalDate appointmentDate, Collection<AppointmentStatus> statuses);
 
+  /**
+   * Date-free variant used for nurse clinical scoping. Check-in sets only status and checkedInAt and
+   * never rewrites appointmentDate, so a same-day predicate would wrongly refuse a patient booked
+   * yesterday who is still IN_PROGRESS — exactly the mid-consultation case nurses need.
+   */
+  boolean existsByPatientIdAndStatusIn(UUID patientId, Collection<AppointmentStatus> statuses);
+
   long countByAppointmentDate(LocalDate appointmentDate);
 
   @EntityGraph(attributePaths = {"patient", "doctor", "firstSlot"})
