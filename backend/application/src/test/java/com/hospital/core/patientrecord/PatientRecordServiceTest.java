@@ -151,6 +151,97 @@ class PatientRecordServiceTest {
     assertThat(service.hasReadAccess(doctorId, UserRole.DOCTOR, patientId)).isFalse();
   }
 
+  @Test
+  void nurseWithActivelyPresentPatientHasClinicalAccess() {
+    var nurseId = UUID.randomUUID();
+    var patientId = UUID.randomUUID();
+    when(appointmentRepository.existsByPatientIdAndStatusIn(eq(patientId), any()))
+        .thenReturn(true);
+
+    assertThat(service.hasClinicalAccess(nurseId, UserRole.NURSE, patientId)).isTrue();
+  }
+
+  @Test
+  void nurseWithoutActivelyPresentPatientHasNoClinicalAccess() {
+    var nurseId = UUID.randomUUID();
+    var patientId = UUID.randomUUID();
+    when(appointmentRepository.existsByPatientIdAndStatusIn(eq(patientId), any()))
+        .thenReturn(false);
+
+    assertThat(service.hasClinicalAccess(nurseId, UserRole.NURSE, patientId)).isFalse();
+  }
+
+  @Test
+  void nurseClinicalScopeExcludesDischargedPatients() {
+    var nurseId = UUID.randomUUID();
+    var patientId = UUID.randomUUID();
+    when(appointmentRepository.existsByPatientIdAndStatusIn(eq(patientId), any()))
+        .thenReturn(false);
+
+    service.hasClinicalAccess(nurseId, UserRole.NURSE, patientId);
+
+    // Nurses are scoped to patients physically present, so DONE must not be queried
+    // even though the doctor path deliberately includes it for historical access.
+    verify(appointmentRepository)
+        .existsByPatientIdAndStatusIn(patientId, List.of(
+            AppointmentStatus.CHECKED_IN, AppointmentStatus.IN_PROGRESS));
+  }
+
+  @Test
+  void doctorClinicalAccessStillUsesCareRelationshipAndNotTheNurseScope() {
+    var doctorId = UUID.randomUUID();
+    var patientId = UUID.randomUUID();
+    when(appointmentRepository.findCareRelationshipForRead(eq(patientId), eq(doctorId), any()))
+        .thenReturn(List.of(appointment(AppointmentStatus.DONE)));
+
+    assertThat(service.hasClinicalAccess(doctorId, UserRole.DOCTOR, patientId)).isTrue();
+    verify(appointmentRepository, never()).existsByPatientIdAndStatusIn(any(), any());
+  }
+
+  @Test
+  void adminHasClinicalAccessWithoutQueryingAppointments() {
+    assertThat(service.hasClinicalAccess(UUID.randomUUID(), UserRole.ADMIN, UUID.randomUUID())).isTrue();
+
+    verify(appointmentRepository, never()).existsByPatientIdAndStatusIn(any(), any());
+    verify(appointmentRepository, never()).findCareRelationshipForRead(any(), any(), any());
+  }
+
+  @Test
+  void receptionistHasNoClinicalAccess() {
+    assertThat(service.hasClinicalAccess(UUID.randomUUID(), UserRole.RECEPTIONIST, UUID.randomUUID()))
+        .isFalse();
+  }
+
+  @Test
+  void requireClinicalAccessThrowsForUnscopedNurse() {
+    var nurseId = UUID.randomUUID();
+    var patientId = UUID.randomUUID();
+    when(appointmentRepository.existsByPatientIdAndStatusIn(eq(patientId), any()))
+        .thenReturn(false);
+
+    assertThatThrownBy(() -> service.requireClinicalAccess(nurseId, UserRole.NURSE, patientId))
+        .isInstanceOf(AccessDeniedException.class);
+  }
+
+  @Test
+  void requireClinicalWriteAccessIsSeparateFromReadScope() {
+    var nurseId = UUID.randomUUID();
+    var patientId = UUID.randomUUID();
+    when(appointmentRepository.existsByPatientIdAndStatusIn(eq(patientId), any()))
+        .thenReturn(true);
+
+    // Distinct entry point so a future widening of read scope cannot silently grant writes,
+    // mirroring how RbacAuthorizationService separates LAB_RESULT_READ from LAB_RESULT_WRITE.
+    service.requireClinicalWriteAccess(nurseId, UserRole.NURSE, patientId);
+  }
+
+  @Test
+  void nurseStillCannotUseThePatientRecordReadGuard() {
+    // Pinning test: hasReadAccess must remain ADMIN/DOCTOR-only so adding the clinical
+    // predicate does not widen /patient-records or the AI endpoints.
+    assertThat(service.hasReadAccess(UUID.randomUUID(), UserRole.NURSE, UUID.randomUUID())).isFalse();
+  }
+
   private AppointmentEntity appointment(AppointmentStatus status) {
     var appointment = new AppointmentEntity();
     appointment.setStatus(status);

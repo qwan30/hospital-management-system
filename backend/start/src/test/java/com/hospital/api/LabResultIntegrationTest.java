@@ -36,6 +36,9 @@ class LabResultIntegrationTest extends AbstractIntegrationTest {
     var slot = createSlot(doctor.getId(), LocalDate.of(2030, 7, 1), LocalTime.of(10, 0));
     var booking = createAppointment(doctor.getId().toString(), slot.getId().toString());
     var appointmentId = booking.get("data").get("id").asText();
+    // CONFIRMED is not a care relationship, so the owning doctor needs treatment established
+    // before the object-level scope check will admit them.
+    establishCareRelationship(appointmentId);
 
     mockMvc.perform(post("/api/v1/lab-results")
             .header("Authorization", "Bearer " + doctorOneToken())
@@ -61,6 +64,9 @@ class LabResultIntegrationTest extends AbstractIntegrationTest {
     var slot = createSlot(doctor.getId(), LocalDate.of(2030, 7, 2), LocalTime.of(10, 0));
     var booking = createAppointment(doctor.getId().toString(), slot.getId().toString());
     var appointmentId = booking.get("data").get("id").asText();
+    // CONFIRMED is not a care relationship, so the owning doctor needs treatment established
+    // before the object-level scope check will admit them.
+    establishCareRelationship(appointmentId);
 
     var createResult = mockMvc.perform(post("/api/v1/lab-results")
             .header("Authorization", "Bearer " + doctorOneToken())
@@ -92,6 +98,9 @@ class LabResultIntegrationTest extends AbstractIntegrationTest {
     var slot = createSlot(doctor.getId(), LocalDate.of(2030, 7, 3), LocalTime.of(10, 0));
     var booking = createAppointment(doctor.getId().toString(), slot.getId().toString());
     var appointmentId = booking.get("data").get("id").asText();
+    // CONFIRMED is not a care relationship, so the owning doctor needs treatment established
+    // before the object-level scope check will admit them.
+    establishCareRelationship(appointmentId);
 
     mockMvc.perform(post("/api/v1/lab-results")
             .header("Authorization", "Bearer " + doctorOneToken())
@@ -115,10 +124,15 @@ class LabResultIntegrationTest extends AbstractIntegrationTest {
   }
 
   @Test
-  void getNonExistentLabResultReturns404() throws Exception {
+  void unknownLabResultIsRefusedWithoutRevealingWhetherItExists() throws Exception {
+    // Previously asserted 404. The object-level scope check now runs before the record is disclosed,
+    // and an unknown id is reported as denied rather than not-found on purpose: a 404/403 split would
+    // let any doctor enumerate which lab-result ids exist. A caller who is not entitled to the record
+    // gets the same 403 whether or not it exists.
     mockMvc.perform(get("/api/v1/lab-results/{resultId}", UUID.randomUUID())
             .header("Authorization", "Bearer " + doctorOneToken()))
-        .andExpect(status().isNotFound());
+        .andExpect(status().isForbidden())
+        .andExpect(jsonPath("$.error.code").value("forbidden"));
   }
 
   @Test
@@ -127,6 +141,9 @@ class LabResultIntegrationTest extends AbstractIntegrationTest {
     var slot = createSlot(doctor.getId(), LocalDate.of(2030, 7, 5), LocalTime.of(10, 0));
     var booking = createAppointment(doctor.getId().toString(), slot.getId().toString());
     var appointmentId = booking.get("data").get("id").asText();
+    // CONFIRMED is not a care relationship, so the owning doctor needs treatment established
+    // before the object-level scope check will admit them.
+    establishCareRelationship(appointmentId);
 
     var createResult = mockMvc.perform(post("/api/v1/lab-results")
             .header("Authorization", "Bearer " + doctorOneToken())
@@ -157,6 +174,9 @@ class LabResultIntegrationTest extends AbstractIntegrationTest {
     var slot = createSlot(doctor.getId(), LocalDate.of(2030, 7, 6), LocalTime.of(10, 0));
     var booking = createAppointment(doctor.getId().toString(), slot.getId().toString());
     var appointmentId = booking.get("data").get("id").asText();
+    // CONFIRMED is not a care relationship, so the owning doctor needs treatment established
+    // before the object-level scope check will admit them.
+    establishCareRelationship(appointmentId);
 
     mockMvc.perform(post("/api/v1/lab-results")
             .header("Authorization", "Bearer " + doctorOneToken())
