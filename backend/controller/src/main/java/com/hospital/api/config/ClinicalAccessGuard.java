@@ -27,6 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
  * existence leakage carries little value. The CCCD-keyed patient-history endpoint deliberately does
  * NOT use this class — it returns 404 for both missing and forbidden, because a 12-digit national ID
  * is enumerable and the 403/404 split would itself be the vulnerability.
+ *
+ * <p>The {@code @Transactional} annotations are deliberately not {@code readOnly = true}. The
+ * underlying care-relationship check takes a pessimistic share lock, and PostgreSQL refuses
+ * {@code SELECT ... FOR SHARE} inside a read-only transaction.
  */
 @Component
 public class ClinicalAccessGuard {
@@ -47,14 +51,14 @@ public class ClinicalAccessGuard {
   }
 
   /** Guards a read keyed by appointment id. */
-  @Transactional(readOnly = true)
+  @Transactional
   public void requireAppointmentRead(Authentication authentication, UUID appointmentId) {
     patientRecordService.requireClinicalAccess(
         actorId(authentication), role(authentication), patientOfAppointment(appointmentId));
   }
 
   /** Guards a mutation keyed by appointment id. */
-  @Transactional(readOnly = true)
+  @Transactional
   public void requireAppointmentWrite(Authentication authentication, UUID appointmentId) {
     patientRecordService.requireClinicalWriteAccess(
         actorId(authentication), role(authentication), patientOfAppointment(appointmentId));
@@ -65,7 +69,7 @@ public class ClinicalAccessGuard {
    * record is reported as denied rather than not-found so that a caller without access cannot use
    * this endpoint to test which vital-sign ids exist.
    */
-  @Transactional(readOnly = true)
+  @Transactional
   public void requireVitalSignWrite(Authentication authentication, UUID vitalSignId) {
     var patientId = vitalSignsRepository.findById(vitalSignId)
         .map(vitalSigns -> vitalSigns.getAppointment().getPatient().getId())
@@ -76,14 +80,14 @@ public class ClinicalAccessGuard {
   }
 
   /** Guards a read keyed by lab-result id. LabResultEntity references the patient directly. */
-  @Transactional(readOnly = true)
+  @Transactional
   public void requireLabResultRead(Authentication authentication, UUID resultId) {
     patientRecordService.requireClinicalAccess(
         actorId(authentication), role(authentication), patientOfLabResult(resultId));
   }
 
   /** Guards a mutation keyed by lab-result id. */
-  @Transactional(readOnly = true)
+  @Transactional
   public void requireLabResultWrite(Authentication authentication, UUID resultId) {
     patientRecordService.requireClinicalWriteAccess(
         actorId(authentication), role(authentication), patientOfLabResult(resultId));

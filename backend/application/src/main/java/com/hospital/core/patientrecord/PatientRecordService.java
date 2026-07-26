@@ -190,7 +190,7 @@ public class PatientRecordService {
    * excluded, unlike {@code CARE_RELATIONSHIP_STATUSES}, which includes it so doctors retain access
    * to patients they have already treated.
    */
-  @Transactional(readOnly = true)
+  @Transactional
   public boolean hasClinicalAccess(UUID actorId, UserRole role, UUID patientId) {
     if (role == UserRole.ADMIN) {
       return true;
@@ -210,8 +210,13 @@ public class PatientRecordService {
    * Annotated so the pessimistic lock on {@code findCareRelationshipForRead} always has a
    * transaction. {@link #requireReadAccess} relies on its callers for that, which works only by
    * coincidence of who calls it today.
+   *
+   * <p>Deliberately NOT {@code readOnly = true}: the lock emits {@code SELECT ... FOR SHARE}, which
+   * PostgreSQL rejects inside a read-only transaction with "cannot execute SELECT FOR SHARE in a
+   * read-only transaction". Marking it read-only looks harmless and passes an H2-style unit test, but
+   * fails against real PostgreSQL.
    */
-  @Transactional(readOnly = true)
+  @Transactional
   public void requireClinicalAccess(UUID actorId, UserRole role, UUID patientId) {
     if (!hasClinicalAccess(actorId, role, patientId)) {
       throw new AccessDeniedException("Clinical data access denied");
@@ -222,7 +227,7 @@ public class PatientRecordService {
    * Separate entry point for mutations so a future widening of read scope cannot silently grant
    * writes, mirroring how RbacAuthorizationService separates LAB_RESULT_READ from LAB_RESULT_WRITE.
    */
-  @Transactional(readOnly = true)
+  @Transactional
   public void requireClinicalWriteAccess(UUID actorId, UserRole role, UUID patientId) {
     if (!hasClinicalAccess(actorId, role, patientId)) {
       throw new AccessDeniedException("Clinical data access denied");
