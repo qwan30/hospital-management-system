@@ -22,8 +22,22 @@ Release verdict: **NOT CERTIFIED — P0 open.** Agents do not merge, deploy, or 
 | Item | State |
 |---|---|
 | Playwright binary | ✅ present (`frontend/node_modules/.bin/playwright`) |
-| Docker engine | ❌ **NOT RUNNING** — blocks Phase 5 (Postgres → backend → integrated E2E) |
-| Stale worktree | ⚠️ `hospital-management-system-m3-finish` is *prunable* — `git worktree prune` |
+| Docker engine | ✅ **UP** (28.5.1) — started this session |
+| Postgres container | ✅ `infra-postgres-1` **healthy** |
+| Stale worktree | ✅ pruned |
+| Orphan containers | ⚠️ `infra-nginx-1`, `infra-worker-1`, `infra-redis-1` — compose reports orphans; `--remove-orphans` when convenient |
+
+## Committed work
+
+Branch **`fix/interview-readiness-p0`**, commit **`5beac10`** (branched off `master` @ `c95a1ca`; **not merged**).
+4 files, +32/−9. AI-tooling churn deliberately excluded from the commit.
+
+Fail-closed verification (P0-1), all **PASS**:
+- `secret: ${JWT_SECRET}` present, no `${JWT_SECRET:` fallback ⇒ unresolvable when unset ⇒ Spring aborts startup
+- `password: ${POSTGRES_PASSWORD}` present, no fallback
+- `clean-disabled: true`
+- hardcoded literal `this-is-a-very-secure-secret-key-123456` **gone**
+- `SecurityConfigurationDefaultsTest`: **5 tests, 0 failures, 0 errors**
 
 ## Phase 0 — Discovery & scan  ✅ COMPLETE
 
