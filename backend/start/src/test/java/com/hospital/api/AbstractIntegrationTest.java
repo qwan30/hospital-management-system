@@ -238,6 +238,21 @@ abstract class AbstractIntegrationTest {
     return objectMapper.readTree(result.getResponse().getContentAsString());
   }
 
+  /**
+   * Drives a booked appointment into a state that grants the treating doctor object-level access.
+   *
+   * <p>{@code createAppointment} books at status CONFIRMED, which is deliberately excluded from the
+   * care-relationship statuses — a future booking is not treatment. Fixtures that then read clinical
+   * data as the owning doctor must establish care first, or the scope check correctly refuses them.
+   * The status is set directly rather than via the check-in endpoint because these fixtures book
+   * future-dated slots, which cannot legitimately be checked in.
+   */
+  protected void establishCareRelationship(String appointmentId) {
+    var appointment = appointmentRepository.findById(UUID.fromString(appointmentId)).orElseThrow();
+    appointment.setStatus(com.hospital.shared.enums.AppointmentStatus.DONE);
+    appointmentRepository.saveAndFlush(appointment);
+  }
+
   protected UUID doctorOneId() {
     return userRepository.findByEmailIgnoreCaseAndActiveTrue("doctor1@hospital.vn")
         .orElseThrow()
