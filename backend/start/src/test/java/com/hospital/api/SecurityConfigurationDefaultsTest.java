@@ -24,6 +24,24 @@ class SecurityConfigurationDefaultsTest {
   }
 
   @Test
+  void devProfileDoesNotHardcodeSecretsOrEnableFlywayClean() throws IOException {
+    var devYaml = Files.readString(
+        Path.of("src", "main", "resources", "application-dev.yml"),
+        StandardCharsets.UTF_8);
+
+    assertThat(devYaml).doesNotContain("${JWT_SECRET:");
+    assertThat(devYaml).contains("secret: ${JWT_SECRET}");
+    assertThat(devYaml).doesNotContain("${PATIENT_IDENTIFIER_SECRET:");
+    assertThat(devYaml).contains("secret: ${PATIENT_IDENTIFIER_SECRET}");
+    assertThat(devYaml).doesNotContain("${POSTGRES_PASSWORD:");
+    assertThat(devYaml).contains("password: ${POSTGRES_PASSWORD}");
+
+    // Flyway clean can drop every table, including patient data. It must stay disabled
+    // even in the dev profile, which is the profile the demo actually runs on.
+    assertThat(devYaml).contains("clean-disabled: true");
+  }
+
+  @Test
   void dockerComposeDoesNotProvideProductionSecretFallbacks() throws IOException {
     var dockerCompose = Files.readString(findRepositoryRoot().resolve("infra").resolve("docker-compose.yml"), StandardCharsets.UTF_8);
 

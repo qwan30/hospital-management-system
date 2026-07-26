@@ -144,12 +144,8 @@ export default function BookingDetailsReviewPage() {
 
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Known Allergies or Contraindications</label>
-                <textarea className="hc-input w-full resize-none" placeholder="List any drug allergies or respiratory conditions..." rows={3} value={symptoms} onChange={e => setSymptoms(e.target.value)}></textarea>
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Current Medications</label>
-                <input className="hc-input w-full" placeholder="e.g. Lisinopril 10mg" type="text" />
+                <label className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-muted)]">Symptoms / Reason for Visit</label>
+                <textarea className="hc-input w-full resize-none" placeholder="Describe the presenting symptoms or reason for this visit..." rows={3} value={symptoms} onChange={e => setSymptoms(e.target.value)}></textarea>
               </div>
 
               <div className="flex items-center gap-4 bg-[var(--hc-amber-bg)] border border-amber-100 p-4 rounded-[var(--radius-lg)] mt-2">

@@ -62,14 +62,17 @@ export function getApiBaseUrl() {
 let inMemoryStaffAccessToken: string | undefined = undefined;
 let inMemoryPatientAccessToken: string | undefined = undefined;
 
-let refreshPromise: Promise<boolean> | null = null;
+// Keyed per scope: a staff refresh and a patient refresh are different operations and must
+// not share (or clear) each other's in-flight request.
+const refreshPromises = new Map<AuthScope, Promise<boolean>>();
 
-async function attemptTokenRefresh(scope: AuthScope): Promise<boolean> {
-  if (refreshPromise) {
-    return refreshPromise;
+function attemptTokenRefresh(scope: AuthScope): Promise<boolean> {
+  const inflight = refreshPromises.get(scope);
+  if (inflight) {
+    return inflight;
   }
 
-  refreshPromise = (async () => {
+  const refresh = (async () => {
     try {
       const refreshPath = scope === "patient" ? "/patient-auth/refresh" : "/auth/refresh";
       const refreshUrl = `${getApiBaseUrl()}${refreshPath}`;
@@ -98,19 +101,30 @@ async function attemptTokenRefresh(scope: AuthScope): Promise<boolean> {
     }
 
     return false;
-  })();
+  })()
+    // Clear on settlement rather than in a try/finally around `await`. The old form fired
+    // when the *initiator* resumed, so a caller arriving one microtask later saw an empty
+    // slot and started a second refresh — which, with refresh-token rotation, presented an
+    // already-consumed token and logged the user out. The identity guard keeps a late
+    // settlement from evicting a newer in-flight refresh.
+    .finally(() => {
+      if (refreshPromises.get(scope) === refresh) {
+        refreshPromises.delete(scope);
+      }
+    });
 
-  try {
-    return await refreshPromise;
-  } finally {
-    refreshPromise = null;
-  }
+  refreshPromises.set(scope, refresh);
+  return refresh;
 }
 
 export async function apiRequest<T>(
   path: string,
   init: RequestInit = {},
   options: ApiRequestOptions = {},
+  // Internal only, deliberately absent from ApiRequestOptions so callers cannot set it.
+  // Threaded through the retry (rather than held in module state) so concurrent unrelated
+  // requests never suppress each other's legitimate one-shot retry.
+  retriedAfterRefresh = false,
 ): Promise<ApiEnvelope<T>> {
   const scope = options.authScope || "staff";
   let token = getStoredAccessToken(scope);
@@ -162,11 +176,15 @@ export async function apiRequest<T>(
   // Intercept 401 and attempt token refresh
   if (response.status === 401 && !path.startsWith("/auth/refresh") && !path.startsWith("/auth/login") && !path.startsWith("/patient-auth/refresh") && !path.startsWith("/patient-auth/login")) {
     const scope = options.authScope || "staff";
-    const refreshSuccess = await attemptTokenRefresh(scope);
+    // Only refresh-and-retry on the first 401. A 401 on the already-retried request means the
+    // token the server just issued is still being rejected (clock skew, rotated signing key,
+    // revoked-but-issuable session), so retrying again would recurse until the JS heap dies.
+    const refreshSuccess = retriedAfterRefresh ? false : await attemptTokenRefresh(scope);
     if (refreshSuccess) {
-      // Retry request with fresh headers containing new token
-      return apiRequest<T>(path, init, options);
+      return apiRequest<T>(path, init, options, true);
     } else {
+      // Reached on a failed refresh *and* on a second consecutive 401 — either way the
+      // session is unusable, so it must be cleared rather than left dangling.
       clearSessions();
       if (typeof window !== "undefined" && !navigator.webdriver) {
         window.location.href = scope === "patient" ? "/portal/login" : "/staff/login";
