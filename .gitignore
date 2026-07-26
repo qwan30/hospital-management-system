@@ -17,9 +17,13 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 
 # Environment
+# Ignore every .env variant, then re-allow the committed templates. Listing only
+# `.env` / `.env.local` / `.env.*.local` left filled-in copies such as
+# `.env.demo` or `.env.production` tracked by default.
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+!.env.demo.example
 
 # OS / logs
 Thumbs.db
