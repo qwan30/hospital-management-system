@@ -106,7 +106,7 @@ npm run build                  # Next.js production build
 
 ### ECC Agent Infrastructure
 ```bash
-node .agents/tests/run-all.js  # ECC framework unit tests (hooks, lib, scripts)
+node .agents/tests/run-all.js  # ECC framework unit tests (local only — see note below)
 ```
 
 ## Key Project Metrics
@@ -140,7 +140,15 @@ GitHub Actions workflows in `.github/workflows/`:
 
 ## ECC Agent Infrastructure
 
-The `.agents/` directory contains ECC (Enterprise Claude Code) development tooling — skills, hooks, commands, and rules used for AI-assisted development of this HMS project. These are development utilities, not product features.
+The `.agents/` and `.claude/` directories contain ECC (Enterprise Claude Code) development tooling —
+skills, hooks, commands, and rules used for AI-assisted development of this HMS project. These are
+development utilities, not product features.
+
+> **Not tracked in git.** They are present locally and fully functional, but gitignored: together they
+> were 1,124 of 2,206 tracked files (54%), dwarfing `backend/` (356) and `frontend/` (323) combined and
+> burying the actual product in any clone or diff. Untracking them left 966 tracked files that are all
+> product, docs, or CI. If you need them on a fresh machine, reinstall the ECC tooling rather than
+> expecting a clone to carry it.
 
 | Directory | Purpose |
 |-----------|---------|
