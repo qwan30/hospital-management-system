@@ -27,6 +27,29 @@ Release verdict: **NOT CERTIFIED — P0 open.** Agents do not merge, deploy, or 
 | Stale worktree | ✅ pruned |
 | Orphan containers | ⚠️ `infra-nginx-1`, `infra-worker-1`, `infra-redis-1` — compose reports orphans; `--remove-orphans` when convenient |
 
+## PR #33 — CI status (verified, not assumed)
+
+Branch `fix/interview-readiness-p0` → `master`. **OPEN / MERGEABLE.**
+
+All functional gates **SUCCESS**: Backend Maven verify · Frontend lint, test, build & E2E ·
+CodeQL (java-kotlin + javascript-typescript) · Gemini AI Review · SonarCloud analysis job · CI summary.
+
+One **FAILURE — "SonarCloud Code Analysis" quality gate — is PRE-EXISTING, not caused by this PR.**
+Queried both gates directly rather than guessing:
+
+| Condition | PR #33 | `master` baseline |
+|---|---|---|
+| `new_coverage` (threshold 80) | **0.0 → ERROR** | **22.3 → ERROR** |
+| new_reliability / security / maintainability rating | OK | OK |
+| new_duplicated_lines_density | OK (0.0) | OK (1.1) |
+| new_security_hotspots_reviewed | OK (100) | OK (100) |
+
+`master` fails the identical condition, so the gate was already red before this branch existed.
+Note the inconsistency this exposes, which is the same theme as the coverage finding in the audit:
+**SonarCloud demands 80% new-coverage while the enforced build gates are JaCoCo 40% / vitest 40-35.**
+Worth reconciling — either lower Sonar's gate to match reality or raise the build gates — but it is
+its own work item, not part of this PR. Logged as P2.
+
 ## Committed work
 
 Branch **`fix/interview-readiness-p0`**, commit **`5beac10`** (branched off `master` @ `c95a1ca`; **not merged**).
