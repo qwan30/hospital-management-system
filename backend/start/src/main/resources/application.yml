@@ -17,11 +17,11 @@ spring:
     default-property-inclusion: non_null
 
 server:
-  port: ${SERVER_PORT:8081}
+  port: ${PORT:${SERVER_PORT:8081}}
 
 management:
   server:
-    port: ${MANAGEMENT_PORT:${SERVER_PORT:8081}}
+    port: ${MANAGEMENT_PORT:${PORT:${SERVER_PORT:8081}}}
   endpoints:
     web:
       exposure:

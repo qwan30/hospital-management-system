@@ -30,5 +30,5 @@ COPY --from=build --chown=hms:hms /workspace/start/target/start-0.1.0-SNAPSHOT.j
 USER hms
 EXPOSE 8081 8082
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-Xms192m", "-Xmx256m", "-XX:+UseSerialGC", "-XX:TieredStopAtLevel=1", "-jar", "/app/app.jar"]
 

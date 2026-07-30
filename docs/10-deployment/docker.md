@@ -1,4 +1,4 @@
-﻿# Docker Configuration
+# Docker Configuration
 
 ## Overview
 
@@ -144,11 +144,13 @@ COPY --from=build /workspace/start/target/start-0.1.0-SNAPSHOT.jar app.jar
 
 EXPOSE 8081 8082
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-Xms192m", "-Xmx256m", "-XX:+UseSerialGC", "-XX:TieredStopAtLevel=1", "-jar", "/app/app.jar"]
 ```
 
 - Exposes ports 8081 (API) and 8082 (management/actuator, used with observability)
 - Includes fontconfig and DejaVu fonts for server-side PDF/image rendering
+- Configures JVM memory bounds (`-Xmx256m`, `-XX:+UseSerialGC`, `-XX:TieredStopAtLevel=1`) to prevent OOM errors in memory-constrained container platforms (e.g. Render 512MB Free Tier) and speed up container startup.
+- Binds server port dynamically to `${PORT:${SERVER_PORT:8081}}` for Render compatibility.
 
 ## Frontend Dockerfile
 
