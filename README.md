@@ -47,120 +47,13 @@ Healthcare digitization in emerging markets faces a critical gap: existing ERP s
 
 ## 🎯 System Architecture Overview
 
-```mermaid
-graph TB
-    subgraph "Client Layer"
-        A["🏥 Staff Dashboard<br/><i>Doctors, Nurses, Receptionists</i>"]
-        B["⚙️ Admin Panel<br/><i>Administrators</i>"]
-        C["🏠 Patient Portal<br/><i>Self-service</i>"]
-        D["🌐 Public Website<br/><i>Booking & Information</i>"]
-    end
-
-    subgraph "Infrastructure"
-        N["🔀 Nginx<br/><i>Reverse Proxy</i>"]
-        F["⚛️ Next.js 16<br/><i>App Router</i>"]
-    end
-
-    subgraph "API Gateway"
-        G["🔐 Spring Security + JWT<br/><i>RBAC · Rate Limiting · CORS</i>"]
-        H["🔌 REST Controllers<br/><i>118 endpoints · 32 controllers</i>"]
-    end
-
-    subgraph "Application Core — DDD Modular Monolith"
-        direction TB
-        I["📦 Application Services<br/><i>Use Cases · Workflows · Auth</i>"]
-        J["🏛️ Domain Model<br/><i>Entities · Value Objects · Aggregates<br/>17 bounded contexts</i>"]
-        K["🗄️ Infrastructure<br/><i>Spring Data JPA · Gmail Client<br/>PostgreSQL Adapters</i>"]
-    end
-
-    subgraph "Data & Observability"
-        L[("🐘 PostgreSQL 15<br/><i>pgvector · 35 tables</i>")]
-        M["📊 Prometheus → Grafana<br/><i>Metrics & Dashboards</i>"]
-        O["📝 Loki → Tempo<br/><i>Logs & Traces</i>"]
-    end
-
-    A --> N
-    B --> N
-    C --> N
-    D --> N
-    N --> F
-    F --> G
-    G --> H
-    H --> I
-    I --> J
-    J --> K
-    K --> L
-    H -.-> M
-    H -.-> O
-
-    style A fill:#1e40af,stroke:#3b82f6,color:#fff
-    style B fill:#7c3aed,stroke:#a78bfa,color:#fff
-    style C fill:#059669,stroke:#34d399,color:#fff
-    style D fill:#0891b2,stroke:#22d3ee,color:#fff
-    style N fill:#ea580c,stroke:#fb923c,color:#fff
-    style F fill:#000,stroke:#666,color:#fff
-    style G fill:#dc2626,stroke:#f87171,color:#fff
-    style H fill:#b91c1c,stroke:#ef4444,color:#fff
-    style I fill:#1d4ed8,stroke:#60a5fa,color:#fff
-    style J fill:#1e3a5f,stroke:#3b82f6,color:#fff
-    style K fill:#4b5563,stroke:#9ca3af,color:#fff
-    style L fill:#1e40af,stroke:#60a5fa,color:#fff
-    style M fill:#eab308,stroke:#facc15,color:#000
-    style O fill:#eab308,stroke:#facc15,color:#000
-```
+<img src="docs/screenshots/architecture-overview.png" alt="System Architecture Overview" width="800">
 
 ---
 
 ## 🏥 End-to-End Clinical Workflow
 
-```mermaid
-graph LR
-    subgraph "1️⃣ Booking"
-        P["🧑 Patient<br/><i>Books online</i>"]
-    end
-
-    subgraph "2️⃣ Intake & Queue"
-        R["👩‍💼 Receptionist<br/><i>Check-in · Register Queue</i>"]
-        N1["👩‍⚕️ Nurse<br/><i>Vital Signs · Room Assignment</i>"]
-    end
-
-    subgraph "3️⃣ Consultation"
-        D1["👨‍⚕️ Doctor<br/><i>Examination · Diagnosis<br/>E-Prescription · PDF Export</i>"]
-    end
-
-    subgraph "4️⃣ Pharmacy"
-        PH["💊 Pharmacist<br/><i>Dispense · Lot Tracking<br/>Inventory Movement</i>"]
-    end
-
-    subgraph "5️⃣ Billing"
-        AC["💰 Accountant<br/><i>Invoice · Payment<br/>Revenue Report</i>"]
-    end
-
-    subgraph "6️⃣ Completion"
-        OUT["✅ Patient<br/><i>Receives medication<br/>& invoice</i>"]
-    end
-
-    P -->|"1. Book Appointment"| R
-    R -->|"2. Check-in"| N1
-    N1 -->|"3. Vital Signs Recorded"| D1
-    D1 -->|"4. E-Prescription"| PH
-    D1 -->|"5. Services Billed"| AC
-    PH -->|"6. Medication Dispensed"| OUT
-    AC -->|"7. Payment Collected"| OUT
-
-    classDef patient fill:#059669,stroke:#34d399,color:#fff,stroke-width:2px
-    classDef staff fill:#1e40af,stroke:#3b82f6,color:#fff,stroke-width:2px
-    classDef doctor fill:#7c3aed,stroke:#a78bfa,color:#fff,stroke-width:2px
-    classDef pharma fill:#ea580c,stroke:#fb923c,color:#fff,stroke-width:2px
-    classDef finance fill:#b91c1c,stroke:#ef4444,color:#fff,stroke-width:2px
-    classDef done fill:#22c55e,stroke:#4ade80,color:#fff,stroke-width:2px
-
-    class P,OUT patient
-    class R,N1 staff
-    class D1 doctor
-    class PH pharma
-    class AC finance
-```
+<img src="docs/screenshots/clinical-workflow.png" alt="End-to-End Clinical Workflow" width="800">
 
 ---
 
@@ -264,45 +157,7 @@ xychart-beta
 
 ## 🏗️ DDD Architecture — Modular Monolith
 
-```text
-┌─────────────────────────────────────────────────────────────┐
-│ 🚀 start — Composition Root                                 │
-│   [ Flyway Migrations ]    [ App Config ]    [ Bootstrap ]  │
-└─────────────────────────────────────────────────────────────┘
-                               │
-                               ▼ (depends on)
-┌─────────────────────────────────────────────────────────────┐
-│ 🌐 controller — REST Layer (32 controllers)                 │
-│   [ Auth ]    [ Admin ]    [ Clinical ]    [ PatientPortal ]│
-└─────────────────────────────────────────────────────────────┘
-                               │
-                               ▼ (depends on)
-┌─────────────────────────────────────────────────────────────┐
-│ ⚡ application — Orchestration Layer                         │
-│   [ Workflow Services ]            [ Read Services ]        │
-│   [ Write Services ]               [ Auth/Security ]        │
-└─────────────────────────────────────────────────────────────┘
-                               │
-                               ▼ (depends on)
-┌─────────────────────────────────────────────────────────────┐
-│ 🗄️ infrastructure — Adapters Layer                          │
-│   [ Spring Data JPA ]   [ Gmail Client ]   [ PDF Generator ]│
-└─────────────────────────────────────────────────────────────┘
-                               │
-                               ▼ (depends on / implements contracts)
-┌─────────────────────────────────────────────────────────────┐
-│ 🏛️ domain — Business Core (17 Bounded Contexts)              │
-│   [ Patient ]      [ Appt ]         [ Queue ]      [ MedRec ]│
-│   [ Inven ]        [ Invoice ]      [ Admin ]      [ Lab ]   │
-│   [ Rx ]           [ User ]         [ Audit ]      [ Dept ]  │
-│   [ Timeslot ]     [ Content ]      [ Email ]      [ PtAuth ]│
-│   [ PtPortal ]                                              │
-└─────────────────────────────────────────────────────────────┘
-
-                  ⬆️  Dependency Rule:
-  domain ← infrastructure ← application ← controller ← start
-  (Outer layers depend inward. Domain has zero outward dependencies.)
-```
+<img src="docs/screenshots/ddd-architecture.png" alt="DDD Architecture — Modular Monolith" width="800">
 
 **17 Bounded Contexts:** `admin` · `appointment` · `audit` · `common` · `content` · `department` · `email` · `inventory` · `invoice` · `lab` · `medicalrecord` · `patient` · `patientauth` · `patientportal` · `prescription` · `timeslot` · `user`
 
