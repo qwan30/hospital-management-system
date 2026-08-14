@@ -5,6 +5,7 @@ This folder groups verification and testing documentation.
 Primary documents:
 
 - [HMS Test Plan](../HMS_TestPlan.md)
+- [Manual Debug Runbook](debug-runbook.html) - hands-on layered debugging guide (Vietnamese). Env, database, backend boot, auth, RBAC, API-by-domain, frontend, and end-to-end flows, each with commands, expected output, and symptom/diagnosis tables. Includes the full 34-permission RBAC matrix and the public-endpoint boundary.
 - [HMS A-to-Z Business Flow Test Document](business-flow-test-matrix.md) - canonical BA/QA flow, module, exception, test matrix, and button/action inspection reference.
 - [Release Observability Gate - 2026-06-06](release-observability-gate-2026-06-06.md) - local Prometheus/Grafana/OTel/Tempo/Loki gate and smoke evidence lane.
 - [Full HMS Production Readiness Report - 2026-05-22](full-hms-production-readiness-report-2026-05-22.md) - current release-readiness verdict, executable gate evidence, waiver list, and next actions.
