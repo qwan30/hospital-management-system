@@ -9,9 +9,10 @@
 [![React 19](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Playwright](https://img.shields.io/badge/Playwright-E2E-45ba4b?style=for-the-badge&logo=playwright&logoColor=white)](https://playwright.dev/)
-[![Docker](https://img.shields.io/badge/Docker-✓-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
-[![CI/CD](https://img.shields.io/badge/CI%2FCD-Automated-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/qwan30/hospital-management-system/actions)
+[![CI](https://github.com/qwan30/hospital-management-system/actions/workflows/ci.yml/badge.svg)](https://github.com/qwan30/hospital-management-system/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/badge/Release-RC_1.0-0d7c4b?style=for-the-badge)](https://github.com/qwan30/hospital-management-system)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=qwan30_hospital-management-system&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=qwan30_hospital-management-system)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=qwan30_hospital-management-system&metric=coverage)](https://sonarcloud.io/summary/new_code?id=qwan30_hospital-management-system)
 
 **An enterprise-grade, full-stack healthcare ERP and clinical operations platform** designed to digitize end-to-end hospital workflows — from public multi-doctor appointment booking, real-time intake queue triage, electronic health records (EHR) & e-prescriptions, to FIFO lot-controlled pharmacy dispensing and automated revenue billing. 
 
