@@ -26,7 +26,6 @@ Referenced by: root `README.md`, `CLAUDE.md`, and all documentation consumers. T
 | [`project-foundation.md`](00-overview/project-foundation.md) | Master technical foundation — source of truth for all standards |
 | [`project-context.md`](00-overview/project-context.md) | Project background, problem statement, stakeholder context |
 | [`documentation-index.md`](00-overview/documentation-index.md) | Full document inventory with status tracking |
-| [`portfolio-demo-video-script.vi.md`](00-overview/portfolio-demo-video-script.vi.md) | Source-backed Vietnamese portfolio demo video script |
 | [`git-workflow.md`](00-overview/git-workflow.md) | Branch model, commit conventions, PR process |
 | [`code-review-checklist.md`](00-overview/code-review-checklist.md) | Review checklist for backend (Java) + frontend (Next.js/React) |
 | [`onboarding-guide.html`](00-overview/onboarding-guide.html) | Interactive codebase onboarding walkthrough |
