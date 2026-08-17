@@ -27,6 +27,7 @@ import com.hospital.core.patientportal.PatientMessageEntity;
 import com.hospital.core.patientportal.PatientMessageRepository;
 import com.hospital.core.patientportal.PatientMessageThreadEntity;
 import com.hospital.core.patientportal.PatientMessageThreadRepository;
+import com.hospital.core.seed.kaggle.KaggleHmisSeedService;
 import com.hospital.core.timeslot.TimeSlotEntity;
 import com.hospital.core.timeslot.TimeSlotRepository;
 import com.hospital.core.user.UserEntity;
@@ -90,6 +91,7 @@ public class SeedDataService {
   private final NonBillingDemoSeedProperties nonBillingDemoSeedProperties;
   private final InitialDemoSeedProperties initialDemoSeedProperties;
   private final DemoSeedPolicy demoSeedPolicy;
+  private final KaggleHmisSeedService kaggleHmisSeedService;
 
   public SeedDataService(
       AppointmentRepository appointmentRepository,
@@ -112,6 +114,54 @@ public class SeedDataService {
       NonBillingDemoSeedProperties nonBillingDemoSeedProperties,
       InitialDemoSeedProperties initialDemoSeedProperties,
       DemoSeedPolicy demoSeedPolicy) {
+    this(
+        appointmentRepository,
+        auditLogRepository,
+        departmentRepository,
+        inventoryItemRepository,
+        inventoryLotRepository,
+        inventoryMovementRepository,
+        labResultRepository,
+        medicalRecordRepository,
+        patientAccountRepository,
+        patientIdentifierProtector,
+        patientMessageRepository,
+        patientMessageThreadRepository,
+        patientRepository,
+        servicePricingRepository,
+        userRepository,
+        timeSlotRepository,
+        passwordEncoder,
+        nonBillingDemoSeedProperties,
+        initialDemoSeedProperties,
+        demoSeedPolicy,
+        null);
+  }
+
+  @org.springframework.beans.factory.annotation.Autowired
+  public SeedDataService(
+      AppointmentRepository appointmentRepository,
+      AuditLogRepository auditLogRepository,
+      DepartmentRepository departmentRepository,
+      InventoryItemRepository inventoryItemRepository,
+      InventoryLotRepository inventoryLotRepository,
+      InventoryMovementRepository inventoryMovementRepository,
+      PatientPortalLabResultRepository labResultRepository,
+      MedicalRecordRepository medicalRecordRepository,
+      PatientAccountRepository patientAccountRepository,
+      PatientIdentifierProtector patientIdentifierProtector,
+      PatientMessageRepository patientMessageRepository,
+      PatientMessageThreadRepository patientMessageThreadRepository,
+      PatientRepository patientRepository,
+      ServicePricingRepository servicePricingRepository,
+      UserRepository userRepository,
+      TimeSlotRepository timeSlotRepository,
+      PasswordEncoder passwordEncoder,
+      NonBillingDemoSeedProperties nonBillingDemoSeedProperties,
+      InitialDemoSeedProperties initialDemoSeedProperties,
+      DemoSeedPolicy demoSeedPolicy,
+      @org.springframework.beans.factory.annotation.Autowired(required = false)
+      KaggleHmisSeedService kaggleHmisSeedService) {
     this.appointmentRepository = appointmentRepository;
     this.auditLogRepository = auditLogRepository;
     this.departmentRepository = departmentRepository;
@@ -132,6 +182,7 @@ public class SeedDataService {
     this.nonBillingDemoSeedProperties = nonBillingDemoSeedProperties;
     this.initialDemoSeedProperties = initialDemoSeedProperties;
     this.demoSeedPolicy = demoSeedPolicy;
+    this.kaggleHmisSeedService = kaggleHmisSeedService;
   }
 
   @Transactional
@@ -471,6 +522,10 @@ public class SeedDataService {
 
   private void seedNonBillingDemoDataIfEnabled() {
     if (!nonBillingDemoSeedProperties.isEnabled()) {
+      return;
+    }
+    if ("kaggle-hmis".equalsIgnoreCase(nonBillingDemoSeedProperties.getSource()) && kaggleHmisSeedService != null) {
+      kaggleHmisSeedService.seedToTargets();
       return;
     }
     var doctorPassword = nonBillingDemoSeedProperties.requireConfiguredPassword();
