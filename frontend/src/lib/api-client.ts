@@ -55,8 +55,32 @@ export interface ApiRequestOptions {
   requestId?: string;
 }
 
-export function getApiBaseUrl() {
-  return process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE_URL;
+export function getApiBaseUrl(): string {
+  const envBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  if (typeof window === "undefined" || !window.location) {
+    return process.env.API_BASE_URL_SERVER || envBaseUrl || DEFAULT_API_BASE_URL;
+  }
+
+  const hostname = window.location.hostname || "";
+  const isLoopbackHost = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "";
+
+  if (envBaseUrl) {
+    const isLocalhostUrl =
+      envBaseUrl.includes("localhost") || envBaseUrl.includes("127.0.0.1");
+
+    if (!isLoopbackHost && isLocalhostUrl) {
+      return "/api/v1";
+    }
+
+    return envBaseUrl;
+  }
+
+  if (!isLoopbackHost) {
+    return "/api/v1";
+  }
+
+  return DEFAULT_API_BASE_URL;
 }
 
 let inMemoryStaffAccessToken: string | undefined = undefined;

@@ -27,13 +27,29 @@ describe('api-client', () => {
 
   describe('getApiBaseUrl', () => {
     it('7. returns env variable when set', () => {
-      process.env.NEXT_PUBLIC_API_BASE_URL = 'http://custom-url/api/v1';
-      expect(getApiBaseUrl()).toBe('http://custom-url/api/v1');
+      process.env.NEXT_PUBLIC_API_BASE_URL = 'https://custom-url.com/api/v1';
+      expect(getApiBaseUrl()).toBe('https://custom-url.com/api/v1');
     });
 
-    it('8. falls back to localhost:8081', () => {
+    it('8. falls back to localhost:8081 on localhost environment', () => {
       delete process.env.NEXT_PUBLIC_API_BASE_URL;
       expect(getApiBaseUrl()).toBe('http://localhost:8081/api/v1');
+    });
+
+    it('falls back to relative /api/v1 on remote domain when localhost env is present', () => {
+      process.env.NEXT_PUBLIC_API_BASE_URL = 'http://localhost:8081/api/v1';
+      const originalLocation = window.location;
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: { ...originalLocation, hostname: 'hms.quanmariodev.id.vn' },
+      });
+
+      expect(getApiBaseUrl()).toBe('/api/v1');
+
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: originalLocation,
+      });
     });
   });
 
