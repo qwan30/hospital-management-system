@@ -14,6 +14,8 @@ public class NonBillingDemoSeedProperties {
   private int targetInventoryItems = 200;
   private int targetAuditLogs = 1000;
   private String doctorPassword;
+  private String source = "kaggle-hmis";
+  private String datasetRoot = "classpath:seed-data/kaggle/hospital-hmis";
 
   public boolean isEnabled() {
     return enabled;
@@ -21,6 +23,22 @@ public class NonBillingDemoSeedProperties {
 
   public void setEnabled(boolean enabled) {
     this.enabled = enabled;
+  }
+
+  public String getSource() {
+    return source;
+  }
+
+  public void setSource(String source) {
+    this.source = source;
+  }
+
+  public String getDatasetRoot() {
+    return datasetRoot;
+  }
+
+  public void setDatasetRoot(String datasetRoot) {
+    this.datasetRoot = datasetRoot;
   }
 
   public int getTargetDepartments() {

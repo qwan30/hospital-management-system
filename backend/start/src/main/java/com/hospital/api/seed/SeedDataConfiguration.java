@@ -13,7 +13,8 @@ public class SeedDataConfiguration {
       SeedDataService seedDataService,
       ReleaseDemoSeedService releaseDemoSeedService) {
     return args -> {
-      seedDataService.seedIfEmpty();
+      seedDataService.seedInitialDemoIfEnabled();
+      seedDataService.seedNonBillingDemoIfEnabled();
       releaseDemoSeedService.seedIfEnabled();
     };
   }

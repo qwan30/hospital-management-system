@@ -12,6 +12,8 @@ class NonBillingDemoSeedPropertiesTest {
     var properties = new NonBillingDemoSeedProperties();
 
     assertThat(properties.isEnabled()).isFalse();
+    assertThat(properties.getSource()).isEqualTo("kaggle-hmis");
+    assertThat(properties.getDatasetRoot()).isEqualTo("classpath:seed-data/kaggle/hospital-hmis");
     assertThat(properties.additionalDepartments(3)).isEqualTo(17);
     assertThat(properties.additionalDoctors(2)).isEqualTo(48);
     assertThat(properties.additionalPatients(1)).isEqualTo(499);

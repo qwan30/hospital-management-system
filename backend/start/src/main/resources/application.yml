@@ -108,6 +108,8 @@ hms:
         patient: ${HMS_SEED_PASSWORD_PATIENT:}
     non-billing-demo:
       enabled: ${HMS_NON_BILLING_DEMO_SEED_ENABLED:false}
+      source: ${HMS_NON_BILLING_DEMO_SOURCE:kaggle-hmis}
+      dataset-root: ${HMS_NON_BILLING_DEMO_DATASET_ROOT:classpath:seed-data/kaggle/hospital-hmis}
       doctor-password: ${HMS_NON_BILLING_DEMO_SEED_DOCTOR_PASSWORD:}
       target-departments: ${HMS_NON_BILLING_DEMO_TARGET_DEPARTMENTS:20}
       target-doctors: ${HMS_NON_BILLING_DEMO_TARGET_DOCTORS:50}
