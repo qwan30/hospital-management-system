@@ -113,3 +113,61 @@ export async function createPublicAppointment(request: AppointmentCreateRequest)
 
   return response.data;
 }
+
+export interface NewsArticleResponse {
+  id: string;
+  slug: string;
+  title: string;
+  summary: string;
+  content: string;
+  imageUrl?: string | null;
+  publishedAt: string;
+}
+
+export interface NewsPageResponse {
+  content: NewsArticleResponse[];
+  totalPages: number;
+  totalElements: number;
+  number: number;
+  size: number;
+  first: boolean;
+  last: boolean;
+}
+
+export async function listNews() {
+  const response = await apiRequest<NewsArticleResponse[]>("/news");
+  return response.data ?? [];
+}
+
+export async function getNewsArticle(slug: string) {
+  const response = await apiRequest<NewsArticleResponse>(
+    `/news/${encodeURIComponent(slug)}`,
+  );
+
+  if (!response.data) {
+    throw new Error("News article did not return data");
+  }
+
+  return response.data;
+}
+
+export async function getArchivedNews(page = 0, size = 10) {
+  const params = new URLSearchParams({
+    page: String(page),
+    size: String(size),
+  });
+  const response = await apiRequest<NewsPageResponse>(
+    `/news/archive?${params.toString()}`,
+  );
+
+  return response.data ?? {
+    content: [],
+    totalPages: 0,
+    totalElements: 0,
+    number: 0,
+    size,
+    first: true,
+    last: true,
+  };
+}
+
