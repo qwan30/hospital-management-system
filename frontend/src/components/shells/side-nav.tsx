@@ -29,7 +29,6 @@ import {
   Pill,
   Plus,
   ReceiptText,
-  ShieldPlus,
   Stethoscope,
   UserRound,
   Users,

@@ -868,18 +868,6 @@ function PanelTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-function FormField({ label, value }: { label: string; value: string }) {
-  return (
-    <label className="block">
-      <span className="text-[11px] font-semibold text-slate-600">{label}</span>
-      <span className="mt-1 flex h-10 items-center justify-between rounded-[6px] border border-slate-200 bg-white px-3 text-slate-700">
-        {value}
-        <span className="text-slate-400">⌄</span>
-      </span>
-    </label>
-  );
-}
-
 function MonitorRow({
   label,
   value,

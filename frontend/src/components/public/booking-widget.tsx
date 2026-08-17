@@ -16,7 +16,11 @@ export function BookingWidget() {
   const [doctors, setDoctors] = useState<DoctorResponse[]>([]);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState("");
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split("T")[0];
+  });
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
 
   useEffect(() => {
@@ -32,10 +36,6 @@ export function BookingWidget() {
         }
       },
     );
-
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    setSelectedDate(tomorrow.toISOString().split("T")[0]);
 
     return () => {
       isActive = false;

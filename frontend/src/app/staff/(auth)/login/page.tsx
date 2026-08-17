@@ -2,7 +2,6 @@
 
 import { type FormEvent, type ReactNode, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   ArrowRight,
   Eye,
