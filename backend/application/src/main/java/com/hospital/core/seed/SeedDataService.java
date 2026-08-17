@@ -136,6 +136,12 @@ public class SeedDataService {
 
   @Transactional
   public void seedIfEmpty() {
+    seedInitialDemoIfEnabled();
+    seedNonBillingDemoIfEnabled();
+  }
+
+  @Transactional
+  public void seedInitialDemoIfEnabled() {
     if (!initialDemoSeedProperties.isEnabled()) {
       LOGGER.info("Skipping initial data seeding: initial-demo seeding is disabled by configuration.");
       return;
@@ -177,7 +183,14 @@ public class SeedDataService {
     if (patientAccountRepository.count() == 0) {
       seedPatientPortal(doctorOne);
     }
+  }
 
+  @Transactional
+  public void seedNonBillingDemoIfEnabled() {
+    if (!nonBillingDemoSeedProperties.isEnabled()) {
+      return;
+    }
+    demoSeedPolicy.requireAllowed("non-billing-demo");
     seedNonBillingDemoDataIfEnabled();
   }
 
@@ -502,6 +515,9 @@ public class SeedDataService {
 
   private List<UserEntity> seedAdditionalDoctors(
       List<DepartmentEntity> departments, int count, String doctorPassword) {
+    if (departments.isEmpty() || count <= 0) {
+      return List.of();
+    }
     var doctors = new ArrayList<UserEntity>();
     for (int index = 0; index < count; index++) {
       var department = departments.get(index % departments.size());
