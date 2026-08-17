@@ -55,16 +55,17 @@ export interface ApiRequestOptions {
   requestId?: string;
 }
 
-export function getApiBaseUrl() {
+export function getApiBaseUrl(): string {
   const envBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-  if (typeof window === "undefined") {
+  if (typeof window === "undefined" || !window.location) {
     return process.env.API_BASE_URL_SERVER || envBaseUrl || DEFAULT_API_BASE_URL;
   }
 
+  const hostname = window.location.hostname || "";
+  const isLoopbackHost = hostname === "localhost" || hostname === "127.0.0.1" || hostname === "";
+
   if (envBaseUrl) {
-    const isLoopbackHost =
-      window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
     const isLocalhostUrl =
       envBaseUrl.includes("localhost") || envBaseUrl.includes("127.0.0.1");
 
@@ -75,10 +76,7 @@ export function getApiBaseUrl() {
     return envBaseUrl;
   }
 
-  if (
-    window.location.hostname !== "localhost" &&
-    window.location.hostname !== "127.0.0.1"
-  ) {
+  if (!isLoopbackHost) {
     return "/api/v1";
   }
 
