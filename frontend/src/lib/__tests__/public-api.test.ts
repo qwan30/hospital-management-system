@@ -6,6 +6,9 @@ import {
   listDepartments,
   listDoctors,
   listDoctorSlots,
+  listNews,
+  getNewsArticle,
+  getArchivedNews,
 } from "@/lib/public-api";
 
 vi.mock("@/lib/api-client", () => ({
@@ -200,4 +203,68 @@ describe("public-api", () => {
       }),
     ).rejects.toThrow("Appointment creation did not return confirmation data");
   });
+
+  it("lists news articles through the public news endpoint", async () => {
+    vi.mocked(apiRequest).mockResolvedValueOnce({
+      success: true,
+      data: [
+        {
+          id: "news-1",
+          slug: "robotic-surgery",
+          title: "Robotic Surgery",
+          summary: "Summary text",
+          content: "Full body",
+          imageUrl: null,
+          publishedAt: "2026-10-20T10:00:00Z",
+        },
+      ],
+    });
+
+    await expect(listNews()).resolves.toEqual([
+      expect.objectContaining({ id: "news-1", slug: "robotic-surgery" }),
+    ]);
+    expect(apiRequest).toHaveBeenCalledWith("/news");
+  });
+
+  it("gets a news article by slug", async () => {
+    vi.mocked(apiRequest).mockResolvedValueOnce({
+      success: true,
+      data: {
+        id: "news-1",
+        slug: "robotic-surgery",
+        title: "Robotic Surgery",
+        summary: "Summary text",
+        content: "Full body",
+        imageUrl: null,
+        publishedAt: "2026-10-20T10:00:00Z",
+      },
+    });
+
+    await expect(getNewsArticle("robotic-surgery")).resolves.toMatchObject({
+      title: "Robotic Surgery",
+    });
+    expect(apiRequest).toHaveBeenCalledWith("/news/robotic-surgery");
+  });
+
+  it("gets archived news with pagination parameters", async () => {
+    vi.mocked(apiRequest).mockResolvedValueOnce({
+      success: true,
+      data: {
+        content: [],
+        totalPages: 2,
+        totalElements: 12,
+        number: 1,
+        size: 6,
+        first: false,
+        last: true,
+      },
+    });
+
+    await expect(getArchivedNews(1, 6)).resolves.toMatchObject({
+      totalPages: 2,
+      number: 1,
+    });
+    expect(apiRequest).toHaveBeenCalledWith("/news/archive?page=1&size=6");
+  });
 });
+
