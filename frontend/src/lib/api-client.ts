@@ -56,7 +56,33 @@ export interface ApiRequestOptions {
 }
 
 export function getApiBaseUrl() {
-  return process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE_URL;
+  const envBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+  if (typeof window === "undefined") {
+    return process.env.API_BASE_URL_SERVER || envBaseUrl || DEFAULT_API_BASE_URL;
+  }
+
+  if (envBaseUrl) {
+    const isLoopbackHost =
+      window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    const isLocalhostUrl =
+      envBaseUrl.includes("localhost") || envBaseUrl.includes("127.0.0.1");
+
+    if (!isLoopbackHost && isLocalhostUrl) {
+      return "/api/v1";
+    }
+
+    return envBaseUrl;
+  }
+
+  if (
+    window.location.hostname !== "localhost" &&
+    window.location.hostname !== "127.0.0.1"
+  ) {
+    return "/api/v1";
+  }
+
+  return DEFAULT_API_BASE_URL;
 }
 
 let inMemoryStaffAccessToken: string | undefined = undefined;

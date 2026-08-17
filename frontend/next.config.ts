@@ -69,6 +69,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    const serverApiUrl = process.env.API_BASE_URL_SERVER || "http://localhost:8081";
+    const serverOrigin = serverApiUrl.replace(/\/api\/v1\/?$/, "");
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: `${serverOrigin}/api/v1/:path*`,
+      },
+    ];
+  },
   async headers() {
     return [
       {
