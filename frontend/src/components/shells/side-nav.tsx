@@ -29,7 +29,6 @@ import {
   Pill,
   Plus,
   ReceiptText,
-  ShieldPlus,
   Stethoscope,
   UserRound,
   Users,
@@ -38,6 +37,7 @@ import {
 import { filterNavigationLinks, getRouteDecision } from "@/lib/rbac";
 import { useStoredRole } from "@/lib/use-stored-role";
 import { cn } from "@/lib/utils";
+import { HmsLogo } from "@/components/ui/hms-logo";
 
 export interface SideNavLink {
   label: string;
@@ -164,16 +164,7 @@ export function HcSidebar({
   return (
     <aside className="fixed bottom-0 left-0 top-0 z-50 hidden w-[var(--hc-sidebar-w)] flex-col border-r border-[var(--hc-border)] bg-[var(--hc-sidebar-bg)] md:flex">
       <div className="flex h-[var(--hc-topbar-h)] items-center px-6">
-        <Link
-          href="/"
-          className="flex min-w-0 items-center gap-3 text-[18px] font-bold leading-6 tracking-normal text-[var(--hc-text)]"
-          aria-label="Hospital Core home"
-        >
-          <span className="grid size-9 shrink-0 place-items-center rounded-[10px] border border-[var(--hc-border)] bg-[var(--hc-surface-soft)] text-[var(--hc-blue-600)]">
-            <ShieldPlus className="size-5" aria-hidden="true" />
-          </span>
-          <span className="shrink-0 whitespace-nowrap">HOSPITAL CORE</span>
-        </Link>
+        <HmsLogo />
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col px-[18px] pb-[22px]">

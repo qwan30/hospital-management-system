@@ -2,7 +2,6 @@
 
 import { type FormEvent, type ReactNode, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   ArrowRight,
   Eye,
@@ -15,13 +14,13 @@ import {
   ClipboardPlus,
   FileText,
   MessageSquare,
-  Stethoscope,
 } from "lucide-react";
 import {
   apiRequest,
   persistSession,
   type StaffLoginResponse,
 } from "@/lib/api-client";
+import { HmsLogo } from "@/components/ui/hms-logo";
 
 export default function StaffLoginPage() {
   const router = useRouter();
@@ -65,17 +64,7 @@ export default function StaffLoginPage() {
       <div className="relative z-10 flex flex-1">
         {/* Left Column - Feature Panel */}
         <section className="relative z-10 hidden w-full flex-col justify-center px-8 py-10 lg:flex lg:w-[45%] lg:px-16 xl:px-24">
-          <Link
-            href="/"
-            className="absolute left-8 top-8 flex items-center gap-3 lg:left-12 hover:opacity-85 transition-opacity"
-          >
-            <span className="grid size-9 place-items-center rounded-lg bg-[var(--hc-primary)] text-white">
-              <Stethoscope className="size-5" aria-hidden="true" />
-            </span>
-            <span className="text-[15px] font-bold tracking-wide text-[var(--hc-primary)] uppercase">
-              Hospital Core
-            </span>
-          </Link>
+          <HmsLogo className="absolute left-8 top-8 lg:left-12 hover:opacity-85 transition-opacity" />
 
           <div className="mt-8 max-w-[480px]">
             <h1 className="text-[44px] font-bold leading-[1.08] tracking-tight text-[var(--hc-text)]">

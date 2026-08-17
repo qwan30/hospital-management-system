@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Bell, CircleHelp, LogOut, Menu, Search, Settings, ShieldPlus, User, X } from "lucide-react";
+import { Bell, CircleHelp, LogOut, Menu, Search, Settings, User, X } from "lucide-react";
 import { filterNavigationLinks, type AppRole } from "@/lib/rbac";
 import { useStoredRole } from "@/lib/use-stored-role";
 import { cn } from "@/lib/utils";
+import { HmsLogo } from "@/components/ui/hms-logo";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -198,16 +199,11 @@ export function HcTopbar({
             )}
           </button>
         ) : null}
-        <Link
+        <HmsLogo
           href={homeHref}
-          className="flex min-w-0 items-center gap-3 rounded-[var(--radius-md)] text-[16px] font-bold leading-6 tracking-normal text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
-          aria-label="Hospital Core home"
-        >
-          <span className="grid size-9 shrink-0 place-items-center rounded-[10px] border border-border bg-muted/50 text-[var(--hc-blue-500)]">
-            <ShieldPlus className="size-5" aria-hidden="true" />
-          </span>
-          <span className="hidden shrink-0 whitespace-nowrap min-[430px]:inline">HOSPITAL CORE</span>
-        </Link>
+          className="md:hidden"
+          textClassName="hidden min-[430px]:inline"
+        />
       </div>
 
       <div className="hidden h-full min-w-0 flex-1 items-center justify-end lg:flex">

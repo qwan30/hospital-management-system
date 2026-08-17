@@ -53,7 +53,7 @@ describe("PublicTopNav", () => {
   it("does not mark home active for non-home routes", () => {
     render(<PublicTopNav />);
 
-    expect(screen.getByRole("link", { name: /home/i }).className).not.toContain(
+    expect(screen.getByRole("link", { name: /^Home$/i }).className).not.toContain(
       "border-b-[3px]",
     );
   });
