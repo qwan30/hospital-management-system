@@ -139,7 +139,7 @@ public class KaggleHmisSeedService {
     ensureDoctorAvailability(doctors, 14);
     var appointments = ensureAppointments(dataset, doctors, patients, properties.getTargetAppointments());
     var inventoryItems = ensureInventory(dataset, departments, properties.getTargetInventoryItems());
-    ensureClinicalEnrichment(dataset, appointments, inventoryItems);
+    ensureClinicalEnrichment(appointments, inventoryItems);
 
     var allStaff = userRepository.findAllByOrderByFullNameAsc();
     ensureAuditLogs(allStaff, properties.getTargetAuditLogs());
@@ -561,7 +561,7 @@ public class KaggleHmisSeedService {
 
   @Transactional
   public void ensureClinicalEnrichment(
-      KaggleHmisDataset dataset, List<AppointmentEntity> appointments, List<InventoryItemEntity> inventoryItems) {
+      List<AppointmentEntity> appointments, List<InventoryItemEntity> inventoryItems) {
     if (appointments.isEmpty()) return;
 
     var medicalRecordsToSave = new ArrayList<MedicalRecordEntity>();
