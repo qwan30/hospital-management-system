@@ -108,6 +108,24 @@ class AppointmentRepositoryTest {
     assertThat(count).isEqualTo(1);
   }
 
+  @Test
+  void persist_withoutConfirmationCodeGeneratesFallbackCode() {
+    var appt = new AppointmentEntity();
+    appt.setId(UUID.randomUUID());
+    appt.setPatient(patient);
+    appt.setDoctor(doctor);
+    appt.setFirstSlot(slot);
+    appt.setAppointmentDate(slot.getSlotDate());
+    appt.setAiDurationMinutes(30);
+    appt.setStatus(AppointmentStatus.CONFIRMED);
+
+    entityManager.persist(appt);
+    entityManager.flush();
+
+    assertThat(appt.getConfirmationCode()).isNotBlank();
+    assertThat(appt.getConfirmationCode()).startsWith("HMS-");
+  }
+
   private DepartmentEntity persistDepartment(String name) {
     var dept = new DepartmentEntity();
     dept.setId(UUID.randomUUID());

@@ -19,6 +19,7 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -103,6 +104,9 @@ public class AppointmentEntity {
     var now = Instant.now();
     if (id == null) {
       id = UUID.randomUUID();
+    }
+    if (confirmationCode == null || confirmationCode.isBlank()) {
+      confirmationCode = "HMS-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase(Locale.ROOT);
     }
     createdAt = now;
     updatedAt = now;
