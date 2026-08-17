@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, ArrowRight, ChevronDown, Menu, UserRound, X } from "lucide-react";
+import { ArrowRight, ChevronDown, Menu, UserRound, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { HmsLogo } from "@/components/ui/hms-logo";
 
 const publicLinks = [
   { label: "Home", href: "/" },
@@ -38,15 +39,7 @@ export function PublicTopNav() {
         </button>
 
         {/* Logo */}
-        <Link
-          href="/"
-          className="flex min-w-0 items-center gap-3 rounded-[var(--radius-md)] text-[16px] font-bold uppercase leading-6 tracking-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--hc-blue-500)] focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-[18px]"
-        >
-          <span className="grid size-9 shrink-0 place-items-center rounded-[10px] border border-border bg-muted/50 text-[var(--hc-blue-500)]">
-            <Activity className="size-5" aria-hidden="true" />
-          </span>
-          <span className="shrink-0 whitespace-nowrap">HOSPITAL CORE</span>
-        </Link>
+        <HmsLogo />
 
         {/* Desktop nav links */}
         <nav className="hidden md:flex h-full items-center">

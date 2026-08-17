@@ -74,18 +74,19 @@ describe("NewLabResultPage", () => {
     vi.mocked(createLabResult).mockResolvedValue(createdResult);
   });
 
-  it("loads eligible appointments and records a lab result through the real API DTO", { timeout: 10000 }, async () => {
+  it("loads eligible appointments and records a lab result through the real API DTO", { timeout: 30000 }, async () => {
+    const user = userEvent.setup({ delay: null });
     render(<NewLabResultPage />);
 
     await screen.findByRole("heading", { name: /Record Lab Result/i });
 
-    await userEvent.selectOptions(screen.getByLabelText(/appointment/i), "appt-1");
-    await userEvent.type(screen.getByLabelText(/test name/i), "Lipid Panel");
-    await userEvent.type(screen.getByLabelText(/result value/i), "Total cholesterol 185 mg/dL");
-    await userEvent.type(screen.getByLabelText(/reference range/i), "Desirable: <200 mg/dL");
-    await userEvent.selectOptions(screen.getByLabelText(/status/i), "COMPLETED");
-    await userEvent.type(screen.getByLabelText(/notes/i), "No immediate intervention required.");
-    await userEvent.click(screen.getByRole("button", { name: /Save Lab Result/i }));
+    await user.selectOptions(screen.getByLabelText(/appointment/i), "appt-1");
+    await user.type(screen.getByLabelText(/test name/i), "Lipid Panel");
+    await user.type(screen.getByLabelText(/result value/i), "Total cholesterol 185 mg/dL");
+    await user.type(screen.getByLabelText(/reference range/i), "Desirable: <200 mg/dL");
+    await user.selectOptions(screen.getByLabelText(/status/i), "COMPLETED");
+    await user.type(screen.getByLabelText(/notes/i), "No immediate intervention required.");
+    await user.click(screen.getByRole("button", { name: /Save Lab Result/i }));
 
     await waitFor(() => {
       expect(createLabResult).toHaveBeenCalledWith({

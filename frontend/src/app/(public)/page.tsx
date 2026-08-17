@@ -20,6 +20,8 @@ import {
   Stethoscope,
   UserCheck,
 } from "lucide-react";
+import { BookingWidget } from "@/components/public/booking-widget";
+import { HmsLogo } from "@/components/ui/hms-logo";
 
 const metrics = [
   {
@@ -591,29 +593,6 @@ function WorkflowCard({
   );
 }
 
-function BookingWidget() {
-  return (
-    <div className="rounded-[8px] border border-slate-200 bg-slate-50 p-4">
-      <h3 className="text-[11px] font-bold uppercase tracking-[0.16em] text-hc-primary">
-        Book Appointment
-      </h3>
-      <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
-        <FormField label="Department" value="Cardiology" />
-        <FormField label="Doctor" value="Dr. James Wilson" />
-        <FormField label="Date" value="May 28, 2024" />
-        <FormField label="Time" value="10:30 AM" />
-      </div>
-      <Link
-        href="/booking"
-        className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-[6px] bg-hc-primary text-sm font-semibold text-white transition hover:bg-hc-blue-500"
-      >
-        Book Appointment
-        <ArrowRight className="size-4" />
-      </Link>
-    </div>
-  );
-}
-
 function VerificationList() {
   return (
     <div className="rounded-[8px] border border-slate-200 bg-white p-4">
@@ -741,12 +720,10 @@ function HomeFooter() {
     <footer className="bg-[var(--hc-navy-950)] px-6 py-12 text-white lg:px-9">
       <div className="mx-auto grid max-w-[1360px] grid-cols-1 gap-12 lg:grid-cols-[0.9fr_1.55fr_0.7fr]">
         <div>
-          <div className="flex items-center gap-3">
-            <span className="grid size-9 place-items-center rounded-[6px] border border-blue-400 text-blue-400">
-              <Activity className="size-5" />
-            </span>
-            <span className="text-lg font-bold">HOSPITAL CORE</span>
-          </div>
+          <HmsLogo
+            textClassName="text-white"
+            iconContainerClassName="border-blue-400/50 bg-blue-500/10 text-blue-400"
+          />
           <p className="mt-5 max-w-[310px] text-sm leading-6 text-slate-400">
             Engineering-grade healthcare platform for modern hospitals.
             Precision today, better outcomes tomorrow.

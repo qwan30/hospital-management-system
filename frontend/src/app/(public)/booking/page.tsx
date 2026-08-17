@@ -31,6 +31,16 @@ function formatSlotTime(slot: DoctorSlotResponse) {
   return `${slot.startTime.slice(0, 5)} - ${slot.endTime.slice(0, 5)}`;
 }
 
+function getInitialDate() {
+  if (typeof window !== "undefined") {
+    const requestedDate = new URLSearchParams(window.location.search).get("date");
+    if (requestedDate && /^\d{4}-\d{2}-\d{2}$/.test(requestedDate)) {
+      return requestedDate;
+    }
+  }
+  return tomorrowDate();
+}
+
 function getInitialDoctorId(doctors: DoctorResponse[]) {
   if (typeof window === "undefined") {
     return "";
@@ -47,7 +57,7 @@ function getInitialDoctorId(doctors: DoctorResponse[]) {
 export default function PublicBookingPage() {
   const [doctors, setDoctors] = useState<DoctorResponse[]>([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
-  const [slotDate, setSlotDate] = useState(tomorrowDate);
+  const [slotDate, setSlotDate] = useState(getInitialDate);
   const [slots, setSlots] = useState<DoctorSlotResponse[]>([]);
   const [selectedSlotId, setSelectedSlotId] = useState("");
   const [isLoadingDoctors, setIsLoadingDoctors] = useState(true);
@@ -88,7 +98,7 @@ export default function PublicBookingPage() {
 
   useEffect(() => {
     let isActive = true;
-    const initialDate = tomorrowDate();
+    const initialDate = getInitialDate();
 
     listDoctors()
       .then((nextDoctors) => {
