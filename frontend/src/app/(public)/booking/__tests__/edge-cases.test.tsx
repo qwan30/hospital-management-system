@@ -43,7 +43,7 @@ const slot: DoctorSlotResponse = {
 };
 
 async function completeRequiredForm() {
-  await userEvent.selectOptions(await screen.findByLabelText("Doctor"), doctor.id);
+  await userEvent.selectOptions(await screen.findByLabelText(/doctor/i), doctor.id);
   await userEvent.click(await screen.findByRole("button", { name: "09:00 - 09:30" }));
   fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: "Nguyen Van A" } });
   fireEvent.change(screen.getByLabelText(/contact number/i), {
@@ -171,7 +171,7 @@ describe("Booking Edge Cases", () => {
     render(<PublicBookingPage />);
 
     // Select doctor and slot
-    await userEvent.selectOptions(await screen.findByLabelText("Doctor"), doctor.id);
+    await userEvent.selectOptions(await screen.findByLabelText(/doctor/i), doctor.id);
     await userEvent.click(await screen.findByRole("button", { name: "09:00 - 09:30" }));
 
     // Fill in all required fields with the long name
@@ -220,32 +220,32 @@ describe("Booking Edge Cases", () => {
     render(<PublicBookingPage />);
 
     // Wait for the component to finish loading doctors
-    await screen.findByLabelText("Doctor");
+    await screen.findByLabelText(/doctor/i);
 
     // Click submit without selecting doctor, slot, or filling any patient details
     await userEvent.click(screen.getByRole("button", { name: /confirm appointment/i }));
 
-    // The first validation gate catches missing doctor and slot
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Select a doctor and an available appointment slot before submitting.",
-    );
+    // Inline errors are displayed
+    expect(screen.getByText("Please select a doctor.")).toBeInTheDocument();
+    expect(screen.getByText("Please select an available appointment slot.")).toBeInTheDocument();
 
-    // Now select a doctor but not a slot — should still show the same gate
-    await userEvent.selectOptions(screen.getByLabelText("Doctor"), doctor.id);
+    // Now select a doctor but not a slot
+    await userEvent.selectOptions(screen.getByLabelText(/doctor/i), doctor.id);
     await userEvent.click(screen.getByRole("button", { name: /confirm appointment/i }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Select a doctor and an available appointment slot before submitting.",
-    );
+    expect(screen.getByText("Please select an available appointment slot.")).toBeInTheDocument();
 
     // Now select a slot but leave all patient fields empty
     await userEvent.click(await screen.findByRole("button", { name: "09:00 - 09:30" }));
     await userEvent.click(screen.getByRole("button", { name: /confirm appointment/i }));
 
-    // Should show the "complete all required fields" error
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Complete all required patient, contact, address, and symptom fields.",
-    );
+    expect(screen.getByText("Full name is required.")).toBeInTheDocument();
+    expect(screen.getByText("Contact phone number is required.")).toBeInTheDocument();
+    expect(screen.getByText("Email address is required.")).toBeInTheDocument();
+    expect(screen.getByText("Patient CCCD is required.")).toBeInTheDocument();
+    expect(screen.getByText("Date of birth is required.")).toBeInTheDocument();
+    expect(screen.getByText("Please select gender.")).toBeInTheDocument();
+    expect(screen.getByText("Primary symptom description is required.")).toBeInTheDocument();
 
     // Verify the submit function was never called
     expect(createPublicAppointment).not.toHaveBeenCalled();
@@ -310,11 +310,11 @@ describe("Booking Edge Cases", () => {
     await screen.findByText(/Dr. Lan Tran/i);
 
     // Rapidly switch doctors - page should not crash
-    await userEvent.selectOptions(screen.getByLabelText("Doctor"), doctor2.id);
-    await userEvent.selectOptions(screen.getByLabelText("Doctor"), doctor.id);
+    await userEvent.selectOptions(screen.getByLabelText(/doctor/i), doctor2.id);
+    await userEvent.selectOptions(screen.getByLabelText(/doctor/i), doctor.id);
 
     // Page should still be functional
-    expect(screen.getByLabelText("Doctor")).toBeInTheDocument();
+    expect(screen.getByLabelText(/doctor/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /confirm appointment/i })).toBeInTheDocument();
   });
 });
