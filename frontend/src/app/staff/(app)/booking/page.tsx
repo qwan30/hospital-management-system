@@ -152,7 +152,7 @@ export default function BookingWizardSymptomsPage() {
             <div className="relative overflow-hidden h-40 w-full group rounded-[var(--radius-lg)] mt-4">
               <Image
                 className="object-cover opacity-80 grayscale group-hover:grayscale-0 transition-all duration-500"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvYfG9LUpiwHQg7TFOLBbm_p80bQl39VmGsH6gDJst9BWxOvwWTcMpEqHN3DpmwzBNWxmVcqrzk60YYu0SKnp2-fAeQ7j0_mdUKNyNa8Mw-2_ULZ3cm3Eq9hhEmxYkUx5WKaLpfQzk6sCF0ZOR5mhygt5P4NOQyLVPMUaX3-if8hv8lvt6wpQ_HPAyn9y-ticXOLFGxaGxvVbHK3StLh-RBzVpjXfGhqsgiC3ZOzH6jtrU2JDX8TVbPHEusS5Hk2ibDdHE_hf29Q"
+                src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&q=80"
                 alt="high-tech clinical setting"
                 fill
                 unoptimized

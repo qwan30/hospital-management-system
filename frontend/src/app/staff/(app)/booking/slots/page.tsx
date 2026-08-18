@@ -60,8 +60,8 @@ function SlotSelectionContent() {
                 <Image
                   alt="Dr. Sarah Jenkins"
                   className="w-24 h-24 object-cover rounded-[var(--radius-lg)]"
-                  data-alt="Professional headshot of a male doctor in glasses and blue scrubs with a clean clinic background"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBb1_yE4u4Bwq2YnFYxt4yB433OfkmINjPK-A9GS28YBNnZkZbLXxr-PJGK0jQsgIc8Qen_LkkguBNAo7KcVqViGw96CYukI9Biz-VCXleX7NA88OXszRdvvoWS00EEu9-OdH1ZGzAbBpFvo_rsyBM9FyCnV97fwtWHcfVaSf8tH5RO3A8AKEJV-rWULczf_dK7gRnA-wH-yMeAq5YaiLj5kfq32WxqjGjXdActBuGXBQ6a26hFN2ACfi90Gfrka7Vc7QIrOlwbg"
+                  src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&q=80"
+                  unoptimized
                   width={1200} height={800}
                 />
               </div>
@@ -104,8 +104,8 @@ function SlotSelectionContent() {
                 <Image
                   alt="Dr. Marcus Thorne"
                   className="w-24 h-24 object-cover rounded-[var(--radius-lg)]"
-                  data-alt="Medical professional headshot of a female doctor in a white coat with a friendly smile"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkixEEDa4D_UpfICVURFVwbixMF_TdxHPVQacbh7KHWWQikXwcL7GrapqPfKnVlS48MJUXiXqRR7UCGDKryWFSSWglL0zClIQgKWOr3s3pdnPvvY2vpbmm7Hj7ezXPVBbaMgKklBMJJDcvR39awxoNCxMm-BtU2UFJ3LV47IRqu3gYZVJh-Wv8QvbY8bxoW1WpnCSLis3jvT7INZg8gwmhfu-miKz1JHR9omKXa0bAAmJ2G-9fcHSqs-ImgHOoM8Tx-pAZbPSA6A"
+                  src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80"
+                  unoptimized
                   width={1200} height={800}
                 />
               </div>
@@ -157,7 +157,8 @@ function SlotSelectionContent() {
                   <Image
                     alt="Dr. Sarah Jenkins"
                     className="w-10 h-10 object-cover rounded-[var(--radius-md)]"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKZnYcR7GpVX28RJIrG-nm_5-n0U2i314IyfHzPHTJNch7EOXpCvNl4X3iLO1Hia2lr8uOSN50pRTcapUqEd45UhQmGgx1p0w7EeDI8Z3q0htXLvjMfBblX5a5-T8upGERFzeYTObzeeRXRau22BF4zL6hX3EmllQQ7t0GesGTlpB2W7RgdBm746RMrpEVz80Qj3BhKbIGHqWY_LCFEFEqhtU26LLp0LieLZRtdxrwq5_XNd-ENeP5AeWifjEts3O1awamtmUZlg"
+                    src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=200&q=80"
+                    unoptimized
                     width={1200} height={800}
                   />
                   <div>

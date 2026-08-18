@@ -17,7 +17,8 @@ export default function DoctorDetailPage() {
                 <Image
                   alt="Doctor Professional Portrait"
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQKBX7pN66DLIDqIM9FUgaxs9eciBMz5Vu2AW_jPDqZ6OiSNymdU5scCJwQtIrFZk0pG3eG4BcVMmeTUeRvXCHkMY9r3kvHn90nHrGY1QXqzkFOGpXIxTUrsSGLFmik72hsjqA91MQDj4S1VV2r2ve5JWva0EB0wvfLjM7N3nZQOtDd99LP1JhsAEHoalAylThSy8cv4s51EyNHLhu7UhRqErFkq7dGmgDhrGTWjrjKOHuFRNTlzYxCAxcM-bhZAK2MQ3U5h535Q"
+                  src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=1200&q=80"
+                  unoptimized
                   width={1200}
                   height={800}
                 />

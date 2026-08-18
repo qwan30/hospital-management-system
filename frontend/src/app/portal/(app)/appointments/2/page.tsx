@@ -37,7 +37,7 @@ export default async function PatientAppointmentsPage(props: { searchParams: Pro
 <HcIcon name="settings" className="cursor-pointer hover:text-primary transition-colors" />
 <HcIcon name="help" className="cursor-pointer hover:text-primary transition-colors" />
 <div className="h-8 w-8 bg-[var(--hc-surface-soft)] overflow-hidden">
-<Image alt="User profile" className="h-full w-full object-cover" data-alt="professional portrait of a medical administrator in a clean modern clinical setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-vVbeWD4kwISaeRFRKlvVuqSENkHizYgzcJdOOF4FwTvt3DPCoh1zzdyLnAESMlxiwh1nkSXpAJMCwsXtuKDRPmGQ_0p6PpKYx4K8hiHJjQA_iiMxJavSoGcbsE2K-ZgTgghKayjvGuDkU2J28sAdebZYqfd4gH_jq0sLDw_jCF9r5O1fVLARLWZt7kFW6LMYwSnllk-K4pA6mbPLCiiPPsga7RxW96Hfyz6C_xLwGVKKB1mH72FN0LMA2hCpBJydGGhS9pRNgw" width={1200} height={800}/>
+<Image alt="User profile" className="h-full w-full object-cover" src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=400&q=80" unoptimized width={1200} height={800}/>
 </div>
 </div>
 </div>
