@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useCachedData } from "@/lib/use-cached-data";
 import { listDepartments, type DepartmentResponse } from "@/lib/public-api";
 
 import { HcIcon } from "@/components/ui/hc-icon";
@@ -19,53 +20,27 @@ function getSearchText(department: DepartmentResponse) {
 }
 
 export default function PublicDepartmentsPage() {
-  const [departments, setDepartments] = useState<DepartmentResponse[]>([]);
   const [search, setSearch] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  const {
+    data: fetchedDepartments,
+    error,
+    isLoading,
+    mutate,
+  } = useCachedData<DepartmentResponse[]>("public:departments", listDepartments, {
+    ttlMs: 300000,
+    persistKey: "departments",
+  });
+
+  const departments = useMemo(() => fetchedDepartments ?? [], [fetchedDepartments]);
 
   async function loadDepartments() {
-    setIsLoading(true);
-    setError(null);
-
     try {
-      setDepartments(await listDepartments());
-    } catch (loadError) {
-      setDepartments([]);
-      setError(loadError instanceof Error ? loadError.message : "Unable to load departments");
-    } finally {
-      setIsLoading(false);
+      await mutate(true);
+    } catch {
+      // Error in state
     }
   }
-
-  useEffect(() => {
-    let isActive = true;
-
-    listDepartments()
-      .then((nextDepartments) => {
-        if (!isActive) {
-          return;
-        }
-        setDepartments(nextDepartments);
-        setError(null);
-      })
-      .catch((loadError) => {
-        if (!isActive) {
-          return;
-        }
-        setDepartments([]);
-        setError(loadError instanceof Error ? loadError.message : "Unable to load departments");
-      })
-      .finally(() => {
-        if (isActive) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      isActive = false;
-    };
-  }, []);
 
   const filteredDepartments = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();

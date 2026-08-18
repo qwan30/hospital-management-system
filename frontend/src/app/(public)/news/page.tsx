@@ -2,17 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useCachedData } from "@/lib/use-cached-data";
 import {
   listNews,
   getArchivedNews,
   type NewsArticleResponse,
 } from "@/lib/public-api";
+import { optimizeImageUrl } from "@/lib/image-utils";
 import { HcIcon } from "@/components/ui/hc-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const DEFAULT_NEWS_IMAGE =
-  "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80";
+  "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1000&q=75";
 
 function formatPublishedDate(dateStr: string) {
   try {
@@ -29,27 +31,29 @@ function formatPublishedDate(dateStr: string) {
 }
 
 export default function NewsListPage() {
-  const [articles, setArticles] = useState<NewsArticleResponse[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   const [archiveArticles, setArchiveArticles] = useState<NewsArticleResponse[]>([]);
   const [archivePage, setArchivePage] = useState(0);
   const [hasMoreArchive, setHasMoreArchive] = useState(true);
   const [isLoadingArchive, setIsLoadingArchive] = useState(false);
   const [isArchiveOpen, setIsArchiveOpen] = useState(false);
 
+  const {
+    data: fetchedArticles,
+    error,
+    isLoading,
+    mutate,
+  } = useCachedData<NewsArticleResponse[]>("public:news", listNews, {
+    ttlMs: 300000,
+    persistKey: "news",
+  });
+
+  const articles = fetchedArticles ?? [];
+
   async function loadNews() {
-    setIsLoading(true);
-    setError(null);
     try {
-      const data = await listNews();
-      setArticles(data);
-    } catch (err) {
-      setArticles([]);
-      setError(err instanceof Error ? err.message : "Unable to load hospital news");
-    } finally {
-      setIsLoading(false);
+      await mutate(true);
+    } catch {
+      // Error in state
     }
   }
 
@@ -64,7 +68,7 @@ export default function NewsListPage() {
       }
       setArchivePage(pageToLoad);
       setHasMoreArchive(!pageData.last && pageData.totalPages > pageToLoad + 1);
-    } catch (err) {
+    } catch {
       // Archive error handled silently or with status
     } finally {
       setIsLoadingArchive(false);
@@ -77,32 +81,6 @@ export default function NewsListPage() {
       void loadArchive(0);
     }
   }
-
-  useEffect(() => {
-    let isActive = true;
-    listNews()
-      .then((data) => {
-        if (isActive) {
-          setArticles(data);
-          setError(null);
-        }
-      })
-      .catch((err) => {
-        if (isActive) {
-          setArticles([]);
-          setError(err instanceof Error ? err.message : "Unable to load hospital news");
-        }
-      })
-      .finally(() => {
-        if (isActive) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      isActive = false;
-    };
-  }, []);
 
   const featuredArticle = articles.length > 0 ? articles[0] : null;
   const remainingArticles = articles.length > 1 ? articles.slice(1) : [];
@@ -203,7 +181,7 @@ export default function NewsListPage() {
                     <Image
                       className="w-full h-full object-cover"
                       alt={featuredArticle.title}
-                      src={featuredArticle.imageUrl || DEFAULT_NEWS_IMAGE}
+                      src={optimizeImageUrl(featuredArticle.imageUrl || DEFAULT_NEWS_IMAGE, { width: 1000, quality: 75 })}
                       fill
                       priority
                       unoptimized
@@ -254,7 +232,7 @@ export default function NewsListPage() {
                         <Image
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                           alt={article.title}
-                          src={article.imageUrl || DEFAULT_NEWS_IMAGE}
+                          src={optimizeImageUrl(article.imageUrl || DEFAULT_NEWS_IMAGE, { width: 400, quality: 75 })}
                           fill
                           unoptimized
                           sizes="(max-width: 768px) 100vw, 224px"

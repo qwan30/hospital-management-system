@@ -193,7 +193,7 @@ public class ReleaseDemoSeedService {
       department.setName(seed.name());
       department.setDescription(seed.description());
       department.setPhone(seed.phone());
-      department.setImageUrl("https://images.unsplash.com/photo-1576091160550-2173dba999ef");
+      department.setImageUrl("https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=75");
       department.setActive(true);
       departmentsByName.put(key(seed.name()), departmentRepository.save(department));
     }

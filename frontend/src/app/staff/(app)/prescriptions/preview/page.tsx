@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 import { HcIcon } from "@/components/ui/hc-icon";
 
 export default function PrescriptionPreviewPage() {

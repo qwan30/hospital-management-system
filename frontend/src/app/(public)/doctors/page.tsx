@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { useCachedData } from "@/lib/use-cached-data";
 import { listDoctors, type DoctorResponse } from "@/lib/public-api";
 import { getDoctorAvatar } from "@/lib/doctor-avatars";
 import { HcIcon } from "@/components/ui/hc-icon";
@@ -21,66 +22,30 @@ function getSearchText(doctor: DoctorResponse) {
     .toLowerCase();
 }
 
-function getInitials(fullName: string) {
-  return fullName
-    .split(" ")
-    .filter(Boolean)
-    .slice(-2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
-}
-
 export default function PublicDoctorsPage() {
-  const [doctors, setDoctors] = useState<DoctorResponse[]>([]);
   const [search, setSearch] = useState("");
   const [specialty, setSpecialty] = useState("all");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [activeDoctorProfile, setActiveDoctorProfile] = useState<DoctorResponse | null>(null);
 
-  async function loadDoctors() {
-    setIsLoading(true);
-    setError(null);
+  const {
+    data: fetchedDoctors,
+    error,
+    isLoading,
+    mutate,
+  } = useCachedData<DoctorResponse[]>("public:doctors", listDoctors, {
+    ttlMs: 300000,
+    persistKey: "doctors",
+  });
 
+  const doctors = useMemo(() => fetchedDoctors ?? [], [fetchedDoctors]);
+
+  async function loadDoctors() {
     try {
-      setDoctors(await listDoctors());
-    } catch (loadError) {
-      setDoctors([]);
-      setError(loadError instanceof Error ? loadError.message : "Unable to load doctors");
-    } finally {
-      setIsLoading(false);
+      await mutate(true);
+    } catch {
+      // Error is set in hook state
     }
   }
-
-  useEffect(() => {
-    let isActive = true;
-
-    listDoctors()
-      .then((nextDoctors) => {
-        if (!isActive) {
-          return;
-        }
-        setDoctors(nextDoctors);
-        setError(null);
-      })
-      .catch((loadError) => {
-        if (!isActive) {
-          return;
-        }
-        setDoctors([]);
-        setError(loadError instanceof Error ? loadError.message : "Unable to load doctors");
-      })
-      .finally(() => {
-        if (isActive) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      isActive = false;
-    };
-  }, []);
 
   const specialties = useMemo(() => {
     return Array.from(

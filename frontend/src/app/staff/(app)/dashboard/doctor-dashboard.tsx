@@ -230,6 +230,14 @@ export function DoctorDashboardView({
         </div>
       )}
 
+      {actionNotice && (
+        <div className="mt-4">
+          <AlertBanner tone="info" dismissible>
+            {actionNotice}
+          </AlertBanner>
+        </div>
+      )}
+
       {/* KPI Cards */}
       <section className="mt-8 hc-kpi-grid">
         <KpiCard label="Active Rounds" value="12" helper={<span className="text-[var(--hc-success)]">Up 2 from previous shift</span>} icon={Stethoscope} tone="blue" />

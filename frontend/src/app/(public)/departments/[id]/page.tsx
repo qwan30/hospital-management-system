@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
+import { useCachedData } from "@/lib/use-cached-data";
 import {
   getDepartment,
   listDepartments,
@@ -61,9 +62,6 @@ function DoctorCard({ doctor }: { doctor: DepartmentDoctorSummary }) {
 export default function DepartmentDetailPage() {
   const params = useParams<{ id: string }>();
   const departmentId = params.id;
-  const [department, setDepartment] = useState<DepartmentDetailResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   const routeLabel = useMemo(() => formatRouteLabel(departmentId), [departmentId]);
 
@@ -91,49 +89,30 @@ export default function DepartmentDetailPage() {
     return matched.id;
   }, []);
 
-  async function loadDepartment() {
-    setIsLoading(true);
-    setError(null);
-
-    try {
+  const {
+    data: department,
+    error,
+    isLoading,
+    mutate,
+  } = useCachedData<DepartmentDetailResponse>(
+    departmentId ? `public:department:${departmentId}` : null,
+    async () => {
       const resolvedId = await resolveDepartmentId(departmentId);
-      setDepartment(await getDepartment(resolvedId));
-    } catch (loadError) {
-      setDepartment(null);
-      setError(loadError instanceof Error ? loadError.message : "Unable to load department");
-    } finally {
-      setIsLoading(false);
+      return getDepartment(resolvedId);
+    },
+    {
+      ttlMs: 300000,
+      persistKey: `department_${departmentId}`,
+    }
+  );
+
+  async function loadDepartment() {
+    try {
+      await mutate(true);
+    } catch {
+      // Error in state
     }
   }
-
-  useEffect(() => {
-    let isActive = true;
-
-    resolveDepartmentId(departmentId)
-      .then((resolvedId) => {
-        if (!isActive) return;
-        return getDepartment(resolvedId);
-      })
-      .then((nextDepartment) => {
-        if (!isActive || !nextDepartment) return;
-        setDepartment(nextDepartment);
-        setError(null);
-      })
-      .catch((loadError) => {
-        if (!isActive) return;
-        setDepartment(null);
-        setError(loadError instanceof Error ? loadError.message : "Unable to load department");
-      })
-      .finally(() => {
-        if (isActive) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      isActive = false;
-    };
-  }, [departmentId, resolveDepartmentId]);
 
   return (
     <main>
