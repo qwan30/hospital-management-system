@@ -56,17 +56,17 @@ public class AppointmentEntity {
   private String symptoms;
 
   @Column(name = "confirmation_code", nullable = false, unique = true, length = 32)
-  private String confirmationCode;
+  private String confirmationCode = generateFallbackConfirmationCode();
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
   private AppointmentStatus status;
 
   @Column(name = "created_at", nullable = false)
-  private Instant createdAt;
+  private Instant createdAt = Instant.now();
 
   @Column(name = "updated_at", nullable = false)
-  private Instant updatedAt;
+  private Instant updatedAt = Instant.now();
 
   @Column(name = "checked_in_at")
   private LocalDateTime checkedInAt;
@@ -99,6 +99,10 @@ public class AppointmentEntity {
   @Column(length = 500)
   private String reason;
 
+  public static String generateFallbackConfirmationCode() {
+    return "HMS-" + UUID.randomUUID().toString().replace("-", "").substring(0, 12).toUpperCase(Locale.ROOT);
+  }
+
   @PrePersist
   void prePersist() {
     var now = Instant.now();
@@ -106,9 +110,11 @@ public class AppointmentEntity {
       id = UUID.randomUUID();
     }
     if (confirmationCode == null || confirmationCode.isBlank()) {
-      confirmationCode = "HMS-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase(Locale.ROOT);
+      confirmationCode = generateFallbackConfirmationCode();
     }
-    createdAt = now;
+    if (createdAt == null) {
+      createdAt = now;
+    }
     updatedAt = now;
   }
 

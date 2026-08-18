@@ -437,6 +437,8 @@ public class KaggleHmisSeedService {
       appointment.setDoctor(doctor);
       appointment.setFirstSlot(slot);
       appointment.setAppointmentDate(appointmentDate);
+      appointment.setAiDurationMinutes(30);
+      appointment.setConfirmationCode(String.format(Locale.ROOT, "KGH-APT-%06d", existingAppointments.size() + createdCount + 1));
       appointment.setStatus(appointmentStatus);
       appointment.setReason("Clinical Consultation - Kaggle HMIS Ref " + (existingAppointments.size() + createdCount + 1));
       appointment.setSymptoms(createdCount % 3 == 0 ? "Fever and mild fatigue" : "Routine clinical examination");
@@ -459,6 +461,8 @@ public class KaggleHmisSeedService {
       var savedBatch = appointmentRepository.saveAll(List.copyOf(toSave));
       existingAppointments.addAll(savedBatch);
     }
+
+    appointmentRepository.flush();
 
     LOGGER.info("Seeded appointments up to total {}.", existingAppointments.size());
     return existingAppointments;
