@@ -19,6 +19,7 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,17 +56,17 @@ public class AppointmentEntity {
   private String symptoms;
 
   @Column(name = "confirmation_code", nullable = false, unique = true, length = 32)
-  private String confirmationCode;
+  private String confirmationCode = generateFallbackConfirmationCode();
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 20)
   private AppointmentStatus status;
 
   @Column(name = "created_at", nullable = false)
-  private Instant createdAt;
+  private Instant createdAt = Instant.now();
 
   @Column(name = "updated_at", nullable = false)
-  private Instant updatedAt;
+  private Instant updatedAt = Instant.now();
 
   @Column(name = "checked_in_at")
   private LocalDateTime checkedInAt;
@@ -98,13 +99,22 @@ public class AppointmentEntity {
   @Column(length = 500)
   private String reason;
 
+  public static String generateFallbackConfirmationCode() {
+    return "HMS-" + UUID.randomUUID().toString().replace("-", "").substring(0, 12).toUpperCase(Locale.ROOT);
+  }
+
   @PrePersist
   void prePersist() {
     var now = Instant.now();
     if (id == null) {
       id = UUID.randomUUID();
     }
-    createdAt = now;
+    if (confirmationCode == null || confirmationCode.isBlank()) {
+      confirmationCode = generateFallbackConfirmationCode();
+    }
+    if (createdAt == null) {
+      createdAt = now;
+    }
     updatedAt = now;
   }
 
