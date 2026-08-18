@@ -43,7 +43,7 @@ const slot: DoctorSlotResponse = {
 };
 
 async function completeRequiredForm() {
-  await userEvent.selectOptions(await screen.findByLabelText("Doctor"), doctor.id);
+  await userEvent.selectOptions(await screen.findByLabelText(/doctor/i), doctor.id);
   await userEvent.click(await screen.findByRole("button", { name: "09:00 - 09:30" }));
   fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: "Nguyen Van A" } });
   fireEvent.change(screen.getByLabelText(/contact number/i), {
@@ -145,7 +145,7 @@ describe("PublicBookingPage", () => {
 
     render(<PublicBookingPage />);
 
-    expect(await screen.findByLabelText("Doctor")).toHaveValue("");
+    expect(await screen.findByLabelText(/doctor/i)).toHaveValue("");
     expect(screen.getByText(/select a doctor to load real available slots/i)).toBeInTheDocument();
     expect(listDoctorSlots).not.toHaveBeenCalled();
   });
@@ -172,10 +172,10 @@ describe("PublicBookingPage", () => {
 
     render(<PublicBookingPage />);
 
-    await userEvent.selectOptions(await screen.findByLabelText("Doctor"), doctor.id);
+    await userEvent.selectOptions(await screen.findByLabelText(/doctor/i), doctor.id);
     expect(await screen.findByText(/no available slots/i)).toBeInTheDocument();
 
-    await userEvent.selectOptions(screen.getByLabelText("Doctor"), "");
+    await userEvent.selectOptions(screen.getByLabelText(/doctor/i), "");
     expect(screen.getByText(/select a doctor to load real available slots/i)).toBeInTheDocument();
   });
 
@@ -184,7 +184,7 @@ describe("PublicBookingPage", () => {
 
     render(<PublicBookingPage />);
 
-    await userEvent.selectOptions(await screen.findByLabelText("Doctor"), doctor.id);
+    await userEvent.selectOptions(await screen.findByLabelText(/doctor/i), doctor.id);
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Slots unavailable");
     expect(screen.getByText(/no available slots/i)).toBeInTheDocument();
@@ -195,7 +195,7 @@ describe("PublicBookingPage", () => {
 
     render(<PublicBookingPage />);
 
-    await userEvent.selectOptions(await screen.findByLabelText("Doctor"), doctor.id);
+    await userEvent.selectOptions(await screen.findByLabelText(/doctor/i), doctor.id);
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Unable to load doctor slots.");
   });
@@ -203,25 +203,27 @@ describe("PublicBookingPage", () => {
   it("requires a selected doctor and slot before submitting", async () => {
     render(<PublicBookingPage />);
 
-    await screen.findByLabelText("Doctor");
+    await screen.findByLabelText(/doctor/i);
     await userEvent.click(screen.getByRole("button", { name: /confirm appointment/i }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Select a doctor and an available appointment slot before submitting.",
-    );
+    expect(screen.getByText("Please select a doctor.")).toBeInTheDocument();
     expect(createPublicAppointment).not.toHaveBeenCalled();
   });
 
-  it("requires all patient, contact, address, and symptom fields", async () => {
+  it("requires all patient, contact, address, and symptom fields and shows inline warnings", async () => {
     render(<PublicBookingPage />);
 
-    await userEvent.selectOptions(await screen.findByLabelText("Doctor"), doctor.id);
+    await userEvent.selectOptions(await screen.findByLabelText(/doctor/i), doctor.id);
     await userEvent.click(await screen.findByRole("button", { name: "09:00 - 09:30" }));
     await userEvent.click(screen.getByRole("button", { name: /confirm appointment/i }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Complete all required patient, contact, address, and symptom fields.",
-    );
+    expect(screen.getByText("Full name is required.")).toBeInTheDocument();
+    expect(screen.getByText("Contact phone number is required.")).toBeInTheDocument();
+    expect(screen.getByText("Email address is required.")).toBeInTheDocument();
+    expect(screen.getByText("Patient CCCD is required.")).toBeInTheDocument();
+    expect(screen.getByText("Date of birth is required.")).toBeInTheDocument();
+    expect(screen.getByText("Please select gender.")).toBeInTheDocument();
+    expect(screen.getByText("Primary symptom description is required.")).toBeInTheDocument();
     expect(createPublicAppointment).not.toHaveBeenCalled();
   });
 
@@ -234,9 +236,7 @@ describe("PublicBookingPage", () => {
     });
     await userEvent.click(screen.getByRole("button", { name: /confirm appointment/i }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      "Patient CCCD must be exactly 12 digits.",
-    );
+    expect(screen.getByText("Patient CCCD must be exactly 12 digits.")).toBeInTheDocument();
     expect(createPublicAppointment).not.toHaveBeenCalled();
   });
 

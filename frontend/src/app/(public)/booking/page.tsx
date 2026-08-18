@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { HcIcon } from "@/components/ui/hc-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   createPublicAppointment,
@@ -60,12 +61,22 @@ export default function PublicBookingPage() {
   const [slotDate, setSlotDate] = useState(getInitialDate);
   const [slots, setSlots] = useState<DoctorSlotResponse[]>([]);
   const [selectedSlotId, setSelectedSlotId] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [isLoadingDoctors, setIsLoadingDoctors] = useState(true);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [messageTone, setMessageTone] = useState<"error" | "success">("error");
   const [confirmation, setConfirmation] = useState<AppointmentResponse | null>(null);
+
+  function clearFieldError(field: string) {
+    setFieldErrors((prev) => {
+      if (!prev[field]) return prev;
+      const next = { ...prev };
+      delete next[field];
+      return next;
+    });
+  }
 
   const selectedDoctor = useMemo(
     () => doctors.find((doctor) => doctor.id === selectedDoctorId) ?? null,
@@ -177,35 +188,81 @@ export default function PublicBookingPage() {
     const symptoms = String(formData.get("symptoms") || "").trim();
     const observedSymptoms = formData.getAll("observedSymptoms").map(String);
 
-    if (!selectedDoctorId || !selectedSlotId) {
+    const errors: Record<string, string> = {};
+
+    if (!selectedDoctorId) {
+      errors.doctor = "Please select a doctor.";
+    }
+    if (!selectedSlotId) {
+      errors.slot = "Please select an available appointment slot.";
+    }
+    if (!patientFullName) {
+      errors.fullName = "Full name is required.";
+    }
+    if (!patientPhone) {
+      errors.phone = "Contact phone number is required.";
+    }
+    if (!patientEmail) {
+      errors.email = "Email address is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(patientEmail)) {
+      errors.email = "Please enter a valid email address.";
+    }
+    if (!patientCccd) {
+      errors.cccd = "Patient CCCD is required.";
+    } else if (!/^[0-9]{12}$/.test(patientCccd)) {
+      errors.cccd = "Patient CCCD must be exactly 12 digits.";
+    }
+    if (!patientDateOfBirth) {
+      errors.dateOfBirth = "Date of birth is required.";
+    }
+    if (!patientGender) {
+      errors.gender = "Please select gender.";
+    }
+    if (!provinceOrCity) {
+      errors.provinceOrCity = "Province or city is required.";
+    }
+    if (!district) {
+      errors.district = "District is required.";
+    }
+    if (!streetAddress) {
+      errors.streetAddress = "Street address is required.";
+    }
+    if (!symptoms) {
+      errors.symptoms = "Primary symptom description is required.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       setMessageTone("error");
-      setMessage("Select a doctor and an available appointment slot before submitting.");
+      setMessage("Please complete all required fields marked below before submitting.");
+
+      const firstErrorKey = Object.keys(errors)[0];
+      const elementIdMap: Record<string, string> = {
+        doctor: "booking-doctor",
+        slot: "booking-slots-section",
+        fullName: "booking-full-name",
+        phone: "booking-phone",
+        email: "booking-email",
+        cccd: "booking-cccd",
+        dateOfBirth: "booking-dob",
+        gender: "booking-gender",
+        provinceOrCity: "booking-province",
+        district: "booking-district",
+        streetAddress: "booking-street",
+        symptoms: "booking-symptoms",
+      };
+      const elementId = elementIdMap[firstErrorKey];
+      if (elementId && typeof document !== "undefined") {
+        const el = document.getElementById(elementId);
+        if (el) {
+          el.scrollIntoView?.({ behavior: "smooth", block: "center" });
+          el.focus?.();
+        }
+      }
       return;
     }
 
-    if (
-      !patientFullName ||
-      !patientPhone ||
-      !patientEmail ||
-      !patientCccd ||
-      !patientDateOfBirth ||
-      !patientGender ||
-      !provinceOrCity ||
-      !district ||
-      !streetAddress ||
-      !symptoms
-    ) {
-      setMessageTone("error");
-      setMessage("Complete all required patient, contact, address, and symptom fields.");
-      return;
-    }
-
-    if (!/^[0-9]{12}$/.test(patientCccd)) {
-      setMessageTone("error");
-      setMessage("Patient CCCD must be exactly 12 digits.");
-      return;
-    }
-
+    setFieldErrors({});
     setIsSubmitting(true);
 
     try {
@@ -266,13 +323,16 @@ export default function PublicBookingPage() {
             <div className="grid gap-6 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-doctor">
-                  Doctor
+                  Doctor <span className="text-red-500">*</span>
                 </label>
                 <select
-                  className="hc-input w-full bg-white"
+                  className={`hc-input w-full bg-white ${fieldErrors.doctor ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/20" : ""}`}
                   disabled={isLoadingDoctors}
                   id="booking-doctor"
-                  onChange={(event) => handleDoctorChange(event.target.value)}
+                  onChange={(event) => {
+                    handleDoctorChange(event.target.value);
+                    clearFieldError("doctor");
+                  }}
                   value={selectedDoctorId}
                 >
                   <option value="">{isLoadingDoctors ? "Loading doctors..." : "Select doctor"}</option>
@@ -282,10 +342,16 @@ export default function PublicBookingPage() {
                     </option>
                   ))}
                 </select>
+                {fieldErrors.doctor ? (
+                  <p className="mt-1.5 text-xs font-semibold text-red-600 flex items-center gap-1" role="alert">
+                    <HcIcon name="error_outline" className="text-sm shrink-0" />
+                    <span>{fieldErrors.doctor}</span>
+                  </p>
+                ) : null}
               </div>
               <div>
                 <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-date">
-                  Appointment Date
+                  Appointment Date <span className="text-red-500">*</span>
                 </label>
                 <input
                   className="hc-input w-full bg-white"
@@ -297,7 +363,7 @@ export default function PublicBookingPage() {
                 />
               </div>
             </div>
-            <div className="mt-8">
+            <div id="booking-slots-section" className="mt-8">
               {selectedDoctor ? (
                 <p className="mb-4 text-sm text-[var(--hc-text-secondary)] font-medium">
                   Selected doctor: <span className="font-bold text-[var(--hc-text)]">{selectedDoctor.fullName}</span>
@@ -320,7 +386,10 @@ export default function PublicBookingPage() {
                             : "border-[var(--hc-border-soft)] bg-white text-[var(--hc-text)] hover:border-[var(--hc-border-strong)]"
                         }`}
                         key={slot.id}
-                        onClick={() => setSelectedSlotId(slot.id)}
+                        onClick={() => {
+                          setSelectedSlotId(slot.id);
+                          clearFieldError("slot");
+                        }}
                         type="button"
                       >
                         {formatSlotTime(slot)}
@@ -337,76 +406,210 @@ export default function PublicBookingPage() {
                   Select a doctor to load real available slots.
                 </p>
               )}
+              {fieldErrors.slot ? (
+                <p className="mt-2.5 text-xs font-semibold text-red-600 flex items-center gap-1" role="alert">
+                  <HcIcon name="error_outline" className="text-sm shrink-0" />
+                  <span>{fieldErrors.slot}</span>
+                </p>
+              ) : null}
             </div>
           </section>
 
           <div className="grid gap-6 md:grid-cols-2">
             <div>
               <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-full-name">
-                Full Name
+                Full Name <span className="text-red-500">*</span>
               </label>
-              <input className="hc-input w-full" id="booking-full-name" name="fullName" placeholder="Patient full name" type="text" />
+              <input
+                className={`hc-input w-full ${fieldErrors.fullName ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/20" : ""}`}
+                id="booking-full-name"
+                name="fullName"
+                placeholder="Patient full name"
+                type="text"
+                onChange={() => clearFieldError("fullName")}
+              />
+              {fieldErrors.fullName ? (
+                <p className="mt-1.5 text-xs font-semibold text-red-600 flex items-center gap-1" role="alert">
+                  <HcIcon name="error_outline" className="text-sm shrink-0" />
+                  <span>{fieldErrors.fullName}</span>
+                </p>
+              ) : null}
             </div>
             <div>
               <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-phone">
-                Contact Number
+                Contact Number <span className="text-red-500">*</span>
               </label>
-              <input className="hc-input w-full" id="booking-phone" name="phone" placeholder="+84 ..." type="tel" />
+              <input
+                className={`hc-input w-full ${fieldErrors.phone ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/20" : ""}`}
+                id="booking-phone"
+                name="phone"
+                placeholder="+84 ..."
+                type="tel"
+                onChange={() => clearFieldError("phone")}
+              />
+              {fieldErrors.phone ? (
+                <p className="mt-1.5 text-xs font-semibold text-red-600 flex items-center gap-1" role="alert">
+                  <HcIcon name="error_outline" className="text-sm shrink-0" />
+                  <span>{fieldErrors.phone}</span>
+                </p>
+              ) : null}
             </div>
             <div>
               <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-email">
-                Email Address
+                Email Address <span className="text-red-500">*</span>
               </label>
-              <input className="hc-input w-full" id="booking-email" name="email" placeholder="name@example.com" type="email" />
+              <input
+                className={`hc-input w-full ${fieldErrors.email ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/20" : ""}`}
+                id="booking-email"
+                name="email"
+                placeholder="name@example.com"
+                type="email"
+                onChange={() => clearFieldError("email")}
+              />
+              {fieldErrors.email ? (
+                <p className="mt-1.5 text-xs font-semibold text-red-600 flex items-center gap-1" role="alert">
+                  <HcIcon name="error_outline" className="text-sm shrink-0" />
+                  <span>{fieldErrors.email}</span>
+                </p>
+              ) : null}
             </div>
             <div>
               <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-cccd">
-                Patient CCCD
+                Patient CCCD <span className="text-red-500">*</span>
               </label>
-              <input className="hc-input w-full" id="booking-cccd" inputMode="numeric" name="cccd" placeholder="12 digits" type="text" />
+              <input
+                className={`hc-input w-full ${fieldErrors.cccd ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/20" : ""}`}
+                id="booking-cccd"
+                inputMode="numeric"
+                name="cccd"
+                placeholder="12 digits"
+                type="text"
+                onChange={() => clearFieldError("cccd")}
+              />
+              {fieldErrors.cccd ? (
+                <p className="mt-1.5 text-xs font-semibold text-red-600 flex items-center gap-1" role="alert">
+                  <HcIcon name="error_outline" className="text-sm shrink-0" />
+                  <span>{fieldErrors.cccd}</span>
+                </p>
+              ) : null}
             </div>
             <div>
               <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-dob">
-                Date Of Birth
+                Date Of Birth <span className="text-red-500">*</span>
               </label>
-              <input className="hc-input w-full" id="booking-dob" name="dateOfBirth" type="date" />
+              <input
+                className={`hc-input w-full ${fieldErrors.dateOfBirth ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/20" : ""}`}
+                id="booking-dob"
+                name="dateOfBirth"
+                type="date"
+                onChange={() => clearFieldError("dateOfBirth")}
+              />
+              {fieldErrors.dateOfBirth ? (
+                <p className="mt-1.5 text-xs font-semibold text-red-600 flex items-center gap-1" role="alert">
+                  <HcIcon name="error_outline" className="text-sm shrink-0" />
+                  <span>{fieldErrors.dateOfBirth}</span>
+                </p>
+              ) : null}
             </div>
             <div>
               <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-gender">
-                Gender
+                Gender <span className="text-red-500">*</span>
               </label>
-              <select className="hc-input w-full" id="booking-gender" name="gender" defaultValue="">
+              <select
+                className={`hc-input w-full ${fieldErrors.gender ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/20" : ""}`}
+                id="booking-gender"
+                name="gender"
+                defaultValue=""
+                onChange={() => clearFieldError("gender")}
+              >
                 <option value="">Select gender</option>
                 <option value="MALE">Male</option>
                 <option value="FEMALE">Female</option>
                 <option value="OTHER">Other</option>
               </select>
+              {fieldErrors.gender ? (
+                <p className="mt-1.5 text-xs font-semibold text-red-600 flex items-center gap-1" role="alert">
+                  <HcIcon name="error_outline" className="text-sm shrink-0" />
+                  <span>{fieldErrors.gender}</span>
+                </p>
+              ) : null}
             </div>
             <div>
               <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-province">
-                Province Or City
+                Province Or City <span className="text-red-500">*</span>
               </label>
-              <input className="hc-input w-full" id="booking-province" name="provinceOrCity" placeholder="Ho Chi Minh City" type="text" />
+              <input
+                className={`hc-input w-full ${fieldErrors.provinceOrCity ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/20" : ""}`}
+                id="booking-province"
+                name="provinceOrCity"
+                placeholder="Ho Chi Minh City"
+                type="text"
+                onChange={() => clearFieldError("provinceOrCity")}
+              />
+              {fieldErrors.provinceOrCity ? (
+                <p className="mt-1.5 text-xs font-semibold text-red-600 flex items-center gap-1" role="alert">
+                  <HcIcon name="error_outline" className="text-sm shrink-0" />
+                  <span>{fieldErrors.provinceOrCity}</span>
+                </p>
+              ) : null}
             </div>
             <div>
               <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-district">
-                District
+                District <span className="text-red-500">*</span>
               </label>
-              <input className="hc-input w-full" id="booking-district" name="district" placeholder="District 1" type="text" />
+              <input
+                className={`hc-input w-full ${fieldErrors.district ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/20" : ""}`}
+                id="booking-district"
+                name="district"
+                placeholder="District 1"
+                type="text"
+                onChange={() => clearFieldError("district")}
+              />
+              {fieldErrors.district ? (
+                <p className="mt-1.5 text-xs font-semibold text-red-600 flex items-center gap-1" role="alert">
+                  <HcIcon name="error_outline" className="text-sm shrink-0" />
+                  <span>{fieldErrors.district}</span>
+                </p>
+              ) : null}
             </div>
             <div className="md:col-span-2">
               <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-street">
-                Street Address
+                Street Address <span className="text-red-500">*</span>
               </label>
-              <input className="hc-input w-full" id="booking-street" name="streetAddress" placeholder="Street address" type="text" />
+              <input
+                className={`hc-input w-full ${fieldErrors.streetAddress ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/20" : ""}`}
+                id="booking-street"
+                name="streetAddress"
+                placeholder="Street address"
+                type="text"
+                onChange={() => clearFieldError("streetAddress")}
+              />
+              {fieldErrors.streetAddress ? (
+                <p className="mt-1.5 text-xs font-semibold text-red-600 flex items-center gap-1" role="alert">
+                  <HcIcon name="error_outline" className="text-sm shrink-0" />
+                  <span>{fieldErrors.streetAddress}</span>
+                </p>
+              ) : null}
             </div>
           </div>
 
           <div className="mt-10">
             <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-[var(--hc-text)]" htmlFor="booking-symptoms">
-              Primary Symptom Description
+              Primary Symptom Description <span className="text-red-500">*</span>
             </label>
-            <textarea className="hc-input w-full min-h-36 py-4 resize-y" id="booking-symptoms" name="symptoms" placeholder="Describe your symptoms, duration and severity..." />
+            <textarea
+              className={`hc-input w-full min-h-36 py-4 resize-y ${fieldErrors.symptoms ? "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/20" : ""}`}
+              id="booking-symptoms"
+              name="symptoms"
+              placeholder="Describe your symptoms, duration and severity..."
+              onChange={() => clearFieldError("symptoms")}
+            />
+            {fieldErrors.symptoms ? (
+              <p className="mt-1.5 text-xs font-semibold text-red-600 flex items-center gap-1" role="alert">
+                <HcIcon name="error_outline" className="text-sm shrink-0" />
+                <span>{fieldErrors.symptoms}</span>
+              </p>
+            ) : null}
           </div>
 
           <div className="mt-10">
