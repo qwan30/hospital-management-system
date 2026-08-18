@@ -3,13 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCachedData } from "@/lib/use-cached-data";
 import { getNewsArticle, type NewsArticleResponse } from "@/lib/public-api";
+import { optimizeImageUrl } from "@/lib/image-utils";
 import { HcIcon } from "@/components/ui/hc-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const DEFAULT_NEWS_IMAGE =
-  "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80";
+  "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=75";
 
 function formatPublishedDate(dateStr: string) {
   try {
@@ -31,60 +32,28 @@ export default function NewsArticleDetailPage() {
   const slugParam = params?.slug;
   const slug = Array.isArray(slugParam) ? slugParam[0] : slugParam ?? "";
 
-  const [article, setArticle] = useState<NewsArticleResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: article,
+    error,
+    isLoading,
+    mutate,
+  } = useCachedData<NewsArticleResponse>(
+    slug ? `public:news:article:${slug}` : null,
+    () => getNewsArticle(slug),
+    {
+      ttlMs: 300000,
+      persistKey: `article_${slug}`,
+    }
+  );
 
   async function loadArticle(articleSlug: string) {
     if (!articleSlug) return;
-    setIsLoading(true);
-    setError(null);
     try {
-      const data = await getNewsArticle(articleSlug);
-      setArticle(data);
-    } catch (err) {
-      setArticle(null);
-      setError(
-        err instanceof Error
-          ? err.message
-          : "The requested news article could not be loaded.",
-      );
-    } finally {
-      setIsLoading(false);
+      await mutate(true);
+    } catch {
+      // Error in state
     }
   }
-
-  useEffect(() => {
-    let isActive = true;
-    if (slug) {
-      getNewsArticle(slug)
-        .then((data) => {
-          if (isActive) {
-            setArticle(data);
-            setError(null);
-          }
-        })
-        .catch((err) => {
-          if (isActive) {
-            setArticle(null);
-            setError(
-              err instanceof Error
-                ? err.message
-                : "The requested news article could not be loaded.",
-            );
-          }
-        })
-        .finally(() => {
-          if (isActive) {
-            setIsLoading(false);
-          }
-        });
-    }
-
-    return () => {
-      isActive = false;
-    };
-  }, [slug]);
 
   return (
     <main className="min-h-screen bg-[var(--hc-background)] pb-24">
@@ -161,7 +130,7 @@ export default function NewsArticleDetailPage() {
             {/* Featured Image */}
             <div className="relative w-full aspect-[2/1] bg-slate-100">
               <Image
-                src={article.imageUrl || DEFAULT_NEWS_IMAGE}
+                src={optimizeImageUrl(article.imageUrl || DEFAULT_NEWS_IMAGE, { width: 1200, quality: 75 })}
                 alt={article.title}
                 fill
                 priority

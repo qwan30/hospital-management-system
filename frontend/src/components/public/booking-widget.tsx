@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
+import { useCachedData } from "@/lib/use-cached-data";
 import {
   listDepartments,
   listDoctors,
@@ -12,8 +13,18 @@ import {
 
 export function BookingWidget() {
   const router = useRouter();
-  const [departments, setDepartments] = useState<DepartmentResponse[]>([]);
-  const [doctors, setDoctors] = useState<DoctorResponse[]>([]);
+  const { data: fetchedDepts } = useCachedData<DepartmentResponse[]>(
+    "public:departments",
+    listDepartments,
+    { ttlMs: 300000, persistKey: "departments" }
+  );
+  const { data: fetchedDocs } = useCachedData<DoctorResponse[]>(
+    "public:doctors",
+    listDoctors,
+    { ttlMs: 300000, persistKey: "doctors" }
+  );
+  const departments = fetchedDepts ?? [];
+  const doctors = fetchedDocs ?? [];
   const [selectedDepartmentId, setSelectedDepartmentId] = useState("");
   const [selectedDoctorId, setSelectedDoctorId] = useState("");
   const [selectedDate, setSelectedDate] = useState(() => {
@@ -22,25 +33,6 @@ export function BookingWidget() {
     return tomorrow.toISOString().split("T")[0];
   });
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
-
-  useEffect(() => {
-    let isActive = true;
-    Promise.allSettled([listDepartments(), listDoctors()]).then(
-      ([deptResult, docResult]) => {
-        if (!isActive) return;
-        if (deptResult.status === "fulfilled") {
-          setDepartments(deptResult.value);
-        }
-        if (docResult.status === "fulfilled") {
-          setDoctors(docResult.value);
-        }
-      },
-    );
-
-    return () => {
-      isActive = false;
-    };
-  }, []);
 
   const filteredDoctors = selectedDepartmentId
     ? doctors.filter((doc) => doc.departmentId === selectedDepartmentId)

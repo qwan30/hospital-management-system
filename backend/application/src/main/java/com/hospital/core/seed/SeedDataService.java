@@ -290,7 +290,7 @@ public class SeedDataService {
     entity.setName(name);
     entity.setDescription(description);
     entity.setPhone(phone);
-    entity.setImageUrl("https://images.unsplash.com/photo-1576091160550-2173dba999ef");
+    entity.setImageUrl("https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=75");
     return entity;
   }
 
@@ -711,31 +711,36 @@ public class SeedDataService {
   }
 
   private void seedNewsArticles() {
-    var articles = List.of(
-        createNewsArticle(
-            "digital-follow-up",
-            "Digital Follow-Up System Expands Across Outpatient Clinics",
-            "Outpatient clinics across all specialties now support automated digital follow-up reminders and symptom check-ins.",
-            "Hospital Core has completed the deployment of its unified digital follow-up platform. Patients receiving care at cardiology, internal medicine, and pediatrics can now receive scheduled care-team check-ins and submit progress notes directly from the patient portal.",
-            "https://images.unsplash.com/photo-1576091160550-2173dba999ef"),
-        createNewsArticle(
-            "robotic-surgery-wing",
-            "Expansion of Robotic Surgery Wing",
-            "Integrating the next generation of haptic-feedback surgical units to increase precision in minimally invasive cardiac procedures.",
-            "Our surgical department has integrated advanced robotic guidance systems, reducing post-operative recovery times and enabling sub-millimeter surgical accuracy across complex cardiothoracic and orthopedic procedures.",
-            "https://images.unsplash.com/photo-1516549655169-df83a0774514"),
-        createNewsArticle(
-            "neural-reconstruction-systems",
-            "Breakthrough in Neural Reconstruction Systems",
-            "Hospital Core's research division announces a successful pilot for autonomous nerve regeneration using bio-compatible synthetic scaffolding.",
-            "In collaboration with leading clinical biomedical researchers, our neurosurgery team has successfully deployed bio-compatible neural scaffolds that accelerate peripheral nerve regeneration and functional motor recovery.",
-            "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7"),
-        createNewsArticle(
-            "preventive-cardiology-protocol",
-            "Preventive Cardiology Screening Protocol Announced",
-            "New multi-tier cardiovascular risk assessment protocol helps early detection of ischemic heart disease.",
-            "Early intervention is critical for cardiovascular health. Our cardiology team now provides comprehensive automated risk scoring, biomarker analysis, and personalized preventative care routines for all registered patients.",
-            "https://images.unsplash.com/photo-1505751172876-fa1923c5c528"));
+    if (newsArticleRepository.count() > 0) {
+      return;
+    }
+
+    var articles =
+        List.of(
+            createNewsArticle(
+                "digital-follow-up",
+                "Digital Follow-Up System Expands Across Outpatient Clinics",
+                "Outpatient clinics across all specialties now support automated digital follow-up reminders and symptom check-ins.",
+                "Hospital Core has completed the deployment of its unified digital follow-up platform. Patients receiving care at cardiology, internal medicine, and pediatrics can now receive scheduled care-team check-ins and submit progress notes directly from the patient portal.",
+                "https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=75"),
+            createNewsArticle(
+                "robotic-surgery-wing",
+                "Expansion of Robotic Surgery Wing",
+                "Integrating the next generation of haptic-feedback surgical units to increase precision in minimally invasive cardiac procedures.",
+                "Our surgical department has integrated advanced robotic guidance systems, reducing post-operative recovery times and enabling sub-millimeter surgical accuracy across complex cardiothoracic and orthopedic procedures.",
+                "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=800&q=75"),
+            createNewsArticle(
+                "neural-reconstruction-systems",
+                "Breakthrough in Neural Reconstruction Systems",
+                "Hospital Core's research division announces a successful pilot for autonomous nerve regeneration using bio-compatible synthetic scaffolding.",
+                "In collaboration with leading clinical biomedical researchers, our neurosurgery team has successfully deployed bio-compatible neural scaffolds that accelerate peripheral nerve regeneration and functional motor recovery.",
+                "https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?auto=format&fit=crop&w=800&q=75"),
+            createNewsArticle(
+                "preventive-cardiology-protocol",
+                "Preventive Cardiology Screening Protocol Announced",
+                "New multi-tier cardiovascular risk assessment protocol helps early detection of ischemic heart disease.",
+                "Early intervention is critical for cardiovascular health. Our cardiology team now provides comprehensive automated risk scoring, biomarker analysis, and personalized preventative care routines for all registered patients.",
+                "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=800&q=75"));
     newsArticleRepository.saveAll(articles);
   }
 
