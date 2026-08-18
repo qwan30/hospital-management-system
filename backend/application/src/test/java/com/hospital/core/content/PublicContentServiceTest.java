@@ -101,6 +101,46 @@ class PublicContentServiceTest {
   }
 
   @Test
+  void getNewsArticleBySlug_withBlankOrNull_returnsNull() {
+    assertThat(publicContentService.getNewsArticleBySlug(null)).isNull();
+    assertThat(publicContentService.getNewsArticleBySlug("   ")).isNull();
+  }
+
+  @Test
+  void getNewsArticleBySlug_withDbMatch_returnsDbArticle() {
+    var article = new NewsArticleEntity();
+    article.setId(UUID.randomUUID());
+    article.setSlug("db-slug");
+    article.setTitle("DB Title");
+    article.setSummary("DB Summary");
+    article.setContent("DB Content");
+    article.setImageUrl("http://img");
+    article.setActive(true);
+    article.setPublishedAt(Instant.parse("2026-07-01T00:00:00Z"));
+
+    when(newsArticleRepository.findBySlugIgnoreCase("db-slug")).thenReturn(java.util.Optional.of(article));
+
+    var result = publicContentService.getNewsArticleBySlug("db-slug");
+    assertThat(result).isNotNull();
+    assertThat(result.slug()).isEqualTo("db-slug");
+    assertThat(result.title()).isEqualTo("DB Title");
+  }
+
+  @Test
+  void getNewsArticleBySlug_withInactiveDbArticle_fallsBackToDefaults() {
+    var inactive = new NewsArticleEntity();
+    inactive.setId(UUID.randomUUID());
+    inactive.setSlug("evening-clinic");
+    inactive.setActive(false);
+
+    when(newsArticleRepository.findBySlugIgnoreCase("evening-clinic")).thenReturn(java.util.Optional.of(inactive));
+
+    var result = publicContentService.getNewsArticleBySlug("evening-clinic");
+    assertThat(result).isNotNull();
+    assertThat(result.slug()).isEqualTo("evening-clinic");
+  }
+
+  @Test
   void getNewsArticleBySlug_whenNotInDb_fallsBackToDefaults() {
     when(newsArticleRepository.findBySlugIgnoreCase("digital-follow-up")).thenReturn(java.util.Optional.empty());
 
@@ -126,6 +166,28 @@ class PublicContentServiceTest {
     var page = publicContentService.getArchivedNews(0, 3);
     assertThat(page.getContent()).hasSize(3);
     assertThat(page.getTotalElements()).isEqualTo(6);
+
+    var secondPage = publicContentService.getArchivedNews(1, 4);
+    assertThat(secondPage.getContent()).hasSize(2);
+  }
+
+  @Test
+  void getArchivedNews_whenDbHasContent_returnsDbPage() {
+    var article = new NewsArticleEntity();
+    article.setId(UUID.randomUUID());
+    article.setSlug("archived-1");
+    article.setTitle("Archived Title");
+    article.setSummary("Summary");
+    article.setContent("Content");
+    article.setActive(true);
+    article.setPublishedAt(Instant.parse("2026-05-01T00:00:00Z"));
+
+    when(newsArticleRepository.findByActiveTrueOrderByPublishedAtDesc(org.mockito.ArgumentMatchers.any(org.springframework.data.domain.Pageable.class)))
+        .thenReturn(new org.springframework.data.domain.PageImpl<>(List.of(article)));
+
+    var page = publicContentService.getArchivedNews(0, 10);
+    assertThat(page.getContent()).hasSize(1);
+    assertThat(page.getContent().get(0).slug()).isEqualTo("archived-1");
   }
 
   @Test
