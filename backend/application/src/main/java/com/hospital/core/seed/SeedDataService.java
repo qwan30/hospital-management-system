@@ -206,6 +206,9 @@ public class SeedDataService {
     var passwords = initialDemoSeedProperties.requireConfiguredPasswords();
     if (departmentRepository.count() > 0 || userRepository.count() > 0) {
       rotateExistingInitialDemoCredentialHashes(passwords);
+      if (newsArticleRepository != null && newsArticleRepository.count() == 0) {
+        seedNewsArticles();
+      }
       return;
     }
 

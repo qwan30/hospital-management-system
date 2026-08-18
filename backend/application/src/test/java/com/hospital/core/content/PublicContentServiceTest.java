@@ -95,9 +95,37 @@ class PublicContentServiceTest {
     when(newsArticleRepository.findByActiveTrueOrderByPublishedAtDesc()).thenReturn(List.of());
 
     var articles = publicContentService.listNewsArticles();
-    assertThat(articles).hasSize(2);
+    assertThat(articles).hasSize(6);
     assertThat(articles.get(0).slug()).isEqualTo("evening-clinic");
     assertThat(articles.get(1).slug()).isEqualTo("digital-follow-up");
+  }
+
+  @Test
+  void getNewsArticleBySlug_whenNotInDb_fallsBackToDefaults() {
+    when(newsArticleRepository.findBySlugIgnoreCase("digital-follow-up")).thenReturn(java.util.Optional.empty());
+
+    var article = publicContentService.getNewsArticleBySlug("digital-follow-up");
+    assertThat(article).isNotNull();
+    assertThat(article.slug()).isEqualTo("digital-follow-up");
+    assertThat(article.title()).contains("Digital Follow-Up");
+  }
+
+  @Test
+  void getNewsArticleBySlug_whenUnknown_returnsNull() {
+    when(newsArticleRepository.findBySlugIgnoreCase("totally-unknown-slug")).thenReturn(java.util.Optional.empty());
+
+    var article = publicContentService.getNewsArticleBySlug("totally-unknown-slug");
+    assertThat(article).isNull();
+  }
+
+  @Test
+  void getArchivedNews_whenEmptyDb_returnsPagedDefaults() {
+    when(newsArticleRepository.findByActiveTrueOrderByPublishedAtDesc(org.mockito.ArgumentMatchers.any(org.springframework.data.domain.Pageable.class)))
+        .thenReturn(new org.springframework.data.domain.PageImpl<>(List.of()));
+
+    var page = publicContentService.getArchivedNews(0, 3);
+    assertThat(page.getContent()).hasSize(3);
+    assertThat(page.getTotalElements()).isEqualTo(6);
   }
 
   @Test
