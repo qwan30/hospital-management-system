@@ -34,7 +34,8 @@ export default function BookingSuccessPage() {
                 <Image
                   alt="Doctor Profile"
                   className="w-14 h-14 object-cover rounded-[var(--radius-md)] grayscale"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGYAfT8LWRcPEPCvaz0oYNZwLwRF0tPWJAo13CzHohYwCGfXzkEyzL4EOfWZ-XY42A1rUtPU3Qm0UXI3KDaKavGQyUQvVSKQ_ULnGTIL3azNekw7wwmb58ffbypeSes6KUZ85GQxnGX6ZniQELqQ75fYn-ILfTphg-sRbt5SP2QANxbuy5S_dSzi0fo9XiBlQVdRzYbTrLeI9mSDUYVaJXc6Ikj2EsoSlCAwhX3pLyzCnRaWWC2VwyznNIS2A_KCNQRsMZrrkDhQ"
+                  src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80"
+                  unoptimized
                   width={1200} height={800}
                 />
                 <div className="flex flex-col">

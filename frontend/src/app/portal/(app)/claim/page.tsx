@@ -198,8 +198,8 @@ export default function PatientClaimAccessPage() {
           <Image
             alt="Medical architecture"
             className="w-full h-full object-cover grayscale"
-            data-alt="Monolithic modern hospital hallway with clean white walls and blue accent lights reflecting on polished marble floors"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOC9biM1FEjBEEaruoLpfKoUAXCxH0eMogR1X890B46HRmx7uaIvBMWn56cpTrvJLLLqdS90C49z7XXnG3u27U_4I_GxE19LDuD63VKAjDqGkcROIyHXXF5bEkgpPnRohmWl88rYX4Xil7fLAfgZ8YhzlvicX4qhkpvBEhqhYW11TDXvg9uwSkJIGz8wMXNUm9cwAW9Xx0b13PsOTQ6vzKRK4fCgoe25MyxkzGN8KEmbwJ7_KrkhpGoMJjzZ0DSXuZ2HFs2-m1AA"
+            src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80"
+            unoptimized
             width={1200}
             height={800}
           />

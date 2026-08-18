@@ -12,7 +12,7 @@ import { HcIcon } from "@/components/ui/hc-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const DEFAULT_NEWS_IMAGE =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuDTB9qdGsTuPH1B-DmoNJdYl3BxfyAJW1x84Mk4q-PUqIw_tAo5NwffwHDxkWrVx83W-uY4jBuQVgCAYc1WARbmYH67HPoLfxTjBI4PJwXQ1sVXaCTxH-by5rgXC258yN8uXVwYXLxnHZyIMlkVfL6dTKxs8c4jUrNJQ1hgoKt_6V09-l0VUpb_HqmKuuZDrKhn1qUIC9e5aiPnzoKeg1sGjFj_GoqbxiNUbUiBrERNNtwKsSGiWWTNIB31oI7OeNn6j3Mt6mokaQ";
+  "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80";
 
 function formatPublishedDate(dateStr: string) {
   try {
@@ -199,13 +199,14 @@ export default function NewsListPage() {
             {featuredArticle ? (
               <section aria-labelledby="featured-news-heading">
                 <div className="grid grid-cols-1 lg:grid-cols-12 bg-white border border-[var(--hc-border-soft)] rounded-[var(--radius-xl)] overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                  <div className="lg:col-span-8 relative aspect-video lg:aspect-auto min-h-[320px]">
+                    <div className="lg:col-span-8 relative aspect-video lg:aspect-auto min-h-[320px]">
                     <Image
                       className="w-full h-full object-cover"
                       alt={featuredArticle.title}
                       src={featuredArticle.imageUrl || DEFAULT_NEWS_IMAGE}
                       fill
                       priority
+                      unoptimized
                       sizes="(max-width: 1024px) 100vw, 66vw"
                     />
                   </div>
@@ -255,6 +256,7 @@ export default function NewsListPage() {
                           alt={article.title}
                           src={article.imageUrl || DEFAULT_NEWS_IMAGE}
                           fill
+                          unoptimized
                           sizes="(max-width: 768px) 100vw, 224px"
                         />
                       </div>

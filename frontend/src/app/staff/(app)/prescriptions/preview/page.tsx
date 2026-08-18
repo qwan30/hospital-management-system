@@ -173,13 +173,9 @@ export default function PrescriptionPreviewPage() {
                 <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text-placeholder)] mt-2">Hospital Stamp / Digital ID</p>
               </div>
               <div className="flex flex-col items-center">
-                <Image
-                  alt="Doctor Signature"
-                  className="w-24 h-12 mix-blend-multiply opacity-80 mb-2"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2_WJCiHfQ1tH5s5AvN3gEYvHuuOAYGJ7RwnYAIqnTBQeAgFAIqNW2ks9Kw8qn5zvYC2IjHQ79efobopfnS39OwHemQbgNrpymLYIUqC651Qgy3fwWwhJSfKmc60uU4Z2olOYvy2Xo6NxGzGYHQa8t_AWNQruYrwJC7n762e7g0nZw4vScxD5i09VzQ8M377wk5sgRkxteJ1DiRAKzl7By_U9Bs2lt0yIq08J6gEPHmr-7Fu7VWiW_4nZa_O3IfsmOR-xWf-wUhw"
-                  width={1200}
-                  height={800}
-                />
+                <svg className="w-28 h-12 text-slate-800 opacity-80 mb-2" viewBox="0 0 120 50" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-label="Doctor Signature">
+                  <path d="M10 35 C20 10, 30 40, 40 20 C50 5, 45 45, 60 25 C75 10, 80 30, 95 15 C105 5, 110 35, 115 25" />
+                </svg>
                 <div className="w-64 h-[1px] bg-[var(--hc-text)]"></div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--hc-text)] mt-3">Authorized Signatory: Sarah Chen, MD</p>
               </div>

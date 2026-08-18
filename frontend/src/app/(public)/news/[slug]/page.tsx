@@ -9,7 +9,7 @@ import { HcIcon } from "@/components/ui/hc-icon";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const DEFAULT_NEWS_IMAGE =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuDTB9qdGsTuPH1B-DmoNJdYl3BxfyAJW1x84Mk4q-PUqIw_tAo5NwffwHDxkWrVx83W-uY4jBuQVgCAYc1WARbmYH67HPoLfxTjBI4PJwXQ1sVXaCTxH-by5rgXC258yN8uXVwYXLxnHZyIMlkVfL6dTKxs8c4jUrNJQ1hgoKt_6V09-l0VUpb_HqmKuuZDrKhn1qUIC9e5aiPnzoKeg1sGjFj_GoqbxiNUbUiBrERNNtwKsSGiWWTNIB31oI7OeNn6j3Mt6mokaQ";
+  "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80";
 
 function formatPublishedDate(dateStr: string) {
   try {
@@ -165,6 +165,7 @@ export default function NewsArticleDetailPage() {
                 alt={article.title}
                 fill
                 priority
+                unoptimized
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 896px"
               />
