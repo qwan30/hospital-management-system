@@ -121,4 +121,52 @@ class SeedDataServiceLifecycleTest {
         .isInstanceOf(IllegalStateException.class)
         .hasMessageContaining("Disallowed in production");
   }
+
+  @Test
+  void initialDemoSeed_whenExistingUsersAndNewsEmpty_seedsNewsArticles() {
+    var newsRepo = mock(com.hospital.core.content.NewsArticleRepository.class);
+    when(newsRepo.count()).thenReturn(0L);
+
+    var serviceWithNews = new SeedDataService(
+        appointmentRepository,
+        auditLogRepository,
+        departmentRepository,
+        inventoryItemRepository,
+        inventoryLotRepository,
+        inventoryMovementRepository,
+        labResultRepository,
+        medicalRecordRepository,
+        patientAccountRepository,
+        patientIdentifierProtector,
+        patientMessageRepository,
+        patientMessageThreadRepository,
+        patientRepository,
+        servicePricingRepository,
+        userRepository,
+        timeSlotRepository,
+        passwordEncoder,
+        nonBillingDemoSeedProperties,
+        initialDemoSeedProperties,
+        demoSeedPolicy,
+        null,
+        newsRepo);
+
+    initialDemoSeedProperties.setEnabled(true);
+    var passwords = new InitialDemoSeedProperties.Passwords();
+    passwords.setAdmin("Admin@123");
+    passwords.setDoctor1("Doctor@123");
+    passwords.setDoctor2("Doctor@123");
+    passwords.setNurse("Nurse@123");
+    passwords.setReceptionist("Recep@123");
+    passwords.setPharmacist("Pharm@123");
+    passwords.setAccountant("Account@123");
+    passwords.setPatient("Patient@123");
+    initialDemoSeedProperties.setPasswords(passwords);
+
+    when(departmentRepository.count()).thenReturn(1L);
+
+    serviceWithNews.seedInitialDemoIfEnabled();
+
+    verify(newsRepo).saveAll(org.mockito.ArgumentMatchers.anyList());
+  }
 }
