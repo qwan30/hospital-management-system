@@ -91,4 +91,27 @@ describe("PublicDoctorsPage", () => {
     await waitFor(() => expect(listDoctors).toHaveBeenCalledTimes(2));
     expect(await screen.findByText("Dr. Lan Tran")).toBeInTheDocument();
   });
+
+  it("opens doctor profile modal and displays detailed clinician info and booking link", async () => {
+    render(<PublicDoctorsPage />);
+
+    expect(await screen.findByText("Dr. Lan Tran")).toBeInTheDocument();
+
+    const viewProfileBtns = screen.getAllByRole("button", { name: /view profile/i });
+    await userEvent.click(viewProfileBtns[0]);
+
+    const modal = screen.getByRole("dialog");
+    expect(modal).toBeInTheDocument();
+    expect(screen.getByText("Clinical Experience")).toBeInTheDocument();
+    expect(screen.getAllByText("12 Years").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText(/Verified Hospital Core Staff Clinician/i)).toBeInTheDocument();
+
+    const bookInModal = screen.getByRole("link", { name: /book consultation with dr\. tran/i });
+    expect(bookInModal).toHaveAttribute("href", "/booking?doctorId=11111111-1111-1111-1111-111111111111");
+
+    const closeBtn = screen.getByRole("button", { name: /close profile/i });
+    await userEvent.click(closeBtn);
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
 });
